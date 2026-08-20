@@ -1,0 +1,128 @@
+{
+  "schema_version": "1",
+  "status_global": "proposta_pendente",
+  "proveniencia_contrato": {
+    "consulta_automatica": false,
+    "campos_obrigatorios_para_aprovacao": [
+      "autoridade_primaria",
+      "url_ou_localizacao",
+      "codigo_serie",
+      "data_coleta",
+      "sha256_arquivo_bruto",
+      "sha256_csv_normalizado",
+      "caso_dourado",
+      "resultado_aprovado"
+    ],
+    "status_inicial_de_nova_serie": "candidato"
+  },
+  "indices": {
+    "tjmg-nao-expurgada": {
+      "arquivo": "tjmg-nao-expurgada.csv",
+      "tipo_serie": "fator_acumulado",
+      "unidade": "fator",
+      "status": "pendente_validacao",
+      "convencoes": ["meses_calendario_inclusivos"]
+    },
+    "tjsp": {
+      "arquivo": "tjsp.csv",
+      "tipo_serie": "fator_acumulado",
+      "unidade": "fator",
+      "status": "pendente_validacao",
+      "convencoes": ["meses_calendario_inclusivos"]
+    },
+    "tjrj": {
+      "arquivo": "tjrj.csv",
+      "tipo_serie": "fator_acumulado",
+      "unidade": "fator",
+      "status": "pendente_validacao",
+      "convencoes": ["meses_calendario_inclusivos"]
+    },
+    "taxa-legal": {
+      "arquivo": "taxa-legal.csv",
+      "tipo_serie": "taxa_diaria_decimal",
+      "unidade": "decimal_diario",
+      "status": "pendente_validacao",
+      "convencoes": ["registros_com_data_no_intervalo_inclusivo"]
+    },
+    "inpc": {
+      "arquivo": "inpc.csv",
+      "tipo_serie": "taxa_mensal_percentual",
+      "unidade": "percentual_mensal",
+      "status": "pendente_validacao",
+      "convencoes": ["meses_calendario_inclusivos"]
+    },
+    "ipca": {
+      "arquivo": "ipca.csv",
+      "tipo_serie": "taxa_mensal_percentual",
+      "unidade": "percentual_mensal",
+      "status": "pendente_validacao",
+      "convencoes": ["meses_calendario_inclusivos"]
+    },
+    "igp-m": {
+      "arquivo": "igp-m.csv",
+      "tipo_serie": "taxa_mensal_percentual",
+      "unidade": "percentual_mensal",
+      "status": "pendente_validacao",
+      "convencoes": ["meses_calendario_inclusivos"]
+    },
+    "selic": {
+      "arquivo": "selic.csv",
+      "tipo_serie": "taxa_mensal_percentual",
+      "unidade": "percentual_mensal",
+      "status": "pendente_validacao",
+      "convencoes": ["meses_calendario_inclusivos"]
+    },
+    "cdi": {
+      "arquivo": "cdi.csv",
+      "tipo_serie": "taxa_mensal_percentual",
+      "unidade": "percentual_mensal",
+      "status": "pendente_validacao",
+      "convencoes": ["meses_calendario_inclusivos"]
+    },
+    "poupanca-nova": {
+      "arquivo": "poupanca-nova.csv",
+      "tipo_serie": "taxa_aniversario_percentual",
+      "unidade": "percentual_por_aniversario",
+      "status": "pendente_validacao",
+      "convencoes": ["registros_com_data_no_intervalo_inclusivo"]
+    },
+    "tjmg-fator-atualizacao": {
+      "arquivo": "tjmg-fator-atualizacao.csv",
+      "tipo_serie": "fator_acumulado",
+      "unidade": "fator",
+      "status": "pendente_validacao",
+      "sha256": "3a80d900251ab23b9d73e8b76976105877347d474c027af1355adc1c417187e5",
+      "convencoes": ["meses_calendario_inclusivos"],
+      "proveniencia": {
+        "status": "candidato",
+        "autoridade_primaria": "TJMG",
+        "url_ou_localizacao": "https://www.tjmg.jus.br/portal-tjmg/processos/indicadores/fator-de-atualizacao-monetaria.htm",
+        "codigo_serie": "ICGJ (TJMG)",
+        "data_coleta": "2026-08-20",
+        "arquivo_bruto": "tjmg-fator-agosto-2026.xls",
+        "sha256_arquivo_bruto": "87fd78647bc3836f586860f4fa7d61ebbff9554094a183d33d4184430d382bd3",
+        "sha256_csv_normalizado": "3a80d900251ab23b9d73e8b76976105877347d474c027af1355adc1c417187e5",
+        "observacao": "XLS oficial de agosto de 2026, convertido localmente, dados nas linhas 10 a 751. Caso dourado pendente."
+      }
+    },
+    "tjsp-tabela-pratica": {
+      "arquivo": "tjsp-tabela-pratica.csv",
+      "tipo_serie": "fator_acumulado",
+      "unidade": "fator",
+      "status": "pendente_validacao",
+      "sha256": "2f33fec1401c4ffa711f82653533e428e1567e3fdda5a4a10e998ce1c85c4b0a",
+      "convencoes": ["meses_calendario_inclusivos"],
+      "proveniencia": {
+        "status": "candidato",
+        "autoridade_primaria": "TJSP",
+        "url_ou_localizacao": "https://www.tjsp.jus.br/",
+        "codigo_serie": "Tabela Prática TJSP - Lei 14.905/2024",
+        "data_coleta": "2026-08-20",
+        "arquivo_bruto": "tjsp-tabela-pratica.xlsm",
+        "sha256_arquivo_bruto": "ce52aaf5600d35d0bfaf241b063ed8db3e2f68d584930204719705b407330aac",
+        "sha256_csv_normalizado": "2f33fec1401c4ffa711f82653533e428e1567e3fdda5a4a10e998ce1c85c4b0a",
+        "observacao": "Coluna O da aba ÍNDICES, faixa 7 a 748 na planilha recebida. Caso dourado pendente."
+      }
+    }
+  }
+}

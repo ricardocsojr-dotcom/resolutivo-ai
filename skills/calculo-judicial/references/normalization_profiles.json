@@ -1,0 +1,38 @@
+{
+  "schema_version": "1",
+  "profiles": {
+    "tjsp-planilha-indices": {
+      "formato": "xlsm",
+      "aba": "ÍNDICES",
+      "coluna_data": "A",
+      "coluna_valor": "O",
+      "linha_inicial": 7,
+      "tipo_serie": "fator_acumulado",
+      "unidade": "fator",
+      "frequencia": "mensal",
+      "convencao": "meses_calendario_inclusivos",
+      "autoridade": "TJSP",
+      "url": "https://www.tjsp.jus.br/",
+      "codigo_serie": "Tabela Prática TJSP - Lei 14.905/2024",
+      "observacao": "Perfil inicial para a Tabela Prática TJSP observada na coluna O da planilha oficial. Confirmar a coluna e a convenção antes da homologação."
+    },
+    "tjmg-fator-xls": {
+      "formato": "xls",
+      "aba": "Plan1",
+      "coluna_ano": "A",
+      "coluna_mes": "B",
+      "coluna_valor": "C",
+      "linha_inicial": 10,
+      "linha_final": 751,
+      "idioma_mes": "pt-BR",
+      "tipo_serie": "fator_acumulado",
+      "unidade": "fator",
+      "frequencia": "mensal",
+      "convencao": "meses_calendario_inclusivos",
+      "autoridade": "TJMG",
+      "url": "https://www.tjmg.jus.br/portal-tjmg/processos/indicadores/fator-de-atualizacao-monetaria.htm",
+      "codigo_serie": "ICGJ (TJMG)",
+      "observacao": "Mapeamento passivo do XLS oficial de agosto de 2026. Candidato ainda não homologado."
+    }
+  }
+}

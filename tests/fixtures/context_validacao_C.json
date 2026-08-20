@@ -1,0 +1,48 @@
+{
+  "matter_id": "validacao-C-manifestacao",
+  "nivel_peca": "C",
+  "nivel_risco": "baixo",
+  "modo_redacao": "direta",
+  "redacao_por_blocos": false,
+  "enderecamento": "EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DE DIREITO DA VARA TESTE DA COMARCA DE CIDADE TESTE/XX",
+  "numero_processo": "0000000-00.0000.0.00.0000",
+  "partes": "Parte A: Pessoa Teste\nParte B: Empresa Teste Ltda.",
+  "blocos": [
+    {
+      "tipo": "abertura",
+      "nome_parte": "PARTE A",
+      "resto": ", já qualificada nos autos, vem apresentar ",
+      "nome_peca": "MANIFESTAÇÃO",
+      "resto_depois": ", pelos fundamentos a seguir.",
+      "semantic_ids": ["C-BLOCO-ABERTURA"]
+    },
+    {
+      "tipo": "titulo",
+      "texto": "DOS FATOS RELEVANTES",
+      "semantic_ids": ["C-TITULO-FATOS"]
+    },
+    {
+      "tipo": "paragrafo",
+      "texto": "Este parágrafo é uma entrada anonimizada para testar a geração de corpo sem inferência jurídica.",
+      "semantic_ids": ["C-FACT-1"]
+    },
+    {
+      "tipo": "titulo",
+      "texto": "DOS PEDIDOS",
+      "semantic_ids": ["C-TITULO-PEDIDOS"]
+    },
+    {
+      "tipo": "numerado",
+      "texto": "O recebimento da manifestação.",
+      "sequencia": "pedidos",
+      "request_ids": ["C-REQUEST-1"]
+    },
+    {
+      "tipo": "assinaturas"
+    }
+  ],
+  "pedidos": [{"id": "C-REQUEST-1", "texto": "Pedido explicitamente fornecido"}],
+  "teses": [{"id": "C-THESIS-1", "texto": "Tese explicitamente fornecida", "status": "proposta"}],
+  "publicacoes": false,
+  "data_local": "Cidade Teste/XX, 19 de agosto de 2026."
+}

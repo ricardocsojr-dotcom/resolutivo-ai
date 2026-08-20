@@ -1,0 +1,16 @@
+{
+  "enderecamento": "EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DE DIREITO DA 1ª VARA CÍVEL DA COMARCA DE SÃO PAULO/SP",
+  "numero_processo": "0000000-00.0000.8.26.0001",
+  "partes": "Autor: João da Silva\nRéu: Empresa Exemplo Ltda.",
+  "blocos": [
+    {"tipo": "abertura", "nome_parte": "JOÃO DA SILVA", "resto": ", já qualificado nos autos, vem apresentar ", "nome_peca": "MANIFESTAÇÃO", "resto_depois": ", pelos fundamentos a seguir."},
+    {"tipo": "titulo", "texto": "DA SÍNTESE NECESSÁRIA"},
+    {"tipo": "paragrafo", "texto": "A parte autora apresenta esta manifestação para registrar os fatos relevantes e requerer a apreciação das providências cabíveis."},
+    {"tipo": "titulo", "texto": "DOS PEDIDOS"},
+    {"tipo": "numerado", "texto": "O recebimento desta manifestação.", "sequencia": "pedidos"},
+    {"tipo": "numerado", "texto": "A apreciação do pedido conforme os fundamentos apresentados.", "sequencia": "pedidos"}
+  ],
+  "publicacoes": true,
+  "data_local": "São Paulo/SP, 19 de agosto de 2026.",
+  "assinatura_automatica_final": true
+}

@@ -1,0 +1,36 @@
+{
+  "schema_version": "1",
+  "tipo": "simples_mensal_segmentado",
+  "requisitos": {
+    "data_inicio_juros": "deve coincidir com o início do primeiro segmento",
+    "segmentos": "lista ordenada, contígua e sem sobreposição",
+    "inicio": "data ISO e primeiro dia do mês",
+    "fim": "data ISO e último dia do mês",
+    "taxa": "percentual mensal explícito",
+    "unidade_taxa": "percentual_mensal",
+    "base": "principal ou principal_corrigido",
+    "convencao": "meses_calendario_inclusivos",
+    "ultimo_segmento": "deve terminar na data_final"
+  },
+  "bloqueios": [
+    "percentual_anual",
+    "prorata",
+    "mudança dentro do mês",
+    "segmentos não contíguos",
+    "taxa inferida",
+    "base inferida"
+  ],
+  "exemplo_estrutural": {
+    "tipo": "simples_mensal_segmentado",
+    "segmentos": [
+      {
+        "inicio": "AAAA-MM-01",
+        "fim": "AAAA-MM-último_dia",
+        "taxa": "1.00",
+        "unidade_taxa": "percentual_mensal",
+        "base": "principal",
+        "convencao": "meses_calendario_inclusivos"
+      }
+    ]
+  }
+}

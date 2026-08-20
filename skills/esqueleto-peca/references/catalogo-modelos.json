@@ -1,0 +1,1932 @@
+{
+  "schema_version": "1",
+  "descricao": "Catálogo local de modelos de estrutura RDAA extraídos de peças modelo preservadas. O catálogo registra somente padrões estruturais e não distribui conteúdo jurídico de cliente.",
+  "politica": {
+    "redacao_por_blocos_niveis": [
+      "A",
+      "B"
+    ],
+    "tipo_c_sem_redacao_por_blocos": true,
+    "vault_automatico": false,
+    "conteudo_do_modelo_nao_e_fato_do_caso": true,
+    "pendencia_para_dado_ausente": "[PONTO A CONFERIR]",
+    "fontes_externas_devem_ser_registradas_no_esqueleto": true,
+    "nenhum_modelo_aprova_pertinencia_juridica": true
+  },
+  "modelos": [
+    {
+      "modelo_id": "contestacao-v1",
+      "nome": "Contestação estrutural",
+      "versao": 1,
+      "tipo_peca": "contestacao",
+      "niveis_recomendados": [
+        "A",
+        "B"
+      ],
+      "modo": "estrutura_orientadora",
+      "blocos": [
+        {
+          "id": "admissibilidade",
+          "funcao": "admissibilidade",
+          "obrigatorio": true
+        },
+        {
+          "id": "contexto_processual",
+          "funcao": "contextualizacao",
+          "obrigatorio": true
+        },
+        {
+          "id": "fatos_relevantes",
+          "funcao": "delimitacao_fatica",
+          "obrigatorio": true
+        },
+        {
+          "id": "preliminares",
+          "funcao": "questoes_preliminares",
+          "obrigatorio": false
+        },
+        {
+          "id": "merito",
+          "funcao": "desenvolvimento",
+          "obrigatorio": true
+        },
+        {
+          "id": "provas_e_documentos",
+          "funcao": "analise_probatoria",
+          "obrigatorio": false
+        },
+        {
+          "id": "prequestionamento",
+          "funcao": "registro_de_questoes",
+          "obrigatorio": false
+        },
+        {
+          "id": "pedidos",
+          "funcao": "pedido",
+          "obrigatorio": true
+        }
+      ],
+      "variaveis": [
+        {
+          "id": "partes",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "numero_processo",
+          "obrigatoria": true,
+          "origem": "dados_fornecidos"
+        },
+        {
+          "id": "juizo_competente",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "data_de_citacao_ou_intimacao",
+          "obrigatoria": false,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "pretensao_da_parte_contraria",
+          "obrigatoria": true,
+          "origem": "peca_inicial_ou_ato_impugnado"
+        },
+        {
+          "id": "fatos_declarados_pelo_advogado",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "documentos_relevantes",
+          "obrigatoria": false,
+          "origem": "arquivos_fornecidos"
+        },
+        {
+          "id": "fontes_externas_selecionadas",
+          "obrigatoria": false,
+          "origem": "esqueleto_aprovado"
+        },
+        {
+          "id": "pedidos_do_caso",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        }
+      ],
+      "checklist_minimo": [
+        "confirmar polo processual e identificação das partes",
+        "conferir ato que iniciou o prazo e tempestividade declarada",
+        "separar contexto processual de fatos efetivamente informados",
+        "listar preliminares somente quando houver instrução do advogado",
+        "relacionar cada fundamento a fatos ou documentos fornecidos",
+        "registrar documentos citados e documentos ainda pendentes",
+        "conferir coerência entre fundamentos e pedidos do caso",
+        "bloquear preenchimento automático de tese, fato, valor ou pedido específico"
+      ],
+      "documentos_esperados": [
+        "peca_inicial_ou_ato_que_originou_a_demanda",
+        "comprovante_de_citacao_ou_intimacao_quando_relevante",
+        "documentos_da_materia_fornecidos_pelo_advogado",
+        "instrumento_de_representacao_quando_fornecido",
+        "fontes_externas_selecionadas_e_registradas_no_esqueleto"
+      ],
+      "dependencias": [
+        "contexto_da_materia",
+        "declaracao_do_nivel",
+        "esqueleto_aprovado",
+        "documentos_fornecidos"
+      ],
+      "recursos_visuais": [
+        "tabela_de_documentos_quando_houver_dados_suficientes",
+        "linha_do_tempo_quando_houver_dados_suficientes"
+      ],
+      "provenance": {
+        "origem": "modelo_local",
+        "versao": 1,
+        "amostra_estrutural": "familia_contestacao",
+        "familia_observada": "contestacao",
+        "quantidade_de_amostras": 3,
+        "niveis_observados": [
+          "A",
+          "B"
+        ],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "agravo_instrumento-v1",
+      "nome": "Agravo de instrumento estrutural",
+      "versao": 1,
+      "tipo_peca": "agravo_instrumento",
+      "niveis_recomendados": [
+        "A",
+        "B"
+      ],
+      "modo": "estrutura_orientadora",
+      "blocos": [
+        {
+          "id": "razoes_recursais",
+          "funcao": "identificacao_do_recurso",
+          "obrigatorio": true
+        },
+        {
+          "id": "sintese_processual",
+          "funcao": "contextualizacao",
+          "obrigatorio": true
+        },
+        {
+          "id": "cabimento",
+          "funcao": "admissibilidade",
+          "obrigatorio": true
+        },
+        {
+          "id": "tempestividade_e_preparo",
+          "funcao": "admissibilidade",
+          "obrigatorio": true
+        },
+        {
+          "id": "fundamentacao_recursal",
+          "funcao": "desenvolvimento",
+          "obrigatorio": true
+        },
+        {
+          "id": "tutela_recursal",
+          "funcao": "pedido_provisorio",
+          "obrigatorio": false
+        },
+        {
+          "id": "pedidos",
+          "funcao": "pedido",
+          "obrigatorio": true
+        }
+      ],
+      "variaveis": [
+        {
+          "id": "partes",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "numero_do_processo_de_origem",
+          "obrigatoria": true,
+          "origem": "dados_fornecidos"
+        },
+        {
+          "id": "tribunal_e_orgao_julgador",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "decisao_agravada",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "data_da_intimacao",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "fundamentos_informados_pelo_advogado",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "documentos_que_instruem_o_recurso",
+          "obrigatoria": false,
+          "origem": "arquivos_fornecidos"
+        },
+        {
+          "id": "pedido_provisorio_do_caso",
+          "obrigatoria": false,
+          "origem": "instrucoes_do_advogado"
+        }
+      ],
+      "checklist_minimo": [
+        "identificar decisão recorrida e processo de origem",
+        "conferir cabimento declarado pelo advogado",
+        "conferir tempestividade e preparo ou justificativa fornecida",
+        "separar síntese processual dos fundamentos do recurso",
+        "registrar pedido provisório somente se instruído",
+        "relacionar documentos que instruem o recurso",
+        "conferir correspondência entre pedido recursal e decisão recorrida",
+        "bloquear fundamento ou pedido não informado"
+      ],
+      "documentos_esperados": [
+        "decisao_agravada",
+        "comprovante_de_intimacao",
+        "pecas_processuais_relevantes_do_processo_de_origem",
+        "documentos_que_instruem_o_recurso",
+        "comprovante_de_preparo_quando_fornecido"
+      ],
+      "dependencias": [
+        "processo_de_origem",
+        "decisao_agravada",
+        "declaracao_do_nivel",
+        "esqueleto_aprovado"
+      ],
+      "recursos_visuais": [
+        "quadro_de_decisao_e_fundamentos_quando_houver_dados_suficientes",
+        "linha_do_tempo_processual_quando_houver_dados_suficientes"
+      ],
+      "provenance": {
+        "origem": "modelo_local",
+        "versao": 1,
+        "amostra_estrutural": "familia_agravo_instrumento",
+        "familia_observada": "agravo_instrumento",
+        "quantidade_de_amostras": 2,
+        "niveis_observados": [
+          "A",
+          "B"
+        ],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "agravo_recurso_especial-v1",
+      "nome": "Agravo em recurso especial estrutural",
+      "versao": 1,
+      "tipo_peca": "agravo_recurso_especial",
+      "niveis_recomendados": [
+        "A"
+      ],
+      "modo": "estrutura_orientadora",
+      "blocos": [
+        {
+          "id": "razoes_do_recurso",
+          "funcao": "identificacao_do_recurso",
+          "obrigatorio": true
+        },
+        {
+          "id": "tempestividade_e_preparo",
+          "funcao": "admissibilidade",
+          "obrigatorio": true
+        },
+        {
+          "id": "sintese_da_controversia",
+          "funcao": "contextualizacao",
+          "obrigatorio": true
+        },
+        {
+          "id": "cabimento_e_admissibilidade",
+          "funcao": "admissibilidade",
+          "obrigatorio": true
+        },
+        {
+          "id": "rebate_dos_obices",
+          "funcao": "impugnacao_especifica",
+          "obrigatorio": true
+        },
+        {
+          "id": "questao_de_direito",
+          "funcao": "desenvolvimento",
+          "obrigatorio": true
+        },
+        {
+          "id": "prequestionamento",
+          "funcao": "registro_de_questoes",
+          "obrigatorio": false
+        },
+        {
+          "id": "pedidos",
+          "funcao": "pedido",
+          "obrigatorio": true
+        }
+      ],
+      "variaveis": [
+        {
+          "id": "partes",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "numero_do_processo",
+          "obrigatoria": true,
+          "origem": "dados_fornecidos"
+        },
+        {
+          "id": "decisao_de_inadmissao_ou_ato_recorrido",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "data_de_publicacao_ou_intimacao",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "obices_registrados_na_decisao",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "questao_de_direito_informada",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "fontes_externas_selecionadas",
+          "obrigatoria": false,
+          "origem": "esqueleto_aprovado"
+        },
+        {
+          "id": "documentos_relevantes",
+          "obrigatoria": false,
+          "origem": "arquivos_fornecidos"
+        }
+      ],
+      "checklist_minimo": [
+        "identificar ato que impediu o processamento do recurso especial",
+        "conferir tempestividade e preparo segundo os dados fornecidos",
+        "listar cada óbice registrado no ato recorrido",
+        "exigir impugnação específica de cada óbice informado",
+        "separar questão de direito de reexame fático não declarado",
+        "conferir prequestionamento quando expressamente solicitado",
+        "registrar fontes externas selecionadas no esqueleto",
+        "bloquear superação automática de óbice ou criação de fundamento"
+      ],
+      "documentos_esperados": [
+        "decisao_de_inadmissao",
+        "recurso_especial_e_pecas_relevantes",
+        "comprovante_de_intimacao",
+        "documentos_relevantes_fornecidos",
+        "fontes_externas_selecionadas"
+      ],
+      "dependencias": [
+        "ato_recorrido",
+        "recurso_especial",
+        "esqueleto_aprovado",
+        "fontes_registradas"
+      ],
+      "recursos_visuais": [
+        "quadro_de_obices_e_respostas_quando_houver_dados_suficientes"
+      ],
+      "provenance": {
+        "origem": "modelo_local",
+        "versao": 1,
+        "amostra_estrutural": "familia_agravo_recurso_especial",
+        "familia_observada": "agravo_recurso_especial",
+        "quantidade_de_amostras": 2,
+        "niveis_observados": [
+          "A"
+        ],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "agravo_interno-v1",
+      "nome": "Agravo interno estrutural",
+      "versao": 1,
+      "tipo_peca": "agravo_interno",
+      "niveis_recomendados": [
+        "B"
+      ],
+      "modo": "estrutura_orientadora",
+      "blocos": [
+        {
+          "id": "objeto_e_limites",
+          "funcao": "delimitacao_recursal",
+          "obrigatorio": true
+        },
+        {
+          "id": "tempestividade_e_admissibilidade",
+          "funcao": "admissibilidade",
+          "obrigatorio": true
+        },
+        {
+          "id": "fundamentacao",
+          "funcao": "desenvolvimento",
+          "obrigatorio": true
+        },
+        {
+          "id": "tutela_recursal",
+          "funcao": "pedido_provisorio",
+          "obrigatorio": false
+        },
+        {
+          "id": "pedidos",
+          "funcao": "pedido",
+          "obrigatorio": true
+        }
+      ],
+      "variaveis": [
+        {
+          "id": "partes",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "decisao_monocratica",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "recurso_anterior",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "data_da_intimacao",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "ponto_impugnado",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "pedido_provisorio",
+          "obrigatoria": false,
+          "origem": "instrucoes_do_advogado"
+        }
+      ],
+      "checklist_minimo": [
+        "identificar decisão monocrática e ponto efetivamente impugnado",
+        "delimitar o objeto do agravo interno sem reabrir matéria não indicada",
+        "conferir tempestividade",
+        "organizar fundamentos em resposta direta ao ato recorrido",
+        "registrar pedido provisório somente quando informado",
+        "conferir pedidos e intimações requeridas pelo advogado"
+      ],
+      "documentos_esperados": [
+        "decisao_monocratica",
+        "recurso_ou_ato_anterior",
+        "comprovante_de_intimacao",
+        "documentos_fornecidos"
+      ],
+      "dependencias": [
+        "decisao_monocratica",
+        "recurso_anterior",
+        "declaracao_do_nivel",
+        "esqueleto_aprovado"
+      ],
+      "recursos_visuais": [
+        "quadro_de_ponto_impugnado_quando_houver_dados_suficientes"
+      ],
+      "provenance": {
+        "origem": "modelo_local",
+        "versao": 1,
+        "amostra_estrutural": "familia_agravo_interno",
+        "familia_observada": "agravo_interno",
+        "quantidade_de_amostras": 1,
+        "niveis_observados": [
+          "B"
+        ],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "apelacao-v1",
+      "nome": "Apelação estrutural",
+      "versao": 1,
+      "tipo_peca": "apelação",
+      "niveis_recomendados": [
+        "A"
+      ],
+      "modo": "estrutura_orientadora",
+      "blocos": [
+        {
+          "id": "razoes_de_apelacao",
+          "funcao": "identificacao_do_recurso",
+          "obrigatorio": true
+        },
+        {
+          "id": "tempestividade_e_preparo",
+          "funcao": "admissibilidade",
+          "obrigatorio": true
+        },
+        {
+          "id": "sintese_do_processado",
+          "funcao": "contextualizacao",
+          "obrigatorio": true
+        },
+        {
+          "id": "preliminares_e_nulidades",
+          "funcao": "questoes_preliminares",
+          "obrigatorio": false
+        },
+        {
+          "id": "merito_da_reforma",
+          "funcao": "desenvolvimento",
+          "obrigatorio": true
+        },
+        {
+          "id": "analise_de_provas",
+          "funcao": "analise_probatoria",
+          "obrigatorio": false
+        },
+        {
+          "id": "prequestionamento",
+          "funcao": "registro_de_questoes",
+          "obrigatorio": false
+        },
+        {
+          "id": "oposicao_a_julgamento_virtual",
+          "funcao": "providencia_processual",
+          "obrigatorio": false
+        },
+        {
+          "id": "pedidos",
+          "funcao": "pedido",
+          "obrigatorio": true
+        }
+      ],
+      "variaveis": [
+        {
+          "id": "partes",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "numero_do_processo",
+          "obrigatoria": true,
+          "origem": "dados_fornecidos"
+        },
+        {
+          "id": "sentenca_recorrida",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "data_da_intimacao",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "preparo_e_comprovantes",
+          "obrigatoria": false,
+          "origem": "arquivos_fornecidos"
+        },
+        {
+          "id": "pontos_de_reforma_informados",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "provas_e_documentos_relevantes",
+          "obrigatoria": false,
+          "origem": "arquivos_fornecidos"
+        },
+        {
+          "id": "pedido_de_julgamento_virtual",
+          "obrigatoria": false,
+          "origem": "instrucoes_do_advogado"
+        }
+      ],
+      "checklist_minimo": [
+        "identificar sentença recorrida e resultado impugnado",
+        "conferir cabimento, tempestividade e preparo quando fornecidos",
+        "reconstruir a síntese apenas com atos e fatos disponíveis",
+        "separar preliminares de mérito da reforma",
+        "relacionar pontos de reforma a provas e documentos fornecidos",
+        "registrar prequestionamento apenas quando solicitado",
+        "conferir pedidos de conhecimento e provimento informados",
+        "bloquear conclusão sobre mérito sem fundamento do caso"
+      ],
+      "documentos_esperados": [
+        "sentenca_recorrida",
+        "comprovante_de_intimacao",
+        "comprovante_de_preparo_quando_fornecido",
+        "pecas_e_documentos_relevantes"
+      ],
+      "dependencias": [
+        "sentenca",
+        "documentos_do_processo",
+        "declaracao_do_nivel",
+        "esqueleto_aprovado"
+      ],
+      "recursos_visuais": [
+        "linha_do_tempo_processual",
+        "tabela_de_atos_e_documentos_quando_houver_dados_suficientes"
+      ],
+      "provenance": {
+        "origem": "modelo_local",
+        "versao": 1,
+        "amostra_estrutural": "familia_apelacao",
+        "familia_observada": "apelação",
+        "quantidade_de_amostras": 3,
+        "niveis_observados": [
+          "A"
+        ],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "cumprimento_sentenca-v1",
+      "nome": "Cumprimento de sentença estrutural",
+      "versao": 1,
+      "tipo_peca": "cumprimento_sentenca",
+      "niveis_recomendados": [
+        "B"
+      ],
+      "modo": "estrutura_orientadora",
+      "blocos": [
+        {
+          "id": "titulo_e_contexto_executivo",
+          "funcao": "contextualizacao",
+          "obrigatorio": true
+        },
+        {
+          "id": "sintese_processual",
+          "funcao": "contextualizacao",
+          "obrigatorio": true
+        },
+        {
+          "id": "titulo_e_exigibilidade",
+          "funcao": "delimitacao_do_objeto",
+          "obrigatorio": true
+        },
+        {
+          "id": "memoria_e_valor",
+          "funcao": "demonstracao_de_valor",
+          "obrigatorio": false
+        },
+        {
+          "id": "providencias_executivas",
+          "funcao": "desenvolvimento",
+          "obrigatorio": true
+        },
+        {
+          "id": "pedidos",
+          "funcao": "pedido",
+          "obrigatorio": true
+        }
+      ],
+      "variaveis": [
+        {
+          "id": "partes",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "numero_do_processo",
+          "obrigatoria": true,
+          "origem": "dados_fornecidos"
+        },
+        {
+          "id": "titulo_judicial",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "transito_ou_exigibilidade_informada",
+          "obrigatoria": false,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "valor_reclamado",
+          "obrigatoria": false,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "memoria_de_calculo",
+          "obrigatoria": false,
+          "origem": "arquivo_de_calculo"
+        },
+        {
+          "id": "providencias_solicitadas",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        }
+      ],
+      "checklist_minimo": [
+        "identificar título judicial e processo relacionado",
+        "conferir dados de exigibilidade fornecidos",
+        "separar síntese processual de providências executivas",
+        "anexar ou referenciar memória somente quando existente",
+        "não preencher valor, índice, data ou fórmula ausente",
+        "conferir correspondência entre valor informado e pedido do caso",
+        "bloquear providência executiva não solicitada"
+      ],
+      "documentos_esperados": [
+        "titulo_judicial",
+        "certidao_ou_documento_de_exigibilidade_quando_fornecido",
+        "memoria_de_calculo_quando_existente",
+        "documentos_de_suporte"
+      ],
+      "dependencias": [
+        "titulo_judicial",
+        "processo_de_origem",
+        "dados_de_calculo_se_houver",
+        "esqueleto_aprovado"
+      ],
+      "recursos_visuais": [
+        "quadro_de_valores_quando_memoria_existir",
+        "linha_do_tempo_de_exigibilidade_quando_houver_dados"
+      ],
+      "provenance": {
+        "origem": "modelo_local",
+        "versao": 1,
+        "amostra_estrutural": "familia_cumprimento_sentenca",
+        "familia_observada": "cumprimento_sentenca",
+        "quantidade_de_amostras": 2,
+        "niveis_observados": [
+          "B"
+        ],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "impugnacao_cumprimento-v1",
+      "nome": "Impugnação ao cumprimento de sentença estrutural",
+      "versao": 1,
+      "tipo_peca": "impugnacao_cumprimento",
+      "niveis_recomendados": [
+        "A",
+        "B"
+      ],
+      "modo": "estrutura_orientadora",
+      "blocos": [
+        {
+          "id": "tempestividade",
+          "funcao": "admissibilidade",
+          "obrigatorio": true
+        },
+        {
+          "id": "sintese_do_cumprimento",
+          "funcao": "contextualizacao",
+          "obrigatorio": true
+        },
+        {
+          "id": "delimitacao_dos_pontos",
+          "funcao": "delimitacao_do_objeto",
+          "obrigatorio": true
+        },
+        {
+          "id": "questoes_de_calculo",
+          "funcao": "demonstracao_de_valor",
+          "obrigatorio": false
+        },
+        {
+          "id": "excesso_de_execucao",
+          "funcao": "desenvolvimento",
+          "obrigatorio": false
+        },
+        {
+          "id": "tutela_provisoria",
+          "funcao": "pedido_provisorio",
+          "obrigatorio": false
+        },
+        {
+          "id": "documentos_e_memoria",
+          "funcao": "analise_probatoria",
+          "obrigatorio": false
+        },
+        {
+          "id": "pedidos",
+          "funcao": "pedido",
+          "obrigatorio": true
+        }
+      ],
+      "variaveis": [
+        {
+          "id": "partes",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "processo_de_origem",
+          "obrigatoria": true,
+          "origem": "dados_fornecidos"
+        },
+        {
+          "id": "titulo_e_decisoes_relevantes",
+          "obrigatoria": true,
+          "origem": "documentos_processuais"
+        },
+        {
+          "id": "data_da_intimacao",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "memoria_da_parte_contraria",
+          "obrigatoria": false,
+          "origem": "arquivo_de_calculo"
+        },
+        {
+          "id": "memoria_da_impugnante",
+          "obrigatoria": false,
+          "origem": "arquivo_de_calculo"
+        },
+        {
+          "id": "pontos_de_impugnacao_informados",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "pedido_provisorio",
+          "obrigatoria": false,
+          "origem": "instrucoes_do_advogado"
+        }
+      ],
+      "checklist_minimo": [
+        "conferir prazo e ato de intimação",
+        "identificar título e limites do cumprimento impugnado",
+        "separar pontos de cálculo de demais fundamentos",
+        "não inventar valor incontroverso, excesso, índice ou data",
+        "relacionar cada divergência a memória ou documento fornecido",
+        "registrar tutela provisória somente se instruída",
+        "conferir pedidos compatíveis com os pontos informados",
+        "bloquear cálculo automático quando faltar dado necessário"
+      ],
+      "documentos_esperados": [
+        "decisao_ou_titulo_executado",
+        "demonstrativo_da_parte_contraria",
+        "memoria_de_calculo_da_impugnante_quando_existente",
+        "comprovante_de_intimacao",
+        "documentos_de_suporte"
+      ],
+      "dependencias": [
+        "processo_de_origem",
+        "documentos_de_calculo",
+        "declaracao_do_nivel",
+        "esqueleto_aprovado"
+      ],
+      "recursos_visuais": [
+        "tabela_comparativa_de_memorias_quando_houver_duas_memorias",
+        "quadro_de_pontos_impugnados"
+      ],
+      "provenance": {
+        "origem": "modelo_local",
+        "versao": 1,
+        "amostra_estrutural": "familia_impugnacao_cumprimento",
+        "familia_observada": "impugnacao_cumprimento",
+        "quantidade_de_amostras": 2,
+        "niveis_observados": [
+          "A",
+          "B"
+        ],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "impugnacao_contestacao-v1",
+      "nome": "Impugnação à contestação estrutural",
+      "versao": 1,
+      "tipo_peca": "impugnacao_contestacao",
+      "niveis_recomendados": [
+        "A",
+        "B"
+      ],
+      "modo": "estrutura_orientadora",
+      "blocos": [
+        {
+          "id": "contexto_da_contestacao",
+          "funcao": "contextualizacao",
+          "obrigatorio": true
+        },
+        {
+          "id": "questoes_preliminares",
+          "funcao": "questoes_preliminares",
+          "obrigatorio": false
+        },
+        {
+          "id": "impugnacao_dos_fatos",
+          "funcao": "impugnacao_especifica",
+          "obrigatorio": true
+        },
+        {
+          "id": "impugnacao_de_documentos",
+          "funcao": "analise_probatoria",
+          "obrigatorio": false
+        },
+        {
+          "id": "desenvolvimento_do_merito",
+          "funcao": "desenvolvimento",
+          "obrigatorio": true
+        },
+        {
+          "id": "tutela_processual",
+          "funcao": "pedido_provisorio",
+          "obrigatorio": false
+        },
+        {
+          "id": "pedidos",
+          "funcao": "pedido",
+          "obrigatorio": true
+        }
+      ],
+      "variaveis": [
+        {
+          "id": "partes",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "numero_do_processo",
+          "obrigatoria": true,
+          "origem": "dados_fornecidos"
+        },
+        {
+          "id": "contestacao_impugnada",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "pontos_da_contestacao_a_responder",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "documentos_da_contestacao",
+          "obrigatoria": false,
+          "origem": "arquivos_fornecidos"
+        },
+        {
+          "id": "documentos_da_impugnante",
+          "obrigatoria": false,
+          "origem": "arquivos_fornecidos"
+        },
+        {
+          "id": "pedido_provisorio",
+          "obrigatoria": false,
+          "origem": "instrucoes_do_advogado"
+        }
+      ],
+      "checklist_minimo": [
+        "identificar contestação e pontos efetivamente impugnados",
+        "responder de forma rastreável a cada ponto informado",
+        "separar preliminares, fatos, documentos e mérito",
+        "não converter silêncio do processo em reconhecimento automático",
+        "relacionar documentos apenas quando fornecidos",
+        "conferir pedidos e eventual providência provisória",
+        "bloquear alegação não apoiada em instrução ou documento"
+      ],
+      "documentos_esperados": [
+        "contestacao_impugnada",
+        "documentos_que_acompanham_a_contestacao",
+        "documentos_da_impugnante",
+        "atos_processuais_relevantes"
+      ],
+      "dependencias": [
+        "contestacao",
+        "processo_de_origem",
+        "esqueleto_aprovado",
+        "documentos_fornecidos"
+      ],
+      "recursos_visuais": [
+        "quadro_de_alegacao_e_resposta_quando_houver_dados_suficientes",
+        "tabela_de_documentos_quando_houver_dados_suficientes"
+      ],
+      "provenance": {
+        "origem": "modelo_local",
+        "versao": 1,
+        "amostra_estrutural": "familia_impugnacao_contestacao",
+        "familia_observada": "impugnacao_contestacao",
+        "quantidade_de_amostras": 2,
+        "niveis_observados": [
+          "A",
+          "B"
+        ],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "impugnacao_embargos-v1",
+      "nome": "Impugnação aos embargos estrutural",
+      "versao": 1,
+      "tipo_peca": "impugnacao_embargos",
+      "niveis_recomendados": [
+        "B"
+      ],
+      "modo": "estrutura_orientadora",
+      "blocos": [
+        {
+          "id": "contexto_dos_embargos",
+          "funcao": "contextualizacao",
+          "obrigatorio": true
+        },
+        {
+          "id": "questoes_processuais",
+          "funcao": "questoes_preliminares",
+          "obrigatorio": false
+        },
+        {
+          "id": "resposta_aos_fundamentos",
+          "funcao": "impugnacao_especifica",
+          "obrigatorio": true
+        },
+        {
+          "id": "documentos_e_provas",
+          "funcao": "analise_probatoria",
+          "obrigatorio": false
+        },
+        {
+          "id": "pedidos",
+          "funcao": "pedido",
+          "obrigatorio": true
+        }
+      ],
+      "variaveis": [
+        {
+          "id": "partes",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "embargos_impugnados",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "decisao_ou_ato_de_origem",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "fundamentos_a_responder",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "documentos_relevantes",
+          "obrigatoria": false,
+          "origem": "arquivos_fornecidos"
+        }
+      ],
+      "checklist_minimo": [
+        "identificar embargos e ato de origem",
+        "listar fundamentos que o advogado deseja responder",
+        "separar questões processuais e desenvolvimento",
+        "não preencher fundamento ausente",
+        "conferir pedidos finais e documentos mencionados"
+      ],
+      "documentos_esperados": [
+        "embargos_impugnados",
+        "decisao_ou_ato_de_origem",
+        "documentos_relevantes_fornecidos"
+      ],
+      "dependencias": [
+        "embargos",
+        "ato_de_origem",
+        "esqueleto_aprovado"
+      ],
+      "recursos_visuais": [
+        "quadro_de_fundamentos_e_respostas_quando_houver_dados_suficientes"
+      ],
+      "provenance": {
+        "origem": "modelo_local",
+        "versao": 1,
+        "amostra_estrutural": "familia_impugnacao_embargos",
+        "familia_observada": "impugnacao_embargos",
+        "quantidade_de_amostras": 1,
+        "niveis_observados": [
+          "B"
+        ],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "impugnacao_penhora-v1",
+      "nome": "Impugnação de penhora estrutural",
+      "versao": 1,
+      "tipo_peca": "impugnacao_penhora",
+      "niveis_recomendados": [
+        "B"
+      ],
+      "modo": "estrutura_orientadora",
+      "blocos": [
+        {
+          "id": "contexto_da_penhora",
+          "funcao": "contextualizacao",
+          "obrigatorio": true
+        },
+        {
+          "id": "questoes_da_penhora",
+          "funcao": "desenvolvimento",
+          "obrigatorio": true
+        },
+        {
+          "id": "provas_e_documentos",
+          "funcao": "analise_probatoria",
+          "obrigatorio": false
+        },
+        {
+          "id": "pedidos",
+          "funcao": "pedido",
+          "obrigatorio": true
+        }
+      ],
+      "variaveis": [
+        {
+          "id": "partes",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "numero_do_processo",
+          "obrigatoria": true,
+          "origem": "dados_fornecidos"
+        },
+        {
+          "id": "ato_de_penhora",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "data_da_ciencia",
+          "obrigatoria": false,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "fundamentos_da_impugnacao",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "documentos_comprobatorios",
+          "obrigatoria": false,
+          "origem": "arquivos_fornecidos"
+        }
+      ],
+      "checklist_minimo": [
+        "identificar ato, bem ou valor atingido sem completar informação ausente",
+        "conferir data de ciência quando fornecida",
+        "organizar fundamento da impugnação a partir da instrução recebida",
+        "relacionar documentos comprobatórios existentes",
+        "conferir pedido correspondente ao ato impugnado"
+      ],
+      "documentos_esperados": [
+        "auto_ou_termo_de_penhora",
+        "comprovante_de_ciencia",
+        "documentos_do_bem_ou_valor_quando_fornecidos",
+        "provas_da_impugnacao"
+      ],
+      "dependencias": [
+        "ato_de_penhora",
+        "documentos_fornecidos",
+        "esqueleto_aprovado"
+      ],
+      "recursos_visuais": [
+        "quadro_do_ato_e_documentos_quando_houver_dados_suficientes"
+      ],
+      "provenance": {
+        "origem": "modelo_local",
+        "versao": 1,
+        "amostra_estrutural": "familia_impugnacao_penhora",
+        "familia_observada": "impugnacao_penhora",
+        "quantidade_de_amostras": 1,
+        "niveis_observados": [
+          "B"
+        ],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "manifestacao-v1",
+      "nome": "Manifestação simples",
+      "versao": 1,
+      "tipo_peca": "manifestacao",
+      "niveis_recomendados": [
+        "C"
+      ],
+      "modo": "referencia",
+      "blocos": [],
+      "variaveis": [
+        {
+          "id": "partes",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "numero_do_processo",
+          "obrigatoria": true,
+          "origem": "dados_fornecidos"
+        },
+        {
+          "id": "ato_ou_determinacao_a_que_se_responde",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "providencia_informada_pelo_advogado",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "documentos_a_juntar",
+          "obrigatoria": false,
+          "origem": "arquivos_fornecidos"
+        }
+      ],
+      "checklist_minimo": [
+        "identificar o ato processual a que a manifestação responde",
+        "declarar a providência solicitada pelo advogado",
+        "conferir se documentos anunciados estão disponíveis",
+        "manter redação simples sem redação por blocos",
+        "não ampliar o objeto para tese ou pedido não informado"
+      ],
+      "documentos_esperados": [
+        "ato_processual_de_referencia",
+        "documentos_a_juntar_quando_existentes"
+      ],
+      "dependencias": [
+        "ato_processual_de_referencia",
+        "instrucoes_do_advogado"
+      ],
+      "recursos_visuais": [],
+      "provenance": {
+        "origem": "modelo_local",
+        "versao": 1,
+        "amostra_estrutural": "familia_manifestacao",
+        "familia_observada": "manifestacao",
+        "quantidade_de_amostras": 3,
+        "niveis_observados": [
+          "C"
+        ],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "memoriais-v1",
+      "nome": "Memoriais estruturais",
+      "versao": 1,
+      "tipo_peca": "memoriais",
+      "niveis_recomendados": [
+        "B"
+      ],
+      "modo": "estrutura_orientadora",
+      "blocos": [
+        {
+          "id": "objeto_da_manifestacao",
+          "funcao": "contextualizacao",
+          "obrigatorio": true
+        },
+        {
+          "id": "sintese_da_prova",
+          "funcao": "analise_probatoria",
+          "obrigatorio": true
+        },
+        {
+          "id": "pontos_relevantes",
+          "funcao": "delimitacao_do_objeto",
+          "obrigatorio": true
+        },
+        {
+          "id": "desenvolvimento",
+          "funcao": "desenvolvimento",
+          "obrigatorio": true
+        },
+        {
+          "id": "conclusao_e_pedidos",
+          "funcao": "pedido",
+          "obrigatorio": true
+        }
+      ],
+      "variaveis": [
+        {
+          "id": "partes",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "numero_do_processo_ou_procedimento",
+          "obrigatoria": true,
+          "origem": "dados_fornecidos"
+        },
+        {
+          "id": "fase_processual",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "provas_produzidas",
+          "obrigatoria": true,
+          "origem": "documentos_do_processo"
+        },
+        {
+          "id": "pontos_de_destaque_informados",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "fontes_externas_selecionadas",
+          "obrigatoria": false,
+          "origem": "esqueleto_aprovado"
+        }
+      ],
+      "checklist_minimo": [
+        "delimitar fase processual e objetivo dos memoriais",
+        "organizar provas efetivamente disponíveis",
+        "separar síntese probatória de desenvolvimento",
+        "dar destaque somente aos pontos informados pelo advogado",
+        "registrar fontes selecionadas no esqueleto quando houver",
+        "conferir conclusão e pedidos sem criar resultado jurídico"
+      ],
+      "documentos_esperados": [
+        "pecas_processuais_relevantes",
+        "provas_produzidas",
+        "atas_ou_registros_processuais_quando_fornecidos",
+        "fontes_externas_selecionadas"
+      ],
+      "dependencias": [
+        "processo_ou_procedimento",
+        "documentos_do_processo",
+        "declaracao_do_nivel",
+        "esqueleto_aprovado"
+      ],
+      "recursos_visuais": [
+        "linha_do_tempo_processual",
+        "quadro_de_provas_e_pontos_relevantes_quando_houver_dados_suficientes"
+      ],
+      "provenance": {
+        "origem": "modelo_local",
+        "versao": 1,
+        "amostra_estrutural": "familia_memoriais",
+        "familia_observada": "memoriais",
+        "quantidade_de_amostras": 2,
+        "niveis_observados": [
+          "B"
+        ],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "execucao-v1",
+      "nome": "Execução estrutural",
+      "versao": 1,
+      "tipo_peca": "execucao",
+      "niveis_recomendados": [
+        "A"
+      ],
+      "modo": "estrutura_orientadora",
+      "blocos": [
+        {
+          "id": "titulo_e_contexto",
+          "funcao": "delimitacao_do_objeto",
+          "obrigatorio": true
+        },
+        {
+          "id": "sintese_dos_fatos",
+          "funcao": "contextualizacao",
+          "obrigatorio": true
+        },
+        {
+          "id": "exigibilidade_liquidez_e_certeza",
+          "funcao": "desenvolvimento",
+          "obrigatorio": true
+        },
+        {
+          "id": "memoria_e_valor_executado",
+          "funcao": "demonstracao_de_valor",
+          "obrigatorio": false
+        },
+        {
+          "id": "tutela_processual",
+          "funcao": "pedido_provisorio",
+          "obrigatorio": false
+        },
+        {
+          "id": "documentos",
+          "funcao": "analise_probatoria",
+          "obrigatorio": true
+        },
+        {
+          "id": "pedidos",
+          "funcao": "pedido",
+          "obrigatorio": true
+        }
+      ],
+      "variaveis": [
+        {
+          "id": "exequente_e_executado",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "numero_do_processo",
+          "obrigatoria": false,
+          "origem": "dados_fornecidos"
+        },
+        {
+          "id": "titulo_extrajudicial",
+          "obrigatoria": true,
+          "origem": "arquivo_fornecido"
+        },
+        {
+          "id": "obrigacao_e_exigibilidade_informadas",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "valor_executado",
+          "obrigatoria": false,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "memoria_de_calculo",
+          "obrigatoria": false,
+          "origem": "arquivo_de_calculo"
+        },
+        {
+          "id": "pedido_provisorio",
+          "obrigatoria": false,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "documentos_do_titulo",
+          "obrigatoria": true,
+          "origem": "arquivos_fornecidos"
+        }
+      ],
+      "checklist_minimo": [
+        "identificar título e partes sem completar dados ausentes",
+        "conferir obrigação, exigibilidade e documentos disponíveis",
+        "separar narrativa dos fatos da demonstração do título",
+        "não gerar valor ou memória quando não fornecidos",
+        "relacionar documentos ao título e aos fatos informados",
+        "registrar tutela somente se solicitada",
+        "conferir que os pedidos correspondem à instrução do advogado"
+      ],
+      "documentos_esperados": [
+        "titulo_extrajudicial",
+        "comprovantes_da_obrigacao",
+        "memoria_de_calculo_quando_existente",
+        "documentos_de_representacao_quando_fornecidos",
+        "provas_de_exigibilidade"
+      ],
+      "dependencias": [
+        "titulo_extrajudicial",
+        "documentos_fornecidos",
+        "dados_de_calculo_se_houver",
+        "esqueleto_aprovado"
+      ],
+      "recursos_visuais": [
+        "quadro_de_documentos_do_titulo",
+        "quadro_de_valores_quando_memoria_existir"
+      ],
+      "provenance": {
+        "origem": "modelo_local",
+        "versao": 1,
+        "amostra_estrutural": "familia_execucao",
+        "familia_observada": "execucao",
+        "quantidade_de_amostras": 1,
+        "niveis_observados": [
+          "A"
+        ],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "contrarrazoes-v1",
+      "nome": "Contrarrazões estruturais",
+      "versao": 1,
+      "tipo_peca": "contrarrazoes",
+      "niveis_recomendados": [
+        "B"
+      ],
+      "modo": "estrutura_orientadora",
+      "blocos": [
+        {
+          "id": "contexto_do_recurso",
+          "funcao": "contextualizacao",
+          "obrigatorio": true
+        },
+        {
+          "id": "admissibilidade",
+          "funcao": "admissibilidade",
+          "obrigatorio": false
+        },
+        {
+          "id": "sintese_dos_fatos",
+          "funcao": "contextualizacao",
+          "obrigatorio": true
+        },
+        {
+          "id": "resposta_as_razoes",
+          "funcao": "impugnacao_especifica",
+          "obrigatorio": true
+        },
+        {
+          "id": "fundamentos_de_manutencao",
+          "funcao": "desenvolvimento",
+          "obrigatorio": true
+        },
+        {
+          "id": "prequestionamento",
+          "funcao": "registro_de_questoes",
+          "obrigatorio": false
+        },
+        {
+          "id": "pedidos",
+          "funcao": "pedido",
+          "obrigatorio": true
+        }
+      ],
+      "variaveis": [
+        {
+          "id": "partes",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "recurso_impugnado",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "decisao_recorrida",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "razoes_a_responder",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "fundamentos_informados",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "documentos_relevantes",
+          "obrigatoria": false,
+          "origem": "arquivos_fornecidos"
+        },
+        {
+          "id": "fontes_externas_selecionadas",
+          "obrigatoria": false,
+          "origem": "esqueleto_aprovado"
+        }
+      ],
+      "checklist_minimo": [
+        "identificar recurso, decisão e partes",
+        "listar razões recursais que exigem resposta",
+        "separar admissibilidade de resposta de mérito",
+        "relacionar fundamentos de manutenção a dados do processo",
+        "conferir pedidos de não provimento ou providência equivalente somente se informados",
+        "registrar fontes externas selecionadas no esqueleto",
+        "bloquear resposta genérica que não corresponda ao recurso"
+      ],
+      "documentos_esperados": [
+        "recurso_impugnado",
+        "decisao_recorrida",
+        "pecas_processuais_relevantes",
+        "documentos_fornecidos",
+        "fontes_externas_selecionadas"
+      ],
+      "dependencias": [
+        "recurso_impugnado",
+        "decisao_recorrida",
+        "esqueleto_aprovado",
+        "documentos_do_processo"
+      ],
+      "recursos_visuais": [
+        "quadro_de_razao_e_resposta_quando_houver_dados_suficientes"
+      ],
+      "provenance": {
+        "origem": "modelo_local",
+        "versao": 1,
+        "amostra_estrutural": "familia_contrarrazoes",
+        "familia_observada": "contrarrazoes",
+        "quantidade_de_amostras": 1,
+        "niveis_observados": [
+          "B"
+        ],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "contrarrazoes_resp-v1",
+      "nome": "Contrarrazões ao recurso especial estrutural",
+      "versao": 1,
+      "tipo_peca": "contrarrazoes_resp",
+      "niveis_recomendados": [
+        "A"
+      ],
+      "modo": "estrutura_orientadora",
+      "blocos": [
+        {
+          "id": "identificacao_do_recurso",
+          "funcao": "contextualizacao",
+          "obrigatorio": true
+        },
+        {
+          "id": "admissibilidade",
+          "funcao": "admissibilidade",
+          "obrigatorio": true
+        },
+        {
+          "id": "sintese_da_controversia",
+          "funcao": "contextualizacao",
+          "obrigatorio": true
+        },
+        {
+          "id": "impugnacao_especifica",
+          "funcao": "impugnacao_especifica",
+          "obrigatorio": true
+        },
+        {
+          "id": "questoes_de_direito",
+          "funcao": "desenvolvimento",
+          "obrigatorio": true
+        },
+        {
+          "id": "prequestionamento",
+          "funcao": "registro_de_questoes",
+          "obrigatorio": false
+        },
+        {
+          "id": "conclusao_e_pedidos",
+          "funcao": "pedido",
+          "obrigatorio": true
+        }
+      ],
+      "variaveis": [
+        {
+          "id": "partes",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "recurso_especial",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "decisao_recorrida",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "questoes_de_admissibilidade",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "razoes_a_impugnar",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "fontes_externas_selecionadas",
+          "obrigatoria": false,
+          "origem": "esqueleto_aprovado"
+        },
+        {
+          "id": "documentos_relevantes",
+          "obrigatoria": false,
+          "origem": "arquivos_fornecidos"
+        }
+      ],
+      "checklist_minimo": [
+        "identificar recurso especial e decisão recorrida",
+        "separar admissibilidade de mérito recursal",
+        "impugnar somente razões efetivamente disponíveis",
+        "conferir registro de fontes selecionadas no esqueleto",
+        "conferir pedidos finais sem criar resultado não informado",
+        "bloquear superação automática de requisito ou óbice"
+      ],
+      "documentos_esperados": [
+        "recurso_especial",
+        "decisao_recorrida",
+        "pecas_processuais_relevantes",
+        "fontes_externas_selecionadas",
+        "documentos_fornecidos"
+      ],
+      "dependencias": [
+        "recurso_especial",
+        "decisao_recorrida",
+        "esqueleto_aprovado",
+        "fontes_registradas"
+      ],
+      "recursos_visuais": [
+        "quadro_de_admissibilidade_e_resposta_quando_houver_dados_suficientes"
+      ],
+      "provenance": {
+        "origem": "modelo_local",
+        "versao": 1,
+        "amostra_estrutural": "familia_contrarrazoes_resp",
+        "familia_observada": "contrarrazoes_resp",
+        "quantidade_de_amostras": 1,
+        "niveis_observados": [
+          "A"
+        ],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "embargos_declaracao-v1",
+      "nome": "Embargos de declaração estrutural",
+      "versao": 1,
+      "tipo_peca": "embargos_declaracao",
+      "niveis_recomendados": [
+        "A"
+      ],
+      "modo": "estrutura_orientadora",
+      "blocos": [
+        {
+          "id": "cabimento_e_tempestividade",
+          "funcao": "admissibilidade",
+          "obrigatorio": true
+        },
+        {
+          "id": "sintese_da_decisao",
+          "funcao": "contextualizacao",
+          "obrigatorio": true
+        },
+        {
+          "id": "pontos_da_decisao",
+          "funcao": "delimitacao_do_objeto",
+          "obrigatorio": true
+        },
+        {
+          "id": "fundamentacao_dos_embargos",
+          "funcao": "desenvolvimento",
+          "obrigatorio": true
+        },
+        {
+          "id": "prequestionamento",
+          "funcao": "registro_de_questoes",
+          "obrigatorio": false
+        },
+        {
+          "id": "pedidos_e_requerimentos",
+          "funcao": "pedido",
+          "obrigatorio": true
+        }
+      ],
+      "variaveis": [
+        {
+          "id": "partes",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "decisao_embargada",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "data_da_intimacao",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "pontos_a_esclarecer_informados",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        },
+        {
+          "id": "documentos_relevantes",
+          "obrigatoria": false,
+          "origem": "arquivos_fornecidos"
+        },
+        {
+          "id": "questoes_para_prequestionamento",
+          "obrigatoria": false,
+          "origem": "instrucoes_do_advogado"
+        }
+      ],
+      "checklist_minimo": [
+        "identificar decisão embargada e data de ciência",
+        "conferir cabimento e tempestividade com os dados fornecidos",
+        "delimitar cada ponto que o advogado deseja esclarecer",
+        "relacionar fundamentação ao trecho ou questão informada",
+        "registrar prequestionamento somente quando solicitado",
+        "conferir pedidos de integração, esclarecimento ou resultado informado",
+        "bloquear criação automática de vício não apontado"
+      ],
+      "documentos_esperados": [
+        "decisao_embargada",
+        "comprovante_de_intimacao",
+        "pecas_processuais_relevantes",
+        "documentos_fornecidos"
+      ],
+      "dependencias": [
+        "decisao_embargada",
+        "processo_de_origem",
+        "esqueleto_aprovado"
+      ],
+      "recursos_visuais": [
+        "quadro_de_ponto_da_decisao_e_esclarecimento_quando_houver_dados_suficientes"
+      ],
+      "provenance": {
+        "origem": "modelo_local",
+        "versao": 1,
+        "amostra_estrutural": "familia_embargos_declaracao",
+        "familia_observada": "embargos_declaracao",
+        "quantidade_de_amostras": 3,
+        "niveis_observados": [
+          "A"
+        ],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "oposicao-v1",
+      "nome": "Oposição simples",
+      "versao": 1,
+      "tipo_peca": "oposicao",
+      "niveis_recomendados": [
+        "C"
+      ],
+      "modo": "referencia",
+      "blocos": [],
+      "variaveis": [
+        {
+          "id": "partes",
+          "obrigatoria": true,
+          "origem": "contexto_da_materia"
+        },
+        {
+          "id": "numero_do_processo_ou_procedimento",
+          "obrigatoria": true,
+          "origem": "dados_fornecidos"
+        },
+        {
+          "id": "ato_ou_modalidade_a_que_se_opoe",
+          "obrigatoria": true,
+          "origem": "documento_processual"
+        },
+        {
+          "id": "manifestacao_do_advogado",
+          "obrigatoria": true,
+          "origem": "instrucoes_do_advogado"
+        }
+      ],
+      "checklist_minimo": [
+        "identificar o ato ou modalidade objeto da oposição",
+        "registrar a manifestação expressa do advogado",
+        "conferir dados processuais e prazo quando fornecidos",
+        "manter redação simples sem redação por blocos",
+        "não ampliar a oposição para fundamentos não informados"
+      ],
+      "documentos_esperados": [
+        "ato_ou_comunicacao_de_referencia",
+        "comprovante_de_ciencia_quando_fornecido"
+      ],
+      "dependencias": [
+        "ato_de_referencia",
+        "instrucoes_do_advogado"
+      ],
+      "recursos_visuais": [],
+      "provenance": {
+        "origem": "modelo_local",
+        "versao": 1,
+        "amostra_estrutural": "familia_oposicao",
+        "familia_observada": "oposicao",
+        "quantidade_de_amostras": 1,
+        "niveis_observados": [
+          "C"
+        ],
+        "conteudo_juridico_reaproveitado": false
+      }
+    }
+  ],
+  "provenance_catalogo": {
+    "origem": "pecas_modelo_preservadas_localmente",
+    "quantidade_total_de_amostras": 31,
+    "metodo": "inventario_sha256_extracao_passiva_e_classificacao_estrutural",
+    "arquivos_de_auditoria": [
+      "playbook-source-material/structure-analysis/structure-inventory.json",
+      "playbook-source-material/structure-analysis/structural-headings.json",
+      "playbook-source-material/structure-analysis/family-summary.json"
+    ],
+    "conteudo_juridico_reaproveitado": false,
+    "fatos_nomes_valores_pedidos_e_fontes_universais": false
+  }
+}

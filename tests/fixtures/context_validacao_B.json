@@ -1,0 +1,113 @@
+{
+  "matter_id": "validacao-B-contestacao",
+  "nivel_peca": "B",
+  "nivel_risco": "medio",
+  "modo_redacao": "blocos",
+  "redacao_por_blocos": true,
+  "exigir_esqueleto": true,
+  "esqueleto": {
+    "status": "aprovado",
+    "aprovacao": {"status": "aprovado", "por": "Ricardo"},
+    "fontes_status": "selecionadas",
+    "fontes_selecionadas": [
+      {"source_id": "B-SOURCE-1", "uso": "fundamentacao", "bloco": "fundamentos", "status": "informada", "origem": "contexto_json", "fonte": "Fonte sintética B 1", "localizacao": "fixture:B:1"},
+      {"source_id": "B-SOURCE-2", "uso": "prova", "bloco": "provas", "status": "informada", "origem": "contexto_json", "fonte": "Fonte sintética B 2", "localizacao": "fixture:B:2"},
+      {"source_id": "B-SOURCE-3", "uso": "fundamentacao", "bloco": "fundamentos", "status": "informada", "origem": "contexto_json", "fonte": "Fonte sintética B 3", "localizacao": "fixture:B:3"}
+    ]
+  },
+  "enderecamento": "EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DE DIREITO DA VARA TESTE DA COMARCA DE CIDADE TESTE/YY",
+  "numero_processo": "1111111-11.1111.1.11.1111",
+  "partes": "Autor: Parte Autora Teste\nRéu: Parte Ré Teste Ltda.",
+  "blocos": [
+    {
+      "tipo": "abertura",
+      "nome_parte": "PARTE RÉ TESTE LTDA.",
+      "resto": ", já qualificada, vem apresentar ",
+      "nome_peca": "CONTESTAÇÃO",
+      "resto_depois": ", pelos fundamentos seguintes.",
+      "semantic_ids": ["B-BLOCO-ABERTURA"]
+    },
+    {
+      "tipo": "sumula",
+      "texto": "Síntese anonimizada da controvérsia para validação do bloco sumula.",
+      "semantic_ids": ["B-SUMULA-1"]
+    },
+    {
+      "tipo": "titulo",
+      "texto": "DA SÍNTESE DOS FATOS",
+      "semantic_ids": ["B-TITULO-1"]
+    },
+    {
+      "tipo": "numerado",
+      "texto": "Parágrafo anonimizado da narrativa fática explicitamente fornecida.",
+      "sequencia": "contestacao",
+      "fact_ids": ["B-FACT-1"]
+    },
+    {
+      "tipo": "titulo2",
+      "texto": "Da questão preliminar",
+      "sequencia": "contestacao",
+      "semantic_ids": ["B-TITULO2-1"]
+    },
+    {
+      "tipo": "numerado",
+      "texto": "Fundamento preliminar anonimizado com fonte indicada.",
+      "sequencia": "contestacao",
+      "nota_rodape": "Fonte expressamente fornecida para teste.",
+      "source_ids": ["B-SOURCE-1"]
+    },
+    {
+      "tipo": "titulo",
+      "texto": "DOS PEDIDOS",
+      "sequencia": "contestacao",
+      "semantic_ids": ["B-TITULO-PEDIDOS"]
+    },
+    {
+      "tipo": "alinea",
+      "texto": "O acolhimento do pedido principal de teste;",
+      "nivel": 0,
+      "sequencia": "contestacao",
+      "request_ids": ["B-REQUEST-1"]
+    },
+    {
+      "tipo": "alinea",
+      "texto": "A providência subsidiária de teste;",
+      "nivel": 1,
+      "sequencia": "contestacao",
+      "request_ids": ["B-REQUEST-2"]
+    },
+    {
+      "tipo": "documento",
+      "texto": "Documento anonimizado indicado para teste.",
+      "sequencia": "documentos",
+      "source_ids": ["B-SOURCE-2"]
+    },
+    {
+      "tipo": "citacao",
+      "texto": "Trecho literal anonimizado para validar o bloco de citação longa.\nLinha adicional do trecho literal.",
+      "source_ids": ["B-SOURCE-3"]
+    },
+    {
+      "tipo": "tabela",
+      "cabecalho": ["Item", "Descrição", "Status"],
+      "linhas": [["1", "Elemento anonimizado", "Conferido"]],
+      "alinhamentos": ["center", "left", "center"],
+      "semantic_ids": ["B-TABELA-1"]
+    },
+    {
+      "tipo": "assinaturas"
+    }
+  ],
+  "teses": [{"id": "B-THESIS-1", "texto": "Tese intermediária explicitamente fornecida", "status": "proposta"}],
+  "pedidos": [
+    {"id": "B-REQUEST-1", "texto": "Pedido principal explicitamente fornecido"},
+    {"id": "B-REQUEST-2", "texto": "Pedido subsidiário explicitamente fornecido"}
+  ],
+  "regras": [{"id": "B-RULE-1", "texto": "Regra formal explicitamente fornecida"}],
+  "provenance": [
+    {"id": "B-SOURCE-1", "tipo": "fonte_teste", "trecho": "Fonte expressamente fornecida para teste.", "status": "informada"},
+    {"id": "B-SOURCE-2", "tipo": "documento_teste", "trecho": "Documento anonimizado indicado para teste.", "status": "informada"},
+    {"id": "B-SOURCE-3", "tipo": "citacao_teste", "trecho": "Trecho literal anonimizado para validar o bloco de citação longa.", "status": "informada"}
+  ],
+  "data_local": "Cidade Teste/YY, 19 de agosto de 2026."
+}

@@ -1,0 +1,156 @@
+{
+  "matter_id": "validacao-A-apelacao-visual",
+  "nivel_peca": "A",
+  "nivel_risco": "alto",
+  "modo_redacao": "blocos",
+  "redacao_por_blocos": true,
+  "exigir_esqueleto": true,
+  "esqueleto": {
+    "status": "aprovado",
+    "aprovacao": {"status": "aprovado", "por": "Ricardo"},
+    "fontes_status": "selecionadas",
+    "fontes_selecionadas": [
+      {"source_id": "A-SOURCE-1", "uso": "fundamentacao", "bloco": "fundamentos", "status": "informada", "origem": "contexto_json", "fonte": "Fonte sintética A 1", "localizacao": "fixture:A:1"},
+      {"source_id": "A-SOURCE-2", "uso": "prova", "bloco": "provas", "status": "informada", "origem": "contexto_json", "fonte": "Fonte sintética A 2", "localizacao": "fixture:A:2"},
+      {"source_id": "A-SOURCE-3", "uso": "fundamentacao", "bloco": "fundamentos", "status": "informada", "origem": "contexto_json", "fonte": "Fonte sintética A 3", "localizacao": "fixture:A:3"},
+      {"source_id": "A-SOURCE-4", "uso": "fundamentacao", "bloco": "fundamentos", "status": "informada", "origem": "contexto_json", "fonte": "Fonte sintética A 4", "localizacao": "fixture:A:4"}
+    ]
+  },
+  "enderecamento": "EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DE DIREITO DA VARA TESTE DA COMARCA DE CIDADE TESTE/ZZ",
+  "numero_processo": "2222222-22.2222.2.22.2222",
+  "partes": "Apelante: Parte Apelante Teste\nApelado: Parte Apelada Teste S/A",
+  "blocos": [
+    {
+      "tipo": "abertura",
+      "nome_parte": "PARTE APELANTE TESTE",
+      "resto": ", já qualificada, vem interpor ",
+      "nome_peca": "RECURSO DE APELAÇÃO",
+      "resto_depois": ", conforme as razões anexas.",
+      "semantic_ids": ["A-BLOCO-ABERTURA"]
+    },
+    {
+      "tipo": "sumula",
+      "texto": "Síntese executiva anonimizada do recurso para validação.",
+      "semantic_ids": ["A-SUMULA-1"]
+    },
+    {
+      "tipo": "numerado",
+      "texto": "Requer o recebimento do recurso no efeito de teste.",
+      "sequencia": "interposicao",
+      "request_ids": ["A-REQUEST-1"]
+    },
+    {
+      "tipo": "assinaturas"
+    },
+    {
+      "tipo": "inicio_razoes",
+      "enderecamento": "EGRÉGIO TRIBUNAL DE JUSTIÇA DO ESTADO TESTE",
+      "titulo_razoes": "RAZÕES DO RECURSO DE APELAÇÃO",
+      "sequencia": "razoes",
+      "semantic_ids": ["A-INICIO-RAZOES"]
+    },
+    {
+      "tipo": "titulo",
+      "texto": "DOS FATOS E DO DIREITO",
+      "sequencia": "razoes",
+      "semantic_ids": ["A-TITULO-FATOS"]
+    },
+    {
+      "tipo": "numerado",
+      "texto": "Parágrafo anonimizado com elemento em <b>negrito</b> e <i>itálico</i>.",
+      "sequencia": "razoes",
+      "fact_ids": ["A-FACT-1"]
+    },
+    {
+      "tipo": "titulo2",
+      "texto": "Da questão central",
+      "sequencia": "razoes",
+      "semantic_ids": ["A-TITULO2-1"]
+    },
+    {
+      "tipo": "numerado",
+      "texto": "Fundamento anonimizado da questão central.",
+      "sequencia": "razoes",
+      "source_ids": ["A-SOURCE-1"]
+    },
+    {
+      "tipo": "titulo3",
+      "texto": "PROVA ESTRUTURANTE",
+      "sequencia": "razoes",
+      "semantic_ids": ["A-TITULO3-1"]
+    },
+    {
+      "tipo": "numerado",
+      "texto": "Descrição anonimizada do elemento probatório.",
+      "sequencia": "razoes",
+      "nota_rodape": "Fonte literal de teste expressamente fornecida.",
+      "source_ids": ["A-SOURCE-2"]
+    },
+    {
+      "tipo": "titulo",
+      "texto": "DOS PEDIDOS",
+      "sequencia": "razoes",
+      "semantic_ids": ["A-TITULO-PEDIDOS"]
+    },
+    {
+      "tipo": "alinea",
+      "texto": "O conhecimento do recurso;",
+      "nivel": 0,
+      "sequencia": "razoes",
+      "request_ids": ["A-REQUEST-2"]
+    },
+    {
+      "tipo": "alinea",
+      "texto": "A reforma do ato de teste;",
+      "nivel": 1,
+      "sequencia": "razoes",
+      "request_ids": ["A-REQUEST-3"]
+    },
+    {
+      "tipo": "figura",
+      "image_path": "tests/fixtures/visual-law-fixture.png",
+      "legenda": "Fluxo anonimizado de validação.",
+      "width_cm": 11.0,
+      "semantic_ids": ["A-FIGURA-1"]
+    },
+    {
+      "tipo": "tabela",
+      "cabecalho": ["Etapa", "Elemento", "Situação"],
+      "linhas": [["1", "Documento de teste", "Conferido"], ["2", "Fonte de teste", "Pendente"]],
+      "alinhamentos": ["center", "left", "center"],
+      "semantic_ids": ["A-TABELA-1"]
+    },
+    {
+      "tipo": "documento",
+      "texto": "Documento anonimizado integrante do conjunto de teste.",
+      "sequencia": "documentos",
+      "source_ids": ["A-SOURCE-3"]
+    },
+    {
+      "tipo": "citacao",
+      "texto": "Trecho literal anonimizado de citação longa para testar a estrutura do recurso.\nLinha complementar do trecho.",
+      "source_ids": ["A-SOURCE-4"]
+    },
+    {
+      "tipo": "assinaturas"
+    }
+  ],
+  "teses": [
+    {"id": "A-THESIS-1", "texto": "Tese principal explicitamente fornecida", "status": "aprovada"},
+    {"id": "A-THESIS-2", "texto": "Tese alternativa explicitamente fornecida", "status": "proposta"}
+  ],
+  "pedidos": [
+    {"id": "A-REQUEST-1", "texto": "Pedido de recebimento"},
+    {"id": "A-REQUEST-2", "texto": "Pedido de conhecimento"},
+    {"id": "A-REQUEST-3", "texto": "Pedido de reforma"}
+  ],
+  "riscos": [{"id": "A-RISK-1", "descricao": "Risco explicitamente declarado para roteamento", "nivel": "alto", "origem": "usuario"}],
+  "regras": [{"id": "A-RULE-1", "texto": "Regra formal explicitamente fornecida"}],
+  "provenance": [
+    {"id": "A-SOURCE-1", "tipo": "fonte_teste", "trecho": "Fundamento anonimizado da questão central.", "status": "informada"},
+    {"id": "A-SOURCE-2", "tipo": "nota_teste", "trecho": "Fonte literal de teste expressamente fornecida.", "status": "informada"},
+    {"id": "A-SOURCE-3", "tipo": "documento_teste", "trecho": "Documento anonimizado integrante do conjunto de teste.", "status": "informada"},
+    {"id": "A-SOURCE-4", "tipo": "citacao_teste", "trecho": "Trecho literal anonimizado de citação longa para testar a estrutura do recurso.", "status": "informada"}
+  ],
+  "data_local": "Cidade Teste/ZZ, 19 de agosto de 2026."
+}
