@@ -113,33 +113,30 @@ Esse contraste costuma produzir uma cadência artificial de "tese + expansão", 
 
 Não sinalizar frases curtas que tenham função legítima de transição, conclusão de capítulo ou destaque excepcional.
 
-## J. Travessão explicativo ou enfático recorrente
+## J. Travessão — proibido, sem exceção
 
-Procure o uso de travessões para:
+Travessão é proibido na peça final. Não é uma questão de recorrência ou de uso
+como marca automática de ênfase — qualquer ocorrência, isolada ou pareada,
+bloqueia a entrega. O verificador automático (`checar_travessao` em
+`verificar_estilo.py`) reflete essa regra: uma única ocorrência já é suficiente.
+
+Padrões que antes eram tolerados em uso isolado e agora também são bloqueados:
 - inserir explicações intermediárias;
 - destacar consequências;
 - anunciar conclusões;
 - substituir sinais de intercalação por frases próprias e diretas;
 - introduzir comentários enfáticos do redator.
 
-Exemplos de padrão:
+Exemplos de padrão (todos proibidos, mesmo em ocorrência única):
 - "A decisão — embora reconheça a pendência dos embargos — autorizou a penhora."
 - "O resultado é inequívoco — houve violação ao contraditório."
 - "A Executada apresentou os documentos — todos produzidos unilateralmente — como se fossem prova suficiente."
 
-O travessão não é proibido. O vício está na recorrência ou no uso como marca automática de ênfase.
-
-**Limite prático:** sinalizar quando houver:
-- mais de um par de travessões na mesma página;
-- travessões em dois parágrafos consecutivos;
-- três ou mais ocorrências na peça;
-- travessão usado para introduzir conclusão que poderia ser redigida diretamente.
-
-**Tratamento preferencial:**
+**Tratamento obrigatório:**
 - nova frase quando a informação tiver autonomia;
 - integração direta ao período quando não houver autonomia;
 - supressão quando o trecho for apenas enfático;
-- nunca usar parênteses, dois-pontos ou travessões pareados para explicar ou apartar informação.
+- nunca usar parênteses, dois-pontos ou travessões para explicar ou apartar informação.
 
 ## K. Marcadores metadiscursivos de organização
 

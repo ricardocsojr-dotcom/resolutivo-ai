@@ -1,17 +1,29 @@
 ---
 name: consultar-processo
 description: >
-  Consulta andamento processual completo via DataJud (CNJ) e interpreta os
-  movimentos para o advogado. Use sempre que Ricardo informar um número de
-  processo e pedir andamento, movimentação, situação atual, o que aconteceu,
-  prazo, ou quando quiser saber se houve despacho, decisão ou publicação
-  recente. Ative com termos como "consulta o processo", "o que aconteceu nesse
-  processo", "andamento do processo", "tem alguma movimentação", "qual a última
-  decisão", "houve publicação", ou qualquer variação que indique consulta
-  processual.
+  [DESATIVADA POR ENQUANTO — 2026-08-23] Não ativar. O MCP CNJ foi
+  desconectado deliberadamente (ver .mcp.json). Se o usuário pedir andamento,
+  movimentação ou publicação de processo, informe que a consulta automática
+  está desligada por enquanto e que ele deve verificar manualmente.
 ---
 
-# Consulta Processual — RDAA
+# Consulta Processual — RDAA (DESATIVADA)
+
+> **Desativada em 2026-08-23 a pedido do Ricardo**: a consulta via DataJud/DJEN
+> não estava sendo útil na prática. O servidor MCP `CNJ` foi removido de
+> `.mcp.json`. Para reativar: adicionar de volta a entrada `"CNJ"` em
+> `.mcp.json` (ver histórico do git) e restaurar a `description` original
+> abaixo no frontmatter.
+>
+> Descrição original (para reativação):
+> "Consulta andamento processual completo via DataJud (CNJ) e interpreta os
+> movimentos para o advogado. Use sempre que Ricardo informar um número de
+> processo e pedir andamento, movimentação, situação atual, o que aconteceu,
+> prazo, ou quando quiser saber se houve despacho, decisão ou publicação
+> recente."
+
+O restante deste arquivo documenta o fluxo original, preservado para quando a
+skill for reativada. Enquanto estiver desativada, **não execute nada abaixo**.
 
 Esta skill é **sob demanda**. Ela só deve ser executada quando Ricardo pedir
 andamento, movimentação, decisão, prazo, publicação ou situação atual, ou quando

@@ -144,7 +144,9 @@ def test_style_enforcement(folder: Path) -> None:
     cases = [
         ("colon.docx", "A tese está demonstrada: a prova documental confirma o fato.", "dois-pontos"),
         ("parenthetical.docx", "A parte autora apresentou o documento (que havia sido solicitado).", "aposto explicativo"),
-        ("dash-aside.docx", "A decisão — embora reconheça a pendência — autorizou a penhora.", "aposto explicativo"),
+        ("dash-aside.docx", "A decisão — embora reconheça a pendência — autorizou a penhora.", "travessao proibido"),
+        ("single-dash.docx", "A conclusão decorre — o vício está demonstrado.", "travessao proibido"),
+        ("semicolon-prose.docx", "O réu não pagou; a autora sofreu prejuízo.", "ponto-e-virgula"),
     ]
     for name, text, expected in cases:
         path = folder / name
@@ -177,6 +179,17 @@ def test_style_enforcement(folder: Path) -> None:
     table.cell(0, 0).text = "A prova documental confirma o fato."
     document.save(table_allowed)
     result = run([sys.executable, str(STYLE_CHECKER), str(table_allowed)])
+    assert result.returncode == 0, result.stdout + result.stderr
+
+    # Ponto-e-vírgula é permitido apenas em parágrafo de lista/alínea.
+    semicolon_list = folder / "semicolon-list.docx"
+    document = Document()
+    from docx.enum.style import WD_STYLE_TYPE
+    document.styles.add_style('RDAA Numerado', WD_STYLE_TYPE.PARAGRAPH)
+    paragraph = document.add_paragraph("primeiro pedido; segundo pedido; terceiro pedido.")
+    paragraph.style = document.styles['RDAA Numerado']
+    document.save(semicolon_list)
+    result = run([sys.executable, str(STYLE_CHECKER), str(semicolon_list)])
     assert result.returncode == 0, result.stdout + result.stderr
 
 

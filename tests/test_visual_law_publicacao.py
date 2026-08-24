@@ -23,9 +23,9 @@ def _context() -> dict:
             "tipo": "visual",
             "visual_tipo": "matrix",
             "funcao_visual": "Comparar elementos explicitamente fornecidos",
-            "texto_pesquisavel": "Elemento A — elemento B — comparação informada",
+            "texto_pesquisavel": "Elemento A, elemento B, comparação informada",
             "cabecalho": ["Elemento", "Comparação"],
-            "linhas": [["Elemento A", "elemento B — comparação informada"]],
+            "linhas": [["Elemento A", "elemento B, comparação informada"]],
             "semantic_ids": ["VISUAL-PUBLISH-1"],
         }
     )

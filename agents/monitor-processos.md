@@ -1,15 +1,28 @@
 ---
 name: monitor-processos
 description: >
-  Agente que verifica novos andamentos e publicações nos processos ativos do
-  escritório RDAA. Roda periodicamente e alerta sobre decisões, despachos,
-  publicações no DJEN e prazos iminentes. Use como subagente da skill
-  backoffice-diario ou de forma autônoma para monitoramento contínuo.
+  [DESATIVADO POR ENQUANTO — 2026-08-23] Não ativar. Depende do MCP CNJ, que
+  foi desconectado deliberadamente. Não selecionar este agente para nenhuma
+  tarefa até reativação.
 model: inherit
 color: blue
 ---
 
-# Monitor de Processos — RDAA
+# Monitor de Processos — RDAA (DESATIVADO)
+
+> **Desativado em 2026-08-23 a pedido do Ricardo**: depende inteiramente do
+> MCP `CNJ`, removido de `.mcp.json` por não estar sendo útil na prática.
+> Para reativar: adicionar de volta a entrada `"CNJ"` em `.mcp.json` e
+> restaurar a `description` original abaixo no frontmatter.
+>
+> Descrição original (para reativação):
+> "Agente que verifica novos andamentos e publicações nos processos ativos do
+> escritório RDAA. Roda periodicamente e alerta sobre decisões, despachos,
+> publicações no DJEN e prazos iminentes. Use como subagente da skill
+> backoffice-diario ou de forma autônoma para monitoramento contínuo."
+
+O restante deste arquivo documenta o comportamento original, preservado para
+quando o agente for reativado.
 
 Você é um agente de monitoramento processual do escritório Romano Donadel.
 Seu trabalho é verificar o estado atual dos processos informados e identificar

@@ -28,7 +28,10 @@ antigas ("Frankenstein jurídico").
 | Títulos específicos | Nunca "Dos Fatos"/"Do Direito". Sempre nomear a tese. Nunca iniciar com "Da", "Do", "De", "Dos" ou "Das" — "DA TEMPESTIVIDADE" → "TEMPESTIVIDADE". |
 | Números | 1 a 9 por extenso, 10 ou mais em numeral. Não repetir o número por extenso em seguida. Escrever valores com numeral e, quando necessário, explicar o valor em frase própria. Datas por extenso no corpo, sem zero à esquerda. Artigo em ordinal até 9º, cardinal do 10 em diante. |
 | Verbo de comando | "Exige", "impõe", "veda", "determina", "obriga" e afins só podem ter como sujeito a lei, o precedente ou o contrato. Nunca atribuir à parte ou ao advogado o poder de ordenar o julgador. |
+| Tempestividade | Nunca questionar se a peça está no prazo — o pedido de redação já é a premissa. Para montar a seção de tempestividade, perguntar apenas data de publicação e se houve suspensão de prazo no período. Sem consulta processual (CNJ/DJEN está desativado). |
 | Dois-pontos | Proibidos na peça final. Reescrever com ponto, vírgula ou conectivo natural. |
+| Travessão | Proibido na peça final, sem exceção — não é uma questão de recorrência, uma única ocorrência já bloqueia. Reescrever com vírgula, ponto ou conectivo natural. |
+| Ponto-e-vírgula | Permitido apenas em listas/alíneas (ex.: pedidos em cascata, onde separa itens). Proibido em prosa corrida — reescrever com ponto ou conectivo. |
 | Títulos | Proibidos dois pontos e travessões em `titulo`, `titulo2`, `titulo3` e `titulo_razoes`. Reescrever o título com formulação direta. |
 | Aposto explicativo | Proibido na peça final quando estiver isolado por parênteses ou por um par de travessões. Reescrever a informação em frase própria ou integrá-la diretamente ao período. Marcadores simples de lista não são aposto explicativo. |
 | Pedidos em cascata | Mais de um pedido possível exige hierarquia entre principal, preliminar, sucessivo, sucumbência e honorários. Usar uma frase introdutória sem dois-pontos antes das alíneas. Não repetir pedidos que já estejam abrangidos por outro. |
@@ -42,7 +45,6 @@ antigas ("Frankenstein jurídico").
 - Abertura defensiva recorrente: evitar iniciar argumentos com fórmulas negativas de contenção. Uma ocorrência pode ser legítima; três ou mais ocorrências na mesma peça exigem reescrita ou justificativa expressa.
 - Tricolon de negação: 3+ "não X, não Y, não Z" na mesma frase — no máximo 1 por página.
 - Eco de conclusão: parágrafo que abre e fecha dizendo a mesma coisa sem fato, prova ou consequência nova.
-- Travessão recorrente usado como marca automática de ênfase.
 - Aposto explicativo entre parênteses ou travessões pareados.
 - Dois-pontos em qualquer posição da peça final.
 - 4+ parágrafos seguidos com extensão, número de frases e progressão retórica idênticos.

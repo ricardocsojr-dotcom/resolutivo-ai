@@ -1,15 +1,28 @@
 ---
 name: backoffice-diario
 description: >
-  Abre o dia operacional do escritório RDAA: consulta processos com prazo
-  próximo no DataJud, verifica publicações no DJEN, organiza as providências
-  do dia e gera o briefing diário. Use todas as manhãs ou quando Ricardo
-  pedir "o que tem pra hoje", "organiza o dia", "tem alguma publicação",
-  "quais os prazos de hoje", "abre o escritório", ou qualquer variação que
-  indique início de jornada operacional ou revisão de agenda do dia.
+  [DESATIVADA POR ENQUANTO — 2026-08-23] Não ativar. Dependia do MCP CNJ, que
+  foi desconectado deliberadamente. Se o usuário pedir o briefing do dia,
+  informe que a consulta automática de DataJud/DJEN está desligada por
+  enquanto e pergunte se ele quer organizar a agenda com os dados que ele
+  fornecer manualmente (via backoffice-juridico).
 ---
 
-# Backoffice Diário — RDAA
+# Backoffice Diário — RDAA (DESATIVADA)
+
+> **Desativada em 2026-08-23 a pedido do Ricardo**: o fluxo inteiro depende de
+> DataJud + DJEN, que foram desligados por não estarem sendo úteis na
+> prática. O servidor MCP `CNJ` foi removido de `.mcp.json`. Para reativar:
+> adicionar de volta a entrada `"CNJ"` em `.mcp.json` e restaurar a
+> `description` original abaixo no frontmatter.
+>
+> Descrição original (para reativação):
+> "Abre o dia operacional do escritório RDAA: consulta processos com prazo
+> próximo no DataJud, verifica publicações no DJEN, organiza as providências
+> do dia e gera o briefing diário."
+
+O restante deste arquivo documenta o fluxo original, preservado para quando a
+skill for reativada. Enquanto estiver desativada, **não execute nada abaixo**.
 
 Rotina matinal integrada: DataJud + DJEN + agenda operacional.
 

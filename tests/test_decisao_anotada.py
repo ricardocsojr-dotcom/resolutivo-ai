@@ -37,7 +37,7 @@ def test_decision_annotation_round_trip() -> None:
             "output_path": str(annotated),
             "manifest_path": str(manifest_path),
             "texto_pesquisavel": "Trecho literal da decisão fornecido.",
-            "legenda": "Trecho destacado — página 1.",
+            "legenda": "Trecho destacado, página 1.",
             "source_ids": ["SRC-DEC-1"],
             "semantic_ids": ["DEC-1"],
         })
@@ -50,7 +50,7 @@ def test_decision_annotation_round_trip() -> None:
             "source_path": str(source),
             "source_sha256": manifest["source_sha256"],
             "pagina": 1,
-            "legenda": "Trecho destacado — página 1.",
+            "legenda": "Trecho destacado, página 1.",
             "texto_pesquisavel": "Trecho literal da decisão fornecido.",
             "source_ids": ["SRC-DEC-1"],
             "semantic_ids": ["DEC-1"],

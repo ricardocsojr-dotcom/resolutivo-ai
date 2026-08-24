@@ -27,7 +27,11 @@ Tribunais prioritários (em ordem):
 
 ## Consulta processual
 
-Use o MCP `CNJ` para consultar andamentos e dados processuais via DataJud somente quando Ricardo pedir andamento, última decisão, movimentação, prazo ou situação atual, ou quando o contexto trouxer instrução explícita para consulta processual. A existência de número de processo não dispara consulta automática.
+**Desativada em 2026-08-23.** O MCP `CNJ` (DataJud/DJEN) foi desconectado — não estava sendo útil na prática. As skills `consultar-processo`, `backoffice-diario` e o agente `monitor-processos` estão marcadas como desativadas por enquanto. Não tente consultar andamento, publicação ou movimentação processual automaticamente; se Ricardo pedir, informe que está desligado e que a consulta deve ser feita manualmente por ele. Para reativar, ver a nota em cada um desses três arquivos e restaurar a entrada `"CNJ"` em `.mcp.json`.
+
+## Tempestividade
+
+Nunca questione se uma peça está dentro do prazo. Pedir para redigir já é a premissa de que está tempestiva — ou que a intempestividade é proposital e cabe a Ricardo, não ao assistente, decidir isso. Para montar a seção de tempestividade de uma peça recursal, pergunte apenas duas coisas: (1) data de publicação e (2) se houve suspensão de prazo no período. Nada além disso — sem consulta processual, sem pedir confirmação de que o prazo está sendo cumprido.
 
 ## Padrão de redação de peças (RDAA)
 
@@ -52,7 +56,9 @@ O MCP `NotebookLM` é uma capacidade auxiliar para repositório de conhecimento 
 - Buscar precedentes internos de causas similares
 - Verificar estratégias usadas em casos análogos
 
-O vault Obsidian também não é consultado automaticamente por nenhum tipo de peça. A classificação C/B/A não depende de repositório interno.
+O vault Obsidian não é consultado automaticamente por nenhum tipo de peça — leitura como fonte de tese/decisão continua exigindo pedido explícito. A classificação C/B/A não depende de repositório interno.
+
+**Gravação automática (desde 2026-08-23):** ao final de toda peça publicada com sucesso (`publicar_docx.py` retornando `[OK]`), `redigir-peca` grava automaticamente um resumo da matéria no vault, sem pedir — ver passo 10 de `redigir-peca/SKILL.md`. Vault: `C:\Users\ricar\OneDrive\Documentos\Cerébros\Pessoal\Procedimentos e Informações\`, seguindo as convenções do `CLAUDE.md` daquele subvault. Sessões que tocam uma matéria mas não publicam nada têm uma rede de segurança separada via hook de `SessionEnd`.
 
 ## Revisão de peças
 

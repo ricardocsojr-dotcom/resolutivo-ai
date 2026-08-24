@@ -1,9 +1,5 @@
 {
   "mcpServers": {
-    "CNJ": {
-      "command": "python",
-      "args": ["${CLAUDE_PLUGIN_ROOT}/servers/cnj-server.py"]
-    },
     "NotebookLM": {
       "command": "C:\\Users\\ricar\\AppData\\Roaming\\uv\\tools\\notebooklm-mcp-cli\\Scripts\\python.exe",
       "args": ["-m", "notebooklm_tools.mcp.server"]

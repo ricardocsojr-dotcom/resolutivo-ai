@@ -19,9 +19,9 @@ def test_redigir_does_not_require_process_query() -> None:
     assert "### 3. Consultar o processo — OPCIONAL" in text
     assert "A existência de número de processo **não** dispara consulta automática" in text
     assert "Se há número de processo, execute a skill `consultar-processo` primeiro" not in text
-    assert "MCP `CNJ` → dados processuais somente quando" in text
+    assert "MCP `CNJ`/DJEN → **desativado**" in text
     global_text = (ROOT / "CLAUDE.md").read_text(encoding="utf-8")
-    assert "A existência de número de processo não dispara consulta automática" in global_text
+    assert "O MCP `CNJ` (DataJud/DJEN) foi desconectado" in global_text
     assert "Sempre que receber um número de processo" not in global_text
     assert "Não o consulte automaticamente" in global_text
 

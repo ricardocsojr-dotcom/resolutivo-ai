@@ -6,8 +6,10 @@ Espelha o verificar_formatacao.py do formatar-peca: em vez de confiar em
 leitura estrutural de uma LLM para contar travessao, ponto-e-virgula e
 tricolon de negacao (checklist-3-estilometria.md), este script CONTA.
 Itens com regra objetiva entram no exit code. A peça final não pode conter
-travessão explicativo recorrente, ponto-e-vírgula em cadeia, tricolon de negação,
-abertura defensiva recorrente, dois-pontos ou aposto explicativo entre parênteses.
+travessão (proibido sem exceção), ponto-e-vírgula fora de lista/alínea
+(permitido apenas em parágrafos com estilo RDAA Numerado/RDAA Alínea, ex.:
+pedidos em cascata), tricolon de negação, abertura defensiva recorrente,
+dois-pontos ou aposto explicativo entre parênteses.
 Marcadores isolados de lista
 como (a), (i) e (1) são permitidos porque não são explicações.
 
@@ -30,6 +32,7 @@ def _paragraphs_from_docx(path):
     import docx
     doc = docx.Document(path)
     paragraphs = []
+    estilos = []
     seen_paragraphs = set()
 
     def append_paragraphs(items):
@@ -39,6 +42,7 @@ def _paragraphs_from_docx(path):
                 continue
             seen_paragraphs.add(marker)
             paragraphs.append(paragraph.text)
+            estilos.append(paragraph.style.name if paragraph.style is not None else None)
 
     def append_table(table):
         for row in table.rows:
@@ -50,15 +54,19 @@ def _paragraphs_from_docx(path):
     append_paragraphs(doc.paragraphs)
     for table in doc.tables:
         append_table(table)
-    return paragraphs
+    return paragraphs, estilos
 
 
 def _paragraphs_from_txt(path):
     with open(path, encoding='utf-8') as f:
-        return [l.rstrip('\n') for l in f]
+        linhas = [l.rstrip('\n') for l in f]
+    return linhas, [None] * len(linhas)
 
 
 def carregar_paragrafos(path):
+    """Retorna (paragrafos, estilos). `estilos[i]` é o nome do estilo do
+    parágrafo i no DOCX (ex.: 'RDAA Numerado', 'RDAA Alínea') ou None quando
+    a fonte é .txt ou o parágrafo não tem estilo nomeado."""
     if path.lower().endswith('.docx'):
         return _paragraphs_from_docx(path)
     return _paragraphs_from_txt(path)
@@ -71,51 +79,38 @@ def _split_sentencas(paragrafo):
 
 
 def checar_travessao(paragrafos):
+    # Travessão é proibido na peça final, sem exceção (checklist-3, item J) —
+    # não é um limite de recorrência, qualquer ocorrência bloqueia.
     problemas = []
     candidatos = []
-    paras_com_travessao = [i for i, p in enumerate(paragrafos) if '—' in p]
-    total = sum(p.count('—') for p in paragrafos)
-
-    for i in paras_com_travessao:
-        # Travessao unico ate o fim da frase e uso legitimo (nao exige par
-        # fechado) — nao contar isso como erro, so registrar como candidato.
-        candidatos.append((i, paragrafos[i][:100]))
-
-    if total >= 3:
-        problemas.append(
-            f"Travessao: {total} ocorrencia(s) na peca inteira (limite checklist-3, item I: 3+)."
-        )
-
-    for a, b in zip(paras_com_travessao, paras_com_travessao[1:]):
-        if b == a + 1:
+    for i, p in enumerate(paragrafos):
+        if '—' in p:
+            candidatos.append((i, p[:100]))
             problemas.append(
-                f"Travessao em paragrafos consecutivos: {a} e {b}."
+                f"Paragrafo {i}: travessao proibido na peca final, sem excecao — "
+                f"reescrever com virgula, ponto ou conectivo: {p.strip()[:100]!r}"
             )
-
-    for i in range(0, len(paragrafos), JANELA_PAGINA):
-        janela = paras_com_travessao_in_range = [
-            j for j in paras_com_travessao if i <= j < i + JANELA_PAGINA
-        ]
-        pares_na_janela = sum(paragrafos[j].count('—') for j in janela) // 2
-        if pares_na_janela > 1:
-            problemas.append(
-                f"Travessao: mais de um par na janela de paragrafos {i}-{i + JANELA_PAGINA - 1} "
-                f"(aprox. 1 pagina) — {pares_na_janela} pares."
-            )
-
     return problemas, candidatos
 
 
-def checar_ponto_e_virgula(paragrafos):
+_ESTILOS_LISTA = {"rdaa numerado", "rdaa alínea"}
+
+
+def checar_ponto_e_virgula(paragrafos, estilos=None):
+    # Ponto-e-vírgula é permitido apenas em parágrafos de lista/alínea (ex.:
+    # pedidos em cascata); em prosa corrida, qualquer ocorrência bloqueia.
     problemas = []
+    if estilos is None:
+        estilos = [None] * len(paragrafos)
     for i, p in enumerate(paragrafos):
-        for s in _split_sentencas(p):
-            n = s.count(';')
-            if n >= 2:
-                problemas.append(
-                    f"Paragrafo {i}: frase com {n} ponto(s)-e-virgula — "
-                    f"provavel lista disfarcada de prosa corrida: {s[:100]!r}"
-                )
+        estilo = (estilos[i] or "").strip().casefold()
+        if estilo in _ESTILOS_LISTA:
+            continue
+        if ';' in p:
+            problemas.append(
+                f"Paragrafo {i}: ponto-e-virgula fora de lista/alinea proibido — "
+                f"reescrever com ponto ou conectivo: {p.strip()[:100]!r}"
+            )
     return problemas
 
 
@@ -193,6 +188,11 @@ def checar_dois_pontos(paragrafos):
 
 _MARCADOR_PARENTESES = re.compile(r'^(?:[a-z]{1,3}|[ivxlcdm]{1,8}|\d{1,4})$', re.IGNORECASE)
 
+# Marcadores institucionais fixos do gerador de peças (ex.: carimbo de
+# assinatura eletrônica) — não são aposto explicativo em prosa argumentativa,
+# são elementos estruturais exigidos por verificar_formatacao.py.
+_MARCADORES_INSTITUCIONAIS_PARENTESES = {"assinado eletronicamente"}
+
 
 def checar_aposto_explicativo(paragrafos):
     problemas = []
@@ -202,13 +202,13 @@ def checar_aposto_explicativo(paragrafos):
             conteudo = match.group(1).strip()
             if not conteudo or _MARCADOR_PARENTESES.fullmatch(conteudo):
                 continue
+            if conteudo.casefold() in _MARCADORES_INSTITUCIONAIS_PARENTESES:
+                continue
             problemas.append(
                 f"Paragrafo {i}: aposto explicativo entre parênteses proibido — reescrever em frase própria."
             )
-        if p.count('—') >= 2:
-            problemas.append(
-                f"Paragrafo {i}: aposto explicativo entre travessões proibido — reescrever em frase própria."
-            )
+        # Aposto entre travessões pareados já é coberto por checar_travessao,
+        # que agora bloqueia qualquer travessão sem exceção.
     return problemas
 
 
@@ -239,12 +239,12 @@ def checar_aberturas_repetidas(paragrafos, minimo_palavras=4, limite=3):
 
 
 def checar(path):
-    paragrafos = carregar_paragrafos(path)
+    paragrafos, estilos = carregar_paragrafos(path)
 
     problemas = []
     trav_problemas, trav_candidatos = checar_travessao(paragrafos)
     problemas += trav_problemas
-    problemas += checar_ponto_e_virgula(paragrafos)
+    problemas += checar_ponto_e_virgula(paragrafos, estilos)
     problemas += checar_tricolon_negacao(paragrafos)
     problemas += checar_aberturas_defensivas(paragrafos)
     problemas += checar_dois_pontos(paragrafos)
@@ -271,7 +271,7 @@ def main():
     else:
         print(f"[OK] Nenhum item de contagem obrigatoria violado em {path}")
 
-    aberturas_defensivas = listar_aberturas_defensivas(carregar_paragrafos(path))
+    aberturas_defensivas = listar_aberturas_defensivas(carregar_paragrafos(path)[0])
     if aberturas_defensivas:
         print(f"\n[INFO] {len(aberturas_defensivas)} abertura(s) defensiva(s) identificada(s) para revisão funcional:")
         for i, formula, trecho in aberturas_defensivas:
