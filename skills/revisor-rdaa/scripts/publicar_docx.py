@@ -19,7 +19,7 @@ if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))
 
 from qa_gate import run_gate  # noqa: E402
-from seguro import substituir_com_backup  # noqa: E402
+from seguro import restaurar, substituir_com_backup  # noqa: E402
 from estado_rdaa import (  # noqa: E402
     file_sha256,
     matter_id_from_context,
@@ -202,10 +202,38 @@ def main() -> int:
 
     backup_dir = args.backup_dir or args.output.parent / ".rdaa-backups"
     backup = substituir_com_backup(args.input, args.output, backup_dir)
+    confirmed_hash = file_sha256(args.output)
+    if confirmed_hash != candidate_hash:
+        # O invariante "publicado == candidato aprovado, bit a bit" está
+        # documentado no manifesto mas nunca era verificado em código — só
+        # registrado. Se a cópia atômica produziu algo diferente do
+        # candidato aprovado, reverte para o backup e falha alto em vez de
+        # registrar PUBLISHED com uma garantia que não se sustentou.
+        if backup is not None:
+            restaurar(backup, args.output)
+        update_manifest(
+            state_dir,
+            matter_id=matter_id,
+            output=str(args.output),
+            candidate=str(args.input),
+            phase="candidate_rejected",
+            status="REJECTED",
+            candidate_status="REJECTED",
+            candidate_state=str(candidate_state_dir) if candidate_state_dir else None,
+            candidate_hash=candidate_hash,
+            confirmed_state_status="PRESERVED",
+            confirmed_hash=confirmed_hash,
+            errors=["hash_publicado_divergente"],
+            route=route,
+        )
+        print("[ERRO] publicação abortada: hash do arquivo publicado diverge do candidato aprovado")
+        print(f"  - candidate_hash={candidate_hash}")
+        print(f"  - confirmed_hash={confirmed_hash}")
+        return 1
+
     promoted_files = []
     if candidate_state_dir is not None:
         promoted_files = promote_candidate_state(candidate_state_dir, state_dir)
-    confirmed_hash = file_sha256(args.output)
     update_manifest(
         state_dir,
         matter_id=matter_id,

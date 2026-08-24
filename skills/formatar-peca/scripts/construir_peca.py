@@ -25,6 +25,7 @@ import json
 import os
 import re
 import sys
+import tempfile
 
 try:
     from docx import Document
@@ -1518,8 +1519,21 @@ def construir_peca(context: dict, output_path: str) -> str:
         # Finaliza e grava as notas de rodapé reais no pacote OPC
     gerenciador_notas.finalizar()
 
-    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
-    doc.save(output_path)
+    output_path = os.path.abspath(output_path)
+    output_dir = os.path.dirname(output_path)
+    os.makedirs(output_dir, exist_ok=True)
+    # Salva em arquivo temporário no mesmo diretório e troca de forma atômica
+    # (os.replace) — se o processo for interrompido no meio da gravação, um
+    # candidato .docx já existente em output_path não fica truncado/corrompido.
+    fd, tmp_path = tempfile.mkstemp(prefix=f".{os.path.basename(output_path)}.", suffix=".tmp", dir=output_dir)
+    os.close(fd)
+    try:
+        doc.save(tmp_path)
+        os.replace(tmp_path, output_path)
+    except Exception:
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
+        raise
     return output_path
 
 

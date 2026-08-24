@@ -34,12 +34,27 @@ Formato de pedidos.json — lista de objetos:
 import json
 import sys
 from datetime import date
+from decimal import Decimal, InvalidOperation, ROUND_HALF_UP
+
+CENT = Decimal("0.01")
+HUNDRED = Decimal("100")
 
 RISCO_LABELS = {
-    "provavel": 1.0, "provável": 1.0,
-    "possivel": 0.5, "possível": 0.5,
-    "remoto": 0.0,
+    "provavel": Decimal("1"), "provável": Decimal("1"),
+    "possivel": Decimal("0.5"), "possível": Decimal("0.5"),
+    "remoto": Decimal("0"),
 }
+
+
+def _decimal(value, field):
+    # Decimal(str(value)) em vez de Decimal(value) direto: evita herdar o
+    # ruído binário de um float já parseado (str() de float usa a
+    # representação mínima que reconstrói o mesmo valor, igual ao literal
+    # original). Mesmo padrão usado em calculo_motor.py.
+    try:
+        return Decimal(str(value))
+    except (InvalidOperation, ValueError) as exc:
+        raise ValueError(f"{field} não é um número decimal válido: {value!r}") from exc
 
 
 def normalizar_risco(risco):
@@ -48,8 +63,8 @@ def normalizar_risco(risco):
         if chave not in RISCO_LABELS:
             raise ValueError(f"risco textual desconhecido: {risco!r} (use provavel/possivel/remoto)")
         return RISCO_LABELS[chave]
-    valor = float(risco)
-    return valor / 100 if valor > 1 else valor
+    valor = _decimal(risco, "risco")
+    return valor / HUNDRED if valor > 1 else valor
 
 
 def meses_entre(data_inicio, data_fim):
@@ -63,23 +78,24 @@ def meses_entre(data_inicio, data_fim):
 
 def liquidar_pedido(p):
     periodicidade = p.get("periodicidade", "unico")
+    valor_unitario = _decimal(p["valor_unitario"], "valor_unitario")
     if periodicidade == "mensal":
         n_meses = meses_entre(p["data_inicio"], p["data_fim"])
-        valor_base = round(p["valor_unitario"] * n_meses, 2)
+        valor_base = (valor_unitario * n_meses).quantize(CENT, rounding=ROUND_HALF_UP)
     elif periodicidade == "unico":
-        valor_base = round(p["valor_unitario"], 2)
+        valor_base = valor_unitario.quantize(CENT, rounding=ROUND_HALF_UP)
     else:
         raise ValueError(f"periodicidade inválida: {periodicidade!r} (use mensal/unico)")
 
     risco_pct = normalizar_risco(p["risco"])
-    provisao = round(valor_base * risco_pct, 2)
+    provisao = (valor_base * risco_pct).quantize(CENT, rounding=ROUND_HALF_UP)
     return valor_base, risco_pct, provisao
 
 
 def processar(pedidos):
     linhas = []
-    total_liquidado = 0.0
-    total_provisao = 0.0
+    total_liquidado = Decimal("0")
+    total_provisao = Decimal("0")
     for p in pedidos:
         valor_base, risco_pct, provisao = liquidar_pedido(p)
         linhas.append({
@@ -91,7 +107,7 @@ def processar(pedidos):
         })
         total_liquidado += valor_base
         total_provisao += provisao
-    return linhas, round(total_liquidado, 2), round(total_provisao, 2)
+    return linhas, total_liquidado.quantize(CENT, rounding=ROUND_HALF_UP), total_provisao.quantize(CENT, rounding=ROUND_HALF_UP)
 
 
 def imprimir(linhas, total_liquidado, total_provisao):
@@ -114,12 +130,20 @@ def demo():
          "periodicidade": "unico", "risco": 50},
     ]
     linhas, total_liquidado, total_provisao = processar(pedidos)
-    assert linhas[0]["valor_liquidado"] == 300.0, linhas[0]  # 3 meses x 100
-    assert linhas[0]["provisao_ponderada"] == 300.0  # risco 100%
-    assert linhas[1]["risco_pct"] == 0.5  # "50" normalizado para 0.5
-    assert linhas[1]["provisao_ponderada"] == 4000.0
-    assert total_liquidado == 8300.0
-    assert total_provisao == 4300.0
+    assert linhas[0]["valor_liquidado"] == Decimal("300.00"), linhas[0]  # 3 meses x 100
+    assert linhas[0]["provisao_ponderada"] == Decimal("300.00")  # risco 100%
+    assert linhas[1]["risco_pct"] == Decimal("0.5")  # "50" normalizado para 0.5
+    assert linhas[1]["provisao_ponderada"] == Decimal("4000.00")
+    assert total_liquidado == Decimal("8300.00")
+    assert total_provisao == Decimal("4300.00")
+    # Regressão do bug de float: 3 parcelas de 0.10 deveriam somar exatamente
+    # 0.30 em Decimal (em float, 0.1 + 0.1 + 0.1 != 0.3).
+    linhas_centavos, total_centavos, _ = processar([
+        {"pedido": "Centavos", "tipo": "material", "valor_unitario": 0.10,
+         "periodicidade": "mensal", "data_inicio": "2024-01-01", "data_fim": "2024-03-01",
+         "risco": "remoto"},
+    ])
+    assert linhas_centavos[0]["valor_liquidado"] == Decimal("0.30"), linhas_centavos[0]
     print("demo() ok: liquidação e provisão ponderada conferem.")
 
 

@@ -467,54 +467,59 @@ def calculate(payload: dict[str, Any], *, indices_dir: Path | str, manifest_path
             interest_value = base * rate * Decimal(interest_months)
         total = principal_corrected + interest_value
 
-    result: dict[str, Any] = {
-        "status": "ok",
-        "indice": data["indice"],
-        "tipo_serie": definition.series_type,
-        "periodo": {"inicio": data["start"].isoformat(), "fim": data["end"].isoformat()},
-        "principal": _money_text(data["principal"]),
-        "fator_correcao": _decimal_text(correction_factor),
-        "correcao": _money_text(principal_corrected - data["principal"]),
-        "juros": _money_text(interest_value),
-        "total": _money_text(total),
-        "meses_processados": len(_month_keys_between(data["start"], data["end"])) if data["convention"] == "meses_calendario_inclusivos" else None,
-        "registros_processados": len(rows),
-        "meses_juros": interest_months,
-        "segmentos_juros": interest_segments_result,
-        "cobertura": {
-            "inicio_indice": index.first_date.isoformat(),
-            "fim_indice": index.last_date.isoformat(),
-            "selecionada_inicio": rows[0].record_date.isoformat(),
-            "selecionada_fim": rows[-1].record_date.isoformat(),
-        },
-        "avisos": (
-            []
-            if data["interest_start"] is not None
-            else ["juros_nao_aplicados_sem_data_inicio_juros"]
-        ),
-        "index_sha256": index.sha256,
-        "modo": data["mode"],
-        "tratamento_periodo_parcial": data.get("partial_treatment"),
-    }
-    if data["mode"] == "detalhado":
-        detail: list[dict[str, str]] = []
-        running_factor = Decimal("1")
-        for row in rows:
-            if definition.series_type == "fator_acumulado":
-                running_factor = row.value / rows[0].value
-            elif definition.series_type == "taxa_diaria_decimal":
-                running_factor *= Decimal("1") + row.value
-            else:
-                running_factor *= Decimal("1") + row.value / HUNDRED
-            detail.append(
-                {
-                    "data": row.record_date.isoformat(),
-                    "valor_indice": _decimal_text(row.value),
-                    "fator_acumulado": _decimal_text(running_factor),
-                    "saldo_corrigido": _money_text(data["principal"] * running_factor),
-                }
-            )
-        result["detalhamento"] = detail
+    # Formatação e detalhamento também precisam de precisão >28 dígitos: um fator
+    # acumulado de período longo pode gerar mais casas do que o contexto Decimal
+    # padrão suporta, e quantize() fora desse contexto levanta InvalidOperation.
+    with localcontext() as context:
+        context.prec = 50
+        result: dict[str, Any] = {
+            "status": "ok",
+            "indice": data["indice"],
+            "tipo_serie": definition.series_type,
+            "periodo": {"inicio": data["start"].isoformat(), "fim": data["end"].isoformat()},
+            "principal": _money_text(data["principal"]),
+            "fator_correcao": _decimal_text(correction_factor),
+            "correcao": _money_text(principal_corrected - data["principal"]),
+            "juros": _money_text(interest_value),
+            "total": _money_text(total),
+            "meses_processados": len(_month_keys_between(data["start"], data["end"])) if data["convention"] == "meses_calendario_inclusivos" else None,
+            "registros_processados": len(rows),
+            "meses_juros": interest_months,
+            "segmentos_juros": interest_segments_result,
+            "cobertura": {
+                "inicio_indice": index.first_date.isoformat(),
+                "fim_indice": index.last_date.isoformat(),
+                "selecionada_inicio": rows[0].record_date.isoformat(),
+                "selecionada_fim": rows[-1].record_date.isoformat(),
+            },
+            "avisos": (
+                []
+                if data["interest_start"] is not None
+                else ["juros_nao_aplicados_sem_data_inicio_juros"]
+            ),
+            "index_sha256": index.sha256,
+            "modo": data["mode"],
+            "tratamento_periodo_parcial": data.get("partial_treatment"),
+        }
+        if data["mode"] == "detalhado":
+            detail: list[dict[str, str]] = []
+            running_factor = Decimal("1")
+            for row in rows:
+                if definition.series_type == "fator_acumulado":
+                    running_factor = row.value / rows[0].value
+                elif definition.series_type == "taxa_diaria_decimal":
+                    running_factor *= Decimal("1") + row.value
+                else:
+                    running_factor *= Decimal("1") + row.value / HUNDRED
+                detail.append(
+                    {
+                        "data": row.record_date.isoformat(),
+                        "valor_indice": _decimal_text(row.value),
+                        "fator_acumulado": _decimal_text(running_factor),
+                        "saldo_corrigido": _money_text(data["principal"] * running_factor),
+                    }
+                )
+            result["detalhamento"] = detail
     return result
 
 

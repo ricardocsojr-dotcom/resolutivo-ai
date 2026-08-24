@@ -26,13 +26,9 @@ def criar_backup(arquivo: Path, pasta_backup: Path) -> Path:
     return destino
 
 
-def substituir_com_backup(novo: Path, destino: Path, pasta_backup: Path) -> Path | None:
-    novo = Path(novo)
-    destino = Path(destino)
-    if not novo.is_file():
-        raise FileNotFoundError(f"Novo arquivo não encontrado: {novo}")
-
-    backup = criar_backup(destino, pasta_backup) if destino.exists() else None
+def _copiar_atomico(origem: Path, destino: Path) -> None:
+    """Copia origem para destino via arquivo temporário + replace atômico,
+    para que uma interrupção no meio da cópia nunca deixe destino truncado."""
     destino.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile(
         prefix=f".{destino.name}.",
@@ -42,11 +38,21 @@ def substituir_com_backup(novo: Path, destino: Path, pasta_backup: Path) -> Path
     ) as tmp:
         temporario = Path(tmp.name)
     try:
-        shutil.copy2(novo, temporario)
+        shutil.copy2(origem, temporario)
         temporario.replace(destino)
     except Exception:
         temporario.unlink(missing_ok=True)
         raise
+
+
+def substituir_com_backup(novo: Path, destino: Path, pasta_backup: Path) -> Path | None:
+    novo = Path(novo)
+    destino = Path(destino)
+    if not novo.is_file():
+        raise FileNotFoundError(f"Novo arquivo não encontrado: {novo}")
+
+    backup = criar_backup(destino, pasta_backup) if destino.exists() else None
+    _copiar_atomico(novo, destino)
     return backup
 
 
@@ -55,8 +61,7 @@ def restaurar(backup: Path, destino: Path) -> None:
     destino = Path(destino)
     if not backup.is_file():
         raise FileNotFoundError(f"Backup não encontrado: {backup}")
-    destino.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(backup, destino)
+    _copiar_atomico(backup, destino)
 
 
 def main() -> int:

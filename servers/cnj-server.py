@@ -354,25 +354,28 @@ def buscar_publicacoes_dje_cnj(
         Lista de publicações encontradas no DJe do CNJ.
     """
     # Consulta via DataJud: os movimentos incluem publicações no DJe
-    # Detecta o tribunal pelo número do processo (posição 14-15 do NPU)
+    # NPU oficial (Resolução CNJ 65/2008): NNNNNNN-DD.AAAA.J.TR.OOOO
+    # posição 13 = segmento de Justiça (1 dígito), posições 14-15 = tribunal (2 dígitos)
     num_limpo = numero_processo.replace(".", "").replace("-", "")
-    if len(num_limpo) >= 17:
-        codigo_tribunal = num_limpo[13:17]
-        # Mapeamento simplificado de código para sigla
+    if len(num_limpo) >= 20:
+        segmento = num_limpo[13]
+        codigo_tribunal = num_limpo[14:16]
+        # Tabela oficial segmento+tribunal do CNJ
         CODIGO_TRIBUNAL = {
-            "8001": "TJAC", "8002": "TJAL", "8003": "TJAP", "8004": "TJAM",
-            "8005": "TJBA", "8006": "TJCE", "8007": "TJDF", "8008": "TJES",
-            "8009": "TJGO", "8010": "TJMA", "8011": "TJMG", "8012": "TJMS",
-            "8013": "TJMT", "8014": "TJPA", "8015": "TJPB", "8016": "TJPE",
-            "8017": "TJPI", "8018": "TJPR", "8019": "TJRJ", "8020": "TJRN",
-            "8021": "TJRO", "8022": "TJRR", "8023": "TJRS", "8024": "TJSC",
-            "8025": "TJSE", "8026": "TJSP", "8027": "TJTO",
-            "4001": "TRF1", "4002": "TRF2", "4003": "TRF3",
-            "4004": "TRF4", "4005": "TRF5", "4006": "TRF6",
-            "5001": "TST",  "5002": "TRT1", "5015": "TRT15",
-            "1000": "STF",  "3000": "STJ",
+            ("1", "00"): "STF", ("3", "00"): "STJ", ("6", "00"): "TSE", ("7", "00"): "STM",
+            ("4", "01"): "TRF1", ("4", "02"): "TRF2", ("4", "03"): "TRF3",
+            ("4", "04"): "TRF4", ("4", "05"): "TRF5", ("4", "06"): "TRF6",
+            ("5", "00"): "TST",
+            **{("5", f"{n:02d}"): f"TRT{n}" for n in range(1, 25)},
+            ("8", "01"): "TJAC", ("8", "02"): "TJAL", ("8", "03"): "TJAP", ("8", "04"): "TJAM",
+            ("8", "05"): "TJBA", ("8", "06"): "TJCE", ("8", "07"): "TJDF", ("8", "08"): "TJES",
+            ("8", "09"): "TJGO", ("8", "10"): "TJMA", ("8", "11"): "TJMT", ("8", "12"): "TJMS",
+            ("8", "13"): "TJMG", ("8", "14"): "TJPA", ("8", "15"): "TJPB", ("8", "16"): "TJPR",
+            ("8", "17"): "TJPE", ("8", "18"): "TJPI", ("8", "19"): "TJRJ", ("8", "20"): "TJRN",
+            ("8", "21"): "TJRS", ("8", "22"): "TJRO", ("8", "23"): "TJRR", ("8", "24"): "TJSC",
+            ("8", "25"): "TJSE", ("8", "26"): "TJSP", ("8", "27"): "TJTO",
         }
-        tribunal = CODIGO_TRIBUNAL.get(codigo_tribunal)
+        tribunal = CODIGO_TRIBUNAL.get((segmento, codigo_tribunal))
     else:
         tribunal = None
 

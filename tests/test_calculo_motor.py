@@ -19,7 +19,7 @@ from calculo_motor import MotorError, calculate  # noqa: E402
 def _write_index(root: Path, name: str, rows: list[tuple[str, str]]) -> tuple[Path, str]:
     path = root / f"{name}.csv"
     content = "data,valor\n" + "\n".join(f"{record_date},{value}" for record_date, value in rows) + "\n"
-    path.write_text(content, encoding="utf-8")
+    path.write_text(content, encoding="utf-8", newline="\n")
     return path, hashlib.sha256(content.encode("utf-8")).hexdigest()
 
 

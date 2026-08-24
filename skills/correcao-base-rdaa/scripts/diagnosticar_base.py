@@ -170,7 +170,22 @@ def carregar_e_analisar(caminho_entrada, sheet_name=None):
     # --- achado 1: recurso com origem sinalizada como arquivada (via Ficha .00) ---
     origem = df[df['EhOrigem']][[COL_FICHA, 'EhArquivado', COL_LOCALIZADOR, COL_FASE]].rename(
         columns={'EhArquivado': 'origem_arquivada', COL_LOCALIZADOR: 'origem_status', COL_FASE: 'origem_fase'})
-    merged = df.merge(origem, on=COL_FICHA, how='left')
+    # Merge assume no maximo uma linha de origem (Sufixo '.00') por Ficha. Se a
+    # base tiver duplicidade nesse campo — exatamente o tipo de sujeira que
+    # este diagnostico existe para achar — um merge sem essa guarda duplica
+    # silenciosamente linhas associadas e infla as contagens de origem
+    # arquivada. validate="many_to_one" falha alto e claro em vez disso.
+    try:
+        merged = df.merge(origem, on=COL_FICHA, how='left', validate='many_to_one')
+    except pd.errors.MergeError as exc:
+        fichas_duplicadas = sorted(
+            origem.loc[origem[COL_FICHA].duplicated(keep=False), COL_FICHA].unique().tolist()
+        )
+        raise ValueError(
+            f"Ficha(s) com mais de uma linha de origem (Sufixo '.00'): {fichas_duplicadas}. "
+            "Corrija o cadastro antes de rodar o diagnostico — essas duplicidades "
+            "inflariam as contagens de origem arquivada do Plano de Acao."
+        ) from exc
     prioritario = merged[(~merged['EhOrigem']) & (merged['origem_arquivada'] == True) & (merged['EhArquivado'] == False)].copy()
 
     # --- achado 1b: recurso "solto" -- sem origem rastreavel nem por numero nem por ficha ---
