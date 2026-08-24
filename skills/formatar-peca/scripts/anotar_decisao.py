@@ -20,6 +20,16 @@ try:
 except ImportError:  # pragma: no cover
     convert_from_path = None
 
+try:
+    import pypdfium2 as pdfium
+except ImportError:  # pragma: no cover
+    pdfium = None
+
+try:
+    import fitz
+except ImportError:  # pragma: no cover
+    fitz = None
+
 
 HEX_COLOR = re.compile(r"^#[0-9A-Fa-f]{6}$")
 
@@ -84,12 +94,32 @@ def _load_page(source: Path, source_kind: str, page: int, dpi: int) -> Image.Ima
     if kind == "pdf" or source.suffix.lower() == ".pdf":
         if page < 1:
             raise ValueError("page deve ser maior ou igual a 1")
-        if convert_from_path is None:
-            raise RuntimeError("pdf2image não está disponível para renderizar PDF")
-        pages = convert_from_path(str(source), dpi=dpi, first_page=page, last_page=page)
-        if not pages:
-            raise ValueError(f"Página inválida ou não renderizada: {page}")
-        return pages[0].convert("RGB")
+        if convert_from_path is not None:
+            pages = convert_from_path(str(source), dpi=dpi, first_page=page, last_page=page)
+            if not pages:
+                raise ValueError(f"Página inválida ou não renderizada: {page}")
+            return pages[0].convert("RGB")
+        elif pdfium is not None:
+            doc = pdfium.PdfDocument(str(source))
+            try:
+                if page > len(doc):
+                    raise ValueError(f"Página inválida: {page} excede {len(doc)}")
+                pdf_page = doc[page - 1]
+                return pdf_page.render(scale=dpi / 72).to_pil().convert("RGB")
+            finally:
+                doc.close()
+        elif fitz is not None:
+            doc = fitz.open(str(source))
+            try:
+                if page > len(doc):
+                    raise ValueError(f"Página inválida: {page} excede {len(doc)}")
+                pdf_page = doc[page - 1]
+                pix = pdf_page.get_pixmap(dpi=dpi)
+                return Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+            finally:
+                doc.close()
+        else:
+            raise RuntimeError("Nenhum renderizador de PDF disponível (pdf2image, pypdfium2 ou PyMuPDF).")
     if page != 1:
         raise ValueError("imagem não-PDF aceita somente page=1")
     return Image.open(source).convert("RGB")

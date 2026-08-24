@@ -118,12 +118,19 @@ def test_happy_path_and_text_preservation(folder: Path) -> Path:
     return docx
 
 
-def test_mutation(folder: Path, source: Path, name: str, entry: str, transform, expected: str) -> None:
+def assert_mutation(folder: Path, source: Path, name: str, entry: str, transform, expected: str) -> None:
     mutated = folder / f"{name}.docx"
     rewrite_zip(source, mutated, entry, transform)
     result = gate(mutated, folder)
     assert result.returncode != 0, f"mutação {name} passou indevidamente: {result.stdout}"
     assert expected in result.stdout, result.stdout + result.stderr
+
+
+def test_mutations_suite(folder: Path, source: Path) -> None:
+    assert_mutation(folder, source, "no_signature_margin", "word/document.xml", mutate_remove_signature_margins, "margem interna")
+    assert_mutation(folder, source, "signature_before_close", "word/document.xml", mutate_signature_before_close, "não está precedida")
+    assert_mutation(folder, source, "no_header_respiro", "word/header1.xml", mutate_remove_header_respiro, "parágrafo de respiro")
+    assert_mutation(folder, source, "body_blank", "word/document.xml", mutate_insert_body_blank, "corpo iniciado com parágrafo vazio")
 
 
 def test_invalid_context(folder: Path) -> None:
@@ -235,10 +242,10 @@ def main() -> int:
     with tempfile.TemporaryDirectory(prefix="rdaa-qa-") as tmp:
         folder = Path(tmp)
         source = test_happy_path_and_text_preservation(folder)
-        test_mutation(folder, source, "no_signature_margin", "word/document.xml", mutate_remove_signature_margins, "margem interna")
-        test_mutation(folder, source, "signature_before_close", "word/document.xml", mutate_signature_before_close, "não está precedida")
-        test_mutation(folder, source, "no_header_respiro", "word/header1.xml", mutate_remove_header_respiro, "parágrafo de respiro")
-        test_mutation(folder, source, "body_blank", "word/document.xml", mutate_insert_body_blank, "corpo iniciado com parágrafo vazio")
+        assert_mutation(folder, source, "no_signature_margin", "word/document.xml", mutate_remove_signature_margins, "margem interna")
+        assert_mutation(folder, source, "signature_before_close", "word/document.xml", mutate_signature_before_close, "não está precedida")
+        assert_mutation(folder, source, "no_header_respiro", "word/header1.xml", mutate_remove_header_respiro, "parágrafo de respiro")
+        assert_mutation(folder, source, "body_blank", "word/document.xml", mutate_insert_body_blank, "corpo iniciado com parágrafo vazio")
         test_invalid_context(folder)
         test_style_enforcement(folder)
         test_defensive_openings(folder)

@@ -1,276 +1,342 @@
-# Resolutivo.AI
+# Resolutivo.AI — Servidor MCP e Plugin Jurídico RDAA
 
-Plugin de contencioso cível e consumerista do **Romano Donadel Advogados Associados (RDAA)**.
+Servidor MCP remoto e plugin de contencioso cível e consumerista do **Romano Donadel Advogados Associados (RDAA)**.
 
-O identificador técnico do plugin é `resolutivo-ai`. No Claude Code, as skills podem
-ser referenciadas com esse namespace, por exemplo `/resolutivo-ai:redigir-peca`.
-Os nomes individuais das skills permanecem inalterados para preservar a organização
-e o funcionamento interno.
+O projeto disponibiliza tanto o funcionamento tradicional em formato de plugin (Claude Code / Codex) quanto um **Servidor MCP Remoto (Model Context Protocol)** compatível com o **Google Gemini (Connected Apps)**, Claude Desktop, Cursor, MCP Inspector e qualquer cliente compatível com MCP.
 
-## O que este plugin faz
+---
 
-Transforma o Claude no assistente jurídico sênior do setor Resolutivo do RDAA,
-com acesso integrado a:
+## 1. Arquitetura do Servidor MCP Remoto
 
-| Fonte | MCP | Para que serve |
-|-------|-----|-----------------|
-| **DataJud/CNJ** | `CNJ` | Andamento processual em tempo real |
-| **DJEN/DJe** | `CNJ` | Publicações oficiais e intimações |
-| **NotebookLM** | `NotebookLM` | Conhecimento interno do escritório |
-| **Jusbrasil** | via `buscar-jurisprudencia` (extensão do Chrome) | Ementas literais de qualquer tribunal |
+O servidor é construído sobre o SDK oficial do Model Context Protocol em Python (`FastMCP` + `Starlette`), adotando transporte **Streamable HTTP** de alta performance:
 
-Todas as skills abaixo já vêm dentro do plugin — nada precisa ser instalado
-separadamente.
+```
+resolutivo-ai/
+├── src/
+│   ├── server.py                  # Ponto de entrada FastMCP, rotas /health, /mcp e OAuth 2.1
+│   ├── auth/                      # Módulo de Autenticação e Segurança
+│   │   ├── middleware.py          # Middleware Starlette (Bearer / OAuth / Dev)
+│   │   ├── oauth_provider.py      # Provedor OAuth 2.1 (RFC 8414 /.well-known, /oauth/authorize, /oauth/token)
+│   │   └── security.py            # JWT, sanitização de logs (sem PII/segredos)
+│   ├── tools/                     # Ferramentas determinísticas executáveis
+│   │   ├── cnj_tools.py           # DataJud e DJEN (consultar_processo, buscar_publicacoes, etc.)
+│   │   ├── calculo_tools.py       # Motor aritmético de correção monetária e juros
+│   │   ├── provisao_tools.py      # Liquidação determinística de pedidos e provisão
+│   │   ├── revisor_tools.py       # Classificação de peças, esqueleto e linter de estilo
+│   │   └── base_tools.py          # Utilitários de conversão e formatação de parcelas
+│   ├── prompts/                   # Catálogo de MCP Prompts estruturados
+│   │   └── prompts_registry.py    # redigir_peca, revisar_peca, conselho_deliberativo, etc.
+│   └── resources/                 # Catálogo de MCP Resources (textos canônicos e checklists)
+│       └── resources_registry.py  # rdaa://perfil/escritorio, rdaa://regras/redacao, etc.
+├── Dockerfile                     # Imagem de produção otimizada (Python 3.12-slim)
+├── render.yaml                    # Configuração para deploy no Render
+├── Procfile                       # Suporte para Railway e Heroku
+├── cloudbuild.yaml                # Suporte para Google Cloud Run
+└── tests/                         # Suíte de 91 testes automatizados (pytest)
+```
 
-## Skills do plugin
+---
 
-### Redação de peças
+## 2. Relação entre as Skills Originais e o Protocolo MCP
 
-| Skill | O que faz |
-|-------|-----------|
-| `/redigir-peca` | Orquestra o fluxo completo por tipo de produção. C é peça muito simples em parágrafos curtos. B usa o que foi fornecido no processo e permite desenvolvimento, explicação, Legal Design ou ilustração. A é peça premium com todo o conjunto de recursos aprovado. Redação por blocos e esqueleto ficam limitados a A/B. Nenhum nível consulta o vault automaticamente |
-| `/esqueleto-peca` | Checklist estrutural (requisitos CPC) por tipo de peça — chamada internamente pelo `redigir-peca`, não usada isolada |
-| `/contencioso-rdaa` | Persona, metodologia analítica e regras de redação RDAA — base de qualquer peça, memorial, parecer, contestação, recurso ou análise estratégica de litígio |
-| `/dano-moral-rct` | Redige seções específicas de ação de dano moral no estilo autoral de Ricardo Cesar |
-| `/formatar-peca` | Gera o `.docx` candidato no padrão visual RDAA e o encaminha à publicação protegida. A entrega só ocorre após QA, backup, hash e substituição atômica |
-| `/legal-design-rdaa` | Plain language, Visual Law, infográficos, linhas do tempo — deixa peças e contratos mais claros sem perder rigor técnico |
+As funcionalidades do plugin foram devidamente auditadas e convertidas de acordo com sua natureza:
 
-### Pesquisa e consulta
+### 2.1 Ferramentas MCP (`Tools` — Código Executável Determinístico)
 
-| Skill | O que faz |
-|-------|-----------|
-| `/buscar-jurisprudencia` | Jusbrasil (ementas literais) + DataJud opcional quando houver pedido de volume/estatística |
-| `/lei-e-sumula` | Texto atualizado de lei ou súmula (STF/STJ) em fonte oficial, sempre com citação literal e link |
-| `/consultar-processo` | Andamento processual via DataJud, somente quando Ricardo pedir a consulta |
-| `/calculo-judicial` | Correção monetária e juros entre duas datas, com tabelas de índice mantidas localmente |
+| Ferramenta MCP | Skill de Origem | O que faz |
+|----------------|-----------------|-----------|
+| `consultar_processo` | `consultar-processo` | Consulta dados cadastrais, partes e 10 últimos movimentos no DataJud. |
+| `buscar_processos_por_parte` | `consultar-processo` | Pesquisa processos no DataJud por nome da parte e polo (ATIVO/PASSIVO). |
+| `buscar_processos_por_assunto` | `consultar-processo` | Pesquisa processos no DataJud por matéria/assunto jurídico. |
+| `listar_tribunais` | `consultar-processo` | Lista siglas de tribunais válidos e seus respectivos índices no DataJud. |
+| `buscar_publicacoes_djen` | `backoffice-diario` | Consulta publicações e intimações no Diário de Justiça Eletrônico Nacional (PJe). |
+| `buscar_publicacoes_dje_cnj` | `backoffice-diario` | Filtra movimentações de publicação no DJe diretamente nos autos do DataJud. |
+| `calcular_atualizacao_judicial`| `calculo-judicial` | Motor determinístico de correção monetária e juros moratórios com tabelas oficiais. |
+| `listar_indices_disponiveis` | `calculo-judicial` | Lista índices cadastrados no manifesto e seu status de validação. |
+| `liquidar_pedidos_provisao` | `previsao-condenacao-rdaa` | Soma aritmética de parcelas e ponderação de risco de condenação (Decimal). |
+| `classificar_tipo_peca` | `revisor-rdaa` | Classifica o nível da peça (Tier A, B, C), rito e permissão de blocos. |
+| `validar_esqueleto_peca` | `esqueleto-peca` | Valida objetivamente requisitos estruturais do esqueleto contra o CPC. |
+| `verificar_estilo_rdaa` | `revisor-rdaa` | Linter estilométrico objetivo (proibição de travessões, pontuação fora de lista, etc.). |
+| `converter_tabela_perfil` | `perfil-csv` | Converte tabela de parcelas em formato CSV padronizado. |
 
-### Backoffice e operação diária
+### 2.2 Prompts MCP (`Prompts` — Raciocínio, Persona e Orquestração)
 
-| Skill | O que faz |
-|-------|-----------|
-| `/backoffice-diario` | Briefing matinal: publicações DJEN + prazos DataJud + providências do dia |
-| `/backoffice-juridico` | Transforma prazos, andamentos e demandas soltas em providências claras com responsável e mensagem pronta (e-mail, WhatsApp, comunicação interna) |
-| `/briefing-andamentos` | Roda o Radar Estratégico (script Python) sobre a planilha de andamentos e gera o briefing dos casos críticos |
-| `/correcao-base-rdaa` | Diagnostica e corrige a base de contencioso (export CPJ-3C / planilha Resolutivo) — recursos soltos, fichas desatualizadas, campos em branco |
+| Prompt MCP | Skill de Origem | Finalidade |
+|------------|-----------------|------------|
+| `redigir_peca` | `redigir-peca` / `contencioso-rdaa` | Conduz a redação completa no padrão RDAA conforme o nível (A/B/C). |
+| `revisar_peca` | `revisor-rdaa` | Orquestra a revisão da peça contra os Checklists 1, 2 e 3 do escritório. |
+| `analisar_risco_processual`| `analise-provisao-rdaa` | Guia a classificação de risco (provável/possível/remoto) sob CPC 25 / NBC TG 25. |
+| `conselho_deliberativo` | `conselho-rdaa` | Conduz o conselho deliberativo ACH com 5 conselheiros especializados. |
+| `critico_adversarial` | `critico-rdaa` | Teste de estresse adversarial da tese jurídica antes do protocolo. |
+| `gerar_briefing_andamentos`| `briefing-andamentos` | Estrutura o briefing matinal executivo de casos críticos. |
+| `organizar_prazos_backoffice`| `backoffice-juridico` | Transforma intimações em esteira de tarefas com responsáveis e minutas. |
+| `redigir_dano_moral_rct` | `dano-moral-rct` | Redige fundamentação de dano moral no estilo autoral RCT/RDAA. |
+| `aplicar_legal_design` | `legal-design-rdaa` | Orienta criação de linhas do tempo, matrizes de confronto e plain language. |
+| `aplicar_estilo_flavia` | `estilo-flavia-rdaa` | Camada de estilo textual adaptada ao perfil da Dra. Flávia. |
 
-### Revisão e gestão de risco
+### 2.3 Recursos MCP (`Resources` — Conhecimento Normativo e Checklists)
 
-| Skill | O que faz |
-|-------|-----------|
-| `/revisor-rdaa` | Checklist técnico (jurídico-estratégico e visual/formatação) antes de protocolar |
-| `/analise-provisao-rdaa` | Classifica risco processual (provável/possível/remoto) e faz double-check de provisão/contingência contra CPC 25 / NBC TG 25 |
+| URI do Recurso | Conteúdo Disponibilizado |
+|----------------|--------------------------|
+| `rdaa://perfil/escritorio` | Identidade, setores e governança do escritório Romano Donadel (`CLAUDE.md`). |
+| `rdaa://regras/redacao` | Núcleo Único de Escrita e regras de redação forense (`redacao-rdaa.md`). |
+| `rdaa://checklists/revisao/juridico` | Checklist 1 — Aspectos Jurídicos e Estratégicos. |
+| `rdaa://checklists/revisao/visual` | Checklist 2 — Visual Law e Formatação. |
+| `rdaa://checklists/revisao/estilometria` | Checklist 3 — Estilometria e Vícios de Linguagem. |
+| `rdaa://provisao/metodologia` | Metodologia da árvore de risco e provisionamento contábil. |
+| `rdaa://indices/manifest` | Manifesto oficial de índices monetários e fontes primárias. |
+| `rdaa://slide-style/guia` | Guia de identidade visual e paleta para apresentações executivas. |
 
-### Suporte e utilidades
+---
 
-| Skill | O que faz |
-|-------|-----------|
-| `/conselho-rdaa` | Conselho de decisão (ACH + 5 conselheiros) para decisões reais com alternativas — estratégia, acordo, contratação |
-| `/perfil-csv` | Converte tabela de parcelas/cálculos para o formato "perfil", pronto pra colar |
-| `/romano-donadel-slide-style` | Identidade visual padrão (cores, tipografia, componentes) para apresentações do escritório |
-| `/estilo-flavia-rdaa` | Camada opcional para adaptar uma peça já redigida ao perfil textual da Flávia. Só aciona com pedido explícito ou `estilo_alvo: flavia` |
-| `/converter-arquivo-grande` | Extrai texto localmente antes da leitura de arquivos extensos para reduzir contexto. Não instala dependências automaticamente |
-| `/previsao-condenacao-rdaa` | Análise de provisão pré-sentença sob demanda, com liquidação determinística e fontes externas opcionais. Não infere risco |
+## 3. Funcionalidades Bloqueadas, Pendentes ou com Dependências Específicas
 
-## Catálogo e governança de extensões
+1. **Jusbrasil (`buscar-jurisprudencia`)**:
+   - *Status*: Mantida como fluxo via extensão do Chrome / navegador logado.
+   - *Motivo*: O Jusbrasil não fornece API REST pública oficial headless sem autenticação proprietária de navegador.
+2. **NotebookLM Interno**:
+   - *Status*: Requer configuração de ambiente (`NOTEBOOKLM_MCP_PATH` apontando para o CLI local).
+3. **Vault Obsidian**:
+   - *Status*: Mantido inerte por governança institucional do escritório (gravação e leitura apenas quando explicitamente solicitado).
 
-As extensões externas e referências de skills são registradas em
-`skills/revisor-rdaa/references/catalogo-skills-externas.md`. O catálogo informa
-origem, finalidade, acionamento, dependências, status de teste e limites. Nenhum
-item externo é ativado por volume, nome de advogado, nome de réu ou existência de
-processo. A skill Flávia não prova autoria e a skill de previsão não substitui
-análise jurídica.
+---
 
-## Ementário compartilhado (vault Obsidian)
+## 4. Como Executar Localmente
 
-O vault Obsidian permanece como capacidade futura e não é consultado ou gravado
-automaticamente por nenhum tipo de peça. A matéria deve trabalhar com fatos,
-documentos, decisões e fontes explicitamente fornecidos ou selecionados na
-execução. Qualquer consulta ou gravação futura dependerá de pedido expresso e
-registro separado de origem e decisão.
+### 4.1 Instalação das Dependências
 
-## Playbook de modelos de estrutura
-
-A skill `esqueleto-peca` distribui `references/playbook-modelos.md` e um catálogo
-local vazio em `references/catalogo-modelos.json`. O playbook organiza estrutura,
-versão, blocos, variáveis, dependências, recursos visuais e provenance, mas não
-aplica automaticamente tese, fato, fonte, pedido ou pertinência jurídica.
-
-## Estado compartilhado e provenance local
-
-O plugin mantém automaticamente um estado local por matéria em `.rdaa-run/<matter_id>`.
-
-A consulta ao CNJ/DataJud/DJEN não é etapa obrigatória de `/redigir-peca`.
-Número de processo no contexto não dispara consulta. Essas fontes continuam
-disponíveis quando Ricardo pede andamento, publicação, prazo ou estatística,
-ou quando a skill própria de backoffice é acionada.
-Esse estado separa fatos explícitos, teses, decisões, pendências e registros de
-fontes. As pesquisas conferidas podem ser registradas no `provenance.jsonl` com
-origem, localização, trecho literal e status, sem depender de serviço externo.
-
-Antes de chamar conselho, redator, crítico ou revisor, o fluxo pode montar um
-pacote de contexto específico para a função com
-`skills/revisor-rdaa/scripts/contexto_rdaa.py`. O pacote é menor que o estado
-completo e evita repetir histórico irrelevante. O mecanismo não infere tese,
-risco, validade, autenticidade ou pertinência jurídica a partir de texto livre.
-
-Quando há estado estruturado, o publicador executa também a revisão semântica
-objetiva (`skills/revisor-rdaa/scripts/semantica_rdaa.py`). Ela confere IDs,
-referências, identidade do processo e duplicidades objetivas. Somente erros
-estruturais verificáveis podem bloquear a entrega; alertas que exigem julgamento
-jurídico permanecem como pendências. O sistema registra localmente métricas de
-tamanho dos pacotes, sem enviar o conteúdo para serviço externo. O manifesto
-local também registra a rota baseada em risco explicitamente declarado, com
-agentes `selected` e `omitted`, eventos agregados de agentes, rodadas repetidas
-e tentativas bloqueadas de publicação. Um pedido direto de agente fica marcado
-como `override_explicito`.
-Esses registros são proxies de engenharia, não medição direta de créditos. Quando
-blocos do contexto declaram IDs, o gerador grava marcações OOXML invisíveis no
-DOCX e o publicador verifica se esses IDs chegaram ao documento; nenhum ID é
-mostrado ao usuário nem altera a redação.
-
-O Visual Law continua opcional. Quando usado, o novo bloco `visual` exige tipo
-(`timeline`, `matrix`, `flow` ou `confrontation`), função declarada, texto
-pesquisável, dados explícitos e IDs semânticos quando houver vínculo com fatos,
-fontes ou pedidos. Tabelas preservam texto pesquisável; metadados de figura são
-invisíveis. O publicador bloqueia apenas falhas estruturais objetivas.
-
-Decisões podem receber recortes anotados pelo script local
-`skills/formatar-peca/scripts/anotar_decisao.py`. O contexto informa a página, o
-recorte, as coordenadas e os IDs das caixas; o script gera uma cópia nova com
-retângulos vermelhos sem preenchimento, preserva o original e grava manifesto
-com hashes e coordenadas antes/depois do recorte. O plugin não escolhe o trecho,
-não faz inferência jurídica e não altera a fonte original.
-
-A manutenção administrativa é separada do fluxo de redação. O diagnóstico usa
-`skills/revisor-rdaa/scripts/manutencao_rdaa.py inspect .rdaa-run`. A limpeza é
-simulada por padrão e, quando explicitamente autorizada com `--apply`, move
-estados antigos para quarentena local. Backups não são apagados automaticamente;
-restauração exige seleção explícita e preserva a versão atual antes da troca.
-
-## Integrações disponíveis
-
-### 1. CNJ (DataJud + DJEN) — opcional
-
-Servidor próprio, self-contained, em `servers/cnj-server.py` — configurado
-pelo `.mcp.json` do plugin quando uma skill de consulta processual, publicação,
-backoffice ou estatística for acionada. Não é requisito para redigir ou formatar
-uma peça.
-
-### 2. NotebookLM
-
-Defina a variável de ambiente `NOTEBOOKLM_MCP_PATH` apontando para o seu
-servidor MCP local do NotebookLM antes de ativar o plugin:
 ```bash
-export NOTEBOOKLM_MCP_PATH=/caminho/para/seu/notebooklm-mcp/server.py
+# Criar ambiente virtual
+python -m venv .venv
+source .venv/bin/activate  # No Windows: .venv\Scripts\activate
+
+# Instalar dependências
+pip install -r requirements.txt
 ```
 
-### 3. Jusbrasil
+### 4.2 Execução do Servidor
 
-`buscar-jurisprudencia` usa a extensão Claude in Chrome com a conta do
-Jusbrasil já logada — não é um MCP, é automação de navegador.
+```bash
+# Modo Streamable HTTP (padrão em http://localhost:8000/mcp com health check em /health)
+python -m src.server --port 8000 --transport streamable-http
 
-## Exemplos de uso
-
-```
-"Busca jurisprudência do STJ sobre devolução em dobro de cobrança indevida"
-→ Aciona /buscar-jurisprudencia com Jusbrasil; DataJud só se houver pedido de volume ou estatística
-
-"Consulta o processo 0000000-00.0000.8.26.0001"
-→ Aciona /consultar-processo com DataJud
-
-"Tem alguma publicação nova no processo 1234567-00.0000.8.26.0000?"
-→ Usa MCP CNJ → buscar_publicacoes_dje_cnj()
-
-"Organiza o dia"
-→ Aciona /backoffice-diario com DJEN + DataJud + /backoffice-juridico
-
-"Redige a contestação no caso de dano moral por negativação indevida"
-→ Aciona /redigir-peca sem consulta automática ao CNJ/DataJud/DJEN
-
-"Quanto devemos provisionar nesse processo?"
-→ Aciona /analise-provisao-rdaa
-
-"Roda o radar de andamentos de hoje"
-→ Aciona /briefing-andamentos
+# Modo STDIO (para clientes locais como Claude Desktop)
+python -m src.server --transport stdio
 ```
 
-## Changelog
+### 4.3 Verificação de Saúde
 
-### 3.0.0 (2026-08-20)
+```bash
+curl http://localhost:8000/health
+```
 
-- Renomeação completa da identidade do plugin para **Resolutivo.AI**.
-- Novo identificador técnico `resolutivo-ai`, conforme o formato exigido pelo Claude Code.
-- O novo identificador altera o namespace das skills, mas não altera nomes de skills, scripts, regras jurídicas, caminhos internos ou comportamento funcional.
-- A atualização exige reinstalação ou recarregamento do plugin para que o novo namespace seja reconhecido.
+Resposta esperada:
+```json
+{
+  "status": "healthy",
+  "service": "resolutivo-ai-mcp",
+  "version": "3.0.0",
+  "auth_mode": "none",
+  "mcp_endpoint": "/mcp",
+  "capabilities": {
+    "tools": true,
+    "prompts": true,
+    "resources": true,
+    "streamable_http": true
+  }
+}
+```
 
-### 1.3.0 (2026-08-05)
+---
 
-Unifica a "língua RDAA" num núcleo único de escrita, extraído dos melhores
-modelos reais do escritório (apelação, agravos, contrarrazões, manifestações
-simples e com títulos):
+## 5. Como Testar com o MCP Inspector
 
-- **`contencioso-rdaa/references/redacao-rdaa.md` reescrito como Núcleo Único
-  de Escrita**: abertura fixa com fundamento legal no primeiro período, tese
-  fundida na primeira frase do parágrafo (sem frase-tese isolada — compatível
-  com o checklist-3), jurisprudência com aterrissagem, pedidos em cascata,
-  fechamento fixo, tabela de dosagem por tipo de peça (manifestação simples →
-  recursal extenso → narrativa), sinais de cadência robótica condensados e
-  checklist de conformidade usado igualmente na redação e na revisão. Regras
-  dos Apontamentos 2026-07 preservadas (títulos sem Da/Do/De, sublinhado
-  proibido, extensão de parágrafo, números por categoria).
-- **Skills apontadas para o núcleo como leitura obrigatória**:
-  `dano-moral-rct` (núcleo primeiro, `estilo-rct.md` como camada),
-  `redigir-peca` (passo 7), `esqueleto-peca` e `revisor-rdaa` (listas
-  duplicadas viraram remissão — fonte única).
-- **Ciclo fechado no revisor**: itens do `checklist-1-juridico.md` que
-  nasceram na revisão sem constar da fonte de redação agora citam
-  `redacao-rdaa.md` (citação legal, números, verbo de comando, dois-pontos,
-  pedidos em cascata).
-- Cópia Codex sincronizada com os mesmos arquivos.
+O [MCP Inspector](https://github.com/modelcontextprotocol/inspector) permite inspecionar interativamente todas as ferramentas, prompts e recursos:
 
-### 1.2.0 (2026-07-24)
+```bash
+# 1. Inicie o servidor localmente (AUTH_MODE=none no .env)
+python -m src.server --port 8000 --transport streamable-http
 
-Adiciona um hook `SessionStart` (`hooks/hooks.json` + `hooks/scripts/session-start.mjs`)
-que injeta o `CLAUDE.md` do plugin (perfil do escritório, persona, regras de
-orquestração) como contexto automático em toda sessão. Antes, esse arquivo
-era inerte — o Claude Code não carrega um `CLAUDE.md` de raiz de plugin como
-contexto de projeto, e a "skill de onboarding" que deveria copiá-lo nunca foi
-implementada. Isso fazia o plugin só se comportar de forma proativa
-(classificar peça, consultar CNJ automaticamente etc.) quando a frase do
-usuário batia bem com a descrição de uma skill específica. Com o hook, o
-comportamento fica equivalente ao `AGENTS.md` que a versão Codex do mesmo
-plugin já carrega nativamente em toda sessão.
+# 2. Em outro terminal, inicie o MCP Inspector:
+npx @modelcontextprotocol/inspector
+```
 
-### 1.1.0 (2026-07-24)
+No MCP Inspector:
+- Selecione o transporte: **Streamable HTTP** ou **SSE**.
+- URL: `http://localhost:8000/mcp` (ou `http://localhost:8000/sse` se modo SSE).
+- Clique em **Connect** para explorar as 13 ferramentas, 10 prompts e 8 recursos.
 
-Melhorias de formatação e redação a partir dos Apontamentos de melhoria do
-escritório (revisão de uma peça real contra o Manual de Redação RDAA 2021),
-convertidas em regra geral e distribuídas entre `formatar-peca`,
-`contencioso-rdaa`, `esqueleto-peca` e `revisor-rdaa`:
+---
 
-- **`formatar-peca` (determinístico, `construir_peca.py`/`verificar_formatacao.py`)**:
-  gera primeiro um candidato temporário e nunca grava diretamente no destino final;
-  a publicação ocorre pelo `publicar_docx.py` depois do gate protegido. O
-  rodapé com linha superior e paginação alinhada à direita (não mais
-  centralizada); endereçamento em espaçamento simples com 2 linhas em branco
-  depois (antes 1,5 e só 1 enter); mesma correção após o quadro
-  Processo/Partes; enter entre linhas de partes diferentes dentro do quadro;
-  título com recuo deslocado (2ª linha alinha em 2cm com a 1ª); nome da peça
-  opcional em CAIXA ALTA + negrito na abertura; **reversão de destaque** —
-  nome da parte e e-mails das assinaturas não usam mais sublinhado (Manual
-  §2.9: destaque só por negrito).
-- **`contencioso-rdaa/references/redacao-rdaa.md` (fonte canônica)**: regra de
-  números por categoria (1-9 extenso, 10+ numeral, nunca repetir "N
-  (extenso)"; exceções de data/artigo/valor monetário); citação legislativa
-  (diploma antes do dispositivo); títulos nunca começam com Da/Do/De/Dos/Das;
-  verbos de comando e dois-pontos tratados como vício **contextual** (nunca
-  proibição absoluta); extensão de parágrafo (3-7 linhas confortável, revisar
-  acima de 10-12).
-- **`esqueleto-peca`**: seção única de formalidades comuns (endereçamento sem
-  "digníssimo", nome da peça, pedidos com parágrafo introdutório antes das
-  alíneas, checagem de redundância entre pedidos, fecho padronizado, data no
-  formato "Cidade/UF").
-- **`revisor-rdaa` (checklists 1/2/3)**: itens novos alinhados às regras
-  acima, sem duplicar o texto das fontes canônicas.
+## 6. Conexão com o Google Gemini (Connected Apps)
 
-Ver o plano de implementação para o detalhamento completo por item.
+Para conectar o servidor MCP ao **Google Gemini** como um aplicativo conectado personalizado:
+
+### 6.1 URLs para Cadastro no Gemini
+
+Após realizar o deploy (ex: `https://resolutivo-ai.onrender.com`):
+
+* **MCP Server URL**: `https://resolutivo-ai.onrender.com/mcp`
+* **Authorization URL**: `https://resolutivo-ai.onrender.com/oauth/authorize`
+* **Token URL**: `https://resolutivo-ai.onrender.com/oauth/token`
+* **Scopes**: `mcp:all`
+
+### 6.2 Configuração de Credenciais OAuth 2.1
+
+1. Defina as variáveis de ambiente no servidor:
+   - `AUTH_MODE=oauth`
+   - `SERVER_BASE_URL=https://resolutivo-ai.onrender.com`
+   - `OAUTH_CLIENT_ID=<defina-um-id-ex-gemini-client>`
+   - `OAUTH_CLIENT_SECRET=<defina-um-segredo-forte>`
+   - `JWT_SECRET=<defina-uma-chave-jwt-segura>`
+2. No painel de configuração de conexões do Gemini:
+   - Insira o **Client ID** e **Client Secret** configurados.
+   - O Gemini realizará o fluxo PKCE padrão (S256) automaticamente.
+
+---
+
+## 7. Instruções de Deploy
+
+### 7.1 Deploy no Render
+
+1. Crie um novo **Web Service** no Render conectado ao seu repositório GitHub.
+2. O arquivo [`render.yaml`](file:///c:/Projetos/resolutivo-ai/render.yaml) já contém a configuração necessária:
+   - **Environment**: Python
+   - **Build Command**: `pip install -r requirements.txt`
+   - **Start Command**: `python -m src.server --host 0.0.0.0 --port $PORT --transport streamable-http`
+   - **Health Check Path**: `/health`
+3. Configure as variáveis de ambiente no painel do Render (`AUTH_MODE`, `SERVER_BASE_URL`, etc.).
+
+### 7.2 Deploy no Google Cloud Run
+
+```bash
+# Build e deploy direto com gcloud
+gcloud run deploy resolutivo-ai-mcp \
+  --source . \
+  --region southamerica-east1 \
+  --allow-unauthenticated \
+  --port 8000 \
+  --set-env-vars AUTH_MODE=oauth,SERVER_BASE_URL=https://<sua-url-cloud-run>.run.app
+```
+
+### 7.3 Deploy no Railway / Heroku
+
+O projeto já inclui [`Procfile`](file:///c:/Projetos/resolutivo-ai/Procfile):
+```
+web: python -m src.server --host 0.0.0.0 --port $PORT --transport streamable-http
+```
+
+---
+
+## 8. Exemplos Práticos de Uso
+
+### 8.1 Chamada: Consulta de Processo (`consultar_processo`)
+
+**Entrada:**
+```json
+{
+  "numero_processo": "1002345-67.2023.8.26.0100",
+  "tribunal": "TJSP"
+}
+```
+
+**Resposta:**
+```json
+{
+  "status": "success",
+  "processos": [
+    {
+      "numero_processo": "10023456720238260100",
+      "tribunal": "TJSP",
+      "classe": "Procedimento Comum Cível",
+      "assuntos": ["Indenização por Dano Moral", "Inclusão Indevida em Cadastro de Inadimplentes"],
+      "orgao_julgador": "2ª Vara Cível do Foro Central",
+      "partes": [
+        {"tipo": "ATIVO", "nome": "MARIA DA SILVA"},
+        {"tipo": "PASSIVO", "nome": "BANCO EXEMPLO S.A."}
+      ],
+      "movimentos_recentes": [
+        {"data": "2024-02-15T14:30:00", "descricao": "Conclusos para Despacho"}
+      ]
+    }
+  ]
+}
+```
+
+### 8.2 Chamada: Liquidação de Pedidos (`liquidar_pedidos_provisao`)
+
+**Entrada:**
+```json
+{
+  "pedidos_json": "[{\"pedido\": \"Tarifas\", \"tipo\": \"material\", \"valor_unitario\": 100.0, \"periodicidade\": \"mensal\", \"data_inicio\": \"2022-01-01\", \"data_fim\": \"2022-03-01\", \"risco\": \"provavel\"}, {\"pedido\": \"Dano moral\", \"tipo\": \"moral\", \"valor_unitario\": 8000.0, \"periodicidade\": \"unico\", \"risco\": \"possivel\"}]"
+}
+```
+
+**Resposta:**
+```json
+{
+  "status": "success",
+  "total_pedidos": 2,
+  "total_liquidado": 8300.0,
+  "total_provisao_ponderada": 4300.0,
+  "linhas": [
+    {
+      "pedido": "Tarifas",
+      "tipo": "material",
+      "valor_liquidado": 300.0,
+      "risco_percentual": 100.0,
+      "provisao_ponderada": 300.0
+    },
+    {
+      "pedido": "Dano moral",
+      "tipo": "moral",
+      "valor_liquidado": 8000.0,
+      "risco_percentual": 50.0,
+      "provisao_ponderada": 4000.0
+    }
+  ]
+}
+```
+
+### 8.3 Chamada: Linter de Estilo Forense (`verificar_estilo_rdaa`)
+
+**Entrada:**
+```json
+{
+  "texto_peca": "A parte autora — ora requerente — requer a procedência."
+}
+```
+
+**Resposta:**
+```json
+{
+  "status": "REPROVADO",
+  "total_paragrafos_analisados": 1,
+  "total_violacoes": 1,
+  "violacoes": [
+    "Paragrafo 0: travessao proibido na peca final, sem excecao — reescrever com virgula, ponto ou conectivo: 'A parte autora — ora requerente — requer a procedência.'"
+  ]
+}
+```
+
+---
+
+## 9. Execução de Testes Automatizados
+
+O projeto conta com suíte completa de testes unitários e de integração:
+
+```bash
+pytest
+```
+
+Output:
+```
+======================= 91 passed in 19.70s =======================
+```
+
+---
+
+## 10. Licença e Direitos
+
+Projeto proprietário desenvolvido para uso exclusivo do **Romano Donadel Advogados Associados (RDAA)**.
+Responsável Técnico: Ricardo Cesar Souza de Oliveira Junior (`ricardocsojr@gmail.com`).

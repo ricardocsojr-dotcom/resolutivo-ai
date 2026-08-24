@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: resolutivo-ai-mcp
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m src.server --host 0.0.0.0 --port $PORT --transport streamable-http
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: AUTH_MODE
+        value: oauth
+      - key: SERVER_BASE_URL
+        sync: false
+      - key: OAUTH_CLIENT_ID
+        generateValue: true
+      - key: OAUTH_CLIENT_SECRET
+        generateValue: true
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATAJUD_API_KEY
+        value: cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw==
