@@ -1,0 +1,22 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "resolutivo-ai",
+  "description": "Marketplace do Resolutivo.AI — plugin de contencioso cível e consumerista do Romano Donadel Advogados Associados (RDAA).",
+  "owner": {
+    "name": "Romano Donadel Advogados Associados",
+    "email": "ricardocsojr@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "resolutivo-ai",
+      "description": "Resolutivo.AI é o plugin de contencioso cível e consumerista do Romano Donadel Advogados Associados. Integra redação, revisão, Legal Design, pesquisa autorizada, backoffice e publicação protegida de peças jurídicas.",
+      "author": {
+        "name": "Romano Donadel Advogados Associados",
+        "email": "ricardocsojr@gmail.com"
+      },
+      "category": "productivity",
+      "source": ".",
+      "homepage": "https://github.com/ricardocsojr-dotcom/resolutivo-ai"
+    }
+  ]
+}
