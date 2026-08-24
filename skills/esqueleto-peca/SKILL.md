@@ -56,6 +56,45 @@ Nenhum tipo consulta o vault automaticamente. O playbook de modelos organiza
 somente estruturas aprovadas e não aplica automaticamente tese, fato, fonte,
 pedido ou pertinência jurídica.
 
+## Gate de escalonamento manual — quando travar antes de redigir
+
+Isto não é mérito, tese ou risco jurídico — é só uma trava de fluxo. Quando
+uma das condições abaixo bater, o esqueleto não segue para aprovação normal:
+ele para com `AskUserQuestion` (mesma ferramenta do passo de aprovação do
+esqueleto) e pede a decisão explícita do Ricardo antes de `redigir-peca`
+continuar para a redação completa. Isto existe porque o fluxo A/B hoje roda
+sozinho até a publicação — sem essa trava, uma situação sensível seguiria
+até o fim sem ninguém parar para olhar.
+
+Gatilhos da v1 (ajustáveis — não são regra jurídica, são limiar operacional):
+
+1. **Valor da causa acima de R$ 500.000,00.** Checagem objetiva sobre o
+   campo calculado no bloco "Valor da causa" do checklist. Não infira valor
+   não declarado — se o valor não está calculado ainda, isso já é um `[FALTA]`
+   normal, não este gatilho.
+2. **Tese central sem nenhuma fonte/ementa que a sustente**, no tipo A, depois
+   da pesquisa de jurisprudência automática (passo 4 de `redigir-peca`) não
+   ter encontrado nada aproveitável. Redigir uma tese "nova" sem qualquer
+   precedente interno ou jurisprudência selecionada é decisão de Ricardo, não
+   do fluxo.
+3. **Bloco essencial com `[VERIFICAR]` ou `[FALTA]`** em pedido, valor da
+   causa ou qualificação de parte — lacunas em blocos formais menores (ex.:
+   opção por audiência) não travam, só ficam marcadas no esqueleto normal.
+4. **Crítico (`critico-rdaa`) aponta vulnerabilidade que a rodada automática
+   de correção do passo 7.5 não resolveu por completo.** Hoje isso só vira
+   nota na entrega; quando a vulnerabilidade remanescente for de tese central
+   (não de forma), trava aqui em vez de publicar com pendência não resolvida.
+
+Não é gatilho: prazo da peça (nunca questionar tempestividade, ver
+`CLAUDE.md`), nível da peça (A/B/C não é risco), e conteúdo do vault
+(consulta ao vault continua manual, não entra como sinal automático deste
+gate).
+
+Quando travar, apresente ao Ricardo qual gatilho bateu e o dado concreto
+(valor declarado, tese sem fonte, bloco faltando, achado do crítico) — não
+uma reformulação genérica de "risco alto". `AskUserQuestion` com opções como
+"seguir mesmo assim" / "ajustar antes de seguir" / "aguardar mais insumo".
+
 ## Quando usar cada checklist
 
 | Tipo de peça | Checklist |

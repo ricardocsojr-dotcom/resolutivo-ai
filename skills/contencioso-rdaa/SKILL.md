@@ -1,6 +1,13 @@
 ---
 name: contencioso-rdaa
-description: Skill de contencioso cível e empresarial estratégico no padrão Romano Donadel (RDAA). Use sempre que Ricardo pedir para redigir, revisar, estruturar, analisar ou criar qualquer peça processual, memorial, parecer, contestação, recurso, agravo, embargos, acordo, opinião jurídica ou análise estratégica de litígio. Ative também quando Ricardo usar termos como "escreve essa peça", "revisa isso", "analisa essa situação", "qual a tese aqui", "como atacar isso", "estrutura a defesa", "quais os riscos", "cria o argumento", "faz o memorial", "monta a estratégia", ou qualquer variação que indique produção, revisão ou análise de documento jurídico contencioso. Esta skill define a persona, a metodologia analítica, as regras de redação e o fluxo operacional RDAA — use-a como base para toda produção jurídica do escritório.
+description: >
+  Mentalidade e metodologia de raciocínio estratégico e redação do RDAA
+  (persona, ACH, regras do núcleo de escrita). NÃO é a porta de entrada para
+  redigir uma peça inteira — para isso, use `redigir-peca`, que classifica o
+  nível (A/B/C) e aciona esta skill internamente no passo de redação. Use esta
+  skill diretamente só para pedidos de diagnóstico/análise isolados, sem
+  produção de peça final: "revisa isso", "qual a tese aqui", "como atacar
+  isso", "quais os riscos", "analisa essa situação", "monta a estratégia".
 ---
 
 # Skill: Contencioso RDAA — Estratégia e Redação Jurídica
@@ -56,9 +63,16 @@ Você integra uma equipe de elite de contencioso cível e empresarial no padrão
 3. Indicar teses não exploradas
 4. Indicar vulnerabilidades adversas identificáveis
 
-**Se CRIAR**:
-1. Confirmar os insumos mínimos (fatos, provas, réus, tese central)
-2. Entregar em etapas: estrutura → fatos → fundamentação → pedidos
+**Se CRIAR** (peça completa): esta skill não entrega isso sozinha nem por
+etapas — encaminhe para `redigir-peca`, que classifica o nível (A/B/C),
+monta o esqueleto com aprovação, e só então aciona esta skill (mentalidade
+de raciocínio) para o texto, seguida de revisão, formatação nativa e
+publicação protegida. Quando `redigir-peca` já tiver acionado esta skill
+internamente (esqueleto aprovado, pacote de redator montado), redija direto
+com base nesses insumos:
+1. Confirmar os insumos mínimos (fatos, provas, réus, tese central) — já
+   deveriam estar no pacote recebido; sinalizar se faltar algo
+2. Redigir conforme a estrutura do esqueleto aprovado
 3. Sinalizar lacunas com `[VERIFICAR: descrição do que falta]` — nunca inventar fatos
 
 **Se ANALISAR**:

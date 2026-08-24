@@ -69,19 +69,22 @@ de processos diferentes. O orquestrador pode montar pacotes de contexto ao
 longo do fluxo, mas não deve repassar o estado completo a cada skill.
 
 Antes de acionar agentes adicionais, o orquestrador deve consultar a rota
-executável e persistir sua decisão:
+executável e persistir sua decisão, passando **sempre** `nivel_peca` (A/B/C, já
+classificado no passo 0) como `--level`:
 
 ```bash
 python3 skills/revisor-rdaa/scripts/semantica_rdaa.py \
-  .rdaa-run/<matter_id> route [--level <nivel>] [--agent <agente>]
+  .rdaa-run/<matter_id> route --level <nivel_peca> [--agent <agente>]
 ```
 
-O resultado contém `selected` e `omitted`. Sem `nivel_risco`/`risk_level` ou
-risco explicitamente registrado no contexto, a rota seleciona apenas revisão
-semântica e revisor; conselho e crítico ficam em `omitted`. O tipo da peça, a
-classificação automática C/B/A, a extensão do texto e palavras do contexto não
-substituem uma declaração explícita de risco para essa decisão. Se Ricardo pedir
-expressamente conselho ou crítico, use `--agent` como override e o manifesto
+O resultado contém `selected` e `omitted`. O nível da peça decide sozinho:
+nível **A** seleciona `critico-rdaa` e `conselho-rdaa`; nível **B** seleciona
+só `critico-rdaa`; nível **C** não seleciona nenhum dos dois — QA e revisão
+semântica continuam obrigatórios em todo nível. Não é mais preciso declarar
+risco separadamente para o crítico rodar em A/B: o nível já é a autorização.
+Uma declaração de risco explícita no contexto (`declared_risk_level`) ainda
+pode adicionar agente por cima disso; um pedido expresso de Ricardo por
+conselho ou crítico numa peça C usa `--agent` como override e o manifesto
 registrará `override_explicito`.
 
 ### 2. Organizar o material explicitamente fornecido
@@ -121,12 +124,13 @@ atribua `verificada_externamente` a conteúdo apenas reaproveitado de mensagem,
 arquivo interno ou histórico. A fonte deve ser selecionada no esqueleto antes
 da redação.
 
-- **Tipo B**: não pesquise automaticamente. Pesquise somente se Ricardo pedir
-  ou se houver autorização explícita no plano desta matéria. A peça pode ser
-  desenvolvida com os documentos e fundamentos já presentes no processo.
-- **Tipo A**: a pesquisa ampla pode ser autorizada e, quando estiver no plano
-  aprovado da matéria, deve ser realizada antes do esqueleto. A seleção de
-  fontes continua explícita e não representa conclusão automática de pertinência.
+- **Tipo B**: nunca pesquise automaticamente. A peça é desenvolvida somente com
+  os documentos, fatos e fundamentos já presentes no processo/autos. Pesquisa
+  externa só entra se Ricardo pedir expressamente nesta execução.
+- **Tipo A**: a pesquisa é automática — é premissa do tipo A, não exige pedido
+  ou autorização separada. Realize-a antes do esqueleto. A seleção de fontes
+  dentro do resultado da pesquisa continua explícita e não representa
+  conclusão automática de pertinência.
 - **Tipo C**: não faça pesquisa de jurisprudência ou legislação como parte do
   fluxo padrão.
 
@@ -145,6 +149,10 @@ de estrutura quando um `modelo_id` tiver sido escolhido. Preencha também
 `esqueleto.aprovacao` e os `source_ids` de cada bloco. O contexto de redação
 deve declarar `nivel_peca`, `modo_redacao`, `redacao_por_blocos` e
 `exigir_esqueleto: true`. O tipo C não passa por esta etapa no fluxo padrão.
+
+Antes de pedir aprovação, cheque o gate de escalonamento de
+`esqueleto-peca/SKILL.md` ("Gate de escalonamento manual"). Se algum gatilho
+bater, é a mesma pausa por `AskUserQuestion` abaixo — não uma etapa extra.
 
 **Pare aqui de verdade — use a tool `AskUserQuestion`.** Apresente o
 esqueleto ao Ricardo e chame `AskUserQuestion` com opções como "aprovar
@@ -166,11 +174,10 @@ selecionadas, pendências, regras necessárias, `nivel_peca`, `modo_redacao`,
 repasse o histórico integral ou o provenance bruto.
 
 Só depois do esqueleto aprovado e validado. Use a skill `contencioso-rdaa`
-(ou `dano-moral-rct` se for ação de dano moral) para a redação. O pacote do
-redator recebe o esqueleto aprovado e as fontes selecionadas, não o
-provenance bruto inteiro. Qualquer uma
-das duas camadas parte do mesmo núcleo de escrita —
-`contencioso-rdaa/references/redacao-rdaa.md` — lido como primeiro passo
+para a redação — é a mentalidade/metodologia de raciocínio e escrita do RDAA,
+não uma seleção condicionada ao tipo de ação. O pacote do redator recebe o
+esqueleto aprovado e as fontes selecionadas, não o provenance bruto inteiro.
+`contencioso-rdaa/references/redacao-rdaa.md` é lido como primeiro passo
 obrigatório (a seção de dosagem do núcleo diz o que acrescentar por tipo
 de peça). Siga estritamente:
 - Nos tipos A e B, execute a redação por blocos conforme o esqueleto aprovado.
@@ -198,28 +205,50 @@ sem herdar o raciocínio de quem redigiu.
 
 - Se o crítico apontar vulnerabilidades reais ou teses não exploradas:
   volte automaticamente ao passo 7 para uma rodada de correção com
-  `contencioso-rdaa`/`dano-moral-rct` — não pare para perguntar, isso
+  `contencioso-rdaa` — não pare para perguntar, isso
   aconteceria só uma vez, de forma autônoma, para manter o fluxo rápido em
   peças B/A. Depois de corrigir, siga para o passo 8, mesmo que ainda
-  reste alguma vulnerabilidade menor não resolvida (guarde essa pendência
-  para relatar na entrega).
+  reste alguma vulnerabilidade **menor** não resolvida — de forma, ênfase ou
+  argumento secundário (guarde essa pendência para relatar na entrega).
+- Se a vulnerabilidade remanescente for de **tese central** — não secundária,
+  algo que compromete o argumento principal da peça — isso é o gatilho 4 do
+  gate de escalonamento (`esqueleto-peca/SKILL.md`): pare com
+  `AskUserQuestion` em vez de publicar com essa pendência.
 - Se não houver vulnerabilidade relevante, siga direto para o passo 8.
 - Guarde o relatório do crítico (achados e o que mudou, ou "sem
   divergência relevante") para citar na seção Entrega.
 
-### 7.75. Camada opcional de estilo Flávia
+### 7.75. Camadas opcionais de estilo — pós-redação e pós-crítica
 
-Somente quando o pedido ou o contexto declarar `estilo_alvo: flavia`, invoque
-`estilo-flavia-rdaa` como subagente isolado depois da redação e da crítica
-estratégica, se houver. Passe o texto existente, o tipo de peça e o pacote factual
-mínimo. Não passe histórico da conversa, raciocínio privado, provenance bruto,
-vault ou fontes não selecionadas. A camada pode rodar no máximo três rodadas e
-não pode alterar fatos, tese, pedidos, fontes, IDs ou estrutura obrigatória.
+Rodam depois da redação (passo 7) e da crítica estratégica (passo 7.5), se
+houver, sempre sobre o texto já pronto — nenhuma delas redige do zero. Podem
+se combinar na mesma peça, sempre nesta ordem: `dano-moral-rct` primeiro
+(voz RCT), `estilo-flavia-rdaa` depois (compatibilidade Flávia), se ambas se
+aplicarem.
 
-Depois da saída, rode novamente `verificar_estilo.py` e o checklist do revisor.
-Se houver violação de regra RDAA, a camada deve ser corrigida ou rejeitada antes
-da geração do DOCX candidato. Sem `estilo_alvo: flavia`, não acione a skill por
-inferência de assinatura, destinatário ou nome mencionado no documento.
+**`dano-moral-rct`** — invoque automaticamente quando a matéria da peça for
+ação de dano moral (declarado no contexto ou evidente do pedido/tese
+selecionados no esqueleto). É premissa do gênero da peça, não exige pedido
+separado de Ricardo — equivalente à pesquisa automática do tipo A. Rode como
+subagente isolado, passando o texto já redigido, os fatos/documentos
+selecionados e o tipo de peça. A skill compara o texto contra a voz RCT
+(tese antes dos fatos, episódios como padrão, contraste aparência/realidade,
+linguagem do réu contra si mesmo) e reescreve o que divergir, sem alterar
+fatos, tese, pedidos, fontes ou IDs.
+
+**`estilo-flavia-rdaa`** — só quando o pedido ou o contexto declarar
+`estilo_alvo: flavia`. Não acione por inferência de assinatura, destinatário
+ou nome mencionado no documento. Invoque como subagente isolado, passando o
+texto existente (já com a camada RCT aplicada, se for o caso), o tipo de
+peça e o pacote factual mínimo. Roda no máximo três rodadas de convergência.
+
+Nenhuma das duas camadas passa histórico da conversa, raciocínio privado,
+provenance bruto, vault ou fontes não selecionadas, e nenhuma altera fatos,
+tese, pedidos, fontes, IDs ou estrutura obrigatória — só a forma.
+
+Depois da saída de qualquer uma delas, rode novamente `verificar_estilo.py` e
+o checklist do revisor. Se houver violação de regra RDAA, a camada deve ser
+corrigida ou rejeitada antes da geração do DOCX candidato.
 
 ### 8. Revisar
 
@@ -270,29 +299,55 @@ automática do passo 7.5 não pede aprovação prévia, mas nunca fica
 invisível — Ricardo precisa saber que a peça foi reescrita e por quê antes
 de protocolar.
 
-### 9. Ementário e vault — capacidade futura, sem execução automática
+### 9. Vault — leitura continua manual
 
-Nenhum nível consulta ou grava no vault automaticamente neste fluxo. O
-`provenance.jsonl` continua sendo o ledger local e rastreável da matéria.
+Nenhum nível **consulta** o vault automaticamente neste fluxo — leitura como
+fonte de tese, decisão ou conteúdo de peça exige pedido explícito de Ricardo.
+O `provenance.jsonl` continua sendo o ledger local e rastreável da matéria,
+independente do vault. Não transforme o vault em premissa do tipo B, não
+altere o tipo por causa do conteúdo encontrado e não grave ementas ou teses
+como se fossem verificadas sem decisão explícita.
 
-Se Ricardo solicitar expressamente uma consulta ou gravação no vault em uma
-execução futura, trate isso como uma operação separada, com origem, decisão,
-resultado e possibilidade de auditoria. Não transforme o vault em premissa do
-tipo B, não altere o tipo por causa do conteúdo encontrado e não grave
-ementas ou teses sem decisão explícita.
+### 10. Gravação automática no vault — após publicação
+
+Depois que `publicar_docx.py` retornar `[OK]` (passo Entrega), grave
+automaticamente um resumo da matéria no vault, sem pedir — isso não é
+consulta, é registro do que já aconteceu. Vault:
+`C:\Users\ricar\OneDrive\Documentos\Cerébros\Pessoal\Procedimentos e Informações\`.
+Leia o `CLAUDE.md` desse subvault antes de escrever, ele governa estrutura e
+convenções.
+
+1. Crie ou atualize `wiki/sources/peca-[tipo]_[matter_id]_[data].md` com
+   frontmatter mínimo (`type: source`, `title`, `created`) e um resumo:
+   tipo de peça, cliente, fatos essenciais, tese, pedidos, decisões
+   registradas no `provenance.jsonl`, e status (publicada, hash do
+   candidato). Sem prosa longa — é registro, não a peça em si.
+2. Se o cliente já tem página em `wiki/entities/`, adicione um `[[wikilink]]`
+   de volta para a nota nova e uma linha de atualização. Se não tem, crie a
+   entidade seguindo a convenção kebab-case do subvault.
+3. Referencie a nota nova em `wiki/index.md` — nunca deixe órfã.
+4. Atualize `wiki/hot.md` do subvault com o fato novo, seguindo o limite de
+   ~500 palavras e a regra de sobrescrever (não é histórico cumulativo).
+
+Isso roda uma vez por publicação bem-sucedida, silenciosamente — não pede
+`AskUserQuestion` nem aprovação prévia, mas relate na mensagem de entrega que
+o registro foi feito (uma linha basta). Se a publicação falhar (`[ERRO]`),
+não grave nada no vault.
 
 ## Nota sobre a integração das skills
 
 Este fluxo combina:
-- Classificação de nível (`nivel_peca` C/B/A) → decide profundidade, blocos e esqueleto
-- `jusbrasil-jurisprudencia` → pesquisa de jurisprudência somente quando autorizada e selecionada
-- MCP `CNJ` → dados processuais somente quando `consultar-processo` ou uma consulta estatística/publicação for acionada explicitamente
+- Classificação de nível (`nivel_peca` C/B/A) → decide profundidade, blocos, esqueleto e a rota de agentes (passo 1)
+- `jusbrasil-jurisprudencia` → pesquisa de jurisprudência automática no tipo A (premissa do nível, sem pedido separado), nunca no tipo B/C salvo pedido expresso
+- MCP `CNJ`/DJEN → **desativado** (ver `CLAUDE.md`); não tente consultar andamento, publicação ou movimentação processual
 - MCP `NotebookLM` → uso secundário e somente quando Ricardo pedir
 - `esqueleto-peca` → estrutura obrigatória + ponto de aprovação via
   `AskUserQuestion` nos tipos A e B
 - `playbook-modelos` → modelos de estrutura selecionados por `modelo_id`, sem aplicação automática de tese
-- `contencioso-rdaa` / `dano-moral-rct` → redação
-- `critico-rdaa` → crítica estratégica isolada, conforme rota de risco e autorização
+- `contencioso-rdaa` → mentalidade de raciocínio e redação, sempre nos tipos A/B (passo 7) — não é porta de entrada, é acionada internamente por esta skill
+- `dano-moral-rct` → camada de estilo pós-redação, automática quando a matéria é dano moral (passo 7.75)
+- `estilo-flavia-rdaa` → camada de estilo pós-redação, só com `estilo_alvo: flavia` (passo 7.75)
+- `critico-rdaa` → crítica estratégica isolada; nível A/B sempre aciona, nível C nunca (passo 1, rota por `nivel_peca`)
 - `revisor-rdaa` → qualidade
 - `docx` → entrega protegida
-- Vault → capacidade futura, sem consulta ou gravação automática
+- Vault → leitura sempre manual; gravação automática após publicação (passo 10)

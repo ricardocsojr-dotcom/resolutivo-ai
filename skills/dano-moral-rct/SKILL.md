@@ -1,87 +1,96 @@
 ---
 name: dano-moral-rct
-description: Redige seções específicas de petições de ação de dano moral no estilo autoral de Ricardo Cesar Souza de Oliveira Junior. Use esta skill sempre que Ricardo pedir para redigir, rascunhar, reescrever ou expandir qualquer seção de ação de dano moral — incluindo narrativa dos fatos, fundamentos jurídicos, análise do dano, individualização da responsabilidade, valor da indenização, pedidos e admissibilidade. Ative também quando Ricardo usar termos como "escreve essa seção", "redija no meu estilo", "faça como eu faria", "parte dos fatos", "fundamentos", ou qualquer variação que indique produção de texto para peça de dano moral.
+description: >
+  Reescreve uma peça de ação de dano moral já redigida (por `contencioso-rdaa`
+  dentro do fluxo de `redigir-peca`) para a voz autoral de Ricardo Cesar Souza
+  de Oliveira Junior. NÃO é a porta de entrada para redigir a peça — para
+  isso, use `redigir-peca`. Aciona automaticamente quando a matéria da peça é
+  dano moral, sem precisar de pedido separado; roda como subagente isolado
+  sobre o texto já pronto, sem alterar fatos, tese, pedidos, fontes ou IDs.
 ---
 
-# Skill: Redação de Seções de Ação de Dano Moral (Estilo RCT)
+# Skill: Camada de Estilo — Ação de Dano Moral (Voz RCT)
 
-## O que esta skill faz
+## Contrato de integração com o RDAA
 
-Produz seções de petições de ação de dano moral com fidelidade ao estilo autoral de Ricardo — sua retórica, seu vocabulário, sua estrutura argumentativa e seu tom moral. Não é um gerador genérico de peças jurídicas. É uma extensão da voz dele.
+Esta skill é uma camada opcional de estilo para uma peça **já redigida**
+(por `contencioso-rdaa`, dentro do fluxo de `redigir-peca`, passo 7.75). Ela
+não é um novo tipo de peça, não substitui `redigir-peca`, `contencioso-rdaa`,
+`critico-rdaa`, `revisor-rdaa` ou `formatar-peca`, e não redige do zero.
 
-Antes de escrever qualquer seção, leia obrigatoriamente, nesta ordem:
+Aciona automaticamente quando a matéria da peça for ação de dano moral —
+declarado no contexto ou evidente da tese/pedido selecionados no esqueleto. É
+premissa do gênero da peça, não exige pedido separado de Ricardo.
+
+As regras universais do RDAA prevalecem sobre a voz RCT. A saída deve
+respeitar as regras sem dois-pontos, sem travessão, sem apostos explicativos
+isolados, sem alteração de fatos, tese, pedido, fundamento, fonte, provenance
+ou IDs semânticos.
+
+Depois da reescrita, o texto volta para `estilo-flavia-rdaa` (se também se
+aplicar), `revisor-rdaa` e `formatar-peca`, que geram o candidato e executam
+a publicação protegida. Esta skill nunca grava diretamente o arquivo final.
+
+## Como esta skill deve ser invocada
+
+Invoque via subagente isolado (Agent tool), passando apenas: o texto já
+redigido da peça, os fatos e documentos explicitamente selecionados (o que
+está provado, o que não está), os réus envolvidos e o tipo de peça. Nunca
+passe o histórico da conversa onde a peça foi redigida, nem o raciocínio de
+quem escreveu — o isolamento evita que a reescrita apenas preserve frases
+"porque já estavam ali".
+
+## Leia primeiro
+
+Antes de reescrever, leia:
 1. `contencioso-rdaa/references/redacao-rdaa.md` — núcleo obrigatório de toda peça RDAA
 2. `references/estilo-rct.md` — camada específica de dano moral (complementa o núcleo, nunca o substitui)
 
----
+## O que avaliar e reescrever
 
-## Fluxo de trabalho
+Compare o texto de entrada, parágrafo a parágrafo, contra os princípios
+inegociáveis da voz RCT — e reescreva o que divergir, preservando
+integralmente o conteúdo jurídico e factual:
 
-### 1. Identificar a seção solicitada
+- **Tese antes dos fatos**: o parágrafo anuncia o que os fatos significam
+  antes de narrá-los, ou começa pela narrativa crua?
+- **Episódios como padrão**: os fatos aparecem como um padrão que se
+  confirma, ou como episódio isolado?
+- **Aparência vs. realidade**: há contraste explícito entre o pretexto
+  formal e a intenção real, quando os fatos sustentam isso?
+- **Densidade moral sem abandono técnico**: o texto carrega peso moral sem
+  perder o fundamento legal?
+- **Linguagem do réu contra si mesmo**: palavras, atos e omissões dos réus
+  já fornecidos estão sendo usados como prova da própria ilicitude?
+- **Individualização da responsabilidade**: cada réu está separado onde a
+  peça já individualiza atos, ou ficou genérico?
+- **Cacoetes robóticos**: "cumpre salientar", "oportuno destacar", "por
+  derradeiro" e afins — remover sempre que aparecerem.
+- **Números por extenso** em contexto jurídico formal ("vinte mil reais",
+  não "R$ 20.000").
+- **Marcadores soltos**: listas sem desenvolvimento em prosa — reescrever
+  como texto corrido quando a estrutura não exigir lista.
 
-As seções mais comuns em ações de dano moral são:
+## O que NUNCA fazer
 
-| Seção | Função |
-|---|---|
-| Súmula / Preâmbulo | Síntese da causa em linguagem densa e orientada à tese |
-| Admissibilidade / Foro | Competência, com fundamento técnico e repercussão do dano |
-| Narrativa dos Fatos | Episódios narrados como padrão, não como fatos isolados |
-| Fundamentos Jurídicos | Ato ilícito, abuso de direito, responsabilidade civil |
-| Individualização da Responsabilidade | Nexo causal por réu, com especificidade |
-| Dano Moral e Valor da Indenização | Extensão do dano, presunção, arbitramento |
-| Pedidos | Formulação dos requerimentos finais |
-| Prequestionamento | Cláusula padrão com variação conforme matéria |
+- Nunca altere fato, tese, pedido, fundamento, fonte, provenance ou ID
+  semântico — só a forma.
+- Nunca invente ou reforce fato/prova que não esteja no material fornecido,
+  mesmo que a versão "mais no estilo RCT" soe mais convincente.
+- Nunca insira jurisprudência de memória — cite só o que já estava no texto
+  de entrada com `source_id` selecionado.
+- Nunca decida sozinha por reescrita total da peça — se o desvio for grande
+  o bastante para exigir isso, diga isso explicitamente em vez de produzir
+  um texto irreconhecível do original.
+- Nunca consulte fonte externa, vault, CNJ, DataJud ou Jusbrasil.
 
-Se o usuário não especificar a seção com clareza, pergunte antes de escrever.
+## Formato de saída
 
-### 2. Coletar os insumos necessários
-
-Para qualquer seção, você precisa de:
-
-- **Fatos essenciais**: o que aconteceu, quem fez, quando, onde, diante de quem
-- **Réus envolvidos**: quem pratica cada ato (a individualização é sempre necessária)
-- **Provas existentes**: BOs, atas, gravações, e-mails, manifestações processuais, testemunhos
-- **Contexto relacional**: vínculo entre as partes (familiar, comercial, institucional)
-- **Tese central**: qual o fundamento do dano — honra, imagem, dignidade, convivência familiar, exposição pública, etc.
-
-Se algum desses elementos estiver faltando, pergunte. Não invente fatos.
-
-### 3. Escrever a seção
-
-Siga as diretrizes de estilo do arquivo de referência. Princípios inegociáveis:
-
-- **Tese antes dos fatos**: anuncie o que os fatos significam antes de narrá-los
-- **Episódios como padrão**: nunca apresente um fato como isolado — mostre o padrão que ele inaugura ou confirma
-- **Aparência vs. realidade**: sempre contraste o pretexto formal com a intenção real
-- **Densidade moral sem abandono técnico**: o texto carrega peso moral, mas nunca perde o fundamento legal
-- **Linguagem do réu contra si mesmo**: use as palavras, atos e omissões dos réus como prova da própria ilicitude
-
-### 4. Revisar antes de entregar
-
-Verifique:
-- [ ] A tese está formulada antes da prova?
-- [ ] Os fatos constroem padrão, não episódio?
-- [ ] O contraste aparência/realidade está explícito?
-- [ ] Os réus estão individualizados onde necessário?
-- [ ] O vocabulário é fiel ao estilo RCT (ver referência)?
-- [ ] Não há bullet points soltos sem desenvolvimento em prosa?
-- [ ] Os números estão escritos por extenso?
-
----
-
-## Regras absolutas
-
-1. **Nunca invente fatos.** Se os insumos são insuficientes, pergunte.
-2. **Números sempre por extenso** quando em contexto jurídico formal: "vinte mil reais", não "R$ 20.000".
-3. **Sem robótica.** Nada de "cumpre salientar", "oportuno destacar", "por derradeiro". Esses cacoetes destroem o estilo.
-4. **Sem marcadores soltos.** Listas só quando a estrutura exigir — e mesmo assim, cada item com desenvolvimento mínimo.
-5. **Jurisprudência**: inclua apenas quando Ricardo fornecer o acórdão ou indicar que quer citação. Nunca cite de memória.
-6. **Formatação funcional**: negrito para tese, itálico para narrativa dramática ou citação de conduta, sublinhado para conclusão de ilicitude — igual ao estilo da petição de referência.
-
----
-
-## Saída esperada
-
-Texto corrido em prosa, numerado por parágrafos (estilo petição), com formatação funcional. Extensão proporcional à seção: narrativa dos fatos tende a ser longa; pedidos, compactos.
-
-Entregue a seção pronta. Se houver lacunas nos insumos que impeçam trechos específicos, sinalize com `[VERIFICAR: descrição do que falta]` no corpo do texto, sem interromper o fluxo.
+1. **Peça reescrita** — texto completo, pronto para uso, conteúdo jurídico e
+   factual preservado, forma adequada à voz RCT.
+2. **Ajustes aplicados** — lista curta do que mudou e por quê (ex.: "tese
+   movida para abertura do parágrafo 4", "contraste aparência/realidade
+   explicitado no parágrafo 7").
+3. **Sinalizações**, se houver: `[VERIFICAR: descrição do que falta]` para
+   qualquer trecho que a voz RCT pediria mais densidade mas o material
+   fornecido não sustenta.
