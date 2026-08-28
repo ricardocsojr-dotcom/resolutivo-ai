@@ -58,11 +58,37 @@ Se o usuário especificou um tribunal, aplique o filtro correspondente após os
 resultados carregarem (use `mcp__Claude_in_Chrome__find` para localizar o
 filtro de tribunal).
 
-### Passo 4 — Extrair as ementas
+### Passo 4a — Ranquear os resultados antes de abrir qualquer um
 
-Use `mcp__Claude_in_Chrome__get_page_text` para ler os resultados da busca.
+Use `mcp__Claude_in_Chrome__get_page_text` para ler a **página de resultados
+inteira** (não abra nenhum acórdão ainda). Cada resultado já vem com tribunal,
+data e um trecho curto — o suficiente para julgar relevância sem gastar uma
+navegação por item.
 
-Para cada resultado que deseja incluir (respeitando a quantidade solicitada):
+Não pegue simplesmente os N primeiros na ordem que o Jusbrasil devolve — essa
+ordem mistura texto e data, não necessariamente o que mais fundamenta a peça.
+Olhe todos os resultados visíveis na primeira página e escolha os N melhores
+segundo:
+
+1. **Hierarquia do tribunal** — STJ/STF pesam mais que TJ, que pesa mais que
+   1ª instância, salvo pedido explícito de jurisprudência local/TJ específico.
+2. **Atualidade do entendimento** — prefira decisão mais recente, a menos que
+   o trecho curto indique que ela mesma cita/reafirma uma súmula ou tema
+   repetitivo mais antigo e consolidado (aí a mais antiga/fundante pode valer
+   mais).
+3. **Aderência real ao tema**, não só à palavra-chave — o trecho precisa
+   indicar que o caso trata do mesmo fato/tese, não apenas conter os mesmos
+   termos em contexto diferente.
+
+Se o tribunal foi especificado pelo usuário, aplique o filtro correspondente
+antes desta leitura (use `mcp__Claude_in_Chrome__find` para localizar o filtro
+de tribunal). Se a primeira página não tiver bons candidatos suficientes,
+pode navegar pra próxima página de resultados antes de decidir — ainda sem
+abrir nenhum acórdão individual.
+
+### Passo 4b — Extrair as ementas dos escolhidos
+
+Só agora, para cada resultado selecionado no passo 4a:
 
 1. Clique no resultado com `mcp__Claude_in_Chrome__computer`
 2. Aguarde a página do acórdão carregar

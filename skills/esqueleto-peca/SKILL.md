@@ -100,6 +100,48 @@ Quando travar, apresente ao Ricardo qual gatilho bateu e o dado concreto
 uma reformulação genérica de "risco alto". `AskUserQuestion` com opções como
 "seguir mesmo assim" / "ajustar antes de seguir" / "aguardar mais insumo".
 
+## Entrevista de racional (tipos A/B, antes da entrega)
+
+Isto é diferente do gate de escalonamento acima: aquele trava por limiar
+objetivo (valor, fonte ausente, bloco essencial faltando, vulnerabilidade do
+crítico) e para o fluxo até decisão explícita. Esta entrevista é mais leve —
+não trava nada, só troca o "aprova ou não aprova" de um bloco de texto
+fechado por 1 a 3 perguntas pontuais que pressionam o racional antes de
+apresentar o esqueleto final. Ideia equivalente a uma entrevista tipo
+"grill me": não existe banco fixo de perguntas, o objetivo é forçar
+articulação explícita do porquê antes de redigir, não depois.
+
+Rode isto depois de montar o checklist internamente e antes do bloco
+"ESQUELETO — aguardando aprovação". Se um gatilho do gate de escalonamento já
+disparou, ele tem prioridade — não rode as duas coisas na mesma peça, resolva
+o gate primeiro.
+
+**Quando rodar**: tipos A e B, só quando houver algo genuíno para pressionar.
+Se o esqueleto saiu limpo — tese com fonte forte, nada em `[VERIFICAR]`
+relevante, nenhum ponto óbvio de ataque — pule direto para a entrega normal.
+Não force pergunta em peça que não precisa.
+
+**O que perguntar** (escolha 1 a 3, o que for pertinente ao caso — não use as
+três sempre):
+
+1. **Tese sem fonte forte** (situação mais branda que o gatilho 2 do gate
+   acima — aqui a tese tem alguma fonte, só não é robusta): pergunte por que
+   essa tese em vez de uma alternativa, ou o que sustenta ela além da fonte
+   encontrada.
+2. **Fato relevante em `[VERIFICAR]`** que não é bloco essencial (o gate acima
+   já cobre pedido/valor/qualificação) mas pesa na tese: confirme
+   explicitamente com Ricardo antes de deixar prosseguir como premissa.
+3. **Ponto mais fácil de atacar** — mesma lente do `critico-rdaa`, mas
+   *antes* de redigir, não depois: qual seria o primeiro contra-argumento
+   que um adversário levantaria contra a tese central, e a peça já tem
+   resposta pra isso?
+
+Use `AskUserQuestion` para essas perguntas, com opções concretas quando
+fizer sentido (ex.: "seguir com a tese A" / "trocar pra tese B" / "preciso
+verificar antes") em vez de pergunta aberta genérica. Incorpore a resposta
+no esqueleto antes de apresentar o bloco final de aprovação — a entrevista
+serve pra melhorar o que vai ser aprovado, não é só formalidade separada.
+
 ## Quando usar cada checklist
 
 | Tipo de peça | Checklist |
