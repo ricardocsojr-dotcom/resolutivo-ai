@@ -15,9 +15,10 @@ description: >
 # Lei e Súmula — RDAA
 
 Busca texto oficial de lei e súmula em fontes públicas — nunca recita de
-memória. Risco de erro aqui é baixo comparado a doutrina (item 12 do
-backlog): texto de lei e súmula é canônico e as fontes abaixo são oficiais,
-mas ainda assim toda citação deve vir com link de origem pra conferência.
+memória. Risco de erro aqui é baixo comparado a doutrina, que não tem fonte
+verificada conectada a este plugin (ver `estudo-juridico-rdaa`, passo 2):
+texto de lei e súmula é canônico e as fontes abaixo são oficiais, mas ainda
+assim toda citação deve vir com link de origem pra conferência.
 
 ## Fontes por tipo
 

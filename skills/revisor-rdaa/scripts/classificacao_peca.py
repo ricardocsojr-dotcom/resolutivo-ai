@@ -109,12 +109,17 @@ def validate_piece_contract(context: dict[str, Any]) -> dict[str, Any]:
         )
 
     if context.get("vault_automatico") is True or context.get("consulta_vault_automatica") is True:
-        findings.append(
-            _finding(
-                "vault_automatico_proibido",
-                "Nenhum tipo de peça pode disparar consulta automática ao vault neste momento.",
+        # Única consulta automática permitida: Ementário do Resolutivo (tese/jurisprudência), níveis A/B.
+        # Vault operacional ("Procedimentos e Informações") e nível C continuam bloqueados aqui.
+        permitido = context.get("vault_automatico_origem") == "ementario-resolutivo" and nivel in {"A", "B"}
+        if not permitido:
+            findings.append(
+                _finding(
+                    "vault_automatico_proibido",
+                    "Consulta automática ao vault só é permitida com vault_automatico_origem "
+                    "'ementario-resolutivo' em peça nível A ou B.",
+                )
             )
-        )
 
     model = context.get("modelo_estrutura")
     if model is not None:

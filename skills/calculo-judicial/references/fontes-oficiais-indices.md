@@ -1,6 +1,12 @@
 # Fontes oficiais de índices
 
-Este arquivo registra fontes candidatas e não equivale à homologação de fórmula ou resultado. Cada série precisa de caso dourado aprovado antes de receber status `aprovado` no manifesto.
+Este arquivo registra o mapeamento de origem (aba, coluna, faixa de linhas)
+usado para extrair os CSVs de TJMG e TJSP-tabela-prática — útil se um dia for
+preciso reextrair de uma planilha oficial nova. **TJMG não expurgada e TJSP
+tabela prática já estão `aprovado` no manifesto desde 2026-08-27**, com caso
+dourado registrado em `index_manifest.json`; as tabelas "Status: candidato"
+abaixo descrevem o mapeamento de extração original, não o status atual de
+homologação.
 
 ## TJMG
 
@@ -20,7 +26,7 @@ O XLS de agosto de 2026 foi baixado localmente como candidato e preservado fora 
 | Unidade proposta | `fator` |
 | Status | `candidato` |
 
-A conversão de XLS legado é feita em diretório temporário por LibreOffice, sem modo interativo. A biblioteca não executa macros. Como o contêiner XLS antigo não permite a mesma inspeção de macros do XLSX, a proveniência registra essa limitação e a promoção permanece bloqueada.
+A conversão de XLS legado é feita em diretório temporário por LibreOffice, sem modo interativo. A biblioteca não executa macros. Como o contêiner XLS antigo não permite a mesma inspeção de macros do XLSX, a proveniência registra essa limitação — a extração em si ficou bloqueada por isso, mas o índice foi aprovado depois com caso dourado próprio (ver `index_manifest.json`).
 
 ## TJSP
 

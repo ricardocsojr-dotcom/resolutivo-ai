@@ -83,7 +83,7 @@ não converte vírgula decimal silenciosamente e não altera o arquivo bruto.
 5. Se faltar o mês mais recente na tabela local, bloquear ou avisar antes de
    calcular. Não adivinhar, interpolar ou preencher ausência com zero.
 
-## Cobertura atual das tabelas locais (atualizado em 2026-08-17)
+## Cobertura atual das tabelas locais (atualizado em 2026-08-27)
 
 | Arquivo | Período | Frequência |
 |---|---|---|
@@ -96,17 +96,24 @@ não converte vírgula decimal silenciosamente e não altera o arquivo bruto.
 | `igp-m.csv` | 1990-01 a 2026-07 | mensal |
 | `selic.csv` | 1995-02 a 2026-07 | mensal |
 | `cdi.csv` | 1990-01 a 2026-07 | mensal |
-| `poupanca-nova.csv` | 2012-05 a 2026-08 (aniversários até 03/08) | por data de aniversário (diária) |
-
-Taxa Legal de agosto/2026 foi rateada (acumulado mensal ÷ 31 dias) por falta
-da série diária — confirmado com o Ricardo em 2026-08-17. Se a série diária
-real do drcalc.net ficar disponível depois, substituir.
+| `poupanca-nova.csv` | 2012-05 a 2026-08 (aniversários até 26/08) | por data de aniversário (diária) |
 
 `poupanca-nova.csv` usa a data de início de cada período de aniversário
 (regra da poupança: rende a cada mês a partir da data do depósito, não no
-calendário) como coluna `data` — ao calcular poupança, use a data de
-aniversário mais próxima da data de início informada, não o primeiro dia
-do mês.
+calendário) como coluna `data` — a convenção `aniversario_deposito` exige que
+`data_inicio_correcao` seja a própria data do depósito e `data_final` caia
+exatamente num aniversário mensal seguinte (o motor projeta os ciclos
+mensais a partir do início e recusa `data_final` fora do ciclo).
+
+`taxa-legal.csv` armazena a fração diária pro rata já calculada (Selic
+mensal menos IPCA-15 mensal do mês anterior, com piso zero, dividida pelos
+dias do mês de referência — metodologia do BCB/CMN Resolução 5.171/2024) —
+o mesmo valor se repete em todo dia corrido de um mesmo mês de referência.
+A convenção `dias_corridos_semiaberto` soma (juros simples, sem
+capitalização) os valores diários no intervalo **[data_inicio, data_final)**
+— o dia final não entra na soma, ao contrário de todas as outras
+convenções do motor, porque é assim que a própria Calculadora do Cidadão do
+BCB conta os dias corridos.
 
 ## Fluxo de cálculo
 
@@ -167,23 +174,70 @@ declaradas. Ele copia o template, transporta os valores explícitos e salva uma
 nova planilha. Não baixa dados, não recalcula a aritmética, não escolhe índice,
 não aprova candidato e não altera o arquivo-base.
 
-## Motor Python em homologação
+**Template simples** (`references/template-calculo-simples-rdaa.xlsx` +
+`scripts/renderizar_memoria_simples.py`, criado em 2026-08-27): pra casos
+com um índice só e sem juros segmentados/múltiplos lançamentos complexos.
+Uma aba `Cálculo` (uma linha por parcela, coluna `Tipo` = Principal,
+Honorários ou Custas) + uma aba `Notas` (lista de linhas de texto livre,
+racional do cálculo). Sem as abas de governança do template completo —
+proveniência e caso dourado continuam só no `index_manifest.json`.
 
-Existe uma implementação local em `scripts/calculo_motor.py` com manifesto em
-`references/index_manifest.json`. Ela ainda não é acionada pelo fluxo normal da
-skill. Todas as séries do manifesto permanecem com status `pendente_validacao`,
-portanto o motor bloqueia a execução real até que Ricardo forneça exemplos
-dourados com fórmula, convenção de datas e resultado aprovado.
+## Motor Python (`scripts/calculo_motor.py`)
 
-A implementação usa somente a biblioteca padrão, `Decimal`, CSV local e
-SHA-256. Ela não busca índices externos, não escolhe índice, não interpola
-meses ou dias ausentes, não decide termo inicial e não substitui o cálculo
-atual. O modo resumido devolve JSON compacto e o modo detalhado devolve memória
-de cálculo local somente quando solicitado.
+Implementação local com manifesto em `references/index_manifest.json`, só
+biblioteca padrão + `Decimal` + CSV local + SHA-256. Não busca índice
+externo, não interpola mês/dia ausente, não decide termo inicial.
 
-A integração futura exigirá comparação documentada contra exemplos aprovados e
-commit reversível. Até essa aprovação, a skill continua funcionando pelo fluxo
-atual descrito acima, e o template permanece uma camada opcional de organização.
+**Status em 2026-08-27**: os 10 índices do manifesto (`tjsp` simples e
+`tjmg-fator-atualizacao` foram retirados por serem duplicados) têm caso
+dourado aprovado e calculam de verdade —
+`tjmg-nao-expurgada`, `tjsp-tabela-pratica`, `selic`, `cdi`, `ipca`,
+`inpc`, `igp-m` (conferidos contra a API do Banco Central,
+`scripts/atualizar_indice_bcb.py`), `tjrj` (conferido contra a série
+histórica completa do DrCalc, colada por Ricardo — a tabela do TJRJ é
+atualizada anualmente, não mês a mês, por isso repete o mesmo valor
+durante o ano; `avisar_cobertura: true` avisa até que mês está
+atualizado toda vez que for usado), `poupanca-nova` (série BCB SGS 195,
+conferida dia a dia contra a API e contra a Calculadora do Cidadão do
+próprio BCB — implementada a convenção `aniversario_deposito`, que
+faltava no motor) e `taxa-legal` (não existe como série SGS numérica, só
+como calculadora oficial do BCB — conferida contra ela em dois casos;
+implementada a convenção `dias_corridos_semiaberto`, juros simples com
+soma pro rata, que também faltava no motor). Um bug real de ordenação no
+CSV local do `taxa-legal` (duas linhas de agosto/2026 duplicadas fora de
+posição no fim do arquivo, impedindo o motor de carregar o índice
+inteiro) foi corrigido nessa homologação.
+
+**Mês com índice negativo (deflação) exige declaração explícita** — campo
+`tratamento_indice_negativo`, obrigatório só quando o período selecionado
+realmente contém um mês negativo (mesmo padrão do
+`tratamento_periodo_parcial`; sem declarar, erro
+`indice_negativo_sem_tratamento`):
+- `piso_zero_no_mes` — mês negativo não reduz o saldo, contribui fator 1
+  (nenhuma correção naquele mês). Regra padrão do escritório.
+- `aplicar_integralmente` — deflação reduz o saldo corrigido normalmente
+  (comportamento anterior, disponível só por pedido explícito).
+
+O modo resumido devolve JSON compacto e o modo detalhado devolve memória de
+cálculo local somente quando solicitado.
+
+**Índices com fonte automática no BCB** — `selic`, `cdi`, `ipca`, `inpc`,
+`igp-m` e `poupanca-nova` têm série no SGS do Banco Central
+(`scripts/atualizar_indice_bcb.py --indice NOME --csv referencias/indices/NOME.csv
+--data-inicial AAAA-MM-DD`, sem chave de API). Poupança usa a série 195, uma
+linha por dia de aniversário — a mesma lógica de data+valor do script já
+funciona sem alteração, confirmado em 2026-08-27.
+
+**Índice sem fonte automática** (ex.: TJRJ, Taxa Legal) — atualização manual
+via `scripts/atualizar_indice_manual.py --indice NOME --csv
+referencias/indices/NOME.csv --arquivo-novo NOVO.csv`: só adiciona data
+nova, recusa sobrescrever valor existente que divirja (mesma regra do
+`atualizar_indice_bcb.py`). Taxa Legal não tem série SGS numérica — só a
+Calculadora do Cidadão do BCB, que não expõe API; conferir manualmente
+contra ela quando atualizar. Manifesto pode marcar `"avisar_cobertura":
+true` num índice — toda vez que ele for usado, o resultado inclui em
+`avisos` até que mês está atualizado (`indice_<nome>_atualizado_ate_<data>`),
+pra nunca passar despercebido.
 
 ## O que esta skill não faz
 

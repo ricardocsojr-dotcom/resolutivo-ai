@@ -29,16 +29,11 @@ Parâmetros padrão:
 
 ## Etapa 2 — DataJud (contexto quantitativo, opcional)
 
-Se o usuário quiser saber **o volume** de processos sobre o tema no tribunal
-ou precisar de **dados estatísticos** para sustentar um argumento (ex: "há
-mais de 5.000 processos sobre o tema no TJSP"), use o MCP `CNJ`:
-
-```
-buscar_processos_por_assunto(assunto="...", tribunal="TJSP", tamanho=5)
-```
-
-Isso mostra a quantidade total encontrada — útil para argumentar reiteração
-do tribunal.
+**Desativada desde 2026-08-23** — o MCP `CNJ` (DataJud/DJEN) foi
+desconectado (ver `CLAUDE.md`). Não tente `buscar_processos_por_assunto`
+nem qualquer outra consulta ao DataJud automaticamente. Se Ricardo quiser
+volume/dados estatísticos de processos sobre o tema, informe que a consulta
+automática está desligada e a verificação deve ser manual.
 
 ## Formato de entrega
 

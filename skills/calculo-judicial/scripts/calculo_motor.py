@@ -27,6 +27,8 @@ SUPPORTED_MODES = {"resumo", "detalhado"}
 SUPPORTED_CONVENTIONS = {
     "registros_com_data_no_intervalo_inclusivo",
     "meses_calendario_inclusivos",
+    "aniversario_deposito",
+    "dias_corridos_semiaberto",
 }
 SUPPORTED_INTEREST_TYPES = {"simples_mensal", "simples_mensal_segmentado"}
 SUPPORTED_SEGMENT_INTEREST_UNITS = {"percentual_mensal", "percentual_anual"}
@@ -50,6 +52,7 @@ class IndexDefinition:
     status: str
     sha256: str | None
     allowed_conventions: tuple[str, ...]
+    notify_coverage: bool = False
 
 
 @dataclass(frozen=True)
@@ -108,6 +111,13 @@ def _month_key(value: date) -> tuple[int, int]:
     return value.year, value.month
 
 
+def _add_calendar_month(value: date) -> date:
+    year = value.year + value.month // 12
+    month = value.month % 12 + 1
+    day = min(value.day, monthrange(year, month)[1])
+    return date(year, month, day)
+
+
 def _month_keys_between(start: date, end: date) -> list[tuple[int, int]]:
     year, month = start.year, start.month
     result: list[tuple[int, int]] = []
@@ -161,6 +171,7 @@ def _load_manifest(path: Path) -> dict[str, IndexDefinition]:
             status=status,
             sha256=str(sha256) if sha256 else None,
             allowed_conventions=tuple(conventions),
+            notify_coverage=bool(raw.get("avisar_cobertura", False)),
         )
     return definitions
 
@@ -221,6 +232,9 @@ def _select_rows(index: LoadedIndex, start: date, end: date, convention: str) ->
         raise _error("convencao_invalida", f"Convenção não suportada: {convention!r}.")
     if convention == "registros_com_data_no_intervalo_inclusivo":
         coverage_ok = index.first_date <= start and end <= index.last_date
+    elif convention == "dias_corridos_semiaberto":
+        last_needed = end.fromordinal(end.toordinal() - 1) if end > start else start
+        coverage_ok = index.first_date <= start and last_needed <= index.last_date
     else:
         coverage_ok = _month_key(index.first_date) <= _month_key(start) and _month_key(end) <= _month_key(index.last_date)
     if not coverage_ok:
@@ -254,6 +268,38 @@ def _select_rows(index: LoadedIndex, start: date, end: date, convention: str) ->
                 )
         return selected
 
+    if convention == "dias_corridos_semiaberto":
+        selected = [row for row in index.rows if start <= row.record_date < end]
+        selected_dates = {row.record_date for row in selected}
+        missing_dates: list[str] = []
+        cursor = start
+        while cursor < end:
+            if cursor not in selected_dates:
+                missing_dates.append(cursor.isoformat())
+            cursor = cursor.fromordinal(cursor.toordinal() + 1)
+        if missing_dates:
+            raise _error(
+                "dias_ausentes",
+                f"Dias sem registro no intervalo solicitado: {', '.join(missing_dates[:20])}.",
+            )
+        return selected
+
+    if convention == "aniversario_deposito":
+        anchors = [start]
+        while anchors[-1] < end:
+            anchors.append(_add_calendar_month(anchors[-1]))
+        if anchors[-1] != end:
+            raise _error(
+                "aniversario_final_nao_bate",
+                f"data_final ({end.isoformat()}) não coincide com um ciclo mensal a partir de "
+                f"data_inicio_correcao ({start.isoformat()}); poupança só credita no aniversário do depósito.",
+            )
+        rows_by_date = {row.record_date: row for row in index.rows}
+        missing = [d.isoformat() for d in anchors[:-1] if d not in rows_by_date]
+        if missing:
+            raise _error("aniversario_ausente", f"Sem registro do índice nas datas de aniversário: {', '.join(missing)}.")
+        return [rows_by_date[d] for d in anchors[:-1]]
+
     month_keys = _month_keys_between(start, end)
     selected_by_month: dict[tuple[int, int], list[IndexRow]] = {}
     for row in index.rows:
@@ -273,22 +319,25 @@ def _select_rows(index: LoadedIndex, start: date, end: date, convention: str) ->
     return [selected_by_month[key][0] for key in month_keys]
 
 
-def _factor_for_rows(index: LoadedIndex, rows: list[IndexRow]) -> Decimal:
+NEGATIVE_TREATMENTS = {"piso_zero_no_mes", "aplicar_integralmente"}
+
+
+def _factor_for_rows(index: LoadedIndex, rows: list[IndexRow], negative_treatment: str | None = None) -> Decimal:
     if index.definition.series_type == "taxa_mensal_percentual":
         factor = Decimal("1")
         for row in rows:
-            factor *= Decimal("1") + row.value / HUNDRED
+            monthly = Decimal("1") + row.value / HUNDRED
+            if negative_treatment == "piso_zero_no_mes" and monthly < Decimal("1"):
+                monthly = Decimal("1")
+            factor *= monthly
         return factor
-    if index.definition.series_type == "taxa_diaria_decimal":
+    if index.definition.series_type in ("taxa_diaria_decimal", "taxa_aniversario_percentual"):
         factor = Decimal("1")
         for row in rows:
             factor *= Decimal("1") + row.value
         return factor
-    if index.definition.series_type == "taxa_aniversario_percentual":
-        raise _error(
-            "tipo_serie_pendente",
-            "A seleção de aniversários da poupança ainda exige convenção aprovada pelo escritório.",
-        )
+    if index.definition.series_type == "taxa_diaria_simples_pro_rata":
+        return Decimal("1") + sum((row.value for row in rows), Decimal("0"))
     if index.definition.series_type == "fator_acumulado":
         if len(rows) < 2:
             raise _error("fator_sem_intervalo", "Fator acumulado exige ao menos dois registros no intervalo.")
@@ -365,6 +414,12 @@ def _validate_input(payload: Any) -> dict[str, Any]:
     partial_treatment = data.get("tratamento_periodo_parcial")
     if partial_treatment is not None and partial_treatment != "mes_completo_declarado":
         raise _error("tratamento_parcial_invalido", "tratamento_periodo_parcial não é suportado.")
+    negative_treatment = data.get("tratamento_indice_negativo")
+    if negative_treatment is not None and negative_treatment not in NEGATIVE_TREATMENTS:
+        raise _error(
+            "tratamento_indice_negativo_invalido",
+            f"tratamento_indice_negativo deve ser um de {sorted(NEGATIVE_TREATMENTS)}.",
+        )
     if convention == "meses_calendario_inclusivos":
         correction_is_partial = start.day != 1 or end.day != monthrange(end.year, end.month)[1]
         if correction_is_partial and partial_treatment != "mes_completo_declarado":
@@ -419,6 +474,7 @@ def _validate_input(payload: Any) -> dict[str, Any]:
         "interest": interest_data,
         "interest_segments": interest_segments,
         "partial_treatment": partial_treatment,
+        "negative_treatment": negative_treatment,
     }
 
 
@@ -433,9 +489,17 @@ def calculate(payload: dict[str, Any], *, indices_dir: Path | str, manifest_path
     if definition.series_type == "fator_acumulado" and data["convention"] != "meses_calendario_inclusivos":
         raise _error("convencao_fator_invalida", "Fator acumulado exige seleção por meses de calendário explícitos.")
 
+    negative_months = [row for row in rows if row.value < 0] if definition.series_type == "taxa_mensal_percentual" else []
+    if negative_months and data["negative_treatment"] is None:
+        raise _error(
+            "indice_negativo_sem_tratamento",
+            "Mês com índice negativo no período selecionado exige tratamento_indice_negativo "
+            "explícito ('piso_zero_no_mes' ou 'aplicar_integralmente').",
+        )
+
     with localcontext() as context:
         context.prec = 50
-        correction_factor = _factor_for_rows(index, rows)
+        correction_factor = _factor_for_rows(index, rows, data["negative_treatment"])
         principal_corrected = data["principal"] * correction_factor
         interest_value = Decimal("0")
         interest_months = 0
@@ -493,13 +557,18 @@ def calculate(payload: dict[str, Any], *, indices_dir: Path | str, manifest_path
                 "selecionada_fim": rows[-1].record_date.isoformat(),
             },
             "avisos": (
-                []
-                if data["interest_start"] is not None
-                else ["juros_nao_aplicados_sem_data_inicio_juros"]
+                ([] if data["interest_start"] is not None else ["juros_nao_aplicados_sem_data_inicio_juros"])
+                + (
+                    [f"indice_{data['indice']}_atualizado_ate_{index.last_date.isoformat()}"]
+                    if definition.notify_coverage
+                    else []
+                )
             ),
             "index_sha256": index.sha256,
             "modo": data["mode"],
             "tratamento_periodo_parcial": data.get("partial_treatment"),
+            "tratamento_indice_negativo": data.get("negative_treatment"),
+            "meses_com_indice_negativo": [row.record_date.isoformat() for row in negative_months],
         }
         if data["mode"] == "detalhado":
             detail: list[dict[str, str]] = []
@@ -507,8 +576,10 @@ def calculate(payload: dict[str, Any], *, indices_dir: Path | str, manifest_path
             for row in rows:
                 if definition.series_type == "fator_acumulado":
                     running_factor = row.value / rows[0].value
-                elif definition.series_type == "taxa_diaria_decimal":
+                elif definition.series_type in ("taxa_diaria_decimal", "taxa_aniversario_percentual"):
                     running_factor *= Decimal("1") + row.value
+                elif definition.series_type == "taxa_diaria_simples_pro_rata":
+                    running_factor += row.value
                 else:
                     running_factor *= Decimal("1") + row.value / HUNDRED
                 detail.append(

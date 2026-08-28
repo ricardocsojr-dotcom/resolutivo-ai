@@ -63,10 +63,31 @@ def test_c_cannot_use_block_writing() -> None:
     assert any(item["id"] == "tipo_c_sem_blocos" for item in report["findings"])
 
 
-def test_vault_automatico_is_blocked_for_every_level() -> None:
+def test_vault_automatico_is_blocked_without_ementario_origem() -> None:
     report = validate_piece_contract({"nivel_peca": "B", "vault_automatico": True})
     assert report["status"] == "BLOCK"
     assert any(item["id"] == "vault_automatico_proibido" for item in report["findings"])
+
+
+def test_vault_automatico_is_blocked_for_level_c_even_with_ementario_origem() -> None:
+    report = validate_piece_contract(
+        {"nivel_peca": "C", "vault_automatico": True, "vault_automatico_origem": "ementario-resolutivo"}
+    )
+    assert report["status"] == "BLOCK"
+    assert any(item["id"] == "vault_automatico_proibido" for item in report["findings"])
+
+
+def test_vault_automatico_is_allowed_for_ementario_resolutivo_in_b_or_a() -> None:
+    report = validate_piece_contract(
+        {
+            "nivel_peca": "B",
+            "exigir_esqueleto": True,
+            "vault_automatico": True,
+            "vault_automatico_origem": "ementario-resolutivo",
+        }
+    )
+    assert report["status"] == "PASS"
+    assert not any(item["id"] == "vault_automatico_proibido" for item in report["findings"])
 
 
 def test_piece_level_is_not_risk_level() -> None:
@@ -119,7 +140,9 @@ if __name__ == "__main__":
     test_b_is_process_based_and_allows_selected_model()
     test_c_defaults_to_direct_short_paragraphs()
     test_c_cannot_use_block_writing()
-    test_vault_automatico_is_blocked_for_every_level()
+    test_vault_automatico_is_blocked_without_ementario_origem()
+    test_vault_automatico_is_blocked_for_level_c_even_with_ementario_origem()
+    test_vault_automatico_is_allowed_for_ementario_resolutivo_in_b_or_a()
     test_piece_level_is_not_risk_level()
     test_legacy_context_remains_accepted_without_piece_level()
     test_piece_metadata_is_persisted_and_projected()

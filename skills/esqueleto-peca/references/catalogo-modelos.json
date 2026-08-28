@@ -8,6 +8,7 @@
     ],
     "tipo_c_sem_redacao_por_blocos": true,
     "vault_automatico": false,
+    "vault_automatico_nota": "Falso só pro escopo deste playbook (seleção de modelo). O Ementário do Resolutivo é consultado automaticamente pelo redigir-peca em B/A, fora deste playbook — ver redigir-peca/SKILL.md passo 9.",
     "conteudo_do_modelo_nao_e_fato_do_caso": true,
     "pendencia_para_dado_ausente": "[PONTO A CONFERIR]",
     "fontes_externas_devem_ser_registradas_no_esqueleto": true,
@@ -1915,11 +1916,539 @@
         ],
         "conteudo_juridico_reaproveitado": false
       }
+    },
+    {
+      "modelo_id": "contestacao-civel-rdaa-v1",
+      "nome": "Contestação Cível Geral RDAA",
+      "versao": 1,
+      "tipo_peca": "contestacao",
+      "niveis_recomendados": ["A", "B"],
+      "modo": "estrutura_orientadora",
+      "origem_generalizada": "padrão estrutural consolidado de contestações cíveis, acervo RDAA",
+      "blocos": [
+        {"id": "admissibilidade_e_tempestividade", "funcao": "admissibilidade", "obrigatorio": true},
+        {"id": "sintese_da_demanda", "funcao": "contextualizacao", "obrigatorio": true},
+        {"id": "verdade_dos_fatos", "funcao": "delimitacao_fatica", "obrigatorio": true},
+        {"id": "questoes_preliminares", "funcao": "questoes_preliminares", "obrigatorio": false},
+        {"id": "merito_fracionado_por_capitulos", "funcao": "desenvolvimento", "obrigatorio": true},
+        {"id": "impugnacao_especifica_de_documentos_e_valores", "funcao": "analise_probatoria", "obrigatorio": true},
+        {"id": "pedidos_e_requerimentos_finais", "funcao": "pedido", "obrigatorio": true}
+      ],
+      "variaveis": [
+        {"id": "partes", "obrigatoria": true, "origem": "contexto_da_materia"},
+        {"id": "numero_processo", "obrigatoria": true, "origem": "dados_fornecidos"},
+        {"id": "juizo_competente", "obrigatoria": true, "origem": "contexto_da_materia"},
+        {"id": "data_citacao", "obrigatoria": true, "origem": "documento_processual"},
+        {"id": "fatos_declarados", "obrigatoria": true, "origem": "instrucoes_do_advogado"},
+        {"id": "pedidos_improcedencia", "obrigatoria": true, "origem": "instrucoes_do_advogado"}
+      ],
+      "checklist_minimo": [
+        "conferir tempestividade com data de juntada do mandado/aviso de citação",
+        "apresentar impugnação específica a todos os fatos e documentos alegados pelo autor (art. 341 do CPC)",
+        "articular preliminares (incompetência, ilegitimidade, inépcia) antes do mérito",
+        "fracionar o mérito em subtópicos temáticos claros com indicação expressa dos fatos e fundamentos",
+        "formular pedido expresso de improcedência total dos pedidos da inicial com condenação em custas e honorários",
+        "bloquear preenchimento automático de tese, fato, valor ou pedido específico"
+      ],
+      "documentos_esperados": [
+        "peticao_inicial_e_anexos",
+        "mandado_ou_aviso_de_citacao",
+        "documentos_de_defesa_fornecidos_pelo_advogado",
+        "procuracao_e_atos_constitutivos"
+      ],
+      "dependencias": ["contexto_da_materia", "declaracao_do_nivel", "esqueleto_aprovado"],
+      "recursos_visuais": ["quadro_sinotico_de_fatos_e_datas", "tabela_de_impugnacao_de_valores_ou_documentos"],
+      "provenance": {
+        "origem": "acervo_antigo_rdaa",
+        "versao": 1,
+        "amostra_estrutural": "familia_contestacao",
+        "familia_observada": "contestacao",
+        "quantidade_de_amostras": 2,
+        "niveis_observados": ["A", "B"],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "embargos-declaracao-rdaa-v1",
+      "nome": "Embargos de Declaração Estratégicos RDAA",
+      "versao": 1,
+      "tipo_peca": "embargos_declaracao",
+      "niveis_recomendados": ["A", "B", "C"],
+      "modo": "estrutura_orientadora",
+      "origem_generalizada": "padrão estrutural consolidado de embargos de declaração, acervo RDAA",
+      "blocos": [
+        {"id": "cabimento_e_tempestividade_5_dias", "funcao": "admissibilidade", "obrigatorio": true},
+        {"id": "sintese_do_julgado_embargado", "funcao": "contextualizacao", "obrigatorio": true},
+        {"id": "vicio_pontual_omissao_contradicao_obscuridade", "funcao": "desenvolvimento", "obrigatorio": true},
+        {"id": "efeitos_infringentes_se_cabivel", "funcao": "desenvolvimento", "obrigatorio": false},
+        {"id": "prequestionamento_explicito_dispositivos", "funcao": "registro_de_questoes", "obrigatorio": true},
+        {"id": "pedidos_acolhimento_e_sanamento", "funcao": "pedido", "obrigatorio": true}
+      ],
+      "variaveis": [
+        {"id": "partes", "obrigatoria": true, "origem": "contexto_da_materia"},
+        {"id": "numero_processo", "obrigatoria": true, "origem": "dados_fornecidos"},
+        {"id": "decisao_embargada", "obrigatoria": true, "origem": "documento_processual"},
+        {"id": "ponto_omisso_ou_contraditorio", "obrigatoria": true, "origem": "instrucoes_do_advogado"}
+      ],
+      "checklist_minimo": [
+        "conferir prazo fatal de 5 dias úteis (art. 1.023 do CPC)",
+        "identificar exatamente o parágrafo ou tópico da decisão que incorreu em vício",
+        "demonstrar a relevância do ponto omisso/contraditório para o deslinde da controvérsia",
+        "indicar expressamente os dispositivos legais e constitucionais prequestionados",
+        "requerer a atribuição de efeitos modificativos caso o saneamento altere a conclusão",
+        "bloquear criação automática de vício não apontado pelo advogado"
+      ],
+      "documentos_esperados": ["decisao_sentenca_ou_acordao_embargado", "certidao_de_publicacao_intimacao"],
+      "dependencias": ["contexto_da_materia", "declaracao_do_nivel", "esqueleto_aprovado"],
+      "recursos_visuais": ["comparativo_lado_a_lado_alegacao_vs_decisao"],
+      "provenance": {
+        "origem": "acervo_antigo_rdaa",
+        "versao": 1,
+        "amostra_estrutural": "familia_embargos_declaracao",
+        "familia_observada": "embargos_declaracao",
+        "quantidade_de_amostras": 34,
+        "niveis_observados": ["A", "B", "C"],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "agravo-instrumento-tutela-rdaa-v1",
+      "nome": "Agravo de Instrumento com Pedido Liminar / Efeito Suspensivo RDAA",
+      "versao": 1,
+      "tipo_peca": "agravo_instrumento",
+      "niveis_recomendados": ["A", "B"],
+      "modo": "estrutura_orientadora",
+      "origem_generalizada": "padrão estrutural consolidado de agravo de instrumento, acervo RDAA",
+      "blocos": [
+        {"id": "cabimento_especifico_art_1015_cpc", "funcao": "admissibilidade", "obrigatorio": true},
+        {"id": "tempestividade_e_preparo_recursal", "funcao": "admissibilidade", "obrigatorio": true},
+        {"id": "pecas_obrigatorias_e_facultativas_art_1017", "funcao": "admissibilidade", "obrigatorio": true},
+        {"id": "contextualizacao_fatica_e_processual", "funcao": "contextualizacao", "obrigatorio": true},
+        {"id": "fundamentos_reforma_decisao_agravada", "funcao": "desenvolvimento", "obrigatorio": true},
+        {"id": "requisitos_efeito_suspensivo_ou_tutela_antecipada_recursal", "funcao": "desenvolvimento", "obrigatorio": true},
+        {"id": "pedidos_liminar_e_provimento_final", "funcao": "pedido", "obrigatorio": true}
+      ],
+      "variaveis": [
+        {"id": "partes", "obrigatoria": true, "origem": "contexto_da_materia"},
+        {"id": "numero_processo_origem", "obrigatoria": true, "origem": "dados_fornecidos"},
+        {"id": "decisao_interlocutoria_agravada", "obrigatoria": true, "origem": "documento_processual"},
+        {"id": "risco_dano_grave_imediato", "obrigatoria": true, "origem": "instrucoes_do_advogado"}
+      ],
+      "checklist_minimo": [
+        "enquadrar taxativamente a hipótese no rol do art. 1.015 do CPC ou justificar urgência decorrente da inutilidade do julgamento na apelação (Tema 988/STJ)",
+        "anexar guia de preparo ou comprovar benefício da gratuidade da justiça",
+        "fundamentar especificamente a probabilidade do provimento e o perigo de dano grave ou de difícil reparação (art. 1.019, I, c/c art. 995, parágrafo único, do CPC)",
+        "juntar certidão de intimação da decisão agravada e procurações dos advogados",
+        "informar a interposição ao juízo de primeiro grau (art. 1.018 do CPC) se os autos forem físicos",
+        "bloquear fundamento ou pedido não informado"
+      ],
+      "documentos_esperados": [
+        "decisao_agravada", "certidao_de_intimacao", "peticao_que_ensejou_a_decisao",
+        "procuracoes_outorgadas_pelas_partes", "guia_de_preparo_e_comprovante"
+      ],
+      "dependencias": ["contexto_da_materia", "declaracao_do_nivel", "esqueleto_aprovado"],
+      "recursos_visuais": ["linha_do_tempo_dos_atos_processuais_e_prejuizo_iminente"],
+      "provenance": {
+        "origem": "acervo_antigo_rdaa",
+        "versao": 1,
+        "amostra_estrutural": "familia_agravo_instrumento",
+        "familia_observada": "agravo_instrumento",
+        "quantidade_de_amostras": 14,
+        "niveis_observados": ["A", "B"],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "cumprimento-sentenca-rdaa-v1",
+      "nome": "Cumprimento de Sentença (Pagar Quantia / Fazer) RDAA",
+      "versao": 1,
+      "tipo_peca": "cumprimento_sentenca",
+      "niveis_recomendados": ["B", "C"],
+      "modo": "estrutura_orientadora",
+      "origem_generalizada": "padrão estrutural consolidado de cumprimento de sentença, acervo RDAA",
+      "blocos": [
+        {"id": "competencia_e_legitimidade_executiva", "funcao": "admissibilidade", "obrigatorio": true},
+        {"id": "sintese_do_titulo_executivo_judicial_transitado", "funcao": "contextualizacao", "obrigatorio": true},
+        {"id": "demonstrativo_discriminado_e_atualizado_do_debito", "funcao": "analise_probatoria", "obrigatorio": true},
+        {"id": "fundamentacao_multa_honorarios_art_523_cpc", "funcao": "desenvolvimento", "obrigatorio": true},
+        {"id": "pedidos_intimacao_penhora_e_atos_expropriatorios", "funcao": "pedido", "obrigatorio": true}
+      ],
+      "variaveis": [
+        {"id": "partes", "obrigatoria": true, "origem": "contexto_da_materia"},
+        {"id": "numero_processo", "obrigatoria": true, "origem": "dados_fornecidos"},
+        {"id": "memoria_de_calculo", "obrigatoria": true, "origem": "documento_financeiro"},
+        {"id": "certidao_transito_em_julgado", "obrigatoria": true, "origem": "documento_processual"}
+      ],
+      "checklist_minimo": [
+        "apresentar planilha analítica com índice oficial do tribunal, data de incidência dos juros de mora e correção",
+        "requerer a intimação do executado na pessoa do advogado para pagamento em 15 dias (art. 523 do CPC)",
+        "pleitear incidência de multa de 10% e honorários de 10% da fase executiva em caso de não pagamento voluntário",
+        "indicar preferência por penhora SISBAJUD / RENAJUD / CNIB em caso de inadimplência",
+        "não gerar valor ou memória de cálculo quando não fornecidos"
+      ],
+      "documentos_esperados": ["sentenca_ou_acordao_liquidado", "certidao_de_transito_em_julgado", "planilha_de_calculo_atualizada"],
+      "dependencias": ["contexto_da_materia", "declaracao_do_nivel", "esqueleto_aprovado"],
+      "recursos_visuais": ["tabela_discriminada_do_calculo_judicial"],
+      "provenance": {
+        "origem": "acervo_antigo_rdaa",
+        "versao": 1,
+        "amostra_estrutural": "familia_cumprimento_sentenca",
+        "familia_observada": "cumprimento_sentenca",
+        "quantidade_de_amostras": 15,
+        "niveis_observados": ["B", "C"],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "impugnacao-cumprimento-sentenca-rdaa-v1",
+      "nome": "Impugnação ao Cumprimento de Sentença RDAA",
+      "versao": 1,
+      "tipo_peca": "impugnacao_cumprimento",
+      "niveis_recomendados": ["A", "B"],
+      "modo": "estrutura_orientadora",
+      "origem_generalizada": "padrão estrutural consolidado de impugnação ao cumprimento de sentença, acervo RDAA",
+      "blocos": [
+        {"id": "tempestividade_art_525_cpc_e_garantia_juizo", "funcao": "admissibilidade", "obrigatorio": true},
+        {"id": "sintese_da_execucao_promovida", "funcao": "contextualizacao", "obrigatorio": true},
+        {"id": "preliminares_nulidade_citacao_ou_inexigibilidade_titulo", "funcao": "questoes_preliminares", "obrigatorio": false},
+        {"id": "merito_excesso_execucao_impenhorabilidade_cumprimento", "funcao": "desenvolvimento", "obrigatorio": true},
+        {"id": "declaracao_expressa_do_valor_entendido_correto", "funcao": "analise_probatoria", "obrigatorio": true},
+        {"id": "pedidos_efeito_suspensivo_e_extincao_ou_reducao", "funcao": "pedido", "obrigatorio": true}
+      ],
+      "variaveis": [
+        {"id": "partes", "obrigatoria": true, "origem": "contexto_da_materia"},
+        {"id": "numero_processo", "obrigatoria": true, "origem": "dados_fornecidos"},
+        {"id": "valor_exequente", "obrigatoria": true, "origem": "dados_fornecidos"},
+        {"id": "valor_correto_impugnante", "obrigatoria": true, "origem": "documento_financeiro"}
+      ],
+      "checklist_minimo": [
+        "declarar de imediato o valor tido como incontroverso sob pena de não conhecimento do excesso de execução (art. 525, § 4º e § 5º, do CPC)",
+        "juntar demonstrativo discriminado de cálculo próprio demonstrando o erro do exequente",
+        "justificar cabimento de efeito suspensivo se houver risco de expropriação iminente com garantia do juízo (art. 525, § 6º)",
+        "formular pedido de fixação de honorários em favor do impugnante pelo acolhimento do excesso",
+        "não inventar valor incontroverso, excesso, índice ou data"
+      ],
+      "documentos_esperados": [
+        "intimacao_do_art_523", "calculo_do_exequente", "planilha_de_calculo_concorrente_do_impugnante", "comprovantes_de_pagamento_parcial_se_houver"
+      ],
+      "dependencias": ["contexto_da_materia", "declaracao_do_nivel", "esqueleto_aprovado"],
+      "recursos_visuais": ["quadro_comparativo_calculo_exequente_vs_calculo_impugnante"],
+      "provenance": {
+        "origem": "acervo_antigo_rdaa",
+        "versao": 1,
+        "amostra_estrutural": "familia_impugnacao_cumprimento",
+        "familia_observada": "impugnacao_cumprimento",
+        "quantidade_de_amostras": 4,
+        "niveis_observados": ["A", "B"],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "memoriais-finais-instrucao-rdaa-v1",
+      "nome": "Memoriais Finais de Encerramento de Instrução RDAA",
+      "versao": 1,
+      "tipo_peca": "memoriais",
+      "niveis_recomendados": ["A", "B"],
+      "modo": "estrutura_orientadora",
+      "origem_generalizada": "padrão estrutural consolidado de memoriais escritos em alegações finais, acervo RDAA",
+      "blocos": [
+        {"id": "tempestividade_e_encerramento_da_instrucao", "funcao": "admissibilidade", "obrigatorio": true},
+        {"id": "resumo_sucinto_da_lide_e_pontos_controvertidos", "funcao": "contextualizacao", "obrigatorio": true},
+        {"id": "analise_critica_da_prova_pericial_se_produzida", "funcao": "analise_probatoria", "obrigatorio": false},
+        {"id": "analise_critica_da_prova_testemunhal_e_documental", "funcao": "analise_probatoria", "obrigatorio": true},
+        {"id": "fundamentacao_juridica_confrontada_com_as_provas", "funcao": "desenvolvimento", "obrigatorio": true},
+        {"id": "conclusao_e_pedidos_de_julgamento_procedencia_improcedencia", "funcao": "pedido", "obrigatorio": true}
+      ],
+      "variaveis": [
+        {"id": "partes", "obrigatoria": true, "origem": "contexto_da_materia"},
+        {"id": "numero_processo", "obrigatoria": true, "origem": "dados_fornecidos"},
+        {"id": "pontos_controvertidos_fixados", "obrigatoria": true, "origem": "documento_processual"},
+        {"id": "depoimentos_e_laudos_produzidos", "obrigatoria": true, "origem": "documentos_fornecidos"}
+      ],
+      "checklist_minimo": [
+        "correlacionar cada depoimento testemunhal ou quesito pericial aos pontos controvertidos fixados na decisão saneadora",
+        "evitar repetição genérica da petição inicial ou contestação; focar estritamente no resultado da prova colhida",
+        "transcrever trechos literais dos depoimentos gravados ou termos de audiência que corroboram a tese",
+        "reforçar o ônus probatório não desincumbido pela parte contrária (art. 373 do CPC)"
+      ],
+      "documentos_esperados": [
+        "decisao_saneadora", "laudo_pericial_e_esclarecimentos", "termos_de_audiencia_de_instrucao", "documentos_novos_juntados_na_fase_instrutoria"
+      ],
+      "dependencias": ["contexto_da_materia", "declaracao_do_nivel", "esqueleto_aprovado"],
+      "recursos_visuais": ["quadro_de_confronto_probatorio_testemunhal_e_pericial"],
+      "provenance": {
+        "origem": "acervo_antigo_rdaa",
+        "versao": 1,
+        "amostra_estrutural": "familia_memoriais",
+        "familia_observada": "memoriais",
+        "quantidade_de_amostras": 12,
+        "niveis_observados": ["A", "B"],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "manifestacao-processual-geral-rdaa-v1",
+      "nome": "Manifestação Processual Incidental RDAA",
+      "versao": 1,
+      "tipo_peca": "manifestacao_processual",
+      "niveis_recomendados": ["B", "C"],
+      "modo": "estrutura_orientadora",
+      "origem_generalizada": "padrão estrutural consolidado de manifestações incidentais e cumprimento de despachos, acervo RDAA",
+      "blocos": [
+        {"id": "tempestividade_e_referencia_ao_despacho_ou_ato_judicial", "funcao": "admissibilidade", "obrigatorio": true},
+        {"id": "objeto_especifico_da_manifestacao", "funcao": "contextualizacao", "obrigatorio": true},
+        {"id": "fundamentacao_sucinta_e_resposta_ao_contraditorio", "funcao": "desenvolvimento", "obrigatorio": true},
+        {"id": "especificacao_probatoria_ou_juntada_documental", "funcao": "analise_probatoria", "obrigatorio": false},
+        {"id": "pedidos_e_requerimentos_especificos_de_prosseguimento", "funcao": "pedido", "obrigatorio": true}
+      ],
+      "variaveis": [
+        {"id": "partes", "obrigatoria": true, "origem": "contexto_da_materia"},
+        {"id": "numero_processo", "obrigatoria": true, "origem": "dados_fornecidos"},
+        {"id": "ato_judicial_respondido", "obrigatoria": true, "origem": "documento_processual"}
+      ],
+      "checklist_minimo": [
+        "indicar precisamente o número do evento/folha ou teor do despacho atendido",
+        "manter objetividade e concisão com foco estrito na determinação judicial ou questão incidental",
+        "especificar a pertinência e finalidade de eventuais documentos juntados ou provas requeridas",
+        "concluir com pedido claro de impulsão processual ou apreciação do requerimento"
+      ],
+      "documentos_esperados": ["despacho_ou_decisao_objeto_da_intimacao", "documentos_pertinentes_ao_cumprimento"],
+      "dependencias": ["contexto_da_materia", "declaracao_do_nivel", "esqueleto_aprovado"],
+      "recursos_visuais": [],
+      "provenance": {
+        "origem": "acervo_antigo_rdaa",
+        "versao": 1,
+        "amostra_estrutural": "familia_manifestacao_processual",
+        "familia_observada": "manifestacao_processual",
+        "quantidade_de_amostras": 111,
+        "niveis_observados": ["B", "C"],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "peticao-inicial-civel-rdaa-v1",
+      "nome": "Petição Inicial Cível Estratégica RDAA",
+      "versao": 1,
+      "tipo_peca": "peticao_inicial",
+      "niveis_recomendados": ["A", "B"],
+      "modo": "estrutura_orientadora",
+      "origem_generalizada": "padrão estrutural consolidado de petições iniciais cíveis, acervo RDAA",
+      "blocos": [
+        {"id": "enderecamento_e_qualificacao_das_partes", "funcao": "admissibilidade", "obrigatorio": true},
+        {"id": "opcao_audiencia_conciliacao_art_319_vii", "funcao": "admissibilidade", "obrigatorio": true},
+        {"id": "dos_fatos_contexto_negocial_e_inadimplemento", "funcao": "delimitacao_fatica", "obrigatorio": true},
+        {"id": "tutela_provisoria_de_urgencia_se_cabivel", "funcao": "desenvolvimento", "obrigatorio": false},
+        {"id": "do_direito_fundamentos_e_doutrina_jurisprudencia", "funcao": "desenvolvimento", "obrigatorio": true},
+        {"id": "pedidos_liquidacao_e_valor_da_causa", "funcao": "pedido", "obrigatorio": true},
+        {"id": "protesto_por_provas", "funcao": "analise_probatoria", "obrigatorio": true}
+      ],
+      "variaveis": [
+        {"id": "partes", "obrigatoria": true, "origem": "contexto_da_materia"},
+        {"id": "juizo_competente", "obrigatoria": true, "origem": "contexto_da_materia"},
+        {"id": "fatos_declarados", "obrigatoria": true, "origem": "instrucoes_do_advogado"},
+        {"id": "pedidos_do_caso", "obrigatoria": true, "origem": "instrucoes_do_advogado"},
+        {"id": "valor_da_causa", "obrigatoria": true, "origem": "instrucoes_do_advogado"}
+      ],
+      "checklist_minimo": [
+        "cumprir integralmente os requisitos do art. 319 e art. 320 do CPC",
+        "narrar os fatos em ordem cronológica com remissão aos documentos anexos comprobatórios",
+        "articular a fundamentação jurídica de forma associada aos pedidos deduzidos",
+        "formular pedido certo e determinado, com especificação dos danos materiais e morais se cumulados",
+        "atribuir valor da causa condizente com o proveito econômico almejado (art. 292 do CPC)",
+        "bloquear preenchimento automático de fato, valor ou pedido não informado pelo advogado"
+      ],
+      "documentos_esperados": [
+        "procuracao_e_documentos_pessoais_ou_societarios", "contrato_ou_titulo_objeto_da_demanda",
+        "comprovantes_de_pagamento_e_notificacoes_previas", "guia_de_custas_iniciais_ou_pedido_de_gratuidade"
+      ],
+      "dependencias": ["contexto_da_materia", "declaracao_do_nivel", "esqueleto_aprovado"],
+      "recursos_visuais": ["linha_do_tempo_dos_fatos_e_notificacoes", "quadro_demonstrativo_dos_pedidos_e_valores"],
+      "provenance": {
+        "origem": "acervo_antigo_rdaa",
+        "versao": 1,
+        "amostra_estrutural": "familia_peticao_inicial",
+        "familia_observada": "peticao_inicial",
+        "quantidade_de_amostras": 84,
+        "niveis_observados": ["A", "B"],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "procuracao-ad-judicia-rdaa-v1",
+      "nome": "Procuração Ad Judicia et Extra RDAA",
+      "versao": 1,
+      "tipo_peca": "procuracao",
+      "niveis_recomendados": ["C"],
+      "modo": "referencia",
+      "blocos": [],
+      "origem_generalizada": "padrão documental consolidado de procuração ad judicia, acervo RDAA",
+      "variaveis": [
+        {"id": "outorgante", "obrigatoria": true, "origem": "contexto_da_materia"},
+        {"id": "outorgados_advogados_rdaa", "obrigatoria": true, "origem": "dados_do_escritorio"},
+        {"id": "poderes_gerais_foro_em_geral", "obrigatoria": true, "origem": "padrao_escritorio"},
+        {"id": "poderes_especiais_art_105_cpc", "obrigatoria": false, "origem": "instrucoes_do_advogado"},
+        {"id": "finalidade_ou_processo_especifico", "obrigatoria": false, "origem": "contexto_da_materia"}
+      ],
+      "checklist_minimo": [
+        "qualificar integralmente o outorgante (nome/razão social, CPF/CNPJ, estado civil, profissão, endereço completo)",
+        "inserir os dados completos dos advogados do RDAA e número de inscrição na OAB",
+        "prever cláusula ad judicia et extra com poderes para o foro em geral",
+        "incluir poderes especiais do art. 105 do CPC (transigir, confessar, renunciar, firmar compromisso, receber e dar quitação) apenas quando expressamente autorizado",
+        "conferir poder expresso de substabelecer com ou sem reserva de poderes"
+      ],
+      "documentos_esperados": ["documentos_pessoais_do_outorgante_ou_contrato_social_e_atos_constitutivos"],
+      "dependencias": ["contexto_da_materia", "instrucoes_do_advogado"],
+      "recursos_visuais": [],
+      "provenance": {
+        "origem": "acervo_antigo_rdaa",
+        "versao": 1,
+        "amostra_estrutural": "familia_procuracao",
+        "familia_observada": "procuracao",
+        "quantidade_de_amostras": 6,
+        "niveis_observados": ["C"],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "substabelecimento-rdaa-v1",
+      "nome": "Substabelecimento (Com / Sem Reserva) RDAA",
+      "versao": 1,
+      "tipo_peca": "substabelecimento",
+      "niveis_recomendados": ["C"],
+      "modo": "referencia",
+      "blocos": [],
+      "origem_generalizada": "padrão documental consolidado de substabelecimento, acervo RDAA",
+      "variaveis": [
+        {"id": "substabelecente", "obrigatoria": true, "origem": "dados_do_escritorio"},
+        {"id": "substabelecido", "obrigatoria": true, "origem": "instrucoes_do_advogado"},
+        {"id": "reserva_de_poderes", "obrigatoria": true, "origem": "instrucoes_do_advogado"},
+        {"id": "processo_ou_materia_especifica", "obrigatoria": true, "origem": "contexto_da_materia"}
+      ],
+      "checklist_minimo": [
+        "declarar expressamente se o substabelecimento é COM ou SEM reserva de iguais poderes",
+        "identificar com precisão o número dos autos e o juízo de tramitação",
+        "qualificar os advogados substabelecidos com indicação do número da OAB e endereço profissional",
+        "fazer referência à procuração originária outorgada pelo cliente"
+      ],
+      "documentos_esperados": ["procuracao_originaria_dos_autos"],
+      "dependencias": ["contexto_da_materia", "instrucoes_do_advogado"],
+      "recursos_visuais": [],
+      "provenance": {
+        "origem": "acervo_antigo_rdaa",
+        "versao": 1,
+        "amostra_estrutural": "familia_substabelecimento",
+        "familia_observada": "substabelecimento",
+        "quantidade_de_amostras": 4,
+        "niveis_observados": ["C"],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "dilacao-prazo-rdaa-v1",
+      "nome": "Pedido de Dilação de Prazo Processual RDAA",
+      "versao": 1,
+      "tipo_peca": "dilacao_prazo",
+      "niveis_recomendados": ["C"],
+      "modo": "referencia",
+      "blocos": [],
+      "origem_generalizada": "padrão de petição simples de dilação de prazo, acervo RDAA",
+      "variaveis": [
+        {"id": "partes", "obrigatoria": true, "origem": "contexto_da_materia"},
+        {"id": "numero_processo", "obrigatoria": true, "origem": "dados_fornecidos"},
+        {"id": "ato_ou_diligencia_pendente", "obrigatoria": true, "origem": "instrucoes_do_advogado"},
+        {"id": "prazo_requerido_dias", "obrigatoria": true, "origem": "instrucoes_do_advogado"},
+        {"id": "justificativa_sucinta", "obrigatoria": true, "origem": "instrucoes_do_advogado"}
+      ],
+      "checklist_minimo": [
+        "apresentar o pedido antes do escoamento do prazo fatal originário",
+        "apontar motivo legítimo para a prorrogação (ex.: obtenção de documentos junto a órgãos públicos/bancos, complexidade da matéria contábil)",
+        "especificar a quantidade razoável de dias úteis adicionais pretendida (ex.: 10, 15 ou 30 dias)",
+        "requerer a reabertura ou prorrogação com suspensão da marcha até a nova data"
+      ],
+      "documentos_esperados": ["despacho_ou_ato_intimatorio"],
+      "dependencias": ["contexto_da_materia", "instrucoes_do_advogado"],
+      "recursos_visuais": [],
+      "provenance": {
+        "origem": "acervo_antigo_rdaa",
+        "versao": 1,
+        "amostra_estrutural": "familia_dilacao_prazo",
+        "familia_observada": "dilacao_prazo",
+        "quantidade_de_amostras": 4,
+        "niveis_observados": ["C"],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "juntada-comprovante-pagamento-rdaa-v1",
+      "nome": "Petição de Juntada de Comprovante de Pagamento / Custas RDAA",
+      "versao": 1,
+      "tipo_peca": "juntada_comprovante_pagamento",
+      "niveis_recomendados": ["C"],
+      "modo": "referencia",
+      "blocos": [],
+      "origem_generalizada": "padrão de petição simples de juntada de guia e comprovante de pagamento, acervo RDAA",
+      "variaveis": [
+        {"id": "partes", "obrigatoria": true, "origem": "contexto_da_materia"},
+        {"id": "numero_processo", "obrigatoria": true, "origem": "dados_fornecidos"},
+        {"id": "finalidade_do_pagamento", "obrigatoria": true, "origem": "instrucoes_do_advogado"},
+        {"id": "documento_anexo_guia_comprovante", "obrigatoria": true, "origem": "arquivos_fornecidos"}
+      ],
+      "checklist_minimo": [
+        "especificar exatamente a natureza do recolhimento (custas iniciais, custas finais, preparo recursal, depósito judicial de condenação, honorários periciais)",
+        "indicar o número da guia e a respectiva autenticação mecânica ou comprovante bancário de liquidação",
+        "declarar expressamente o cumprimento da obrigação ou determinação judicial",
+        "anexar os arquivos comprobatórios digitalizados e legíveis"
+      ],
+      "documentos_esperados": ["guia_recolhimento_judicial", "comprovante_bancario_de_efetivacao_do_pagamento"],
+      "dependencias": ["contexto_da_materia", "arquivos_fornecidos"],
+      "recursos_visuais": [],
+      "provenance": {
+        "origem": "acervo_antigo_rdaa",
+        "versao": 1,
+        "amostra_estrutural": "familia_juntada_comprovante",
+        "familia_observada": "juntada_comprovante",
+        "quantidade_de_amostras": 19,
+        "niveis_observados": ["C"],
+        "conteudo_juridico_reaproveitado": false
+      }
+    },
+    {
+      "modelo_id": "juntada-preparo-citacao-rdaa-v1",
+      "nome": "Petição de Juntada de Guia de Preparo Recursal / Diligência de Citação RDAA",
+      "versao": 1,
+      "tipo_peca": "juntada_preparo_citacao",
+      "niveis_recomendados": ["C"],
+      "modo": "referencia",
+      "blocos": [],
+      "origem_generalizada": "padrão de petição simples de comprovação de preparo e despesas postais/oficial de justiça, acervo RDAA",
+      "variaveis": [
+        {"id": "partes", "obrigatoria": true, "origem": "contexto_da_materia"},
+        {"id": "numero_processo", "obrigatoria": true, "origem": "dados_fornecidos"},
+        {"id": "tipo_de_diligencia_ou_recurso", "obrigatoria": true, "origem": "contexto_da_materia"},
+        {"id": "comprovante_anexo", "obrigatoria": true, "origem": "arquivos_fornecidos"}
+      ],
+      "checklist_minimo": [
+        "correlacionar a guia ao recurso interposto ou à diligência de citação/intimação ordenada",
+        "confirmar que o pagamento foi realizado dentro do horário bancário e do prazo recursal/assinalado",
+        "requerer o regular processamento do recurso ou a expedição imediata do mandado/carta de citação"
+      ],
+      "documentos_esperados": ["guia_de_preparo_ou_despesa_postal", "comprovante_de_pagamento"],
+      "dependencias": ["contexto_da_materia", "arquivos_fornecidos"],
+      "recursos_visuais": [],
+      "provenance": {
+        "origem": "acervo_antigo_rdaa",
+        "versao": 1,
+        "amostra_estrutural": "familia_juntada_preparo",
+        "familia_observada": "juntada_preparo",
+        "quantidade_de_amostras": 2,
+        "niveis_observados": ["C"],
+        "conteudo_juridico_reaproveitado": false
+      }
     }
   ],
   "provenance_catalogo": {
     "origem": "pecas_modelo_preservadas_localmente",
-    "quantidade_total_de_amostras": 31,
+    "quantidade_total_de_amostras": 342,
     "metodo": "inventario_sha256_extracao_passiva_e_classificacao_estrutural",
     "arquivos_de_auditoria": [
       "playbook-source-material/structure-analysis/structure-inventory.json",
@@ -1927,6 +2456,13 @@
       "playbook-source-material/structure-analysis/family-summary.json"
     ],
     "conteudo_juridico_reaproveitado": false,
-    "fatos_nomes_valores_pedidos_e_fontes_universais": false
+    "fatos_nomes_valores_pedidos_e_fontes_universais": false,
+    "extracao_acervo_antigo_rdaa_2026_08_28": {
+      "origem": "extração assistida (Gemini/Antigravity) do acervo antigo em C:\\Users\\ricar\\OneDrive\\Área de Trabalho\\Romano\\Peças, 343 matérias mapeadas",
+      "quantidade_de_amostras": 311,
+      "modelos_adicionados": 13,
+      "nota_sobreposicao": "7 dos 8 modelos de mérito adicionados (contestacao, embargos_declaracao, agravo_instrumento, cumprimento_sentenca, impugnacao_cumprimento, memoriais, manifestacao_processual) cobrem o mesmo tipo_peca de um modelo_local pré-existente com amostragem bem menor (1 a 3 peças) — nenhum modelo_local foi removido ou sobrescrito; Ricardo decide se algum fica deprecado.",
+      "revisao_humana_pendente": true
+    }
   }
 }

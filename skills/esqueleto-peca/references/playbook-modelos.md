@@ -54,7 +54,7 @@ O índice do catálogo pode ser consultado para encontrar modelos pelo tipo de p
 
 O playbook não deve inferir que um modelo é juridicamente pertinente. Se o modelo exigir informação ausente, registre pendência ou `[PONTO A CONFERIR]`. Se o tipo C receber um modelo que imponha redação por blocos, o contrato deve bloquear o candidato.
 
-O vault não é consultado automaticamente por nenhum tipo. A aprovação de um modelo anterior não aprova o caso atual.
+Este playbook (seleção de modelo estrutural) não consulta vault nenhum. O Ementário do Resolutivo é consultado automaticamente pelo `redigir-peca` nos tipos B/A (fora deste playbook, passo 9 de `redigir-peca/SKILL.md`) — o que ele traz é material a avaliar, não um modelo aprovado. A aprovação de um modelo anterior não aprova o caso atual.
 
 ## Validação e diff
 

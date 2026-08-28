@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "NotebookLM": {
-      "command": "C:\\Users\\ricar\\AppData\\Roaming\\uv\\tools\\notebooklm-mcp-cli\\Scripts\\python.exe",
+      "command": "${APPDATA:-C:\\Users\\ricar\\AppData\\Roaming}\\uv\\tools\\notebooklm-mcp-cli\\Scripts\\python.exe",
       "args": ["-m", "notebooklm_tools.mcp.server"]
     }
   }

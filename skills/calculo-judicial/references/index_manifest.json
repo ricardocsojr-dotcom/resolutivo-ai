@@ -20,108 +20,291 @@
       "arquivo": "tjmg-nao-expurgada.csv",
       "tipo_serie": "fator_acumulado",
       "unidade": "fator",
-      "status": "pendente_validacao",
-      "convencoes": ["meses_calendario_inclusivos"]
-    },
-    "tjsp": {
-      "arquivo": "tjsp.csv",
-      "tipo_serie": "fator_acumulado",
-      "unidade": "fator",
-      "status": "pendente_validacao",
-      "convencoes": ["meses_calendario_inclusivos"]
+      "status": "aprovado",
+      "sha256": "4b58decd537fbee93a9855eec927ac363a8d557b1e21e3d14fcf7dfade85f98d",
+      "convencoes": [
+        "meses_calendario_inclusivos"
+      ],
+      "proveniencia": {
+        "autoridade_primaria": "TJMG",
+        "url_ou_localizacao": "https://www.tjmg.jus.br/portal-tjmg/processos/indicadores/fator-de-atualizacao-monetaria.htm",
+        "codigo_serie": "Fator de Atualização Monetária TJMG (não expurgada)",
+        "data_coleta": "2026-08",
+        "arquivo_bruto": "tjmg-nao-expurgada.csv",
+        "sha256_arquivo_bruto": "4b58decd537fbee93a9855eec927ac363a8d557b1e21e3d14fcf7dfade85f98d",
+        "observacao": "XLS oficial mensal do TJMG convertido para CSV local; XLS bruto preservado fora do pacote do plugin (ver fontes-oficiais-indices.md). Data de coleta com precisão de mês, dia exato não registrado."
+      },
+      "homologacao": {
+        "caso": "Correção monetária de R$ 10.000,00 de 01/01/2023 a 01/01/2024 (13 meses), TJMG não expurgada",
+        "resultado_esperado": "10370.70",
+        "resultado_observado": "10370.70",
+        "tolerancia": "0.01",
+        "formula_referencia": "principal * fator_acumulado(indice, data_inicio, data_final), fator_acumulado = valor(data_final) / valor(data_inicio)",
+        "convencao_declarada": "meses_calendario_inclusivos",
+        "aprovado_por": "Ricardo Cesar Souza de Oliveira Junior",
+        "data_aprovacao": "2026-08-27"
+      }
     },
     "tjrj": {
       "arquivo": "tjrj.csv",
       "tipo_serie": "fator_acumulado",
       "unidade": "fator",
-      "status": "pendente_validacao",
-      "convencoes": ["meses_calendario_inclusivos"]
+      "status": "aprovado",
+      "sha256": "d4019833cfd56e956c8f65f634a45ebf32414c9f7c0836153dea4111bb282241",
+      "convencoes": [
+        "meses_calendario_inclusivos"
+      ],
+      "proveniencia": {
+        "autoridade_primaria": "TJRJ (Tribunal de Justica do Rio de Janeiro)",
+        "url_ou_localizacao": "https://drcalc.net/consultaindices.asp (fonte secundaria, categoria Indices de Calculos Judiciais, serie 'TJRJ (Tabela Tribunal Just RJ)', codigo interno 75)",
+        "codigo_serie": "TJRJ - Tabela Tribunal Just RJ",
+        "data_coleta": "2026-08-27",
+        "arquivo_bruto": "tjrj.csv",
+        "sha256_arquivo_bruto": "d4019833cfd56e956c8f65f634a45ebf32414c9f7c0836153dea4111bb282241",
+        "observacao": "Ricardo colou a serie historica completa do DrCalc (out/1964 a ago/2026) direto no chat. Conferido programaticamente 24 pontos de 1995 a 2026 contra o CSV local: 0 divergencias. O valor identico repetido por meses/anos seguidos (ex.: 26.93004230 o ano inteiro de 2025) e o comportamento real do TJRJ, que atualiza essa tabela anualmente (em janeiro), nao mensalmente - confirmado pela propria serie do DrCalc, que mostra o mesmo padrao."
+      },
+      "homologacao": {
+        "caso": "TJRJ: 24 pontos de jan/1995 a ago/2026 conferidos contra a serie colada do DrCalc, 0 divergencias",
+        "resultado_esperado": "28.11816575",
+        "resultado_observado": "28.11816575",
+        "tolerancia": "0.0001",
+        "formula_referencia": "fator_acumulado = valor(data_final) / valor(data_inicio), serie fator_acumulado",
+        "convencao_declarada": "meses_calendario_inclusivos",
+        "aprovado_por": "Ricardo Cesar Souza de Oliveira Junior",
+        "data_aprovacao": "2026-08-27"
+      },
+      "avisar_cobertura": true
     },
     "taxa-legal": {
       "arquivo": "taxa-legal.csv",
-      "tipo_serie": "taxa_diaria_decimal",
-      "unidade": "decimal_diario",
-      "status": "pendente_validacao",
-      "convencoes": ["registros_com_data_no_intervalo_inclusivo"]
+      "tipo_serie": "taxa_diaria_simples_pro_rata",
+      "unidade": "decimal_diario_pro_rata",
+      "status": "aprovado",
+      "sha256": "c68efe66a9d3d8f9efe26aad817c9c0e811fe8f54e8923a9e9df80bc96a24218",
+      "convencoes": [
+        "dias_corridos_semiaberto"
+      ],
+      "proveniencia": {
+        "autoridade_primaria": "BCB / CMN (Resolucao CMN 5.171/2024, Lei 14.905/2024, art. 406 CC)",
+        "url_ou_localizacao": "https://www3.bcb.gov.br/CALCIDADAO/publico/exibirFormCorrecaoValores.do?method=exibirFormCorrecaoValores&aba=6",
+        "codigo_serie": "Taxa Legal - Calculadora do Cidadao BCB (nao ha SGS numerica publica; so calculadora oficial)",
+        "data_coleta": "2026-08-27",
+        "arquivo_bruto": "taxa-legal.csv",
+        "sha256_arquivo_bruto": "b807a3704739835005dd5cfc1252c1e886b810cb209090a86225ee7e05eafcf2",
+        "observacao": "Taxa Legal mensal = Selic mensal - IPCA-15 mensal do mes anterior, com piso zero, acumulacao por JUROS SIMPLES (aditiva, nao composta) com fracao pro rata diaria (taxa do mes / dias do mes), conforme pagina de Metodologia do proprio BCB. O CSV local ja armazena essa fracao diaria pronta (mesmo valor repetido em todos os dias de um mesmo mes de referencia). Confirmado com DOIS casos golden contra a Calculadora do Cidadao do BCB em 27/08/2026: (1) exemplo da propria pagina de metodologia, 30/08/2024 a 31/08/2024, R$1.000,00 -> R$1.000,20; (2) R$10.000,00 de 01/01/2025 a 01/07/2025 -> R$10.321,28. Em ambos, o motor bate exatamente usando soma aditiva no intervalo semiaberto [inicio, fim) - o dia final NAO entra na soma, ao contrario de todas as outras convencoes do motor."
+      },
+      "homologacao": {
+        "caso": "Taxa Legal: R$10.000,00 de 01/01/2025 a 01/07/2025 (182 dias corridos, intervalo semiaberto), conferido contra a Calculadora do Cidadao do proprio BCB (www3.bcb.gov.br/CALCIDADAO, aba Taxa Legal) em 27/08/2026. Segundo caso de controle (nao registrado aqui, ver proveniencia): exemplo oficial da pagina de Metodologia do BCB, 30/08/2024 a 31/08/2024, R$1.000,00 -> R$1.000,20, tambem batendo exatamente.",
+        "resultado_esperado": "10321.28",
+        "resultado_observado": "10321.28",
+        "tolerancia": "0.01",
+        "formula_referencia": "indice = soma(valor_diario para cada dia em [data_inicio, data_final)); valor_diario = fracao pro rata (Taxa Legal do mes / dias corridos do mes); fator = 1 + indice (juros simples, sem capitalizacao composta)",
+        "convencao_declarada": "dias_corridos_semiaberto",
+        "aprovado_por": "Ricardo Cesar Souza de Oliveira Junior",
+        "data_aprovacao": "2026-08-27"
+      }
     },
     "inpc": {
       "arquivo": "inpc.csv",
       "tipo_serie": "taxa_mensal_percentual",
       "unidade": "percentual_mensal",
-      "status": "pendente_validacao",
-      "convencoes": ["meses_calendario_inclusivos"]
+      "status": "aprovado",
+      "sha256": "b4be68bce313ba1c300bd2ca17bf576cbc1c92ac24e3f3c5c389fbb66b5249e2",
+      "convencoes": [
+        "meses_calendario_inclusivos"
+      ],
+      "proveniencia": {
+        "autoridade_primaria": "Banco Central do Brasil (BCB)",
+        "url_ou_localizacao": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.188/dados",
+        "codigo_serie": "SGS 188",
+        "data_coleta": "2026-08-27",
+        "arquivo_bruto": "inpc.csv",
+        "sha256_arquivo_bruto": "b4be68bce313ba1c300bd2ca17bf576cbc1c92ac24e3f3c5c389fbb66b5249e2",
+        "observacao": "Conferido contra a API SGS do BCB (serie 188). Mes de 2026-06-01 escolhido por ter valor positivo (o promotor exige resultado_esperado nao-negativo); jul/2026 desse indice teve deflacao e foi conferido a parte, fora do caso dourado formal."
+      },
+      "homologacao": {
+        "caso": "INPC de 2026-06-01: valor local 0.0014 vs BCB SGS 188 = 0.14%",
+        "resultado_esperado": "0.0014",
+        "resultado_observado": "0.0014",
+        "tolerancia": "0.0001",
+        "formula_referencia": "valor_local == valor_bcb_percentual / 100, dentro de arredondamento de 2 casas",
+        "convencao_declarada": "meses_calendario_inclusivos",
+        "aprovado_por": "Ricardo Cesar Souza de Oliveira Junior",
+        "data_aprovacao": "2026-08-27"
+      }
     },
     "ipca": {
       "arquivo": "ipca.csv",
       "tipo_serie": "taxa_mensal_percentual",
       "unidade": "percentual_mensal",
-      "status": "pendente_validacao",
-      "convencoes": ["meses_calendario_inclusivos"]
+      "status": "aprovado",
+      "sha256": "1acd913f6aa060c68d9ab7a4f75e1603aecd3fcb285682287bfb5fdad8525f7c",
+      "convencoes": [
+        "meses_calendario_inclusivos"
+      ],
+      "proveniencia": {
+        "autoridade_primaria": "Banco Central do Brasil (BCB)",
+        "url_ou_localizacao": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.433/dados",
+        "codigo_serie": "SGS 433",
+        "data_coleta": "2026-08-27",
+        "arquivo_bruto": "ipca.csv",
+        "sha256_arquivo_bruto": "1acd913f6aa060c68d9ab7a4f75e1603aecd3fcb285682287bfb5fdad8525f7c",
+        "observacao": "Conferido contra a API SGS do BCB (série 433) pra 5 meses (mar-jul/2026), batendo dentro do arredondamento de 2 casas que o BCB publica no resumo mensal. Arquivo local mantido por ter mais casas decimais que o resumo do BCB (não substituído)."
+      },
+      "homologacao": {
+        "caso": "IPCA de 2026-07-01: valor local 0.0007 vs BCB SGS 433 = 0.07%",
+        "resultado_esperado": "0.0007",
+        "resultado_observado": "0.0007",
+        "tolerancia": "0.0001",
+        "formula_referencia": "valor_local == valor_bcb_percentual / 100, dentro de arredondamento de 2 casas",
+        "convencao_declarada": "meses_calendario_inclusivos",
+        "aprovado_por": "Ricardo Cesar Souza de Oliveira Junior",
+        "data_aprovacao": "2026-08-27"
+      }
     },
     "igp-m": {
       "arquivo": "igp-m.csv",
       "tipo_serie": "taxa_mensal_percentual",
       "unidade": "percentual_mensal",
-      "status": "pendente_validacao",
-      "convencoes": ["meses_calendario_inclusivos"]
+      "status": "aprovado",
+      "sha256": "14f1382be0cbe2321472371c5e26ed69edf45fb09d9400ffdf75b9efcdcd8cdb",
+      "convencoes": [
+        "meses_calendario_inclusivos"
+      ],
+      "proveniencia": {
+        "autoridade_primaria": "Banco Central do Brasil (BCB)",
+        "url_ou_localizacao": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.189/dados",
+        "codigo_serie": "SGS 189",
+        "data_coleta": "2026-08-27",
+        "arquivo_bruto": "igp-m.csv",
+        "sha256_arquivo_bruto": "14f1382be0cbe2321472371c5e26ed69edf45fb09d9400ffdf75b9efcdcd8cdb",
+        "observacao": "Conferido contra a API SGS do BCB (serie 189). Mes de 2026-05-01 escolhido por ter valor positivo (o promotor exige resultado_esperado nao-negativo); jul/2026 desse indice teve deflacao e foi conferido a parte, fora do caso dourado formal."
+      },
+      "homologacao": {
+        "caso": "IGP-M de 2026-05-01: valor local 0.0084 vs BCB SGS 189 = 0.84%",
+        "resultado_esperado": "0.0084",
+        "resultado_observado": "0.0084",
+        "tolerancia": "0.0001",
+        "formula_referencia": "valor_local == valor_bcb_percentual / 100, dentro de arredondamento de 2 casas",
+        "convencao_declarada": "meses_calendario_inclusivos",
+        "aprovado_por": "Ricardo Cesar Souza de Oliveira Junior",
+        "data_aprovacao": "2026-08-27"
+      }
     },
     "selic": {
       "arquivo": "selic.csv",
       "tipo_serie": "taxa_mensal_percentual",
       "unidade": "percentual_mensal",
-      "status": "pendente_validacao",
-      "convencoes": ["meses_calendario_inclusivos"]
+      "status": "aprovado",
+      "sha256": "597c89b82611f43eaa1a73674ef6e87c4367882497f2f597869f83ee233cad89",
+      "convencoes": [
+        "meses_calendario_inclusivos"
+      ],
+      "proveniencia": {
+        "autoridade_primaria": "Banco Central do Brasil (BCB)",
+        "url_ou_localizacao": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.4390/dados",
+        "codigo_serie": "SGS 4390",
+        "data_coleta": "2026-08-27",
+        "arquivo_bruto": "selic.csv",
+        "sha256_arquivo_bruto": "597c89b82611f43eaa1a73674ef6e87c4367882497f2f597869f83ee233cad89",
+        "observacao": "Conferido contra a API SGS do BCB (série 4390) pra 5 meses (mar-jul/2026), batendo dentro do arredondamento de 2 casas que o BCB publica no resumo mensal. Arquivo local mantido por ter mais casas decimais que o resumo do BCB (não substituído)."
+      },
+      "homologacao": {
+        "caso": "SELIC de 2026-07-01: valor local 0.0121522 vs BCB SGS 4390 = 1.22%",
+        "resultado_esperado": "0.0122",
+        "resultado_observado": "0.0121522",
+        "tolerancia": "0.0001",
+        "formula_referencia": "valor_local == valor_bcb_percentual / 100, dentro de arredondamento de 2 casas",
+        "convencao_declarada": "meses_calendario_inclusivos",
+        "aprovado_por": "Ricardo Cesar Souza de Oliveira Junior",
+        "data_aprovacao": "2026-08-27"
+      }
     },
     "cdi": {
       "arquivo": "cdi.csv",
       "tipo_serie": "taxa_mensal_percentual",
       "unidade": "percentual_mensal",
-      "status": "pendente_validacao",
-      "convencoes": ["meses_calendario_inclusivos"]
+      "status": "aprovado",
+      "sha256": "caf19b9a4019bddd30353748a82ca06568de01fd7534cd9922d4dcf50fdd53c9",
+      "convencoes": [
+        "meses_calendario_inclusivos"
+      ],
+      "proveniencia": {
+        "autoridade_primaria": "Banco Central do Brasil (BCB)",
+        "url_ou_localizacao": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.4391/dados",
+        "codigo_serie": "SGS 4391",
+        "data_coleta": "2026-08-27",
+        "arquivo_bruto": "cdi.csv",
+        "sha256_arquivo_bruto": "caf19b9a4019bddd30353748a82ca06568de01fd7534cd9922d4dcf50fdd53c9",
+        "observacao": "Conferido contra a API SGS do BCB (série 4391) pra 5 meses (mar-jul/2026), batendo dentro do arredondamento de 2 casas que o BCB publica no resumo mensal. Arquivo local mantido por ter mais casas decimais que o resumo do BCB (não substituído)."
+      },
+      "homologacao": {
+        "caso": "CDI de 2026-07-01: valor local 0.0121522 vs BCB SGS 4391 = 1.22%",
+        "resultado_esperado": "0.0122",
+        "resultado_observado": "0.0121522",
+        "tolerancia": "0.0001",
+        "formula_referencia": "valor_local == valor_bcb_percentual / 100, dentro de arredondamento de 2 casas",
+        "convencao_declarada": "meses_calendario_inclusivos",
+        "aprovado_por": "Ricardo Cesar Souza de Oliveira Junior",
+        "data_aprovacao": "2026-08-27"
+      }
     },
     "poupanca-nova": {
       "arquivo": "poupanca-nova.csv",
       "tipo_serie": "taxa_aniversario_percentual",
-      "unidade": "percentual_por_aniversario",
-      "status": "pendente_validacao",
-      "convencoes": ["registros_com_data_no_intervalo_inclusivo"]
-    },
-    "tjmg-fator-atualizacao": {
-      "arquivo": "tjmg-fator-atualizacao.csv",
-      "tipo_serie": "fator_acumulado",
-      "unidade": "fator",
-      "status": "pendente_validacao",
-      "sha256": "3a80d900251ab23b9d73e8b76976105877347d474c027af1355adc1c417187e5",
-      "convencoes": ["meses_calendario_inclusivos"],
+      "unidade": "decimal_por_aniversario",
+      "status": "aprovado",
+      "sha256": "1c48abbc55c68fe5ee2af10a1d9ef6a89d5dc7212525b21573ab364192df5816",
+      "convencoes": [
+        "aniversario_deposito"
+      ],
       "proveniencia": {
-        "status": "candidato",
-        "autoridade_primaria": "TJMG",
-        "url_ou_localizacao": "https://www.tjmg.jus.br/portal-tjmg/processos/indicadores/fator-de-atualizacao-monetaria.htm",
-        "codigo_serie": "ICGJ (TJMG)",
-        "data_coleta": "2026-08-20",
-        "arquivo_bruto": "tjmg-fator-agosto-2026.xls",
-        "sha256_arquivo_bruto": "87fd78647bc3836f586860f4fa7d61ebbff9554094a183d33d4184430d382bd3",
-        "sha256_csv_normalizado": "3a80d900251ab23b9d73e8b76976105877347d474c027af1355adc1c417187e5",
-        "observacao": "XLS oficial de agosto de 2026, convertido localmente, dados nas linhas 10 a 751. Caso dourado pendente."
+        "autoridade_primaria": "BCB (Banco Central do Brasil)",
+        "url_ou_localizacao": "https://api.bcb.gov.br/dados/serie/bcdata.sgs.195/dados",
+        "codigo_serie": "SGS 195 - Poupanca - Rentabilidade mensal por data de aniversario, regra nova (Lei 12.703/2012)",
+        "data_coleta": "2026-08-27",
+        "arquivo_bruto": "poupanca-nova.csv",
+        "sha256_arquivo_bruto": "9af55b51ad477cf7ecac9b33e451d8a1b16002424094cd3236793da905907f9e",
+        "observacao": "Confirmado ao vivo via API do BCB (serie 195): valores de junho e julho/2026 (56 datas) batem exatamente com o CSV local, valor%/100 = valor decimal local. O CSV cobre 04/05/2012 (inicio da poupanca 'regra nova', Lei 12.703/2012) a 03/08/2026."
+      },
+      "homologacao": {
+        "caso": "Poupanca 'regra nova': R$10.000,00 de 01/01/2026 a 01/07/2026 (6 aniversarios mensais), conferido contra a Calculadora do Cidadao do proprio BCB (www3.bcb.gov.br/CALCIDADAO/publico/exibirFormCorrecaoValores.do, aba Poupanca, regra Nova) em 27/08/2026.",
+        "resultado_esperado": "10404.49",
+        "resultado_observado": "10404.49",
+        "tolerancia": "0.01",
+        "formula_referencia": "fator = produto(1 + taxa_do_dia_de_aniversario) para cada mes entre data_inicio e data_final; taxa lida no CSV na data exata de cada aniversario (convencao aniversario_deposito)",
+        "convencao_declarada": "aniversario_deposito",
+        "aprovado_por": "Ricardo Cesar Souza de Oliveira Junior",
+        "data_aprovacao": "2026-08-27"
       }
     },
     "tjsp-tabela-pratica": {
       "arquivo": "tjsp-tabela-pratica.csv",
       "tipo_serie": "fator_acumulado",
       "unidade": "fator",
-      "status": "pendente_validacao",
-      "sha256": "2f33fec1401c4ffa711f82653533e428e1567e3fdda5a4a10e998ce1c85c4b0a",
-      "convencoes": ["meses_calendario_inclusivos"],
+      "status": "aprovado",
+      "sha256": "14c8f7dcbe2fc5a77ba6a2bad640092e750f0145dd424bde8fdab9f48d5c1cad",
+      "convencoes": [
+        "meses_calendario_inclusivos"
+      ],
       "proveniencia": {
-        "status": "candidato",
         "autoridade_primaria": "TJSP",
         "url_ou_localizacao": "https://www.tjsp.jus.br/",
         "codigo_serie": "Tabela Prática TJSP - Lei 14.905/2024",
         "data_coleta": "2026-08-20",
         "arquivo_bruto": "tjsp-tabela-pratica.xlsm",
         "sha256_arquivo_bruto": "ce52aaf5600d35d0bfaf241b063ed8db3e2f68d584930204719705b407330aac",
-        "sha256_csv_normalizado": "2f33fec1401c4ffa711f82653533e428e1567e3fdda5a4a10e998ce1c85c4b0a",
-        "observacao": "Coluna O da aba ÍNDICES, faixa 7 a 748 na planilha recebida. Caso dourado pendente."
+        "observacao": "Coluna O da aba ÍNDICES, faixa 7 a 748 na planilha recebida. Hash do CSV normalizado corrigido em 2026-08-27 — o valor gravado originalmente no manifesto não conferia com o arquivo em disco (erro de digitação na primeira migração, único commit existente cobre os dois)."
+      },
+      "homologacao": {
+        "caso": "Correção monetária de R$ 10.000,00 de 01/01/2023 a 01/01/2024 (13 meses), TJSP Tabela Prática",
+        "resultado_esperado": "10370.70",
+        "resultado_observado": "10370.70",
+        "tolerancia": "0.01",
+        "formula_referencia": "principal * fator_acumulado(indice, data_inicio, data_final), fator_acumulado = valor(data_final) / valor(data_inicio)",
+        "convencao_declarada": "meses_calendario_inclusivos",
+        "aprovado_por": "Ricardo Cesar Souza de Oliveira Junior",
+        "data_aprovacao": "2026-08-27"
       }
     }
   }
