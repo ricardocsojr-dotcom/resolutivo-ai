@@ -111,10 +111,13 @@ def _month_key(value: date) -> tuple[int, int]:
     return value.year, value.month
 
 
-def _add_calendar_month(value: date) -> date:
+def _add_calendar_month(value: date, anchor_day: int | None = None) -> date:
+    # ponytail: anchor_day preserva o dia original do depósito através de meses
+    # curtos — sem isso, Jan/31 -> Fev/28 -> Mar/28 (deveria voltar a Mar/31).
+    day = anchor_day if anchor_day is not None else value.day
     year = value.year + value.month // 12
     month = value.month % 12 + 1
-    day = min(value.day, monthrange(year, month)[1])
+    day = min(day, monthrange(year, month)[1])
     return date(year, month, day)
 
 
@@ -233,8 +236,17 @@ def _select_rows(index: LoadedIndex, start: date, end: date, convention: str) ->
     if convention == "registros_com_data_no_intervalo_inclusivo":
         coverage_ok = index.first_date <= start and end <= index.last_date
     elif convention == "dias_corridos_semiaberto":
-        last_needed = end.fromordinal(end.toordinal() - 1) if end > start else start
-        coverage_ok = index.first_date <= start and last_needed <= index.last_date
+        if end == start:
+            coverage_ok = True  # janela [start, end) vazia — nada a cobrir
+        else:
+            last_needed = end.fromordinal(end.toordinal() - 1)
+            coverage_ok = index.first_date <= start and last_needed <= index.last_date
+    elif convention == "aniversario_deposito":
+        # ponytail: `end` aqui é só o marco final do ciclo, nunca uma linha
+        # precificada em si (o último aniversário cobrado é sempre <= 1 mês
+        # antes) — exigir cobertura do mês de `end` é forte demais. A checagem
+        # precisa (âncora por âncora) já acontece mais abaixo.
+        coverage_ok = index.first_date <= start
     else:
         coverage_ok = _month_key(index.first_date) <= _month_key(start) and _month_key(end) <= _month_key(index.last_date)
     if not coverage_ok:
@@ -287,7 +299,7 @@ def _select_rows(index: LoadedIndex, start: date, end: date, convention: str) ->
     if convention == "aniversario_deposito":
         anchors = [start]
         while anchors[-1] < end:
-            anchors.append(_add_calendar_month(anchors[-1]))
+            anchors.append(_add_calendar_month(anchors[-1], anchor_day=start.day))
         if anchors[-1] != end:
             raise _error(
                 "aniversario_final_nao_bate",
@@ -553,8 +565,8 @@ def calculate(payload: dict[str, Any], *, indices_dir: Path | str, manifest_path
             "cobertura": {
                 "inicio_indice": index.first_date.isoformat(),
                 "fim_indice": index.last_date.isoformat(),
-                "selecionada_inicio": rows[0].record_date.isoformat(),
-                "selecionada_fim": rows[-1].record_date.isoformat(),
+                "selecionada_inicio": rows[0].record_date.isoformat() if rows else data["start"].isoformat(),
+                "selecionada_fim": rows[-1].record_date.isoformat() if rows else data["start"].isoformat(),
             },
             "avisos": (
                 ([] if data["interest_start"] is not None else ["juros_nao_aplicados_sem_data_inicio_juros"])

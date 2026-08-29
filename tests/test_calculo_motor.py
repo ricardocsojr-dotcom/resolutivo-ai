@@ -339,6 +339,34 @@ def test_anniversary_series_blocks_missing_anchor() -> None:
             raise AssertionError("aniversário sem registro no índice não poderia ser completado")
 
 
+def test_anniversary_series_short_month_recovers_original_day() -> None:
+    # Regressão: depósito em dia 31 caindo num fevereiro curto não pode perder o
+    # dia original nos meses seguintes (Jan/31 -> Fev/28 -> Mar/31, não Mar/28).
+    with tempfile.TemporaryDirectory() as temp:
+        root = Path(temp)
+        _, digest = _write_index(
+            root, "teste-poupanca-curta", [("2026-01-31", "0.01"), ("2026-02-28", "0.01")]
+        )
+        manifest = _write_manifest(
+            root,
+            {
+                "teste": _approved_definition(
+                    "teste-poupanca-curta.csv", digest, "taxa_aniversario_percentual", "aniversario_deposito"
+                )
+            },
+        )
+        payload = {
+            "principal": "100.00",
+            "data_inicio_correcao": "2026-01-31",
+            "data_final": "2026-03-31",
+            "indice": "teste",
+            "convencao_indice": "aniversario_deposito",
+        }
+        result = calculate(payload, indices_dir=root, manifest_path=manifest)
+    assert result["total"] == "102.01"
+    assert result["registros_processados"] == 2
+
+
 def test_simple_prorata_daily_series_matches_bcb_examples() -> None:
     # Caso dourado taxa legal (Lei 14.905/2024): a metodologia do BCB é juros
     # simples com acumulação aditiva e intervalo semiaberto [inicio, fim) — o dia
@@ -397,6 +425,32 @@ def test_simple_prorata_daily_series_blocks_missing_day_before_end() -> None:
             assert exc.code == "dias_ausentes"
         else:
             raise AssertionError("dia sem registro antes do fim não poderia ser completado")
+
+
+def test_simple_prorata_daily_series_allows_zero_width_window() -> None:
+    # Regressão: início == fim é uma janela [start, end) vazia por definição —
+    # não pode exigir cobertura do índice para um dia que não entra na soma.
+    with tempfile.TemporaryDirectory() as temp:
+        root = Path(temp)
+        _, digest = _write_index(root, "teste-taxa-legal-zero", [("2024-08-30", "0.0002")])
+        manifest = _write_manifest(
+            root,
+            {
+                "teste": _approved_definition(
+                    "teste-taxa-legal-zero.csv", digest, "taxa_diaria_simples_pro_rata", "dias_corridos_semiaberto"
+                )
+            },
+        )
+        payload = {
+            "principal": "100.00",
+            "data_inicio_correcao": "2024-09-01",
+            "data_final": "2024-09-01",
+            "indice": "teste",
+            "convencao_indice": "dias_corridos_semiaberto",
+        }
+        result = calculate(payload, indices_dir=root, manifest_path=manifest)
+    assert result["total"] == "100.00"
+    assert result["registros_processados"] == 0
 
 
 def test_coverage_outside_index_is_blocked() -> None:
@@ -639,8 +693,10 @@ def main() -> None:
     test_anniversary_series_matches_bcb_calculator()
     test_anniversary_series_requires_aligned_final_date()
     test_anniversary_series_blocks_missing_anchor()
+    test_anniversary_series_short_month_recovers_original_day()
     test_simple_prorata_daily_series_matches_bcb_examples()
     test_simple_prorata_daily_series_blocks_missing_day_before_end()
+    test_simple_prorata_daily_series_allows_zero_width_window()
     test_coverage_outside_index_is_blocked()
     test_partial_month_requires_explicit_treatment()
     test_invalid_input_and_incomplete_interest_are_blocked()
