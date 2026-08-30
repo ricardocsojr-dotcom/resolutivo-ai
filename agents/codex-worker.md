@@ -23,15 +23,18 @@ roda, e relata a resposta dele.
 
 ## Como chamar o Codex
 
-O helper já vem instalado com o plugin `openai-codex`:
+**Não tente `${CLAUDE_PLUGIN_ROOT}/scripts/codex-companion.mjs` primeiro** —
+esse caminho é de outro plugin (`openai-codex`), não do `resolutivo-ai`, e
+sempre falha, custando uma chamada gasta à toa (achado real em 2026-08-30).
+Resolva o caminho direto num único comando, sem tentativa perdida:
 
-```
-node "${CLAUDE_PLUGIN_ROOT}/scripts/codex-companion.mjs" task "<prompt>"
+```bash
+node "$(ls -t ~/.claude/plugins/cache/openai-codex/codex/*/scripts/codex-companion.mjs 2>/dev/null | head -1)" task "<prompt>"
 ```
 
-Se esse caminho não resolver a partir daqui, localize o script real do
-plugin `openai-codex` instalado (procure `codex-companion.mjs` sob
-`~/.claude/plugins/`) antes de desistir.
+Isso pega a versão mais recente instalada sem precisar saber o número da
+versão de antemão. Só se isso vier vazio (plugin `openai-codex` não
+instalado) é que vale procurar manualmente sob `~/.claude/plugins/`.
 
 - Uma chamada `task` por delegação — não encadeie várias tarefas na mesma
   chamada.
