@@ -84,8 +84,32 @@ nunca contradiz o núcleo.
 | Recuo | 2 cm na primeira linha |
 | Parágrafos numerados | Contínuo do início ao fim, nunca reiniciar por tópico |
 | Títulos principais | Algarismos romanos + caixa alta + negrito; subtítulos em arábicos + negrito |
-| Destaques | Negrito (tese, conclusão, nome da peça). O nome da parte na abertura é a única exceção: negrito **+ sublinhado** (praxe forense de identificação — decisão de 2026-08). Fora dessa linha, sublinhado é proibido em qualquer posição (Manual §2.9). *Itálico* só para estrangeirismos e citação indireta de conduta. |
+| Destaques | Negrito (tese, conclusão, nome da peça, oração de ênfase — ver regra de dosagem abaixo). O nome da parte na abertura é a única exceção: negrito **+ sublinhado** (praxe forense de identificação — decisão de 2026-08). Fora dessa linha, sublinhado é proibido em qualquer posição (Manual §2.9). *Itálico* só para estrangeirismos e citação indireta de conduta. |
 | QR Code | Proibido para prova essencial — toda prova visual encartada diretamente nos autos. |
+
+### Ênfase estratégica em negrito — regra de dosagem (2026-08-30)
+
+Além do negrito de tese/conclusão/nome da peça, é permitida **uma oração curta**
+em negrito por tópico — não um termo isolado, não a frase inteira — pra marcar
+o ponto que o leitor não pode passar batido. É recurso de Legal Design, não
+decoração: a função é fazer a peça ser escaneável sem perder o sentido se lida
+só pelos trechos em negrito.
+
+- **O que negritar**: uma oração (poucas palavras, sujeito+verbo+complemento
+  mínimo), nunca o parágrafo inteiro nem só uma palavra solta. Normalmente
+  coincide com a tese fundida na abertura do parágrafo (regra do núcleo, §2) ou
+  com o fato mais grave/a inconsistência mais clara do adversário.
+- **Limite**: no máximo uma oração em negrito por tópico/bloco argumentativo, e
+  nunca em dois parágrafos consecutivos — passar disso dilui o efeito e vira o
+  vício que a Linha Vermelha Estética do `legal-design-rdaa` já proíbe
+  ("negrito em excesso"). Na dúvida, não negritar.
+- **Onde decidir**: a etapa de esqueleto (`esqueleto-peca`) já indica, bloco a
+  bloco, onde vale a pena essa ênfase — ver seção "Legal Design planejado" do
+  esqueleto. A redação aplica o que foi indicado ali; não é escolha livre no
+  meio da redação.
+- Exemplo: "O banco **negativou o nome do autor antes de qualquer notificação
+  prévia**, em violação direta ao CDC, art. 43, § 2º." — a oração em negrito
+  carrega o fato decisivo; o resto do período só amarra o fundamento.
 
 ## 6. Checklist de conformidade (usar em redação E em revisão — mesmo critério nos dois momentos)
 
@@ -109,3 +133,4 @@ nunca contradiz o núcleo.
 - [ ] Alguma expressão proibida da tabela 4 escapou? Algum sublinhado fora do nome da parte na abertura?
 - [ ] O nome da parte na abertura está em negrito **+ sublinhado**?
 - [ ] Algum sinal de cadência robótica (tricolon, eco, travessão recorrente, parágrafos uniformes)?
+- [ ] A oração em negrito de ênfase (quando houver) é uma oração curta, não um termo isolado nem o parágrafo inteiro? Aparece no máximo uma vez por tópico e nunca em parágrafos consecutivos?

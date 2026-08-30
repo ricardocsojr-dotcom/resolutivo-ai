@@ -170,6 +170,11 @@ de estrutura quando um `modelo_id` tiver sido escolhido. Preencha também
 deve declarar `nivel_peca`, `modo_redacao`, `redacao_por_blocos` e
 `exigir_esqueleto: true`. O tipo C não passa por esta etapa no fluxo padrão.
 
+Nos tipos B/A, `esqueleto-peca` já decide, bloco a bloco, onde vale ênfase em
+negrito ou elemento visual (seção "Legal Design planejado" daquela skill) — a
+aprovação do esqueleto no passo abaixo cobre isso junto, não é decisão à parte
+tomada durante a redação.
+
 Antes de pedir aprovação, cheque o gate de escalonamento de
 `esqueleto-peca/SKILL.md` ("Gate de escalonamento manual"). Se algum gatilho
 bater, é a mesma pausa por `AskUserQuestion` abaixo — não uma etapa extra.
@@ -411,7 +416,15 @@ Este fluxo combina:
 - MCP `CNJ`/DJEN → **desativado** (ver `CLAUDE.md`); não tente consultar andamento, publicação ou movimentação processual
 - MCP `NotebookLM` → uso secundário e somente quando Ricardo pedir
 - `esqueleto-peca` → estrutura obrigatória + ponto de aprovação via
-  `AskUserQuestion` nos tipos A e B
+  `AskUserQuestion` nos tipos A e B; nos tipos B/A também decide, bloco a
+  bloco, a ênfase em negrito e o elemento visual planejado (seção "Legal
+  Design planejado")
+- `legal-design-rdaa` → não é acionada automaticamente por inteiro; a
+  mecânica de ênfase em negrito (dosagem, limite) vive em
+  `redacao-rdaa.md`, e a tabela de elementos visuais por destinatário
+  (`legal-design-rdaa/SKILL.md` §2.4) é só consultada por `esqueleto-peca`
+  quando um bloco genuinamente pede elemento visual — invocar a skill
+  inteira continua exigindo pedido de Ricardo
 - `playbook-modelos` → modelos de estrutura selecionados por `modelo_id`, sem aplicação automática de tese
 - `contencioso-rdaa` → mentalidade de raciocínio e redação, sempre nos tipos A/B (passo 7) — não é porta de entrada, é acionada internamente por esta skill
 - `dano-moral-rct` → camada de estilo pós-redação, automática quando a matéria é dano moral (passo 7.75)

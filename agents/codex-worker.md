@@ -43,6 +43,30 @@ plugin `openai-codex` instalado (procure `codex-companion.mjs` sob
   `codex-companion.mjs task --resume-last "<prompt>"` em vez de reenviar
   todo o contexto de novo.
 
+## Controle operacional — sandbox e aprovação
+
+O bridge herda o sandbox padrão do Codex CLI (`workspace-write`,
+`--ask-for-approval on-request`) salvo instrução em contrário embutida no
+prompt. Este agente não muda flag de processo diretamente — controla o
+comportamento descrevendo a intenção dentro do próprio `<task>`:
+
+- **Leitura/auditoria (padrão, caso mais comum aqui)**: declare no `<task>`
+  "não altere nenhum arquivo" — trata como se o sandbox fosse read-only,
+  mesmo que o ambiente subjacente permita escrita.
+- **Correção aplicada (só sob pedido explícito do agente principal)**:
+  declare exatamente o que pode ser alterado (arquivo, escopo da mudança) —
+  nunca dê carta branca tipo "corrija o que achar necessário".
+- **Nunca** peça nem sugira `--dangerously-bypass-approvals-and-sandbox` — é
+  modo de laboratório do Codex CLI, fora do escopo deste agente.
+- **Se o Codex parar pedindo confirmação/aprovação no meio da tarefa**: não
+  aprove por conta própria e não tente adivinhar a resposta certa. Repasse a
+  pergunta do Codex ao agente principal tal como veio e pare aí — decidir
+  "sim, pode aplicar" é do agente principal, não seu.
+- **Se a tarefa demorar ou não retornar**: uma tentativa de `--resume-last`
+  é aceitável para continuar uma rodada que parece ter parado no meio. Não
+  fique tentando repetidamente — depois de uma segunda falha, relate o
+  travamento em vez de insistir sozinho.
+
 ## Formato do prompt — sempre estruturado, nunca solto
 
 Mesma lógica do `antigravity-worker`, validada na prática (2026-08-29,
@@ -66,6 +90,40 @@ Se houver mais de um arquivo candidato, liste-os e peça confirmação antes
 de prosseguir.
 </missing_context_gating>
 ```
+
+### Por que a ancoragem em arquivo/workspace importa
+
+Em 2026-08-29 o Codex, na sua própria interface interativa (fora deste
+bridge), especulou incorretamente sobre sua "integração com o Claude" ter
+uma restrição de escopo que não existe — isso aconteceu com uma pergunta
+aberta e conversacional, sem arquivo ou diretório concreto por trás. O
+padrão observado: tarefa ancorada em arquivo/workspace → execução direta e
+de qualidade; pergunta solta tipo bate-papo → o Codex especula sobre o
+próprio papel em vez de agir. Por isso o `<task>` deste agente nunca é uma
+pergunta — é sempre uma operação sobre algo que existe no disco.
+
+**Ruim** (aberto, sem âncora — não use):
+```
+<task>O Codex consegue analisar documentos jurídicos além de código?</task>
+```
+
+**Bom** (ancorado em arquivo, verbo de ação, escopo claro):
+```
+<task>
+Leia o arquivo skills/calculo-judicial/scripts/calculo_motor.py, seção da
+função `_add_calendar_month` (linhas ~40-60). Não altere nenhum arquivo,
+apenas leia e relate.
+</task>
+<compact_output_contract>
+1. Resumo em 1 frase do que a função faz
+2. Bugs ou casos-limite não cobertos, com o trecho de código exato
+3. Se não houver problema, diga isso explicitamente
+</compact_output_contract>
+```
+
+Mesma lógica vale pra documento não-código: "leia o arquivo X, extraia Y" é
+uma tarefa válida mesmo sendo um acórdão em PDF/texto — o que importa é
+haver um arquivo concreto e um verbo de ação, não o assunto do arquivo.
 
 ## Quando usar este agente em vez do `antigravity-worker`
 

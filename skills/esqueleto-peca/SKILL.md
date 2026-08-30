@@ -275,6 +275,28 @@ esqueleto pressupõe. O que este checklist acrescenta é só o estrutural:
   existem e em que sequência — a redação do conteúdo de cada bloco segue o
   núcleo.
 
+## Legal Design planejado (tipos B/A — decidir aqui, não durante a redação)
+
+Antes de fechar o esqueleto, passe uma vez pelos blocos e decida, por bloco:
+vale uma oração em negrito de ênfase (regra e limite em
+`redacao-rdaa.md`, seção "Ênfase estratégica em negrito") e/ou algum elemento
+visual (linha do tempo, tabela comparativa, quadro-resumo — tabela completa em
+`legal-design-rdaa/SKILL.md` §2.4)? Isso é proporcional ao princípio 1 do
+`legal-design-rdaa` — a maioria dos blocos não precisa de nada além do texto
+corrido, e forçar elemento visual onde não cabe é o mesmo vício que negrito em
+excesso. Não rode o protocolo completo de `legal-design-rdaa`; é só uma
+decisão leve de "onde", não a execução do elemento.
+
+- **Tipo C nunca passa por isso** — segue direto, sem esqueleto.
+- **Tipo B**: só sinalize elemento visual se o próprio material do processo já
+  pedir isso (ex.: sequência de datas confusa, comparação de versões dos
+  fatos) — não invente necessidade visual que o caso não tem.
+- **Tipo A**: mesma lógica, mas com mais liberdade dado o padrão premium — mais
+  de um elemento visual pode se justificar num recurso longo.
+- Se nenhum bloco pedir nada além do texto corrido, diga isso explicitamente
+  no esqueleto ("Legal Design planejado: nenhum elemento além do núcleo
+  universal") em vez de omitir a seção.
+
 ## Entrega desta skill (o que volta pra `redigir-peca`)
 
 ```
@@ -296,6 +318,10 @@ Fontes status
 
 Teses propostas:
 - [tese 1 — resumo de uma linha]
+
+Legal Design planejado (B/A):
+- [bloco] — [oração de ênfase prevista, resumida em uma linha, e/ou elemento
+  visual sugerido] — ou "nenhum elemento além do núcleo universal"
 
 --
 Aguardando aprovação do esqueleto antes de redigir por extenso.

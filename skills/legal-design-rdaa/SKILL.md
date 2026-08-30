@@ -126,11 +126,15 @@ são maquiagem — e o RDAA rejeita maquiagem documental.
 - Parágrafos numerados onde a sequência lógica precisa ser rastreável.
 
 **Negrito estratégico:**
-- Use apenas para o termo que o magistrado ou cliente PRECISA não ignorar.
-- Um a dois usos por página — máximo. Quando em dúvida, não use.
-- Qual markup é permitido (negrito sim, sublinhado nunca) é definido em
-  `contencioso-rdaa/references/redacao-rdaa.md` §9 — esta seção só trata de
-  frequência/moderação, não repete aquela regra.
+- A unidade é a **oração curta** (o ponto que o leitor não pode ignorar), não
+  um termo isolado nem o parágrafo inteiro — mecânica e limite exatos (uma por
+  tópico, nunca em parágrafos consecutivos) em
+  `contencioso-rdaa/references/redacao-rdaa.md`, seção "Ênfase estratégica em
+  negrito". Esta seção só trata de quando vale a pena usar, não repete aquela
+  regra.
+- Quando em dúvida, não use.
+- Qual markup é permitido (negrito sim, sublinhado nunca) também é definido
+  naquele arquivo, seção 5 ("Formatação institucional").
 
 ### 2.3 Data storytelling operacional
 
