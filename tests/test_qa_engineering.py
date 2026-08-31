@@ -206,6 +206,26 @@ def test_style_enforcement(folder: Path) -> None:
     result = run([sys.executable, str(STYLE_CHECKER), str(semicolon_list)])
     assert result.returncode == 0, result.stdout + result.stderr
 
+    # Parágrafos consecutivos com a mesma função e estrutura de abertura
+    # (mesmo sujeito/verbo) leem mal mesmo com palavras diferentes — ex. real
+    # do Ricardo: "esse contexto"/"essa circunstância" são a mesma coisa.
+    repeated_opening = folder / "repeated-opening.docx"
+    document = Document()
+    document.add_paragraph("Esse contexto demonstra que o réu agiu de má-fé durante toda a negociação.")
+    document.add_paragraph("Essa circunstância demonstra que o pagamento nunca foi considerado pela perícia.")
+    document.save(repeated_opening)
+    result = run([sys.executable, str(STYLE_CHECKER), str(repeated_opening)])
+    assert result.returncode == 1, result.stdout + result.stderr
+    assert "aberturas estruturalmente equivalentes" in result.stdout, result.stdout + result.stderr
+
+    varied_opening = folder / "varied-opening.docx"
+    document = Document()
+    document.add_paragraph("O comprovante juntado aos autos demonstra que o título já estava quitado.")
+    document.add_paragraph("Por sua vez, a perícia reconheceu que houve dupla contagem no cálculo.")
+    document.save(varied_opening)
+    result = run([sys.executable, str(STYLE_CHECKER), str(varied_opening)])
+    assert result.returncode == 0, result.stdout + result.stderr
+
 
 def test_defensive_openings(folder: Path) -> None:
     from docx import Document

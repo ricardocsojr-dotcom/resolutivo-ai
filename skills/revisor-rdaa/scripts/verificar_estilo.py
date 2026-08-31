@@ -25,7 +25,29 @@ facilitar o diagnóstico.
 import re
 import sys
 
+# ponytail: mesmo fix de construir_peca.py/verificar_formatacao.py/qa_gate.py
+# — sem isso, mensagem com acento sai como mojibake quando outro script
+# (qa_gate.py, ou um teste) captura este stdout no Windows.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8")
+
 JANELA_PAGINA = 12  # aprox. paragrafos por pagina (nao ha paginacao real fora do Word)
+
+
+_W_NS = 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'
+
+
+def _tem_borda_completa(paragraph):
+    """Detecta a caixa Processo/partes (borda nos 4 lados, ver
+    _add_full_border em construir_peca.py) — ela usa dois-pontos por
+    convenção própria (rótulo: valor) e não é prosa argumentativa."""
+    pbdr = paragraph._p.find(f'.//{{{_W_NS}}}pPr/{{{_W_NS}}}pBdr')
+    if pbdr is None:
+        return False
+    lados = {'top', 'left', 'bottom', 'right'}
+    presentes = {child.tag.rsplit('}', 1)[-1] for child in pbdr}
+    return lados.issubset(presentes)
 
 
 def _paragraphs_from_docx(path):
@@ -33,6 +55,7 @@ def _paragraphs_from_docx(path):
     doc = docx.Document(path)
     paragraphs = []
     estilos = []
+    bordas = []
     seen_paragraphs = set()
 
     def append_paragraphs(items):
@@ -43,6 +66,7 @@ def _paragraphs_from_docx(path):
             seen_paragraphs.add(marker)
             paragraphs.append(paragraph.text)
             estilos.append(paragraph.style.name if paragraph.style is not None else None)
+            bordas.append(_tem_borda_completa(paragraph))
 
     def append_table(table):
         for row in table.rows:
@@ -54,19 +78,21 @@ def _paragraphs_from_docx(path):
     append_paragraphs(doc.paragraphs)
     for table in doc.tables:
         append_table(table)
-    return paragraphs, estilos
+    return paragraphs, estilos, bordas
 
 
 def _paragraphs_from_txt(path):
     with open(path, encoding='utf-8') as f:
         linhas = [l.rstrip('\n') for l in f]
-    return linhas, [None] * len(linhas)
+    return linhas, [None] * len(linhas), [False] * len(linhas)
 
 
 def carregar_paragrafos(path):
-    """Retorna (paragrafos, estilos). `estilos[i]` é o nome do estilo do
-    parágrafo i no DOCX (ex.: 'RDAA Numerado', 'RDAA Alínea') ou None quando
-    a fonte é .txt ou o parágrafo não tem estilo nomeado."""
+    """Retorna (paragrafos, estilos, bordas). `estilos[i]` é o nome do
+    estilo do parágrafo i no DOCX (ex.: 'RDAA Numerado', 'RDAA Alínea') ou
+    None quando a fonte é .txt ou o parágrafo não tem estilo nomeado.
+    `bordas[i]` indica se o parágrafo tem borda nos 4 lados (caixa
+    Processo/partes)."""
     if path.lower().endswith('.docx'):
         return _paragraphs_from_docx(path)
     return _paragraphs_from_txt(path)
@@ -176,9 +202,16 @@ def checar_tricolon_negacao(paragrafos):
     return problemas
 
 
-def checar_dois_pontos(paragrafos):
+def checar_dois_pontos(paragrafos, bordas=None):
+    # A caixa Processo/partes usa "rótulo: valor" por convenção própria
+    # (ex.: "Autora: Trivale..."), não é prosa argumentativa — ver
+    # _tem_borda_completa.
     problemas = []
+    if bordas is None:
+        bordas = [False] * len(paragrafos)
     for i, p in enumerate(paragrafos):
+        if bordas[i]:
+            continue
         if ':' in p:
             problemas.append(
                 f"Paragrafo {i}: dois-pontos proibido na peça final — reescrever com ponto, vírgula ou conectivo."
@@ -194,10 +227,20 @@ _MARCADOR_PARENTESES = re.compile(r'^(?:[a-z]{1,3}|[ivxlcdm]{1,8}|\d{1,4})$', re
 _MARCADORES_INSTITUCIONAIS_PARENTESES = {"assinado eletronicamente"}
 
 
-def checar_aposto_explicativo(paragrafos):
+def checar_aposto_explicativo(paragrafos, estilos=None):
+    # Citação literal de jurisprudência (estilo "RDAA Citação") é transcrita
+    # verbatim — se o tribunal de origem usou parênteses na própria ementa
+    # (ex.: "(art. 966, VIII e § 1º, do CPC)"), a peça não pode reescrever
+    # isso sem alterar a citação, o que a regra de redação proíbe. A regra de
+    # aposto explicativo continua valendo para a prosa argumentativa própria.
     problemas = []
+    if estilos is None:
+        estilos = [None] * len(paragrafos)
     padrao = re.compile(r'\(([^()\r\n]*)\)')
     for i, p in enumerate(paragrafos):
+        estilo = (estilos[i] or "").strip().casefold()
+        if estilo == "rdaa citação":
+            continue
         for match in padrao.finditer(p):
             conteudo = match.group(1).strip()
             if not conteudo or _MARCADOR_PARENTESES.fullmatch(conteudo):
@@ -212,13 +255,105 @@ def checar_aposto_explicativo(paragrafos):
     return problemas
 
 
-def listar_dois_pontos(paragrafos):
+def listar_dois_pontos(paragrafos, bordas=None):
+    if bordas is None:
+        bordas = [False] * len(paragrafos)
     candidatos = []
     for i, p in enumerate(paragrafos):
+        if bordas[i]:
+            continue
         for s in _split_sentencas(p):
             if ':' in s:
                 candidatos.append((i, s.strip()[:120]))
     return candidatos
+
+
+_NUMERACAO_INICIAL = re.compile(r'^\s*(?:\d{1,4}|[ivxlcdm]{1,8})\s*[.)]\s*', re.IGNORECASE)
+
+# Conectivos de transição não mudam a função da abertura — "Assim, X faz Y"
+# e "X faz Y" abrem do mesmo jeito para efeito de variedade de redação.
+_CONECTIVOS_TRANSICAO = ('assim', 'além disso', 'alem disso', 'nesse sentido', 'por sua vez')
+
+# Demonstrativo + substantivo genérico ("esse contexto", "essa circunstância",
+# "essa situação", "este cenário") tem a mesma função em qualquer combinação
+# — normaliza pra um marcador comum antes de comparar.
+_DEMONSTRATIVO_GENERICO = re.compile(
+    r'^(?:esse|essa|este|esta|aquele|aquela)\s+'
+    r'(?:contexto|circunst[aâ]ncia|situa[cç][aã]o|cen[aá]rio)\b',
+    re.IGNORECASE,
+)
+
+_PALAVRAS_VAZIAS = {'de', 'da', 'do', 'das', 'dos', 'que', 'a', 'o', 'e'}
+
+
+def _assinatura_abertura(paragrafo):
+    """Normaliza a abertura de um parágrafo argumentativo só para efeito de
+    comparação de QA — nunca altera o texto entregue. Remove numeração e
+    conectivo de transição, reduz demonstrativo+substantivo genérico a um
+    marcador comum, e reduz o resto ao sujeito/verbo da primeira oração útil
+    (aproximado pelas primeiras palavras de conteúdo). Duas aberturas com a
+    mesma função e estrutura (ex.: "Esse contexto demonstra que..." e "Essa
+    circunstância demonstra que...") produzem a mesma assinatura mesmo com
+    palavras diferentes — trocar sinônimo não basta para variar a abertura."""
+    primeira_frase = re.split(r'(?<=[.!?])\s+', paragrafo.strip(), maxsplit=1)[0]
+    texto = _NUMERACAO_INICIAL.sub('', primeira_frase).strip()
+
+    for conectivo in _CONECTIVOS_TRANSICAO:
+        padrao = re.compile(r'^' + re.escape(conectivo) + r'\s*,?\s*', re.IGNORECASE)
+        substituido = padrao.sub('', texto)
+        if substituido != texto:
+            texto = substituido.strip()
+            break
+
+    texto = _DEMONSTRATIVO_GENERICO.sub('ISSO', texto)
+
+    # Sujeito+verbo da primeira oração útil: corta no primeiro "que" ou
+    # vírgula (fronteira comum entre sujeito/verbo e o complemento, que é a
+    # parte que deveria variar de um parágrafo pro outro). Sem essa
+    # fronteira, o conteúdo que vem depois — legitimamente diferente entre
+    # parágrafos — poluiria a assinatura e mascararia a repetição real.
+    corte = re.search(r'\bque\b|,', texto, flags=re.IGNORECASE)
+    nucleo = texto[:corte.start()] if (corte and corte.start() > 0) else texto
+
+    palavras = [w for w in re.findall(r"[\wÀ-ÿ]+", nucleo.lower()) if w not in _PALAVRAS_VAZIAS]
+    return ' '.join(palavras[:6])
+
+
+def checar_aberturas_consecutivas(paragrafos, minimo=2):
+    # Parágrafos argumentativos consecutivos cuja abertura tem a mesma
+    # função e estrutura (mesmo sujeito/verbo, mesmo conectivo, mesmo
+    # demonstrativo genérico) leem mal, ainda que o resto da frase varie —
+    # contagem objetiva sobre a assinatura normalizada, não sobre a palavra
+    # literal. A comparação é só de QA: não normaliza nem reescreve a peça.
+    problemas = []
+    grupo = []
+    assinatura_atual = None
+
+    def fechar_grupo():
+        if assinatura_atual and len(grupo) >= minimo:
+            problemas.append(
+                f"Paragrafos {grupo} tem aberturas estruturalmente equivalentes "
+                f"(assinatura {assinatura_atual!r}) — variar sujeito/verbo/fato, nao so as palavras."
+            )
+
+    for i, p in enumerate(paragrafos):
+        texto = p.strip()
+        if not texto or _parece_titulo(texto):
+            fechar_grupo()
+            grupo, assinatura_atual = [], None
+            continue
+        assinatura = _assinatura_abertura(texto)
+        if not assinatura:
+            fechar_grupo()
+            grupo, assinatura_atual = [], None
+            continue
+        if assinatura == assinatura_atual:
+            grupo.append(i)
+        else:
+            fechar_grupo()
+            grupo, assinatura_atual = [i], assinatura
+    fechar_grupo()
+    return problemas
 
 
 def checar_aberturas_repetidas(paragrafos, minimo_palavras=4, limite=3):
@@ -239,7 +374,7 @@ def checar_aberturas_repetidas(paragrafos, minimo_palavras=4, limite=3):
 
 
 def checar(path):
-    paragrafos, estilos = carregar_paragrafos(path)
+    paragrafos, estilos, bordas = carregar_paragrafos(path)
 
     problemas = []
     trav_problemas, trav_candidatos = checar_travessao(paragrafos)
@@ -247,11 +382,12 @@ def checar(path):
     problemas += checar_ponto_e_virgula(paragrafos, estilos)
     problemas += checar_tricolon_negacao(paragrafos)
     problemas += checar_aberturas_defensivas(paragrafos)
-    problemas += checar_dois_pontos(paragrafos)
-    problemas += checar_aposto_explicativo(paragrafos)
+    problemas += checar_dois_pontos(paragrafos, bordas)
+    problemas += checar_aposto_explicativo(paragrafos, estilos)
     problemas += checar_aberturas_repetidas(paragrafos)
+    problemas += checar_aberturas_consecutivas(paragrafos)
 
-    dois_pontos = listar_dois_pontos(paragrafos)
+    dois_pontos = listar_dois_pontos(paragrafos, bordas)
 
     return problemas, dois_pontos
 

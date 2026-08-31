@@ -7,10 +7,18 @@ revisar peça, leia também
 
 ## Papéis
 
-- **Codex redige** peças C, B e A e aplica no mesmo trabalho as camadas de
-  estilo autorizadas.
-- **Antigravity critica** a estratégia com contexto isolado e também pode
-  extrair documentos longos. Não redige, corrige, publica nem altera estado.
+- **O redator é Codex por padrão.** Ricardo pode escolher Antigravity como
+  redator em vez de Codex (ex.: por disponibilidade de crédito) — nesse caso
+  Antigravity redige e aplica no mesmo trabalho as camadas de estilo
+  autorizadas, exatamente como Codex faria.
+- **A crítica é sempre de um motor diferente do que redigiu naquela peça.**
+  Quando Codex redige, Antigravity critica com contexto isolado (e também
+  pode extrair documentos longos). Quando Ricardo escolhe Antigravity como
+  redator, quem faz a crítica muda caso a caso — Claude pergunta a Ricardo
+  antes de seguir, não segue por padrão fixo. Em nenhum caso o motor critica
+  o próprio rascunho.
+- **Quem estiver no papel de crítico** nunca redige, corrige, publica nem
+  altera estado — só aponta achado, que é alerta, não decisão automática.
 - **Claude orquestra, valida e corrige** o rascunho. Mudança de tese, pedido ou
   estratégia depende de Ricardo.
 - Não use `Agent`, subagente ou outro modelo como mensageiro entre CLIs. A

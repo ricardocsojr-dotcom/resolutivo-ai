@@ -6,7 +6,14 @@ from __future__ import annotations
 import argparse
 import json
 import subprocess
+import sys
 from pathlib import Path
+
+# ponytail: mesmo fix de construir_peca.py/verificar_formatacao.py/qa_gate.py
+# — sem isso, mensagem de erro com acento sai como mojibake no Windows.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8")
 
 ROOT = Path(__file__).resolve().parents[3]
 

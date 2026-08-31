@@ -16,6 +16,14 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+# ponytail: mesmo fix de construir_peca.py/verificar_formatacao.py — sem
+# isso, este script relê a saída UTF-8 dos validadores corretamente, mas ao
+# reimprimir na própria stdout sem reconfigurar, o Windows grava em cp1252;
+# quem capturar esta saída como UTF-8 (ex.: o publicador, ou um teste) recebe
+# mojibake ou caractere de substituição no lugar do acento.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8")
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 PLUGIN_ROOT = SCRIPT_DIR.parents[2]

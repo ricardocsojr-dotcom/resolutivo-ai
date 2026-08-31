@@ -887,18 +887,27 @@ def bloco_documento(doc, texto, gerenciador, sequencia='default', reiniciar=Fals
     return p
 
 
-def bloco_citacao(doc, texto, italic=False, bold=False):
+def bloco_citacao(doc, texto, italic=False, bold=False, referencia=None):
     """Item 5 — recuo esquerdo 2 cm, sem recuo especial, justificado,
     entrelinha SIMPLES (não 1,5), espaçamento 0/0, sem numeração própria.
     Itálico/negrito são opcionais por bloco (nunca fixos) — a peça de origem
     transcrita não usava itálico. `texto` pode ter múltiplas linhas (\\n);
-    cada linha vira um parágrafo próprio, sem parágrafo vazio entre elas."""
+    cada linha vira um parágrafo próprio, sem parágrafo vazio entre elas.
+
+    `referencia` (opcional) é a fonte da ementa (tribunal, número, relator,
+    data) — entra entre parênteses ao final da ÚLTIMA linha da própria
+    citação, no mesmo corpo de fonte (9pt), nunca como parágrafo à parte:
+    a ementa não pode ser interrompida por um espaçador antes da fonte."""
     paragrafos = []
-    for linha in texto.split('\n'):
+    linhas = texto.split('\n')
+    for idx, linha in enumerate(linhas):
         p = doc.add_paragraph()
         p.style = doc.styles['RDAA Citação']
         r = p.add_run(linha)
         _fmt_run(r, bold=bold, italic=italic, size=Pt(9))
+        if referencia and idx == len(linhas) - 1:
+            r_ref = p.add_run(f' ({referencia})')
+            _fmt_run(r_ref, bold=False, italic=False, size=Pt(9))
         _base_pf(p.paragraph_format, line_rule=WD_LINE_SPACING.SINGLE, left=CM2, first_line=Emu(0))
         paragrafos.append(p)
     return paragrafos
@@ -907,10 +916,11 @@ def bloco_citacao(doc, texto, italic=False, bold=False):
 def bloco_paragrafo_recuo(doc, texto, bold=False):
     """Parágrafos sem numeração explícita que ainda precisam do recuo de
     primeira linha em 2 cm (ex.: 'Nestes termos, aguarda deferimento.', a
-    linha de local/data, o boilerplate de publicações)."""
+    linha de local/data, o boilerplate de publicações, e a prosa argumentativa
+    corrente sob um título — inclusive a oração de ênfase em negrito da regra
+    de dosagem de redacao-rdaa.md, via **...** inline)."""
     p = doc.add_paragraph()
-    r = p.add_run(texto)
-    _fmt_run(r, bold=bold)
+    _adicionar_texto_formatado(p, texto, bold_default=bold)
     _base_pf(p.paragraph_format, line_rule=WD_LINE_SPACING.ONE_POINT_FIVE, first_line=CM2)
     return p
 
@@ -1150,7 +1160,7 @@ BLOCO_HANDLERS = {
                                                              b.get('sequencia', 'default'),
                                                              b.get('reiniciar', False)),
     'citacao':            lambda doc, b, g: bloco_citacao(doc, b['texto'], b.get('italic', False),
-                                                           b.get('bold', False)),
+                                                           b.get('bold', False), b.get('referencia')),
     'paragrafo':          lambda doc, b, g: bloco_paragrafo_recuo(doc, b['texto'], b.get('bold', False)),
     'figura':             lambda doc, b, g: bloco_figura(
         doc, b['image_path'], b.get('legenda'), b.get('width_cm', 14.0),
@@ -1460,8 +1470,12 @@ def construir_peca(context: dict, output_path: str) -> str:
         for linha in context['partes'].split('\n'):
             p = doc.add_paragraph()
             if ':' in linha:
+                # Preserva o dois-pontos entre rótulo e parte (ex.: "Autora:
+                # Trivale..."). A qualificação em si (Autora/Ré, Agravante/
+                # Agravado, Exequente/Executado etc.) é decidida por quem
+                # monta o contexto, não fixada aqui — este bloco só formata.
                 rotulo, _, valor = linha.partition(':')
-                r_label = p.add_run(rotulo + ' ')
+                r_label = p.add_run(rotulo + ': ')
                 _fmt_run(r_label, bold=True)
                 r_val = p.add_run(valor.lstrip())
                 _fmt_run(r_val, bold=False)

@@ -14,6 +14,13 @@ import shutil
 import sys
 from pathlib import Path
 
+# ponytail: mesmo fix de construir_peca.py/verificar_formatacao.py/qa_gate.py
+# — sem isso, mensagem com acento (incl. a saída agregada do qa_gate) sai
+# como mojibake ao imprimir no console do Windows.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8")
+
 SCRIPT_DIR = Path(__file__).resolve().parent
 if str(SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(SCRIPT_DIR))

@@ -317,16 +317,20 @@ def checar(docx_path):
 
     # 3b. Quadro Processo/partes (borda nos 4 lados) seguido de 2 parágrafos
     #     vazios (estava só 1) — Apontamentos 2026-07.
+    # Forma masculina e feminina de cada polo — parte requerida/autora
+    # frequentemente é pessoa jurídica ou física de nome feminino, e
+    # "Autor "/"Réu " não casam com "Autora "/"Ré " por substring.
     KEYWORDS_CAIXA = (
-        'Processo:', 'Processo ', 'Autor:', 'Autor ', 'Réu:', 'Réu ', 'Reu:', 'Reu ',
+        'Processo:', 'Processo ', 'Autor:', 'Autor ', 'Autora:', 'Autora ',
+        'Réu:', 'Réu ', 'Reu:', 'Reu ', 'Ré:', 'Ré ', 'Re:', 'Re ',
         'Parte ',
-        'Requerente:', 'Requerente ', 'Requerido:', 'Requerido ',
-        'Embargante:', 'Embargante ', 'Embargado:', 'Embargado ',
-        'Agravante:', 'Agravante ', 'Agravado:', 'Agravado ',
-        'Apelante:', 'Apelante ', 'Apelado:', 'Apelado ',
-        'Exequente:', 'Exequente ', 'Executado:', 'Executado ',
-        'Impetrante:', 'Impetrante ', 'Impetrado:', 'Impetrado ',
-        'Exeqte:', 'Exeqte ', 'Execdo:', 'Execdo '
+        'Requerente:', 'Requerente ', 'Requerido:', 'Requerido ', 'Requerida:', 'Requerida ',
+        'Embargante:', 'Embargante ', 'Embargado:', 'Embargado ', 'Embargada:', 'Embargada ',
+        'Agravante:', 'Agravante ', 'Agravado:', 'Agravado ', 'Agravada:', 'Agravada ',
+        'Apelante:', 'Apelante ', 'Apelado:', 'Apelado ', 'Apelada:', 'Apelada ',
+        'Exequente:', 'Exequente ', 'Executado:', 'Executado ', 'Executada:', 'Executada ',
+        'Impetrante:', 'Impetrante ', 'Impetrado:', 'Impetrado ', 'Impetrada:', 'Impetrada ',
+        'Exeqte:', 'Exeqte ', 'Execdo:', 'Execdo ', 'Execda:', 'Execda '
     )
     caixa_processo = [p for p in paragrafos if _border_top(p) is not None
                       and (any(k.lower() in textos[paragrafos.index(p)].lower() for k in KEYWORDS_CAIXA)
