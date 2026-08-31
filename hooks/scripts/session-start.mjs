@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Injeta o CLAUDE.md do plugin (perfil do escritório, persona, regras de
-// orquestração) como contexto no início de toda sessão. Sem isso, esse
-// arquivo fica inerte — o Claude Code não carrega um CLAUDE.md na raiz de
-// um plugin como contexto de projeto automaticamente.
+// orquestração) como contexto no início de toda sessão — EXCETO quando o cwd
+// é a própria raiz do plugin, caso em que o Claude Code já carrega esse
+// ./CLAUDE.md nativamente como contexto de projeto e injetar de novo só
+// duplica ~1,3k tokens por sessão.
 //
 // Também verifica se o hook de SessionEnd (session-end.mjs) deixou matérias
 // pendentes de sincronização com o vault (sessão anterior tocou o estado mas
@@ -13,11 +14,18 @@ import path from "node:path";
 
 const claudeMdPath = process.argv[2];
 
+// ponytail: se o cwd for a raiz do plugin, o Claude Code já injeta o ./CLAUDE.md
+// nativamente — não duplicar. Comparação normalizada e case-insensitive (Windows).
+const norm = (p) => path.resolve(p).replace(/[\\/]+$/, "").toLowerCase();
+const cwdIsPluginRoot = claudeMdPath && norm(path.dirname(claudeMdPath)) === norm(process.cwd());
+
 let content = "";
-try {
-  content = fs.readFileSync(claudeMdPath, "utf8").trim();
-} catch {
-  content = "";
+if (!cwdIsPluginRoot) {
+  try {
+    content = fs.readFileSync(claudeMdPath, "utf8").trim();
+  } catch {
+    content = "";
+  }
 }
 
 const pendingPath = path.join(process.cwd(), ".rdaa-run", ".pending_vault_sync.json");

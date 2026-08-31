@@ -48,7 +48,7 @@ Não há terceira análise automática, pesquisa externa automática nem correç
 
 ## Fontes externas
 
-DataJud, DJEN e NotebookLM continuam bloqueados por padrão (consulta manual, só a pedido de Ricardo — ver `CLAUDE.md`). **Exceção desde 2026-08-26**: o Ementário do Resolutivo (vault de tese/jurisprudência) é consultado **automaticamente** por `redigir-peca` em peça nível B/A, antes do esqueleto (passo 9) — não é mais autorização por matéria, é comportamento padrão do nível. Pesquisa **nova** de jurisprudência (Jusbrasil, via `jusbrasil-jurisprudencia`) continua tarefa do Claude e automática só no tipo A; no tipo B exige pedido expresso.
+NotebookLM continua bloqueado por padrão (consulta manual, só a pedido de Ricardo — ver `CLAUDE.md`). Consulta processual (DataJud/DJEN) não existe no plugin. **Exceção desde 2026-08-26**: o Ementário do Resolutivo (vault de tese/jurisprudência) é consultado **automaticamente** por `redigir-peca` em peça nível B/A, antes do esqueleto (passo 9) — não é mais autorização por matéria, é comportamento padrão do nível. Pesquisa **nova** de jurisprudência (Jusbrasil, via `jusbrasil-jurisprudencia`) continua tarefa do Claude e automática só no tipo A; no tipo B exige pedido expresso.
 
 ## Mecanismo de execução (sem orquestrador)
 

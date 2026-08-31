@@ -105,17 +105,12 @@ esqueleto (passo 6).
   manual e só acontece se Ricardo pedir expressamente — registre a origem e
   não altere o tipo automaticamente.
 
-### 3. Consultar o processo — OPCIONAL
+### 3. Consulta processual — não fazer
 
-A existência de número de processo **não** dispara consulta automática ao
-CNJ/DataJud. Execute `consultar-processo` somente se Ricardo pedir andamento,
-última decisão, movimentação, prazo ou situação atual, ou se o contexto trouxer
-uma instrução explícita para consulta processual.
-
-Se a peça puder ser redigida com os fatos já fornecidos, siga diretamente para
-a pesquisa e a estruturação. Se alguma informação externa for necessária mas a
-consulta não tiver sido solicitada, registre `[PONTO A CONFERIR]`/pendência e não
-invente o dado. A consulta continua disponível como skill independente.
+Não há consulta a andamento, movimentação, prazo ou publicação — a capacidade
+foi removida do plugin. Redija com os fatos fornecidos. Se a peça depender de
+um dado que só o andamento externo forneceria e Ricardo não o trouxe, registre
+`[PONTO A CONFERIR]`/pendência e não invente o dado.
 
 ### 4. Buscar jurisprudência
 
@@ -413,7 +408,7 @@ vault.
 Este fluxo combina:
 - Classificação de nível (`nivel_peca` C/B/A) → decide profundidade, blocos, esqueleto e a rota de agentes (passo 1)
 - `jusbrasil-jurisprudencia` → pesquisa de jurisprudência automática no tipo A (premissa do nível, sem pedido separado), nunca no tipo B/C salvo pedido expresso
-- MCP `CNJ`/DJEN → **desativado** (ver `CLAUDE.md`); não tente consultar andamento, publicação ou movimentação processual
+- Consulta processual (andamento, publicação, movimentação) → não existe no plugin; não tente
 - MCP `NotebookLM` → uso secundário e somente quando Ricardo pedir
 - `esqueleto-peca` → estrutura obrigatória + ponto de aprovação via
   `AskUserQuestion` nos tipos A e B; nos tipos B/A também decide, bloco a

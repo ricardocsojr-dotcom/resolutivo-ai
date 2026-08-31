@@ -47,7 +47,7 @@ lei + visual num único aprofundamento.
 - Não inventa doutrina, autor, obra, página, jurisprudência ou dispositivo
   legal. Toda citação de lei/súmula/jurisprudência é literal e vem de fonte
   conferida (ver passos 3 e 4).
-- Não consulta andamento processual (MCP `CNJ` desativado, ver `CLAUDE.md`).
+- Não consulta andamento processual (a capacidade foi removida do plugin).
 
 ## Fluxo
 

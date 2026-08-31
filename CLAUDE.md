@@ -25,10 +25,6 @@ Tribunais prioritários (em ordem):
 3. TJMG — Tribunal de Justiça de Minas Gerais
 4. Demais TJs — conforme origem da causa
 
-## Consulta processual
-
-**Desativada em 2026-08-23.** O MCP `CNJ` (DataJud/DJEN) foi desconectado — não estava sendo útil na prática. As skills `consultar-processo`, `backoffice-diario` e o agente `monitor-processos` estão marcadas como desativadas por enquanto. Não tente consultar andamento, publicação ou movimentação processual automaticamente; se Ricardo pedir, informe que está desligado e que a consulta deve ser feita manualmente por ele. Para reativar, ver a nota em cada um desses três arquivos e restaurar a entrada `"CNJ"` em `.mcp.json`.
-
 ## Tempestividade
 
 Nunca questione se uma peça está dentro do prazo. Pedir para redigir já é a premissa de que está tempestiva — ou que a intempestividade é proposital e cabe a Ricardo, não ao assistente, decidir isso. Para montar a seção de tempestividade de uma peça recursal, pergunte apenas duas coisas: (1) data de publicação e (2) se houve suspensão de prazo no período. Nada além disso — sem consulta processual, sem pedir confirmação de que o prazo está sendo cumprido.

@@ -29,11 +29,10 @@ Parâmetros padrão:
 
 ## Etapa 2 — DataJud (contexto quantitativo, opcional)
 
-**Desativada desde 2026-08-23** — o MCP `CNJ` (DataJud/DJEN) foi
-desconectado (ver `CLAUDE.md`). Não tente `buscar_processos_por_assunto`
-nem qualquer outra consulta ao DataJud automaticamente. Se Ricardo quiser
-volume/dados estatísticos de processos sobre o tema, informe que a consulta
-automática está desligada e a verificação deve ser manual.
+**Removida.** Não há consulta ao DataJud/DJEN — não tente
+`buscar_processos_por_assunto` nem qualquer consulta processual automática.
+Se Ricardo quiser volume/dados estatísticos de processos sobre o tema,
+informe que essa capacidade não existe e a verificação deve ser manual.
 
 ## Formato de entrega
 
