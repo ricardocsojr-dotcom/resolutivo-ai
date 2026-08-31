@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["veredito", "vulnerabilidades", "lacunas", "pontos_a_conferir"],
+  "properties": {
+    "veredito": {
+      "type": "string",
+      "enum": ["sem_achado_relevante", "ajustes", "risco_central"]
+    },
+    "vulnerabilidades": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severidade", "descricao", "evidencia", "correcao_recomendada"],
+        "properties": {
+          "severidade": {"type": "string", "enum": ["central", "secundaria", "formal"]},
+          "descricao": {"type": "string"},
+          "evidencia": {"type": "string"},
+          "correcao_recomendada": {"type": "string"}
+        }
+      }
+    },
+    "lacunas": {"type": "array", "items": {"type": "string"}},
+    "pontos_a_conferir": {"type": "array", "items": {"type": "string"}}
+  }
+}

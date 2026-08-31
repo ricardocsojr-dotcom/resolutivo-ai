@@ -27,6 +27,16 @@ import re
 import sys
 import tempfile
 
+# ponytail: no Windows, stderr/stdout herdam o codepage ANSI do console (ex.:
+# cp1252) quando o processo é aberto via subprocess sem PYTHONUTF8/PYTHONIOENCODING
+# — uma mensagem com acento (ex.: "campo obrigatório") sai como bytes UTF-8
+# decodificados errado do outro lado ("campo obrigatÃ³rio"). Reconfigurar aqui
+# garante saída correta não importa quem chame o script (pytest, Bash tool,
+# executar_motor.py).
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8")
+
 try:
     from docx import Document
     from docx.shared import Pt, Emu, RGBColor

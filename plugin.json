@@ -1,0 +1,5 @@
+{
+  "$schema": "https://antigravity.google/schemas/v1/plugin.json",
+  "name": "resolutivo-ai",
+  "description": "Workspace jurídico RDAA compartilhado entre Claude, Codex e Antigravity."
+}

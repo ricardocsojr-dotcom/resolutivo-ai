@@ -17,6 +17,12 @@ import re
 import zipfile
 from lxml import etree
 
+# ponytail: mesmo fix de construir_peca.py — sem isso, mensagem com acento sai
+# como mojibake quando outro script (qa_gate.py) captura este stdout no Windows.
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8")
+
 NS = {'w': 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}
 R_NS = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
 PKG_REL_NS = 'http://schemas.openxmlformats.org/package/2006/relationships'

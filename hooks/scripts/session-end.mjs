@@ -30,7 +30,7 @@ try {
 
 const pending = [];
 for (const matterId of matterDirs) {
-  const manifestPath = path.join(RUN_DIR, matterId, "manifest.json");
+  const manifestPath = path.join(RUN_DIR, matterId, "run_manifest.json");
   const manifest = readJson(manifestPath, null);
   if (!manifest) continue;
   if (manifest.vault_synced_at) continue; // ja sincronizado

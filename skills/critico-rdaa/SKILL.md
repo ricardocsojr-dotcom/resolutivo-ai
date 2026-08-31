@@ -1,7 +1,7 @@
 ---
 name: critico-rdaa
 description: >-
-  Crítico estratégico independente de peças processuais do RDAA — roda como subagente isolado, sem visibilidade
+  Contrato do crítico estratégico independente executado diretamente pelo Antigravity, sem visibilidade
   sobre como a peça foi redigida, e ataca a tese construindo ativamente a contratese (papel do advogado
   adverso) usando a ACH de metodologia-estrategica.md. Não avalia formatação, estilo, terminologia ou
   cadência de IA (isso é revisor-rdaa) — só a força e a completude do argumento em si: teses não exploradas,
@@ -16,8 +16,8 @@ description: >-
 
 ## Como esta skill deve ser invocada
 
-Esta skill só cumpre sua função se rodar com **contexto isolado**: invoque-a
-via subagente (Agent tool), passando apenas — texto final da peça, fatos
+Esta skill só cumpre sua função se rodar com **contexto isolado**: envie-a ao
+Antigravity pelo executor direto de `redigir-peca`, passando apenas — texto final da peça, fatos
 relevantes do caso e pedido principal. Nunca passe o histórico da conversa
 onde a peça foi redigida, o esqueleto aprovado, ou qualquer raciocínio do
 redator. Um crítico que vê as decisões do redator racionaliza em vez de

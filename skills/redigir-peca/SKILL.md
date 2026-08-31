@@ -70,24 +70,11 @@ Assim que houver um identificador explícito, use o mesmo diretório isolado de
 de processos diferentes. O orquestrador pode montar pacotes de contexto ao
 longo do fluxo, mas não deve repassar o estado completo a cada skill.
 
-Antes de acionar agentes adicionais, o orquestrador deve consultar a rota
-executável e persistir sua decisão, passando **sempre** `nivel_peca` (A/B/C, já
-classificado no passo 0) como `--level`:
-
-```bash
-python3 skills/revisor-rdaa/scripts/semantica_rdaa.py \
-  .rdaa-run/<matter_id> route --level <nivel_peca> [--agent <agente>]
-```
-
-O resultado contém `selected` e `omitted`. O nível da peça decide sozinho:
-nível **A** seleciona `critico-rdaa` e `conselho-rdaa`; nível **B** seleciona
-só `critico-rdaa`; nível **C** não seleciona nenhum dos dois — QA e revisão
-semântica continuam obrigatórios em todo nível. Não é mais preciso declarar
-risco separadamente para o crítico rodar em A/B: o nível já é a autorização.
-Uma declaração de risco explícita no contexto (`declared_risk_level`) ainda
-pode adicionar agente por cima disso; um pedido expresso de Ricardo por
-conselho ou crítico numa peça C usa `--agent` como override e o manifesto
-registrará `override_explicito`.
+Não use `Agent` nem subagente para intermediar motores. A classificação C/B/A
+define a profundidade da peça; a divisão de trabalho é fixa: Codex redige,
+Antigravity critica e Claude valida/corrige. O Conselho continua sendo uma
+consulta isolada de Claude apenas quando Ricardo o pedir ou quando o nível A a
+exigir.
 
 ### 2. Organizar o material explicitamente fornecido
 
@@ -189,7 +176,7 @@ da aprovação recebida por essa tool — isso existe pra evitar redigir em
 cima de tese ou jurisprudência errada, e pra controlar o que entra no
 aprovação da estrutura e para preservar as fontes explicitamente selecionadas.
 
-### 7. Redigir no padrão RDAA
+### 7. Codex redige no padrão RDAA
 
 Antes de chamar a skill de redação, monte o pacote `redator` com
 `skills/revisor-rdaa/scripts/contexto_rdaa.py`. Passe apenas fatos, teses
@@ -198,13 +185,18 @@ selecionadas, pendências, regras necessárias, `nivel_peca`, `modo_redacao`,
 `redacao_por_blocos` e o `modelo_estrutura` selecionado quando houver. Não
 repasse o histórico integral ou o provenance bruto.
 
-Só depois do esqueleto aprovado e validado. Use a skill `contencioso-rdaa`
-para a redação — é a mentalidade/metodologia de raciocínio e escrita do RDAA,
-não uma seleção condicionada ao tipo de ação. O pacote do redator recebe o
-esqueleto aprovado e as fontes selecionadas, não o provenance bruto inteiro.
-`contencioso-rdaa/references/redacao-rdaa.md` é lido como primeiro passo
-obrigatório (a seção de dosagem do núcleo diz o que acrescentar por tipo
-de peça). Siga estritamente:
+Só depois do esqueleto aprovado e validado. Grave o pacote compacto em um
+arquivo de prompt dentro de `.rdaa-run/<matter_id>/` e chame o Codex pelo
+executor direto, sem `Agent` e sem argumento longo de terminal:
+
+```text
+python skills/redigir-peca/scripts/executar_motor.py codex --prompt <PROMPT.md> --output <RASCUNHO.md>
+```
+
+O executor usa stdin, modo efêmero e sandbox somente leitura. O resultado é
+um rascunho, nunca publicação. Inclua
+`contencioso-rdaa/references/redacao-rdaa.md` como regra obrigatória e siga
+estritamente:
 - Nos tipos A e B, execute a redação por blocos conforme o esqueleto aprovado.
 - No tipo C, redija diretamente em parágrafos curtos, sem converter o texto em
   fluxo de blocos.
@@ -216,72 +208,47 @@ de peça). Siga estritamente:
 - Parágrafos curtos
 - Comece argumentos afirmando diretamente o objeto, a tese, o vício, o fato ou a consequência. Evite aberturas por negação, ressalva ou justificativa defensiva, como “não se pretende”, “não se busca”, “não se trata”, “não se ignora” e “não se desconhece”. Reescreva positivamente quando o sentido for preservado. Mantenha a negativa quando ela for indispensável para delimitar o objeto, responder a uma afirmação concreta, afastar interpretação específica ou formar contraste jurídico necessário.
 
-### 7.5. Crítica estratégica — antes da revisão de qualidade
+### 7.5. Antigravity critica, por chamada direta
 
-Somente se `critico-rdaa` estiver em `route.selected`, monte o pacote
-`critico` e invoque a skill `critico-rdaa` como **subagente isolado** (Agent
-tool), passando a peça recém-redigida junto apenas dos fatos, fontes, evidências,
-teses e hipóteses necessários. Se o crítico estiver em `route.omitted`, não o
-acione automaticamente; registre a omissão no manifesto e siga para o revisor.
-Um pedido explícito de Ricardo pode selecioná-lo por override. Nunca passe o
-histórico desta conversa, o raciocínio privado do redator ou o esqueleto
-aprovado. O isolamento é o que garante que o crítico julgue com olhos frescos,
-sem herdar o raciocínio de quem redigiu.
+Depois da redação, monte outro prompt compacto com a peça, fatos, fontes e
+teses necessárias e chame Antigravity diretamente:
 
-- Se o crítico apontar vulnerabilidades reais ou teses não exploradas:
-  volte automaticamente ao passo 7 para uma rodada de correção com
-  `contencioso-rdaa` — não pare para perguntar, isso
-  aconteceria só uma vez, de forma autônoma, para manter o fluxo rápido em
-  peças B/A. Depois de corrigir, siga para o passo 8, mesmo que ainda
-  reste alguma vulnerabilidade **menor** não resolvida — de forma, ênfase ou
-  argumento secundário (guarde essa pendência para relatar na entrega).
+```text
+python skills/redigir-peca/scripts/executar_motor.py antigravity --prompt <PROMPT-CRITICO.md> --output <CRITICA.json> --schema skills/redigir-peca/references/critica-antigravity.schema.json --effort high
+```
+
+O executor usa `stream-json`, evitando o limite de argumentos do Windows. O
+crítico aponta somente vulnerabilidades, lacunas e pontos a conferir; não
+altera arquivos, tese, pedido ou estado. O JSON é alerta estruturado, nunca
+um bloqueio ou uma decisão automática.
+
+Para extração documental simples, use `--effort low` ou `medium`; `high` fica
+reservado à crítica estratégica. Falha, cota ou timeout pausa o fluxo — nunca
+troque de motor silenciosamente.
+
+Faça no máximo **uma chamada crítica por peça B/A**, com pacote curto e sem
+loop automático entre motores. Peça C só recebe crítica se Ricardo pedir ou se
+a rota registrar override explícito.
+Nunca envie o histórico integral da conversa ou o raciocínio privado do
+redator.
+
+- Se o crítico apontar vulnerabilidade relevante, encaminhe-a ao Claude no
+  passo 8. Claude corrige o que for objetivo; alteração de tese, pedido ou
+  estratégia exige pausa e decisão de Ricardo.
 - Se a vulnerabilidade remanescente for de **tese central** — não secundária,
   algo que compromete o argumento principal da peça — isso é o gatilho 4 do
   gate de escalonamento (`esqueleto-peca/SKILL.md`): pare com
   `AskUserQuestion` em vez de publicar com essa pendência.
 - Se não houver vulnerabilidade relevante, siga direto para o passo 8.
-- Guarde o relatório do crítico (achados e o que mudou, ou "sem
-  divergência relevante") para citar na seção Entrega.
+- Guarde o relatório do crítico para informar a correção e a entrega.
 
-### 7.75. Camadas opcionais de estilo — pós-redação e pós-crítica
+### 8. Claude valida e corrige
 
-Rodam depois da redação (passo 7) e da crítica estratégica (passo 7.5), se
-houver, sempre sobre o texto já pronto — nenhuma delas redige do zero. Podem
-se combinar na mesma peça, sempre nesta ordem: `dano-moral-rct` primeiro
-(voz RCT), `estilo-flavia-rdaa` depois (compatibilidade Flávia), se ambas se
-aplicarem.
-
-**`dano-moral-rct`** — invoque automaticamente quando a matéria da peça for
-ação de dano moral (declarado no contexto ou evidente do pedido/tese
-selecionados no esqueleto). É premissa do gênero da peça, não exige pedido
-separado de Ricardo — equivalente à pesquisa automática do tipo A. Rode como
-subagente isolado, passando o texto já redigido, os fatos/documentos
-selecionados e o tipo de peça. A skill compara o texto contra a voz RCT
-(tese antes dos fatos, episódios como padrão, contraste aparência/realidade,
-linguagem do réu contra si mesmo) e reescreve o que divergir, sem alterar
-fatos, tese, pedidos, fontes ou IDs.
-
-**`estilo-flavia-rdaa`** — só quando o pedido ou o contexto declarar
-`estilo_alvo: flavia`. Não acione por inferência de assinatura, destinatário
-ou nome mencionado no documento. Invoque como subagente isolado, passando o
-texto existente (já com a camada RCT aplicada, se for o caso), o tipo de
-peça e o pacote factual mínimo. Roda no máximo três rodadas de convergência.
-
-Nenhuma das duas camadas passa histórico da conversa, raciocínio privado,
-provenance bruto, vault ou fontes não selecionadas, e nenhuma altera fatos,
-tese, pedidos, fontes, IDs ou estrutura obrigatória — só a forma.
-
-Depois da saída de qualquer uma delas, rode novamente `verificar_estilo.py` e
-o checklist do revisor. Se houver violação de regra RDAA, a camada deve ser
-corrigida ou rejeitada antes da geração do DOCX candidato.
-
-### 8. Revisar
-
-Após redigir (e após a rodada de crítica estratégica em B/A), monte o pacote
-`revisor` com `contexto_rdaa.py`, incluindo somente regras, fontes/citações
-utilizadas, fatos necessários para conferência, pendências e o relatório
-explícito do crítico quando houver. Em seguida, rode o checklist da skill
-`revisor-rdaa` — incluindo `scripts/verificar_estilo.py`
+Claude recebe o rascunho do Codex, o relatório do Antigravity, o esqueleto
+aprovado e as fontes selecionadas. Corrige diretamente o que for objetivo. Se
+o achado exigir mudança de tese, pedido ou estratégia, pausa e apresenta o
+ponto a Ricardo. Em seguida, rode o checklist da skill `revisor-rdaa` —
+incluindo `scripts/verificar_estilo.py`
 (Passo 1b da própria skill) — antes de entregar. Depois de gerar o DOCX
 candidato, use `scripts/publicar_docx.py`: ele roda o `qa_gate.py`, o gate
 estrutural e a revisão semântica objetiva quando houver contexto, e só substitui
@@ -315,14 +282,9 @@ retornar `[OK]`. O publicador executa o gate, preserva backup, mantém o arquivo
 anterior se houver falha e substitui o destino de forma atômica. Nome padrão do
 arquivo publicado: `[tipo_peca]_[numero_processo]_[data].docx`
 
-Quando `critico-rdaa` estiver em `route.selected`, a mensagem de entrega a
-Ricardo sempre relata o resultado do passo 7.5: o que o crítico apontou e o que
-foi corrigido por causa disso, ou que não houve divergência relevante. Quando o
-agente estiver em `route.omitted`, relate que a crítica não foi acionada porque
-não havia risco explícito ou pedido de override. A rodada de correção
-automática do passo 7.5 não pede aprovação prévia, mas nunca fica
-invisível — Ricardo precisa saber que a peça foi reescrita e por quê antes
-de protocolar.
+Na entrega, relate em uma linha que a peça foi redigida pelo Codex, criticada
+pelo Antigravity e validada/corrigida pelo Claude. Qualquer ponto que exija
+decisão de tese, pedido ou estratégia permanece explícito para Ricardo.
 
 ### 9. Ementário do Resolutivo — consulta automática em B/A, antes do esqueleto
 
@@ -426,11 +388,8 @@ Este fluxo combina:
   quando um bloco genuinamente pede elemento visual — invocar a skill
   inteira continua exigindo pedido de Ricardo
 - `playbook-modelos` → modelos de estrutura selecionados por `modelo_id`, sem aplicação automática de tese
-- `contencioso-rdaa` → mentalidade de raciocínio e redação, sempre nos tipos A/B (passo 7) — não é porta de entrada, é acionada internamente por esta skill
-- `dano-moral-rct` → camada de estilo pós-redação, automática quando a matéria é dano moral (passo 7.75)
-- `estilo-flavia-rdaa` → camada de estilo pós-redação, só com `estilo_alvo: flavia` (passo 7.75)
-- `critico-rdaa` → crítica estratégica isolada; nível A/B sempre aciona, nível C nunca (passo 1, rota por `nivel_peca`)
-- `revisor-rdaa` → qualidade
+- `contencioso-rdaa` → núcleo de escrita obrigatório no pacote entregue ao Codex (passo 7)
+- `revisor-rdaa` → checklist de qualidade aplicado pelo Claude (passo 8)
 - `docx` → entrega protegida
 - Ementário do Resolutivo → consulta automática em B/A antes do esqueleto (disparada no passo 2, mecânica completa no passo 9); gravação automática de tese/fonte usada após publicação (passo 10)
 - Procedimentos e Informações → leitura sempre manual; gravação automática de registro operacional após publicação (passo 10)

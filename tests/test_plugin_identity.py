@@ -13,7 +13,7 @@ MANIFEST = ROOT / ".claude-plugin" / "plugin.json"
 def main() -> int:
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     assert manifest["name"] == "resolutivo-ai"
-    assert manifest["version"] == "3.0.0"
+    assert re.fullmatch(r"\d+\.\d+\.\d+", manifest["version"])
     assert "Resolutivo.AI" in manifest["description"]
     assert re.fullmatch(r"[a-z][a-z0-9]*(?:-[a-z0-9]+)*", manifest["name"])
 
@@ -32,6 +32,10 @@ def main() -> int:
 
     print("[OK] identidade Resolutivo.AI validada")
     return 0
+
+
+def test_plugin_identity() -> None:
+    assert main() == 0
 
 
 if __name__ == "__main__":

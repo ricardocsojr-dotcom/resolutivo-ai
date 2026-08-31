@@ -5,8 +5,8 @@ description: >
   dentro do fluxo de `redigir-peca`) para a voz autoral de Ricardo Cesar Souza
   de Oliveira Junior. NÃO é a porta de entrada para redigir a peça — para
   isso, use `redigir-peca`. Aciona automaticamente quando a matéria da peça é
-  dano moral, sem precisar de pedido separado; roda como subagente isolado
-  sobre o texto já pronto, sem alterar fatos, tese, pedidos, fontes ou IDs.
+  dano moral, sem precisar de pedido separado; roda na mesma chamada do Codex
+  redator sobre o texto já pronto, sem alterar fatos, tese, pedidos, fontes ou IDs.
 ---
 
 # Skill: Camada de Estilo — Ação de Dano Moral (Voz RCT)
@@ -33,12 +33,11 @@ a publicação protegida. Esta skill nunca grava diretamente o arquivo final.
 
 ## Como esta skill deve ser invocada
 
-Invoque via subagente isolado (Agent tool), passando apenas: o texto já
-redigido da peça, os fatos e documentos explicitamente selecionados (o que
-está provado, o que não está), os réus envolvidos e o tipo de peça. Nunca
-passe o histórico da conversa onde a peça foi redigida, nem o raciocínio de
-quem escreveu — o isolamento evita que a reescrita apenas preserve frases
-"porque já estavam ali".
+Inclua estas instruções e `references/estilo-rct.md` no pacote compacto da
+mesma chamada do Codex redator. Passe apenas o texto, os fatos e documentos
+explicitamente selecionados, os réus e o tipo de peça; nunca o histórico
+integral da conversa. Não abra uma segunda chamada apenas para transportar ou
+reaplicar o estilo.
 
 ## Leia primeiro
 

@@ -25,7 +25,13 @@ STYLE_SCRIPT = SCRIPT_DIR / "verificar_estilo.py"
 
 def _run_check(name: str, script: Path, docx: Path) -> dict:
     command = [sys.executable, str(script), str(docx)]
-    completed = subprocess.run(command, capture_output=True, text=True)
+    # ponytail: sem encoding explícito, o Windows decodifica a saída do
+    # subprocesso com o codepage ANSI do console (cp1252), corrompendo acento
+    # de mensagem em UTF-8 ("não está" -> "nÃ£o estÃ¡") antes mesmo de chegar
+    # no agregador do gate.
+    completed = subprocess.run(
+        command, capture_output=True, text=True, encoding="utf-8", errors="replace"
+    )
     output = completed.stdout
     if completed.stderr:
         output += ("\n" if output else "") + completed.stderr

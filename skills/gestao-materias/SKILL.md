@@ -5,13 +5,12 @@ description: >
   RDAA em C:\Users\ricar\OneDrive\Área de Trabalho\Resolutivo-Dados: cria a estrutura de pastas de um
   cliente ou matéria nova, registra documentos-fonte com ID/hash, confere
   se um documento já registrado foi alterado, abre e resolve pendências,
-  gera o pacote de handoff para o Gemini (a única CLI que não instala o
-  plugin) continuar peças nível C, e converte relatório de mapeamento de
+  gera um pacote de handoff manual para outra CLI quando necessário e converte relatório de mapeamento de
   acervo em planilha de curadoria pra importação em massa. Ative quando
   Ricardo pedir para
   abrir cliente/processo/projeto novo, registrar ou conferir documentos de
   uma matéria, anotar uma pendência, ou preparar o handoff antes de passar a
-  matéria pro Gemini. Não decide tese, não lê o conteúdo dos documentos e
+  matéria para outra CLI. Não decide tese, não lê o conteúdo dos documentos e
   não substitui `contencioso-rdaa`, `backoffice-juridico` nem o estado de
   `.rdaa-run` (`matter_state.json`) — só organiza os dados e o repositório
   de documentos-fonte.
@@ -125,11 +124,9 @@ entradas antigas manualmente, só o script ou Ricardo adicionam ao final.
 3. Conforme documentos chegam: `registrar-documento` para cada um relevante.
 4. Se surgir dúvida, documento faltando ou contradição: `abrir-pendencia` e
    parar — não presumir.
-5. Antes de passar a matéria pra Gemini (a única CLI que não instala o
-   plugin nem lê `.rdaa-run` — usada para peças nível C de texto muito
-   padronizado, tipo juntada/oposição simples, onde só o dado processual
-   muda): rodar `gerar-handoff` e entregar o conteúdo de `HANDOFF.md` como
-   contexto inicial dela.
+5. Para uma continuação manual ampla em outra CLI, rode `gerar-handoff` e
+   entregue `HANDOFF.md`. Crítica e extração pontuais do Antigravity usam o
+   executor direto de `redigir-peca`, não este handoff.
 6. Periodicamente, ou antes de confiar em um documento antigo:
    `verificar-documentos` para pegar arquivo alterado ou removido do disco.
 7. Quando a peça final estiver pronta (publicada por `formatar-peca` ou
@@ -149,12 +146,9 @@ normalmente. Não há tratamento especial pro Codex aqui: nível A/B e o
 roteamento entre os dois já são resolvidos pelos contratos existentes
 (`redigir-peca`, `contratos-agentes.md`, `roteamento-executavel.md`).
 
-Gemini é o caso realmente diferente: não instala o plugin, não lê
-`.rdaa-run`, não carrega `SKILL.md`. Seu uso é nível C — texto
-essencialmente fixo por tipo de peça, variando só dado processual — então
-o que ele precisa desta skill é pouco: os dados de identificação da
-matéria e, quando cabível, um `DOC-XXX` específico a citar. `HANDOFF.md`
-existe principalmente para cobrir esse caso.
+Antigravity não redige peças. Para crítica ou extração pontual, recebe apenas
+o pacote mínimo por chamada direta. `HANDOFF.md` fica como mecanismo manual de
+continuidade ampla, não como transporte obrigatório do fluxo comum.
 
 ## Planilha de curadoria pra importação em massa
 
@@ -206,8 +200,5 @@ também tiver a skill `planner-postit` disponível), não pelo script:
 
 ## Fora do escopo desta skill (deliberado)
 
-Orquestrar a chamada às CLIs (rodar o comando delas via terminal e ler o
-retorno) não está implementado aqui. Depois que a base de dados estiver em
-uso, isso é um passo barato de adicionar — Claude Code já pode invocar
-outra CLI via Bash e usar o `HANDOFF.md` gerado como prompt inicial dela —
-mas não foi pedido nesta rodada e não deve ser assumido como pronto.
+A orquestração direta do fluxo de peças pertence a `redigir-peca`, não a esta
+skill. Aqui ficam apenas a gestão das matérias e o handoff manual.

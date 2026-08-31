@@ -186,3 +186,35 @@ problemas concretos:
     quando houver documento de processo anexado (achado no teste real).
 12. Aplicar a mesma correção de invocação (item de custo, seção 6) em
     `antigravity-worker.md`, se o mesmo tipo de bug de caminho existir lá.
+
+## 8. Decisão posterior ao teste — sem agentes-mensageiros
+
+Depois de medir os 371 mil tokens de wrapper, Ricardo decidiu retirar os dois
+agentes-mensageiros do fluxo e do repositório. A rota operacional passa a ser:
+
+1. Codex redige por chamada direta `codex exec`;
+2. Antigravity critica por chamada direta `agy --print`, sem alterar estado;
+3. Claude valida e corrige o rascunho, antes dos gates determinísticos e da
+   publicação protegida.
+
+O histórico acima permanece como evidência do teste; as referências aos
+workers descrevem a arquitetura que foi descartada, não instrução vigente.
+
+## 9. Consolidação final do mesmo dia — contrato comum e executor direto
+
+Ricardo consolidou a decisão: **Codex é o redator de C/B/A, Antigravity é o
+crítico e Claude é o corretor/validador**. O nível controla profundidade, não
+o motor. Foram implementados `AGENTS.md` como contrato comum e um executor
+local mínimo que envia prompts por stdin diretamente às duas CLIs, sem
+agente-mensageiro. As camadas RCT/Flávia rodam dentro da mesma chamada do
+Codex, sem novo modelo.
+
+No teste real do executor, uma chamada mínima do Antigravity consumiu cerca
+de **37 mil tokens de entrada antes do conteúdo útil**, mesmo sem wrapper.
+Isso é custo-base da CLI/harness atual, não do script. Consequência operacional:
+uma única crítica por peça B/A, pacote curto, sem loop automático; extrações
+simples usam esforço baixo/médio e peças C não ganham crítica por padrão.
+
+Também foram corrigidos dois defeitos independentes do desenho de motores:
+o hook `SessionEnd` procurava `manifest.json` em vez do canônico
+`run_manifest.json`, e o teste de identidade não era coletado pelo pytest.

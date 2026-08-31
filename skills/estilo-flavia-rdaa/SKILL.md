@@ -5,7 +5,7 @@ description: >-
   textual da Flávia do escritório Romano Donadel, usando o perfil local em
   references/perfil-flavia.md. Use somente quando Ricardo pedir explicitamente
   a preparação para a Flávia ou quando o contexto declarar `estilo_alvo: flavia`.
-  Roda como subagente isolado, em até três rodadas de convergência, preservando
+  Roda na mesma chamada do Codex redator, em até três rodadas internas de convergência, preservando
   fatos, teses, pedidos, fontes e IDs. Não redige do zero, não revisa mérito,
   não consulta vault, CNJ, DataJud ou Jusbrasil automaticamente e não publica
   DOCX. A saída volta ao fluxo RDAA para revisão e publicação protegida.
@@ -37,15 +37,11 @@ publicação protegida. Esta skill nunca grava diretamente o arquivo final.
 
 ## Como esta skill deve ser invocada
 
-Esta skill só cumpre sua função se rodar com **contexto isolado**: invoque-a
-via subagente (Agent tool), passando apenas — o texto final da peça a
-reescrever, os fatos e documentos relevantes do caso (o que está provado,
-o que não está) e o tipo de peça (contestação, apelação, manifestação,
-memorial etc.). Nunca passe o histórico da conversa onde a peça foi
-redigida, nem o raciocínio de quem escreveu. Um reescritor que vê as
-decisões do redator original tende a preservar frases só porque "já
-estavam ali", em vez de julgar cada trecho do zero contra o padrão de
-estilo.
+Inclua estas instruções e `references/perfil-flavia.md` no pacote compacto da
+mesma chamada do Codex redator. Passe apenas o texto, os fatos e documentos
+relevantes e o tipo de peça; nunca o histórico integral da conversa. As até
+três rodadas são revisões internas da mesma execução, não novas chamadas de
+modelo.
 
 Se o autor não informar os fatos/documentos do caso — só o texto da
 peça — prossiga mesmo assim, mas redobre a cautela da vedação de

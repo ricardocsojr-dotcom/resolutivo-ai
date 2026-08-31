@@ -29,7 +29,14 @@ NS = {"w": NS_URI}
 
 
 def run(command: list[str]) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(command, cwd=PLUGIN_ROOT, text=True, capture_output=True)
+    # ponytail: sem encoding explícito, o Windows decodifica stdout/stderr com o
+    # codepage ANSI do console (cp1252), mesmo quando o processo filho escreve
+    # UTF-8 — mensagem com acento vira mojibake ("campo obrigatório" ->
+    # "campo obrigatÃ³rio"). errors="replace" evita crash se algo ainda escapar.
+    return subprocess.run(
+        command, cwd=PLUGIN_ROOT, text=True, capture_output=True,
+        encoding="utf-8", errors="replace",
+    )
 
 
 def build_docx(folder: Path) -> Path:
