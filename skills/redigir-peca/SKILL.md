@@ -185,16 +185,21 @@ selecionadas, pendências, regras necessárias, `nivel_peca`, `modo_redacao`,
 `redacao_por_blocos` e o `modelo_estrutura` selecionado quando houver. Não
 repasse o histórico integral ou o provenance bruto.
 
-Só depois do esqueleto aprovado e validado. Grave o pacote compacto em um
-arquivo de prompt dentro de `.rdaa-run/<matter_id>/` e chame o Codex pelo
-executor direto, sem `Agent` e sem argumento longo de terminal:
+Só depois do esqueleto aprovado e validado. Grave o pacote compacto em
+`.rdaa-run/<matter_id>/PROMPT-REDACAO.md`.
 
-```text
-python skills/redigir-peca/scripts/executar_motor.py codex --prompt <PROMPT.md> --output <RASCUNHO.md>
-```
+**Checkpoint manual — padrão desde 2026-08-30.** Não rode o executor pela
+sessão do Claude Code (isso ainda conta no limite de uso dele, mesmo sem
+`Agent` no meio). Em vez disso, pare aqui e diga a Ricardo, literalmente:
+"o pacote está em `.rdaa-run/<matter_id>/PROMPT-REDACAO.md` — abra o Codex
+nesta mesma pasta (ele lê `AGENTS.md` sozinho), cole o conteúdo do arquivo,
+e traga o rascunho de volta aqui quando terminar." Espere a resposta dele
+com o rascunho antes de seguir para o passo 7.5. Não prossiga sozinho.
 
-O executor usa stdin, modo efêmero e sandbox somente leitura. O resultado é
-um rascunho, nunca publicação. Inclua
+Só use o executor direto (`executar_motor.py codex --prompt ... --output
+...`) se Ricardo pedir explicitamente automação nessa etapa — não é mais o
+caminho padrão. O resultado, por qualquer via, é um rascunho, nunca
+publicação. Inclua
 `contencioso-rdaa/references/redacao-rdaa.md` como regra obrigatória e siga
 estritamente:
 - Nos tipos A e B, execute a redação por blocos conforme o esqueleto aprovado.
@@ -208,19 +213,23 @@ estritamente:
 - Parágrafos curtos
 - Comece argumentos afirmando diretamente o objeto, a tese, o vício, o fato ou a consequência. Evite aberturas por negação, ressalva ou justificativa defensiva, como “não se pretende”, “não se busca”, “não se trata”, “não se ignora” e “não se desconhece”. Reescreva positivamente quando o sentido for preservado. Mantenha a negativa quando ela for indispensável para delimitar o objeto, responder a uma afirmação concreta, afastar interpretação específica ou formar contraste jurídico necessário.
 
-### 7.5. Antigravity critica, por chamada direta
+### 7.5. Antigravity critica — checkpoint manual
 
-Depois da redação, monte outro prompt compacto com a peça, fatos, fontes e
-teses necessárias e chame Antigravity diretamente:
+Depois da redação (rascunho do Codex já em mãos), monte outro pacote
+compacto — a peça, fatos, fontes e teses necessárias, nunca o raciocínio do
+redator — e grave em `.rdaa-run/<matter_id>/PROMPT-CRITICO.md`.
 
-```text
-python skills/redigir-peca/scripts/executar_motor.py antigravity --prompt <PROMPT-CRITICO.md> --output <CRITICA.json> --schema skills/redigir-peca/references/critica-antigravity.schema.json --effort high
-```
+Mesmo checkpoint do passo 7: pare e diga a Ricardo pra abrir o Antigravity
+(`agy`) na mesma pasta, colar o conteúdo do arquivo, e trazer a crítica de
+volta. Se ele quiser a saída já validada contra
+`skills/redigir-peca/references/critica-antigravity.schema.json`, ele passa
+o schema pro próprio `agy` na mão; Claude não precisa reforçar isso.
 
-O executor usa `stream-json`, evitando o limite de argumentos do Windows. O
-crítico aponta somente vulnerabilidades, lacunas e pontos a conferir; não
-altera arquivos, tese, pedido ou estado. O JSON é alerta estruturado, nunca
-um bloqueio ou uma decisão automática.
+O crítico aponta somente vulnerabilidades, lacunas e pontos a conferir; não
+altera arquivos, tese, pedido ou estado. O relatório é alerta estruturado,
+nunca um bloqueio ou uma decisão automática. O executor direto
+(`executar_motor.py antigravity ...`) continua disponível só se Ricardo
+pedir automação explícita nessa etapa.
 
 Para extração documental simples, use `--effort low` ou `medium`; `high` fica
 reservado à crítica estratégica. Falha, cota ou timeout pausa o fluxo — nunca
