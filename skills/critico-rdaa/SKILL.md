@@ -122,15 +122,18 @@ pra saber se uma prova documental existe nos autos), marque
 
 ## Estado compartilhado entre agentes
 
-Quando o crítico fizer parte do fluxo de redação, só o execute se
-`critico-rdaa` estiver em `route.selected` no `run_manifest.json`. Se estiver
-em `route.omitted`, não o acione automaticamente. Um pedido direto de Ricardo
-continua válido e deve ser registrado como override explícito antes da execução.
+Desde 2026-08-30, este método não é mais acionado como skill autônoma nem
+gated por `route.selected`/`route.omitted` — quem o executa é o Antigravity,
+via checkpoint manual descrito em `redigir-peca/SKILL.md` passo 7.5. O
+orquestrador (Claude) monta o pacote `critico` com
+`skills/revisor-rdaa/scripts/contexto_rdaa.py`, grava em
+`.rdaa-run/<matter_id>/PROMPT-CRITICO.md` apontando pra este arquivo como
+método, e Ricardo cola no Antigravity fora da sessão do Claude Code. Roda
+por padrão em toda peça B/A (não é opt-in); C só recebe crítica se Ricardo
+pedir ou se houver override explícito.
 
-O orquestrador monta o pacote `critico` com
-`skills/revisor-rdaa/scripts/contexto_rdaa.py`. O pacote pode conter os fatos
-necessários, fontes e evidências registradas, teses em análise, hipóteses
-alternativas e pendências relevantes.
+O pacote pode conter os fatos necessários, fontes e evidências registradas,
+teses em análise, hipóteses alternativas e pendências relevantes.
 
 O pacote não deve conter o histórico integral, o esqueleto aprovado, o raciocínio
 privado do redator ou decisões que não sejam necessárias para identificar o

@@ -23,6 +23,10 @@ except ImportError:  # execução direta pelo caminho do script
 
 
 MAX_AUTO_CORRECTION_ROUNDS = 1
+# Desde o checkpoint manual (2026-08-30), nada lê "route.selected" pra
+# decidir se a crítica roda — é sempre o Antigravity, via
+# redigir-peca/SKILL.md passo 7.5. Esses nomes agora só rotulam a
+# recomendação persistida (telemetria/auditoria), não disparam execução.
 OPTIONAL_ROUTE_AGENTS = ("critico-rdaa", "conselho-rdaa")
 
 

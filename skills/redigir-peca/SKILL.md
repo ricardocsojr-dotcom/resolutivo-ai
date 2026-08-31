@@ -200,7 +200,11 @@ Só use o executor direto (`executar_motor.py codex --prompt ... --output
 ...`) se Ricardo pedir explicitamente automação nessa etapa — não é mais o
 caminho padrão. O resultado, por qualquer via, é um rascunho, nunca
 publicação. Inclua
-`contencioso-rdaa/references/redacao-rdaa.md` como regra obrigatória e siga
+`contencioso-rdaa/references/redacao-rdaa.md` como regra obrigatória. Se a
+matéria for dano moral, inclua também `dano-moral-rct/references/estilo-rct.md`;
+se Ricardo pedir explicitamente o padrão da Flávia, inclua
+`estilo-flavia-rdaa/references/perfil-flavia.md` — as duas rodam na mesma
+chamada do redator, não como etapa separada depois. Siga
 estritamente:
 - Nos tipos A e B, execute a redação por blocos conforme o esqueleto aprovado.
 - No tipo C, redija diretamente em parágrafos curtos, sem converter o texto em
@@ -217,7 +221,12 @@ estritamente:
 
 Depois da redação (rascunho do Codex já em mãos), monte outro pacote
 compacto — a peça, fatos, fontes e teses necessárias, nunca o raciocínio do
-redator — e grave em `.rdaa-run/<matter_id>/PROMPT-CRITICO.md`.
+redator — e grave em `.rdaa-run/<matter_id>/PROMPT-CRITICO.md`. Inclua no
+pacote a instrução de ler `skills/critico-rdaa/SKILL.md` — é o contrato de
+método do crítico (persona de advogado adverso, ACH invertida, o que avaliar
+e o que nunca avaliar, formato de saída). O checkpoint manual só mudou quem
+executa e como o pacote chega até o Antigravity; a metodologia continua
+sendo essa, não uma genérica.
 
 Mesmo checkpoint do passo 7: pare e diga a Ricardo pra abrir o Antigravity
 (`agy`) na mesma pasta, colar o conteúdo do arquivo, e trazer a crítica de
@@ -270,9 +279,11 @@ continuam sendo relatados, não corrigidos automaticamente.
 
 "Rodar o checklist" não termina em produzir um relatório. Todo achado
 confirmado pelo script ou pelo checklist deve ser corrigido no texto antes de
-seguir para a entrega. Isso inclui travessão recorrente, ponto-e-vírgula em
-cadeia, tricolon de negação, abertura defensiva recorrente, qualquer dois-pontos e
-qualquer aposto explicativo entre parênteses ou travessões pareados. A abertura
+seguir para a entrega. Isso inclui travessão, ponto-e-vírgula fora de
+lista/alínea, tricolon de negação, abertura defensiva recorrente, qualquer dois-pontos e
+qualquer aposto explicativo entre parênteses ou travessões pareados — os três
+primeiros bloqueiam numa única ocorrência (redacao-rdaa.md §2), só a abertura
+defensiva é avaliada por recorrência. A abertura
 negativa isolada deve ser avaliada pela função argumentativa e não bloqueada por
 palavra-chave. Não pare para perguntar quando a correção for apenas de forma.
 Só fica para relatar ao Ricardo o que for ambíguo o suficiente para exigir
@@ -282,14 +293,32 @@ não é seguido de correção equivale a não ter revisado.
 
 ## Entrega
 
+Codex/Antigravity devolvem a peça em texto corrido/Markdown. Converter esse
+texto nos blocos tipados que `construir_peca.py` exige (`titulo`, `numerado`,
+`citacao` com `referencia`, `alinea`, `abertura` etc.) é trabalho do Claude,
+não do redator — não está delegado a mais ninguém. Siga a tabela de
+`redacao-rdaa.md` ao montar cada bloco: prosa argumentativa vira `numerado`
+com `sequencia` contínua do início ao fim da peça (nunca `paragrafo`, que não
+numera); jurisprudência vira `citacao` com a fonte completa no campo
+`referencia`, nunca um parágrafo de atribuição separado; a qualificação usada
+no quadro (`partes`) é a mesma reaproveitada nos blocos do corpo e dos
+pedidos. Um bloco do tipo errado não dá erro na hora — só produz uma peça
+sem a formatação RDAA, então confira a estrutura antes de gerar o `.docx`,
+não só o conteúdo.
+
 Gere o `.docx` **candidato** usando a skill `formatar-peca` em modo nativo,
 `construir_peca.py`, sempre em caminho temporário ou de staging — nunca grave
 diretamente no caminho final e nunca use a skill genérica `docx`, que não
 aplica o padrão visual RDAA. Em seguida, encaminhe o candidato ao
-`publicar_docx.py`. Só entregue o documento final depois que o publicador
-retornar `[OK]`. O publicador executa o gate, preserva backup, mantém o arquivo
-anterior se houver falha e substitui o destino de forma atômica. Nome padrão do
-arquivo publicado: `[tipo_peca]_[numero_processo]_[data].docx`
+`publicar_docx.py`, sempre com `--context <contexto_peca.json>` (o mesmo
+JSON usado pra gerar o candidato) — sem isso o publicador deriva o
+`matter_id` do nome do arquivo de saída, grava o manifesto num
+`.rdaa-run` aninhado errado dentro da pasta da matéria, e pula a validação de
+contrato da peça, esqueleto e semântica do docx que dependem do contexto. Só
+entregue o documento final depois que o publicador retornar `[OK]`. O
+publicador executa o gate, preserva backup, mantém o arquivo anterior se
+houver falha e substitui o destino de forma atômica. Nome padrão do arquivo
+publicado: `[tipo_peca]_[numero_processo]_[data].docx`
 
 Na entrega, relate em uma linha que a peça foi redigida pelo Codex, criticada
 pelo Antigravity e validada/corrigida pelo Claude. Qualquer ponto que exija

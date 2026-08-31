@@ -178,6 +178,19 @@ def test_style_enforcement(folder: Path) -> None:
     result = run([sys.executable, str(STYLE_CHECKER), str(allowed)])
     assert result.returncode == 0, result.stdout + result.stderr
 
+    # Ementa real de tribunal frequentemente traz dois-pontos ("EMENTA:",
+    # "Tema 858:") — citação literal (estilo RDAA Citação) é isenta, a
+    # peça não pode reescrever o texto do tribunal pra tirar o dois-pontos.
+    citacao_colon = folder / "citacao-colon.docx"
+    document = Document()
+    from docx.enum.style import WD_STYLE_TYPE
+    document.styles.add_style('RDAA Citação', WD_STYLE_TYPE.PARAGRAPH)
+    paragraph = document.add_paragraph('EMENTA: RECURSO ESPECIAL. TEMA 858: fixação de tese.')
+    paragraph.style = document.styles['RDAA Citação']
+    document.save(citacao_colon)
+    result = run([sys.executable, str(STYLE_CHECKER), str(citacao_colon)])
+    assert result.returncode == 0, result.stdout + result.stderr
+
     table_colon = folder / "table-colon.docx"
     document = Document()
     table = document.add_table(rows=1, cols=1)

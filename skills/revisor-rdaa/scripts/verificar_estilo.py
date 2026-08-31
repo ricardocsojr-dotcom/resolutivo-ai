@@ -202,15 +202,22 @@ def checar_tricolon_negacao(paragrafos):
     return problemas
 
 
-def checar_dois_pontos(paragrafos, bordas=None):
+def checar_dois_pontos(paragrafos, bordas=None, estilos=None):
     # A caixa Processo/partes usa "rótulo: valor" por convenção própria
     # (ex.: "Autora: Trivale..."), não é prosa argumentativa — ver
-    # _tem_borda_completa.
+    # _tem_borda_completa. Citação literal (estilo "RDAA Citação") também é
+    # isenta pelo mesmo motivo de checar_aposto_explicativo — ementa real de
+    # tribunal frequentemente traz dois-pontos ("EMENTA:", "Tema 858:") e a
+    # transcrição verbatim não pode reescrever isso.
     problemas = []
     if bordas is None:
         bordas = [False] * len(paragrafos)
+    if estilos is None:
+        estilos = [None] * len(paragrafos)
     for i, p in enumerate(paragrafos):
         if bordas[i]:
+            continue
+        if (estilos[i] or "").strip().casefold() == "rdaa citação":
             continue
         if ':' in p:
             problemas.append(
@@ -255,12 +262,14 @@ def checar_aposto_explicativo(paragrafos, estilos=None):
     return problemas
 
 
-def listar_dois_pontos(paragrafos, bordas=None):
+def listar_dois_pontos(paragrafos, bordas=None, estilos=None):
     if bordas is None:
         bordas = [False] * len(paragrafos)
+    if estilos is None:
+        estilos = [None] * len(paragrafos)
     candidatos = []
     for i, p in enumerate(paragrafos):
-        if bordas[i]:
+        if bordas[i] or (estilos[i] or "").strip().casefold() == "rdaa citação":
             continue
         for s in _split_sentencas(p):
             if ':' in s:
@@ -382,12 +391,12 @@ def checar(path):
     problemas += checar_ponto_e_virgula(paragrafos, estilos)
     problemas += checar_tricolon_negacao(paragrafos)
     problemas += checar_aberturas_defensivas(paragrafos)
-    problemas += checar_dois_pontos(paragrafos, bordas)
+    problemas += checar_dois_pontos(paragrafos, bordas, estilos)
     problemas += checar_aposto_explicativo(paragrafos, estilos)
     problemas += checar_aberturas_repetidas(paragrafos)
     problemas += checar_aberturas_consecutivas(paragrafos)
 
-    dois_pontos = listar_dois_pontos(paragrafos, bordas)
+    dois_pontos = listar_dois_pontos(paragrafos, bordas, estilos)
 
     return problemas, dois_pontos
 
