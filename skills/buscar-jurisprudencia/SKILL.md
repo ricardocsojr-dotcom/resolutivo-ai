@@ -1,9 +1,7 @@
 ---
 name: buscar-jurisprudencia
 description: >
-  Busca jurisprudência brasileira para fundamentar peças processuais do RDAA.
-  Combina duas fontes: Jusbrasil (ementas literais via extensão do Chrome) e
-  DataJud/CNJ (metadados processuais). Use sempre que Ricardo pedir
+  Busca jurisprudência brasileira no Jusbrasil (ementas literais via extensão do Chrome). Use sempre que Ricardo pedir
   jurisprudência, precedente, ementa, entendimento dos tribunais, ou quando
   estiver redigindo uma peça e precisar de fundamento jurisprudencial. Ative
   com termos como "busca jurisprudência sobre", "me dá precedentes de",
@@ -14,7 +12,7 @@ description: >
 
 # Busca de Jurisprudência — RDAA
 
-Fluxo integrado: Jusbrasil (ementa literal) + DataJud (volume/contexto).
+Fluxo: Jusbrasil com ementa literal e proveniência registrada.
 
 ## Etapa 1 — Jusbrasil (fonte primária)
 
@@ -55,9 +53,6 @@ Disponível em: [URL Jusbrasil]
 `conferencia` — `fonte acessada no navegador, data se disponível e método usado
 
 ---
-
-Ao final, se usou DataJud: *"Volume no [tribunal]: [N] processos encontrados
-sobre o tema — demonstra reiteração do entendimento."*
 
 ## Regra de ouro
 

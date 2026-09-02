@@ -1,48 +1,28 @@
 # Contrato executável de roteamento RDAA
 
-## Objetivo
+A implementação canônica é `orquestracao/roteamento.json` e `skills/redigir-peca/scripts/orquestrador_rdaa.py`.
 
-A rota define quais agentes são obrigatórios, recomendados ou omitidos em uma
-execução. Ela reduz chamadas desnecessárias sem restringir a capacidade de
-acionamento quando Ricardo pedir explicitamente.
+## Entradas permitidas
 
-## Entrada permitida
+A rota recebe `nivel_peca` (C/B/A) e `nivel_risco` (baixo/médio/alto/crítico) explicitamente declarados. Complexidade determina o fluxo mínimo; risco pode apenas escalá-lo. Nenhuma classificação implícita a partir de tamanho, palavras-chave ou conversa altera a rota.
 
-A rota pode usar somente:
+## Saída persistida
 
-1. `nivel_risco` ou `risk_level` declarado no contexto;
-2. um item de `riscos` com `nivel` e `origem` explicitamente registrados;
-3. um argumento de nível fornecido pelo orquestrador;
-4. um agente solicitado explicitamente por Ricardo.
+`run_manifest.json` registra:
 
-O sistema não usa tipo da peça, extensão do texto, palavras-chave ou classificação
-inferida para decidir risco.
+- rota declarada e rota efetiva;
+- worker, provider, família de modelo, CLI e identificador de modelo quando o worker o devolver;
+- estágios, gates obrigatórios e gates condicionais exigidos;
+- transições, aprovações e hashes;
+- execuções, saídas e duração.
 
-## Saída
+## Invariantes
 
-| Campo | Significado |
-|---|---|
-| `required` | Sempre executado: revisão semântica e revisor RDAA |
-| `recommended` | Agentes acionados pela rota de risco declarado |
-| `explicit` | Agentes pedidos diretamente, mesmo fora da recomendação automática |
-| `selected` | União deduplicada de `required`, `recommended` e `explicit` |
-| `omitted` | Agentes opcionais não selecionados nesta execução |
-| `selection_source` | `conservadora`, `risco_declarado` ou `override_explicito` |
-| `reason` | Motivo textual rastreável da seleção |
+1. `writer.model_family != critic.model_family`.
+2. `writer.model_family != validator.model_family`.
+3. Hermes não conta como worker independente de mérito jurídico.
+4. Workers produzem arquivos; o orquestrador registra os resultados depois de verificar a existência e o hash.
+5. Fases são sequenciais; aprovação de esqueleto é inválida se o arquivo mudar.
+6. Falhas pausam. Não há fallback silencioso.
 
-## Regras
-
-Sem nível ou risco declarado, `selected` contém somente QA/revisão e `omitted`
-contém conselho e crítico. Nível médio seleciona o crítico. Nível alto seleciona
-crítico e conselho. Um pedido explícito pode selecionar qualquer agente
-opcional, mas a rota deve registrar `override_explicito` e o agente solicitado.
-
-A rota não substitui o julgamento do advogado. Ela apenas decide quais rotinas
-de engenharia e agentes de apoio serão chamados. A decisão jurídica continua
-na saída explícita dos agentes e de Ricardo.
-
-## Persistência
-
-A rota final é gravada em `run_manifest.json` antes da publicação, junto com a
-origem da seleção e os agentes omitidos. Isso permite auditar por que uma rotina
-foi acionada ou não e evita repetir a leitura do estado completo.
+A rota organiza engenharia de workflow; não escolhe tese, não confirma fonte, não substitui Ricardo e não converte alerta crítico em decisão.

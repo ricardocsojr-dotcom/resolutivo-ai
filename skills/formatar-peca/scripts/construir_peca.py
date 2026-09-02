@@ -942,7 +942,7 @@ def _append_hidden_text(paragraph, text):
 
 
 def bloco_figura(doc, image_path, legenda=None, width_cm=14.0, funcao_visual=None, texto_pesquisavel=None):
-    """Insere uma imagem centralizada no documento com legenda opcional em 9pt/itálico.
+    """Insere uma imagem centralizada no documento com legenda opcional em 8pt/itálico.
     Nunca amplia a imagem além de sua dimensão física original."""
     if not os.path.exists(image_path):
         p = doc.add_paragraph()
@@ -973,7 +973,7 @@ def bloco_figura(doc, image_path, legenda=None, width_cm=14.0, funcao_visual=Non
     if legenda:
         p_leg = doc.add_paragraph()
         r_leg = p_leg.add_run(f"Figura {legenda}")
-        _fmt_run(r_leg, italic=True, size=Pt(9))
+        _fmt_run(r_leg, italic=True, size=Pt(8))
         _base_pf(p_leg.paragraph_format, align=WD_ALIGN_PARAGRAPH.CENTER, line_rule=WD_LINE_SPACING.SINGLE, first_line=Emu(0))
         paragrafos.append(p_leg)
 
@@ -1123,7 +1123,7 @@ def bloco_inicio_razoes(doc, bloco, gerenciador):
         target = p
         r = p.add_run(bloco['enderecamento'])
         _fmt_run(r, bold=True)
-        _base_pf(p.paragraph_format, line_rule=WD_LINE_SPACING.SINGLE)
+        _base_pf(p.paragraph_format, align=WD_ALIGN_PARAGRAPH.LEFT, line_rule=WD_LINE_SPACING.SINGLE)
         _blank(doc, 2)
 
     if bloco.get('titulo_razoes'):
@@ -1174,6 +1174,7 @@ BLOCO_HANDLERS = {
         b.get('cabecalho'), b.get('linhas'), b.get('alinhamentos')),
     'sumula':             lambda doc, b, g: bloco_sumula(doc, b['texto'], b.get('italic', True)),
     'inicio_razoes':      lambda doc, b, g: bloco_inicio_razoes(doc, b, g),
+    'quebra_pagina':      lambda doc, b, g: doc.add_page_break(),
     'assinaturas':        lambda doc, b, g: bloco_assinaturas(doc),
     'quadro_processual': lambda doc, b, g: bloco_quadro_processual(doc, b.get('numero_processo'), b.get('partes')),
 }
@@ -1204,6 +1205,7 @@ BLOCO_REQUIRED_FIELDS = {
     'decisao_anotada': ('image_path', 'texto_pesquisavel'),
     'sumula': ('texto',),
     'inicio_razoes': (),
+    'quebra_pagina': (),
     'assinaturas': (),
     'quadro_processual': (),
     'tabela': ('linhas',),
@@ -1382,8 +1384,6 @@ def _inserir_tabela_assinaturas(doc, context=None):
         _fmt_run(r)
         _base_pf(p_oab.paragraph_format, align=WD_ALIGN_PARAGRAPH.CENTER, line_rule=WD_LINE_SPACING.SINGLE)
 
-        # E-mail segue o padrão visual fornecido por Ricardo, com hiperlink
-        # externo azul e sublinhado nativo do Word.
         p_email = cell.add_paragraph()
         _adicionar_hyperlink(p_email, email, f'mailto:{email}')
         _base_pf(p_email.paragraph_format, align=WD_ALIGN_PARAGRAPH.CENTER, line_rule=WD_LINE_SPACING.SINGLE)

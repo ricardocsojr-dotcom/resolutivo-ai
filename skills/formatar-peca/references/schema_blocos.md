@@ -59,8 +59,9 @@ O corpo da peça é uma **lista de blocos tipados**, não um texto único. O ger
 | `documento` | `texto`, `sequencia` (opc), `reiniciar` (opc) | **Item de documentos**. Numeração nativa decimal com parêntese (`1)`, `2)`) em negrito (3cm). |
 | `sumula` | `texto`, `italic` (opc) | **Súmula / Síntese executiva**. Recuo esquerdo 2,5cm, recuo direito 2cm, itálico, justificado, entrelinha 1.5, sem borda, sem bullets. |
 | `inicio_razoes` | `enderecamento` (opc), `titulo_razoes` (opc), `sequencia` (opc) | **Transição de recurso composto**. Insere quebra de página, reinicia sequências de numeração e injeta cabeçalho opcional das Razões. |
+| `quebra_pagina` | *(nenhum)* | Insere uma quebra de página antes do próximo bloco automático. Use para manter o fecho e as assinaturas juntos. |
 | `citacao` | `texto`, `italic` (opc), `bold` (opc) | **Citação longa (> 3 linhas)**. Recuo 2cm, entrelinha simples, tamanho 9pt, sem aspas. |
-| `figura` | `image_path`, `legenda` (opc), `width_cm` (opc, default 14.0) | **Figura/Imagem**. Centralizada. Nunca amplia além do tamanho físico original da imagem. Legenda opcional em 9pt/itálico. |
+| `figura` | `image_path`, `legenda` (opc), `width_cm` (opc, default 14.0) | **Figura/Imagem**. Centralizada. Nunca amplia além do tamanho físico original da imagem. Legenda opcional em 8pt/itálico. |
 | `decisao_anotada` | `image_path`, `texto_pesquisavel`, `annotation_manifest` (opc), `pagina` (opc), IDs (opc) | **Recorte de decisão anotado**. Usa imagem produzida pelo anotador local; a origem e o manifesto devem ser preservados quando declarados. |
 | `tabela` | `cabecalho` (opc), `linhas`, `alinhamentos` (opc) | **Tabela de dados genérica**. Tabela centralizada no documento. Cabeçalho em negrito. Alinhamento opcional por coluna (`left`, `center`, `right`). |
 | `visual` | `visual_tipo`, `funcao_visual`, `texto_pesquisavel`, `linhas`, `cabecalho` (opc), IDs (opc) | **Visual Law tipado**. `visual_tipo`: `timeline`, `matrix`, `flow` ou `confrontation`. Renderizado em tabela pesquisável; exige função declarada e não infere fatos. |

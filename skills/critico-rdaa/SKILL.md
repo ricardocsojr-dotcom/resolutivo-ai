@@ -122,15 +122,15 @@ pra saber se uma prova documental existe nos autos), marque
 
 ## Estado compartilhado entre agentes
 
-Desde 2026-08-30, este método não é mais acionado como skill autônoma nem
-gated por `route.selected`/`route.omitted` — quem o executa é o Antigravity,
-via checkpoint manual descrito em `redigir-peca/SKILL.md` passo 7.5. O
-orquestrador (Claude) monta o pacote `critico` com
-`skills/revisor-rdaa/scripts/contexto_rdaa.py`, grava em
-`.rdaa-run/<matter_id>/PROMPT-CRITICO.md` apontando pra este arquivo como
-método, e Ricardo cola no Antigravity fora da sessão do Claude Code. Roda
-por padrão em toda peça B/A (não é opt-in); C só recebe crítica se Ricardo
-pedir ou se houver override explícito.
+Desde 2026-09-01, Hermes gerencia este método por rota persistida e chama
+Antigravity diretamente, sem `Agent` nem checkpoint manual. O orquestrador
+monta o pacote `critico` com `skills/revisor-rdaa/scripts/contexto_rdaa.py`,
+grava em `.rdaa-run/<matter_id>/PROMPT-CRITICO.md` e executa
+`executar_motor.py antigravity` com `--state-dir` e `--role critic`.
+
+A rota B/A exige crítica independente; C recebe crítica quando risco escalá-la
+ou houver pedido explícito. Falha, quota ou timeout pausa a matéria. O crítico
+não altera estado, tese, pedido ou arquivo final.
 
 O pacote pode conter os fatos necessários, fontes e evidências registradas,
 teses em análise, hipóteses alternativas e pendências relevantes.
