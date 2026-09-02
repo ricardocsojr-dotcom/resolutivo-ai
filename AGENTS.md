@@ -1,48 +1,33 @@
 # Contrato comum do workspace RDAA
 
-Este arquivo vale igualmente para Codex e Antigravity. Antes de trabalhar,
-leia `CLAUDE.md`, `roteamento-ia.md` e a `SKILL.md` aplicável. Para redigir ou
-revisar peça, leia também
-`skills/contencioso-rdaa/references/redacao-rdaa.md`.
+Antes de trabalhar, leia `CLAUDE.md`, `roteamento-ia.md` e a `SKILL.md` aplicável. Para redigir ou revisar peça, leia também `skills/contencioso-rdaa/references/redacao-rdaa.md`.
 
-## Papéis
+## Papéis e segregação
 
-- **O redator é Codex por padrão.** Ricardo pode escolher Antigravity como
-  redator em vez de Codex (ex.: por disponibilidade de crédito) — nesse caso
-  Antigravity redige e aplica no mesmo trabalho as camadas de estilo
-  autorizadas, exatamente como Codex faria.
-- **A crítica é sempre de um motor diferente do que redigiu naquela peça.**
-  Quando Codex redige, Antigravity critica com contexto isolado (e também
-  pode extrair documentos longos). Quando Ricardo escolhe Antigravity como
-  redator, quem faz a crítica muda caso a caso — Claude pergunta a Ricardo
-  antes de seguir, não segue por padrão fixo. Em nenhum caso o motor critica
-  o próprio rascunho.
-- **Quem estiver no papel de crítico** nunca redige, corrige, publica nem
-  altera estado — só aponta achado, que é alerta, não decisão automática.
-- **Claude orquestra, valida e corrige** o rascunho. Mudança de tese, pedido ou
-  estratégia depende de Ricardo.
-- Não use `Agent`, subagente ou outro modelo como mensageiro entre CLIs. A
-  chamada é direta e recebe somente o pacote mínimo da etapa.
+- **Hermes gerencia o fluxo; a máquina de estados determina transições.** Hermes coleta decisões, monta pacotes, chama CLIs e aciona QA. Não decide mérito jurídico, não reescreve como validador independente e não substitui uma segunda opinião.
+- **Planejador e validador:** Claude Code, em pacotes e sessões isolados.
+- **Redator:** Codex.
+- **Crítico:** Antigravity (`agy`). Nunca redige, corrige, publica ou altera estado; entrega somente diagnóstico estruturado.
+- A identidade dos workers é definida exclusivamente em `orquestracao/roteamento.json`. Redator, crítico e validador devem pertencer a famílias de modelo diferentes quando a rota for validada.
+- Não use `Agent`, subagente ou outro modelo como mensageiro entre CLIs. As chamadas são diretas e recebem o pacote mínimo da etapa.
+- Nenhum worker altera `run_manifest.json`, `matter_state.json` ou `provenance.jsonl` diretamente. O registro é feito pelo orquestrador após a saída existir e ter hash.
 
 ## Estado e fontes
 
 - O estado canônico fica em `.rdaa-run/<matter_id>/`; não misture matérias.
-- Não invente fatos, páginas, precedentes, datas, valores ou decisões. Marque
-  lacunas como pendência e preserve a origem e o estado de verificação.
-- Achado do crítico é alerta, não decisão automática nem bloqueio mecânico.
-- Jusbrasil é a única fonte de pesquisa jurisprudencial externa autorizada.
-  CNJ, DataJud, DJEN e NotebookLM ficam desligados salvo instrução expressa.
+- Não invente fatos, páginas, precedentes, datas, valores ou decisões. Marque lacunas como pendência e preserve a origem e o estado de verificação.
+- Achado do crítico é alerta, não decisão automática. Mudança de tese, pedido ou estratégia depende de Ricardo.
+- Jusbrasil é a única fonte de pesquisa jurisprudencial externa autorizada. CNJ, DataJud, DJEN e NotebookLM ficam desligados salvo instrução expressa.
+
+## Gates e entrega
+
+- O esqueleto aprovado é obrigatório. A aprovação fica vinculada ao hash do artefato e expira se ele for alterado.
+- Falha, cota, timeout ou indisponibilidade de CLI pausa a matéria; não há fallback silencioso.
+- Trabalhe sobre cópia; documentos e páginas de origem são somente evidência.
+- QA, cálculo e publicação são determinísticos. Nenhuma crítica publica arquivo e entrega externa exige decisão específica.
 
 ## Vaults
 
-- O Ementário do Resolutivo é leitura automática somente em peças B/A, nos
-  termos de `skills/redigir-peca/SKILL.md`.
+- O Ementário do Resolutivo é leitura automática somente em peças B/A, nos termos de `skills/redigir-peca/SKILL.md`.
 - O vault operacional "Procedimentos e Informações" só é consultado a pedido.
-- Não escreva diretamente no vault WSL. Use apenas o fluxo de ingestão previsto
-  pela skill de redação.
-
-## Entrega
-
-- Trabalhe sobre cópia; documentos e páginas de origem são somente evidência.
-- Nenhuma crítica publica arquivo. A entrega passa por Claude, `revisor-rdaa`
-  e pela publicação protegida de `formatar-peca`.
+- Não escreva diretamente no vault WSL. Use apenas o fluxo de ingestão previsto pela skill de redação.
