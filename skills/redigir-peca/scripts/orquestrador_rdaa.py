@@ -389,6 +389,12 @@ def avancar_fase(state_dir: Path | str, target_phase: str) -> dict[str, Any]:
             names = ", ".join(sorted(missing_syncs))
             raise WorkflowStateError(f"registro no vault operacional exigido: {names}")
     required_role = _COMPLETION_ROLES.get(target_phase)
+    # Papel só é exigido se o próprio estágio existir na rota do nível
+    # (nível C não tem "validating"/"criticizing" nos stages — não bloqueia).
+    if required_role == "validator" and "validating" not in stages:
+        required_role = None
+    if required_role == "critic" and "criticizing" not in stages:
+        required_role = None
     if required_role:
         worker_executions = [execution for execution in manifest.get("executions", []) if execution.get("role") == required_role]
         if not worker_executions:

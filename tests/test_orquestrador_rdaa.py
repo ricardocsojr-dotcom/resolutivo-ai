@@ -25,7 +25,7 @@ def _avancar_fluxo_b_ate_fontes(state_dir: Path) -> None:
     MODULE.avancar_fase(state_dir, "sources_ready")
 
 
-def test_rota_b_exige_critica_independente_e_validacao_independente():
+def test_rota_b_exige_validacao_mas_dispensa_critica_independente():
     route = MODULE.selecionar_rota("B", "baixo")
 
     assert route["effective_piece_level"] == "B"
@@ -36,7 +36,8 @@ def test_rota_b_exige_critica_independente_e_validacao_independente():
         "critic": "antigravity",
         "validator": "claude",
     }
-    assert "criticizing" in route["stages"]
+    assert "validating" in route["stages"]
+    assert "criticizing" not in route["stages"]
     assert route["required_human_gates"] == ["skeleton_approval"]
 
 
@@ -53,7 +54,7 @@ def test_risco_alto_nunca_rebaixa_fluxo_c():
 
     assert route["effective_piece_level"] == "B"
     assert route["escalated_by_risk"] is True
-    assert "criticizing" in route["stages"]
+    assert "validating" in route["stages"]
 
 
 def test_rota_rejeita_critico_da_mesma_familia_do_redator():
@@ -116,6 +117,32 @@ def test_nao_permite_pular_fase_do_fluxo(tmp_path):
 
     with pytest.raises(MODULE.WorkflowStateError, match="próxima fase"):
         MODULE.avancar_fase(tmp_path, "skeleton_ready")
+
+
+def test_rota_c_nao_tem_criticizing_nem_validating():
+    route = MODULE.selecionar_rota("C", "baixo")
+
+    assert route["effective_piece_level"] == "C"
+    assert "criticizing" not in route["stages"]
+    assert "validating" not in route["stages"]
+    assert route["stages"][route["stages"].index("draft_ready") + 1] == "candidate_ready"
+
+
+def test_fluxo_c_avanca_de_draft_ready_direto_para_candidate_ready(tmp_path):
+    MODULE.inicializar_execucao(tmp_path, "caso-123", "C", "baixo")
+    MODULE.avancar_fase(tmp_path, "intake_ready")
+    MODULE.avancar_fase(tmp_path, "drafting")
+    prompt = tmp_path / "PROMPT.md"
+    output = tmp_path / "RASCUNHO.md"
+    prompt.write_text("pacote", encoding="utf-8")
+    output.write_text("rascunho", encoding="utf-8")
+    MODULE.registrar_execucao(tmp_path, role="writer", motor="codex", prompt_path=prompt, output_path=output)
+    MODULE.avancar_fase(tmp_path, "draft_ready")
+
+    # Nível C não passa por criticizing/validating — vai direto para candidate_ready,
+    # sem exigir execução do papel validator (que nem está na rota).
+    manifest = MODULE.avancar_fase(tmp_path, "candidate_ready")
+    assert manifest["phase"] == "candidate_ready"
 
 
 def test_nao_permite_finalizar_rascunho_sem_execucao_do_redator(tmp_path):

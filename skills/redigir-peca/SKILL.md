@@ -211,7 +211,14 @@ estritamente:
 - Parágrafos curtos
 - Comece argumentos afirmando diretamente o objeto, a tese, o vício, o fato ou a consequência. Evite aberturas por negação, ressalva ou justificativa defensiva, como “não se pretende”, “não se busca”, “não se trata”, “não se ignora” e “não se desconhece”. Reescreva positivamente quando o sentido for preservado. Mantenha a negativa quando ela for indispensável para delimitar o objeto, responder a uma afirmação concreta, afastar interpretação específica ou formar contraste jurídico necessário.
 
-### 7.5. Antigravity critica — execução orquestrada
+### 7.5. Antigravity critica — execução orquestrada (APENAS NÍVEL A)
+
+**Somente nível A tem crítica independente.** A rota de B e C
+(`orquestracao/roteamento.json`) não inclui o estágio `criticizing` — o
+orquestrador (`orquestrador_rdaa.py`) bloqueia a tentativa de registrar
+execução do papel `critic` fora da fase `criticizing`, então essa etapa
+simplesmente não existe fora do nível A. Não há flag ou script alternativo
+para pular — a política já decide isso.
 
 Depois da redação (rascunho do Codex já em mãos), monte outro pacote
 compacto — a peça, fatos, fontes e teses necessárias, nunca o raciocínio do
@@ -238,9 +245,10 @@ Para extração documental simples, use `--effort low` ou `medium`; `high` fica
 reservado à crítica estratégica. Falha, cota ou timeout pausa o fluxo — nunca
 troque de motor silenciosamente.
 
-Faça no máximo **uma chamada crítica por peça B/A**, com pacote curto e sem
-loop automático entre motores. Peça C só recebe crítica se Ricardo pedir ou se
-a rota registrar override explícito.
+Faça no máximo **uma chamada crítica por peça A**. Peça B/C só recebe
+crítica se Ricardo pedir explicitamente essa exceção pontual (nesse caso, a
+rota efetiva daquela matéria deve ser reclassificada para A — não existe
+meio-termo silencioso).
 Nunca envie o histórico integral da conversa ou o raciocínio privado do
 redator.
 
@@ -254,21 +262,36 @@ redator.
 - Se não houver vulnerabilidade relevante, siga direto para o passo 8.
 - Guarde o relatório do crítico para informar a correção e a entrega.
 
-### 8. Claude valida e corrige
+### 8. Claude valida e corrige (NÍVEL A e B — nível C pula esta etapa)
 
-Claude recebe o rascunho do Codex, o relatório do Antigravity, o esqueleto
-aprovado e as fontes selecionadas. Corrige diretamente o que for objetivo. Se
-o achado exigir mudança de tese, pedido ou estratégia, pausa e apresenta o
-ponto a Ricardo. Em seguida, rode o checklist da skill `revisor-rdaa` —
-incluindo `scripts/verificar_estilo.py`
-(Passo 1b da própria skill) — antes de entregar. Depois de gerar o DOCX
-candidato, use `scripts/publicar_docx.py`: ele roda o `qa_gate.py`, o gate
-estrutural e a revisão semântica objetiva quando houver contexto, e só substitui
-o arquivo final quando todos os controles objetivos passam. O publicador não
-cria regra de redação; ele apenas impede entrega sem QA, sem referência
-impossível ou conflito objetivo de identidade, e preserva backup
-da versão anterior. Alertas semânticos que dependem de julgamento jurídico
-continuam sendo relatados, não corrigidos automaticamente.
+A rota de **nível C não tem o estágio `validating`**: `draft_ready` avança
+direto para `candidate_ready`. É uma peça de modelo fixo e uso cotidiano
+(juntada, ciência, oposição a julgamento virtual, concordância, pedido de
+prazo) — não há redação por blocos nem argumentação nova para validar. O
+`orquestrador_rdaa.py` não bloqueia essa transição porque o papel `validator`
+só é exigido quando `validating` existe nos `stages` do nível efetivo.
+
+**Nível A e B**: Claude recebe o rascunho do Codex — no nível A, também o
+relatório do Antigravity — o esqueleto aprovado (quando houver) e as fontes
+selecionadas. Corrige diretamente o que for objetivo. Se o achado exigir
+mudança de tese, pedido ou estratégia, pausa e apresenta o ponto a Ricardo.
+Em seguida, rode o checklist da skill `revisor-rdaa` — incluindo
+`scripts/verificar_estilo.py` (Passo 1b da própria skill) — antes de
+entregar. Depois de gerar o DOCX candidato, use `scripts/publicar_docx.py`:
+ele roda o `qa_gate.py`, o gate estrutural e a revisão semântica objetiva
+quando houver contexto, e só substitui o arquivo final quando todos os
+controles objetivos passam. O publicador não cria regra de redação; ele
+apenas impede entrega sem QA, sem referência impossível ou conflito objetivo
+de identidade, e preserva backup da versão anterior. Alertas semânticos que
+dependem de julgamento jurídico continuam sendo relatados, não corrigidos
+automaticamente.
+
+**Nível C**: pula direto de `draft_ready` para `candidate_ready` sem chamar
+`executar_motor.py claude --role validator`. O checklist de estilo
+(`verificar_estilo.py`) e o `publicar_docx.py` (QA gate, estrutural)
+continuam rodando normalmente antes da publicação — isso não é validação de
+mérito jurídico, é controle mecânico que roda em toda peça, de qualquer
+nível.
 
 
 "Rodar o checklist" não termina em produzir um relatório. Todo achado
