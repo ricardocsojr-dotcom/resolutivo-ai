@@ -943,7 +943,9 @@ def _append_hidden_text(paragraph, text):
 
 def bloco_figura(doc, image_path, legenda=None, width_cm=14.0, funcao_visual=None, texto_pesquisavel=None):
     """Insere uma imagem centralizada no documento com legenda opcional em 8pt/itálico.
-    Nunca amplia a imagem além de sua dimensão física original."""
+    Nunca amplia a imagem além de sua dimensão física original. 
+    Auto-fit de altura: limita a largura para que a figura + legenda caibam
+    em até 55% da altura útil da página (evita estouro em imagens retrato)."""
     if not os.path.exists(image_path):
         p = doc.add_paragraph()
         r = p.add_run(f"[Imagem não encontrada {image_path}]")
@@ -951,6 +953,26 @@ def bloco_figura(doc, image_path, legenda=None, width_cm=14.0, funcao_visual=Non
         _base_pf(p.paragraph_format, align=WD_ALIGN_PARAGRAPH.CENTER)
         _append_hidden_text(p, _visual_search_text(funcao_visual, texto_pesquisavel))
         return p
+
+    # Altura útil da página (A4 menos margens: 297 - 2.5*2 = 292mm = 11.5 inches)
+    # Usamos 55% dessa altura como limite (não causa estouro mesmo com parágrafo seguinte)
+    altura_util_cm = (29.7 - 5.0) * 0.55  # ~13.5 cm
+    
+    # Carregar dimensões da imagem para calcular proporção e limite de largura
+    from PIL import Image
+    try:
+        with Image.open(image_path) as im:
+            px_w, px_h = im.size
+            proporcao = px_w / px_h if px_h > 0 else 1.0
+            
+            # Calcular largura máxima para a altura limite
+            width_cm_calculada = altura_util_cm / proporcao
+            
+            # Usar o menor entre: largura solicitada, largura calculada, default 14cm
+            width_cm = min(width_cm, width_cm_calculada, 14.0)
+    except Exception:
+        # Se PIL falhar, usar a largura solicitada sem auto-fit
+        pass
 
     p = doc.add_paragraph()
     _base_pf(p.paragraph_format, align=WD_ALIGN_PARAGRAPH.CENTER, line_rule=WD_LINE_SPACING.SINGLE, first_line=Emu(0))

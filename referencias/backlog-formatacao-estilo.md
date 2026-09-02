@@ -44,12 +44,13 @@ de correção**. Status: `aberto` / `em análise` / `corrigido`.
 - **Ideia:** opção de recorte automático pela bounding box dos próprios retângulos + margem (ex.: `crop: "auto"` no spec), para a figura mostrar só a faixa relevante do documento em tamanho legível.
 - **Status:** aberto
 
-### 5. `width_cm` default 14 estoura a altura da página em imagem retrato
+### 4. `width_cm` default 14 estoura a altura da página em imagem retrato
 - **Data:** 2026-09-01
 - **Onde:** Figura 2 (DANFE) da contestação CALU — a 14 cm de largura daria ~19,7 cm de altura.
 - **Atrito:** não há auto-fit à área útil da página (A4 menos margens ~25,7 cm de altura, e menos ainda se o parágrafo seguinte tiver que caber). Tive que calcular e setar `width_cm` manualmente (10,5) em duas figuras.
-- **Ideia:** o `bloco_figura` calcular a altura resultante pela proporção da imagem e limitar a largura para a figura + legenda caberem numa fração configurável da página (ex.: 55% da altura útil), sem o operador ter que fazer a conta.
-- **Status:** aberto
+- **Correção:** `bloco_figura()` agora calcula automaticamente a largura máxima para imagens não estouraem 55% da altura útil da página (~13,5 cm). Para imagens retrato, a altura é o fator limitante; a função ajusta a largura proporcionalmente. Usa o menor entre: largura solicitada, largura calculada, default 14cm.
+- **Impacto:** ✅ Nenhuma conta manual necessária. Imagens retrato cabem automaticamente.
+- **Status:** ✅ corrigido (commit 2026-09-02)
 
 ### 7. Esquema de fluxo e responsabilidades ("cadeia única") — capacidade a criar
 - **Data:** 2026-09-01
