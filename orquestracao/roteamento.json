@@ -1,10 +1,10 @@
 {
   "schema_version": "1",
   "workers": {
-    "planner": {"engine": "claude", "provider": "anthropic", "model_family": "anthropic", "cli": "claude"},
-    "writer": {"engine": "codex", "provider": "openai", "model_family": "openai", "cli": "codex"},
-    "critic": {"engine": "antigravity", "provider": "google", "model_family": "google", "cli": "agy"},
-    "validator": {"engine": "claude", "provider": "anthropic", "model_family": "anthropic", "cli": "claude"}
+    "planner": {"engine": "claude", "provider": "anthropic", "model": "claude-sonnet-5", "model_family": "anthropic", "cli": "claude"},
+    "writer": {"engine": "codex", "provider": "openai", "model": "gpt-5.5", "model_family": "openai", "cli": "codex"},
+    "critic": {"engine": "antigravity", "provider": "google", "model": "gemini-3.1-pro-high", "model_family": "google", "cli": "agy"},
+    "validator": {"engine": "claude", "provider": "anthropic", "model": "claude-haiku-4.5", "model_family": "anthropic", "cli": "claude"}
   },
   "risk_escalation": {
     "baixo": "C",
