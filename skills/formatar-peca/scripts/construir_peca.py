@@ -1575,7 +1575,29 @@ def construir_peca(context: dict, output_path: str) -> str:
     os.close(fd)
     try:
         doc.save(tmp_path)
-        os.replace(tmp_path, output_path)
+        try:
+            os.replace(tmp_path, output_path)
+        except (OSError, PermissionError) as e:
+            # Arquivo está aberto/travado (ex.: Word aberto no Windows)
+            # Estratégia: publicar com sufixo incremental e avisar usuário
+            if "Permission denied" in str(e) or "WinError 5" in str(e) or hasattr(e, 'winerror'):
+                # Encontrar próximo sufixo disponível
+                base, ext = os.path.splitext(output_path)
+                suffix_num = 1
+                while True:
+                    alternate_path = f"{base}_rev{suffix_num}{ext}"
+                    if not os.path.exists(alternate_path):
+                        break
+                    suffix_num += 1
+                
+                os.replace(tmp_path, alternate_path)
+                print(f"⚠️  AVISO: Arquivo destino está aberto (travado).", file=sys.stderr)
+                print(f"   Publicado em: {os.path.basename(alternate_path)}", file=sys.stderr)
+                print(f"   Feche o arquivo no Word/Editor e reintegre manualmente.", file=sys.stderr)
+                return alternate_path
+            else:
+                # Outro erro de permissão — re-raise
+                raise
     except Exception:
         if os.path.exists(tmp_path):
             os.remove(tmp_path)

@@ -90,12 +90,18 @@ de correção**. Status: `aberto` / `em análise` / `corrigido`.
 - **Ideia:** criar um preset/variante de tabela para memória de cálculo judicial (ex.: `visual_tipo: memoria-calculo` no `construir_peca.py`, ou um helper na skill `calculo-judicial`/`perfil-csv` que já devolve o bloco `tabela` pronto) com colunas fixas — `Parcela/Valor histórico`, `Correção desde`, `Juros desde` (omitir só se genuinamente não houver juros, nunca por omissão), `Valor atualizado (data-base)` — para que, numa mesma peça com mais de um crédito, as tabelas saiam automaticamente no mesmo formato. Vale também como checagem do `verificar_formatacao.py`/`qa_gate.py`: se duas tabelas do tipo memória de cálculo aparecem na mesma peça com número de colunas diferente, sinalizar para conferência antes de publicar.
 - **Status:** aberto (correção pontual feita nesta matéria, item de design ainda não generalizado)
 
-### 6. Publicador não substitui arquivo aberto no Word
+### 6. ✅ Publicador não substitui arquivo aberto no Word
+
 - **Data:** 2026-09-01
 - **Onde:** republicação da contestação CALU depois dos ajustes de Ricardo.
-- **Atrito:** `publicar_docx.py` passou no QA mas quebrou com `PermissionError: [WinError 5]` no `os.replace`, porque o `.docx` final estava aberto no Word do Ricardo. Tive que publicar em `contestacao_..._rev1.docx`.
-- **Ideia:** antes do `os.replace`, tentar abrir o destino em modo exclusivo; se estiver travado, ou (a) publicar automaticamente com sufixo incremental e avisar, ou (b) abortar com mensagem clara ("feche o arquivo no Word e rode de novo") antes de gastar o QA.
-- **Status:** aberto
+- **Atrito:** `construir_peca.py` passou no QA mas quebrou com `PermissionError: [WinError 5]` no `os.replace`, porque o `.docx` final estava aberto no Word do Ricardo. Tive que publicar em `contestacao_..._rev1.docx`.
+- **Correção (2026-09-02):**
+  - Detectar `PermissionError` / `WinError 5` no `os.replace()`.
+  - Em vez de falhar, publicar automaticamente em `{base}_rev{N}.docx` (encontrando próximo sufixo livre).
+  - Avisar ao usuário em stderr: arquivo está travado, reintegre manualmente.
+  - Não bloqueia o workflow, apenas avisa.
+- **Impacto:** ✅ Sem interrupção no workflow; usuário notificado para reintegrar.
+- **Status:** ✅ corrigido (commit 2026-09-02)
 
 ---
 
