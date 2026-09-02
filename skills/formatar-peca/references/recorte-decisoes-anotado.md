@@ -37,8 +37,15 @@ texto destacado seja correto, decisivo, vigente ou suficiente para uma tese.
 
 `page` é 1-based para PDF. Para imagem, deve ser omitido ou igual a 1. As
 coordenadas são sempre pixels da página renderizada antes do recorte. `crop`
-é `[x, y, width, height]` na mesma base. O recorte é opcional; quando ausente,
-a página inteira é preservada.
+é `[x, y, width, height]` na mesma base, ou a string `"auto"` para calcular
+automaticamente a bounding box dos retângulos com margem. O recorte é opcional;
+quando ausente, a página inteira é preservada.
+
+**Novo (2026-09-02):** `crop: "auto"` — calcula automaticamente a bounding box
+dos retângulos com uma margem de 20 px em todas as direções, clampada aos
+limites da página. Ideal para documentos densos (notas fiscais, relatórios
+paisagem) onde o usuário quer destacar uma região específica sem calcular
+coordenadas manualmente.
 
 ## Regras geométricas
 

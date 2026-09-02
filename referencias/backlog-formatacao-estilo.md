@@ -37,12 +37,18 @@ de correção**. Status: `aberto` / `em análise` / `corrigido`.
 - **Correção:** `bloco_figura` em `construir_peca.py` mudado de `Pt(9)` para `Pt(8)`; `schema_blocos.md` atualizado. Vale para o escritório todo.
 - **Status:** corrigido
 
-### 4. Imagens densas ficam ilegíveis mesmo grandes
+### 4. ✅ Imagens densas ficam ilegíveis mesmo grandes
+
 - **Data:** 2026-09-01
 - **Onde:** Figuras 1 (relatório "Captação por Dia", paisagem) e 2 (DANFE inteiro) da contestação CALU.
 - **Atrito:** relatório de sistema em modo paisagem e nota fiscal completa não ficam legíveis em nenhuma largura que caiba na página. Os retângulos vermelhos e a legenda carregam o sentido, mas o corpo do documento vira textura. O `crop` do `anotar_decisao.py` existe, mas exige coordenadas manuais.
-- **Ideia:** opção de recorte automático pela bounding box dos próprios retângulos + margem (ex.: `crop: "auto"` no spec), para a figura mostrar só a faixa relevante do documento em tamanho legível.
-- **Status:** aberto
+- **Solução (2026-09-02):**
+  - Nova função `_calculate_auto_crop_from_rectangles()` em `anotar_decisao.py`: calcula automaticamente a bounding box dos retângulos com margem 20 px.
+  - Suporte a `crop: "auto"` (string) em vez de `[x, y, w, h]` (array).
+  - Calcula min/max x/y dos retângulos, expande com margem, clampado aos limites da página.
+  - Retorna (crop_x, crop_y, crop_w, crop_h) no mesmo formato que coordenadas manuais.
+- **Impacto:** ✅ Sem cálculo manual de coordenadas; usuário só marca os retângulos. Imagens densas saem legíveis automaticamente.
+- **Status:** ✅ corrigido (commit 2026-09-02)
 
 ### 4. `width_cm` default 14 estoura a altura da página em imagem retrato
 - **Data:** 2026-09-01

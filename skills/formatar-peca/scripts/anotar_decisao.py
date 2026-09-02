@@ -125,6 +125,41 @@ def _load_page(source: Path, source_kind: str, page: int, dpi: int) -> Image.Ima
     return Image.open(source).convert("RGB")
 
 
+def _calculate_auto_crop_from_rectangles(rectangles: list[dict[str, Any]], source_width: int, source_height: int, margin_px: int = 20) -> tuple[int, int, int, int]:
+    """Calcula a bounding box dos retângulos com margem, retornando crop [x, y, largura, altura].
+    
+    Estratégia: encontrar o mínimo e máximo x/y dos retângulos, expandir by `margin_px`
+    em todas as direções (clampado aos limites da página), e retornar [x, y, w, h].
+    
+    Args:
+        rectangles: lista de dicts com 'x', 'y', 'width', 'height'
+        source_width, source_height: dimensões da página original
+        margin_px: margem (pixels) ao redor da bbox (default 20)
+    
+    Returns:
+        (crop_x, crop_y, crop_w, crop_h)
+    """
+    if not rectangles:
+        return (0, 0, source_width, source_height)
+    
+    # Encontrar bounding box de todos os retângulos
+    min_x = min(r["x"] for r in rectangles)
+    min_y = min(r["y"] for r in rectangles)
+    max_x = max(r["x"] + r["width"] for r in rectangles)
+    max_y = max(r["y"] + r["height"] for r in rectangles)
+    
+    # Expandir com margem
+    crop_x = max(0, min_x - margin_px)
+    crop_y = max(0, min_y - margin_px)
+    crop_right = min(source_width, max_x + margin_px)
+    crop_bottom = min(source_height, max_y + margin_px)
+    
+    crop_w = crop_right - crop_x
+    crop_h = crop_bottom - crop_y
+    
+    return (crop_x, crop_y, crop_w, crop_h)
+
+
 def annotate_decision(spec: dict[str, Any]) -> dict[str, Any]:
     raw_source = str(spec.get("source_path") or "").strip()
     raw_output = str(spec.get("output_path") or "").strip()
@@ -145,11 +180,8 @@ def annotate_decision(spec: dict[str, Any]) -> dict[str, Any]:
     image = _load_page(source, source_kind, page, dpi)
     source_width, source_height = image.size
     crop_value = spec.get("crop")
-    crop = _rect(crop_value, "crop") if crop_value is not None else (0, 0, source_width, source_height)
-    crop_x, crop_y, crop_w, crop_h = crop
-    if crop_w <= 0 or crop_h <= 0 or crop_x < 0 or crop_y < 0 or crop_x + crop_w > source_width or crop_y + crop_h > source_height:
-        raise ValueError("crop fora dos limites da página ou com dimensões inválidas")
-
+    
+    # Processar retângulos ANTES de calcular o crop (para auto-crop funcionar)
     rectangles = spec.get("rectangles")
     if not isinstance(rectangles, list) or not rectangles:
         raise ValueError("rectangles deve ser uma lista não vazia")
@@ -181,6 +213,18 @@ def annotate_decision(spec: dict[str, Any]) -> dict[str, Any]:
             "stroke_px": stroke,
             "label": item.get("label"),
         })
+    
+    # Determinar crop (pode ser manual ou auto a partir dos retângulos)
+    if crop_value == "auto":
+        crop = _calculate_auto_crop_from_rectangles(normalized, source_width, source_height, margin_px=20)
+    elif crop_value is not None:
+        crop = _rect(crop_value, "crop")
+    else:
+        crop = (0, 0, source_width, source_height)
+    
+    crop_x, crop_y, crop_w, crop_h = crop
+    if crop_w <= 0 or crop_h <= 0 or crop_x < 0 or crop_y < 0 or crop_x + crop_w > source_width or crop_y + crop_h > source_height:
+        raise ValueError("crop fora dos limites da página ou com dimensões inválidas")
 
     annotated = image.copy()
     draw = ImageDraw.Draw(annotated)
