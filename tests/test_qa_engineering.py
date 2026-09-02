@@ -109,7 +109,7 @@ def mutate_insert_body_blank(data: bytes) -> bytes:
     return xml_bytes(root)
 
 
-def test_happy_path_and_text_preservation(folder: Path) -> Path:
+def test_happy_path_and_text_preservation(folder: Path) -> None:
     docx = build_docx(folder)
     result = gate(docx, folder)
     assert result.returncode == 0, result.stdout + result.stderr
@@ -122,7 +122,6 @@ def test_happy_path_and_text_preservation(folder: Path) -> Path:
     text = "\n".join(p.text for p in document.paragraphs)
     assert "A parte autora apresenta esta manifestação" in text
     assert "Nestes termos, aguarda deferimento." in text
-    return docx
 
 
 def assert_mutation(folder: Path, source: Path, name: str, entry: str, transform, expected: str) -> None:
