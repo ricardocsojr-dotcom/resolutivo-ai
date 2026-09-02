@@ -1062,6 +1062,50 @@ def bloco_tabela(doc, cabecalho=None, linhas=None, alinhamentos=None):
     return tbl
 
 
+def bloco_tabela_memoria_calculo(doc, linhas_creditos):
+    """Preset para memória de cálculo judicial (ex.: atualização de débitos).
+    
+    Input: lista de dicts, cada um com:
+      - 'parcela': str (ex.: "Parcela 1", "Crédito A")
+      - 'valor_historico': str (ex.: "R$ 1.234,56")
+      - 'correcao_desde': str (data ou evento)
+      - 'juros_desde': str (data ou evento, opcional)
+      - 'valor_atualizado': str (ex.: "R$ 1.567,89")
+    
+    Output: tabela com colunas FIXAS e alinhamentos padronizados.
+    Garante consistência entre múltiplos créditos na mesma peça.
+    """
+    if not linhas_creditos:
+        return None
+    
+    # Colunas fixas para memória de cálculo
+    cabecalho = [
+        "Parcela / Crédito",
+        "Valor Histórico",
+        "Correção Desde",
+        "Juros Desde",
+        f"Valor Atualizado"
+    ]
+    
+    # Alinhamentos: parcela=left, valores e datas=center
+    alinhamentos = ['left', 'center', 'center', 'center', 'center']
+    
+    # Montar linhas
+    linhas = []
+    for credito in linhas_creditos:
+        parcela = credito.get('parcela', '')
+        valor_hist = credito.get('valor_historico', '')
+        correcao = credito.get('correcao_desde', '')
+        juros = credito.get('juros_desde', '–')  # Hífen se não houver
+        valor_atual = credito.get('valor_atualizado', '')
+        
+        linhas.append([parcela, valor_hist, correcao, juros, valor_atual])
+    
+    # Criar tabela
+    tbl = bloco_tabela(doc, cabecalho=cabecalho, linhas=linhas, alinhamentos=alinhamentos)
+    return tbl
+
+
 def bloco_visual(doc, visual_tipo, funcao_visual, texto_pesquisavel, cabecalho=None, linhas=None, alinhamentos=None):
     """Renderizar Visual Law tipado como tabela pesquisável."""
     tbl = bloco_tabela(doc, cabecalho, linhas, alinhamentos)
@@ -1191,6 +1235,7 @@ BLOCO_HANDLERS = {
         doc, b['image_path'], b.get('legenda'), b.get('width_cm', 14.0),
         b.get('funcao_visual', 'Destacar trecho explicitamente indicado'), b.get('texto_pesquisavel')),
     'tabela':             lambda doc, b, g: bloco_tabela(doc, b.get('cabecalho'), b.get('linhas'), b.get('alinhamentos')),
+    'memoria_calculo':    lambda doc, b, g: bloco_tabela_memoria_calculo(doc, b.get('linhas_creditos', [])),
     'visual':             lambda doc, b, g: bloco_visual(
         doc, b['visual_tipo'], b['funcao_visual'], b['texto_pesquisavel'],
         b.get('cabecalho'), b.get('linhas'), b.get('alinhamentos')),
@@ -1205,7 +1250,7 @@ BLOCO_HANDLERS = {
 # spacing.after). A abertura também leva uma linha em branco antes do
 # primeiro título, conforme o modelo real; "paragrafo" (fecho, publicações,
 # data/local) é tratado à parte na função construir_peca, então não entra aqui.
-BLOCOS_COM_BLANK_DEPOIS = {'abertura', 'titulo', 'titulo2', 'titulo3', 'numerado', 'alinea', 'documento', 'citacao', 'sumula', 'figura', 'decisao_anotada', 'tabela', 'visual'}
+BLOCOS_COM_BLANK_DEPOIS = {'abertura', 'titulo', 'titulo2', 'titulo3', 'numerado', 'alinea', 'documento', 'citacao', 'sumula', 'figura', 'decisao_anotada', 'tabela', 'memoria_calculo', 'visual'}
 VISUAL_TIPOS = {'timeline', 'matrix', 'flow', 'confrontation'}
 
 
@@ -1231,6 +1276,7 @@ BLOCO_REQUIRED_FIELDS = {
     'assinaturas': (),
     'quadro_processual': (),
     'tabela': ('linhas',),
+    'memoria_calculo': ('linhas_creditos',),
 }
 
 

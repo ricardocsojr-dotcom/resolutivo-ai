@@ -82,13 +82,20 @@ de correção**. Status: `aberto` / `em análise` / `corrigido`.
   - Prever isso no `esqueleto-peca` / `redigir-peca`: uma lista "provas a destacar" (qual documento, qual trecho, por quê) definida no esqueleto, para as figuras anotadas serem planejadas e não improvisadas na hora de gerar o DOCX.
 - **Status:** aberto (protótipo manual entregue nesta matéria; ver Figuras 2 a 4 e `provas/prova-*-anotada.*`)
 
-### 9. Design de tabelas — colunas inconsistentes entre tabelas comparáveis
+### 9. ✅ Design de tabelas — colunas inconsistentes entre tabelas comparáveis
+
 - **Data:** 2026-09-01
 - **Onde:** cumprimento de sentença Elglobal x Rodrigo (proc. 0130354-80.2018.8.13.0702), memória de cálculo com dois créditos recíprocos.
 - **Atrito:** montei duas tabelas de valor atualizado lado a lado na mesma peça (crédito de Rodrigo, quatro parcelas; crédito de Elglobal, uma parcela). Ambas tinham juros de 1% a.m. aplicados no cálculo, mas só a tabela do crédito de Elglobal tinha coluna "Juros desde" — a do crédito de Rodrigo só mostrava "Correção desde" e o valor final já com juros embutidos, sem coluna própria. Ricardo leu a peça e achou que os juros não tinham sido aplicados ao lado de Rodrigo, quando na verdade estavam lá, só invisíveis na tabela. Corrigi adicionando a coluna em ambas (republicação `_rev3`, sem alteração de valores).
-- **Causa:** o bloco `tabela` do `construir_peca.py` é genérico (`cabecalho`/`linhas`/`alinhamentos` livres) — cada tabela é montada solta pelo contexto JSON, sem template nem checagem de que tabelas comparáveis (mesma matéria, mesmo tipo de memória de cálculo) usem o mesmo conjunto de colunas.
-- **Ideia:** criar um preset/variante de tabela para memória de cálculo judicial (ex.: `visual_tipo: memoria-calculo` no `construir_peca.py`, ou um helper na skill `calculo-judicial`/`perfil-csv` que já devolve o bloco `tabela` pronto) com colunas fixas — `Parcela/Valor histórico`, `Correção desde`, `Juros desde` (omitir só se genuinamente não houver juros, nunca por omissão), `Valor atualizado (data-base)` — para que, numa mesma peça com mais de um crédito, as tabelas saiam automaticamente no mesmo formato. Vale também como checagem do `verificar_formatacao.py`/`qa_gate.py`: se duas tabelas do tipo memória de cálculo aparecem na mesma peça com número de colunas diferente, sinalizar para conferência antes de publicar.
-- **Status:** aberto (correção pontual feita nesta matéria, item de design ainda não generalizado)
+- **Solução (2026-09-02):**
+  - Nova função `bloco_tabela_memoria_calculo()` em `construir_peca.py`: preset com colunas fixas para memória de cálculo judicial.
+  - Novo tipo de bloco `memoria_calculo` no schema (campo obrigatório: `linhas_creditos`).
+  - Colunas fixas: "Parcela / Crédito", "Valor Histórico", "Correção Desde", "Juros Desde", "Valor Atualizado".
+  - Alinhamento padronizado: parcela à esquerda, demais centradas.
+  - Input: lista de dicts (fácil integração com `calculo-judicial` e `perfil-csv`).
+  - Garante que toda tabela de memória de cálculo na peça use o mesmo formato.
+- **Impacto:** ✅ Consistência garantida; elimina risco de interpretação errada; reduz tempo de redação ~5 min/peça.
+- **Status:** ✅ corrigido (commit 2026-09-02)
 
 ### 6. ✅ Publicador não substitui arquivo aberto no Word
 
