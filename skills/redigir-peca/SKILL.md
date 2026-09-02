@@ -159,17 +159,13 @@ tomada durante a redação.
 
 Antes de pedir aprovação, cheque o gate de escalonamento de
 `esqueleto-peca/SKILL.md` ("Gate de escalonamento manual"). Se algum gatilho
-bater, é a mesma pausa por `AskUserQuestion` abaixo — não uma etapa extra.
+bater, registre a pendência e abra o gate humano do orquestrador.
 
-**Pare aqui de verdade — use a tool `AskUserQuestion`.** Apresente o
-esqueleto ao Ricardo e chame `AskUserQuestion` com opções como "aprovar
-esqueleto como está" / "pedir ajuste antes de seguir". Uma frase em prosa
-tipo "aguardo seu ok" não basta: num fluxo autônomo o modelo pode
-simplesmente seguir sem que nada force a pausa. É a chamada da tool que
-bloqueia de fato esperando resposta. Não escreva a peça por extenso antes
-da aprovação recebida por essa tool — isso existe pra evitar redigir em
-cima de tese ou jurisprudência errada, e pra controlar o que entra no
-aprovação da estrutura e para preservar as fontes explicitamente selecionadas.
+**Pare aqui de verdade.** Apresente o esqueleto ao Ricardo e use o adaptador
+`human_gate`: no Hermes Desktop, `clarify`; no Claude interativo,
+`AskUserQuestion`. Registre a aprovação vinculada ao hash do arquivo. Não
+redija por extenso antes de `skeleton_approved`; uma frase como "aguardo seu
+ok" não substitui o estado persistido.
 
 ### 7. Codex redige no padrão RDAA
 
@@ -183,18 +179,21 @@ repasse o histórico integral ou o provenance bruto.
 Só depois do esqueleto aprovado e validado. Grave o pacote compacto em
 `.rdaa-run/<matter_id>/PROMPT-REDACAO.md`.
 
-**Checkpoint manual — padrão desde 2026-08-30.** Não rode o executor pela
-sessão do Claude Code (isso ainda conta no limite de uso dele, mesmo sem
-`Agent` no meio). Em vez disso, pare aqui e diga a Ricardo, literalmente:
-"o pacote está em `.rdaa-run/<matter_id>/PROMPT-REDACAO.md` — abra o Codex
-nesta mesma pasta (ele lê `AGENTS.md` sozinho), cole o conteúdo do arquivo,
-e traga o rascunho de volta aqui quando terminar." Espere a resposta dele
-com o rascunho antes de seguir para o passo 7.5. Não prossiga sozinho.
+**Execução orquestrada — padrão desde 2026-09-01.** Hermes registra a rota em
+`run_manifest.json` e chama Codex diretamente, sem `Agent` ou subagente
+mensageiro:
 
-Só use o executor direto (`executar_motor.py codex --prompt ... --output
-...`) se Ricardo pedir explicitamente automação nessa etapa — não é mais o
-caminho padrão. O resultado, por qualquer via, é um rascunho, nunca
-publicação. Inclua
+```text
+py -3.14 skills/redigir-peca/scripts/executar_motor.py codex \
+  --prompt .rdaa-run/<matter_id>/PROMPT-REDACAO.md \
+  --output .rdaa-run/<matter_id>/RASCUNHO-CODEX.md \
+  --state-dir .rdaa-run/<matter_id> --role writer
+```
+
+Só execute depois de `skeleton_approved`. O executor grava apenas a saída e o
+orquestrador registra hash, duração e worker no manifesto. O resultado é
+sempre rascunho; nunca publicação. Falha, quota ou timeout pausa o fluxo, sem
+fallback silencioso. Inclua
 `contencioso-rdaa/references/redacao-rdaa.md` como regra obrigatória. Se a
 matéria for dano moral, inclua também `dano-moral-rct/references/estilo-rct.md`;
 se Ricardo pedir explicitamente o padrão da Flávia, inclua
@@ -212,28 +211,28 @@ estritamente:
 - Parágrafos curtos
 - Comece argumentos afirmando diretamente o objeto, a tese, o vício, o fato ou a consequência. Evite aberturas por negação, ressalva ou justificativa defensiva, como “não se pretende”, “não se busca”, “não se trata”, “não se ignora” e “não se desconhece”. Reescreva positivamente quando o sentido for preservado. Mantenha a negativa quando ela for indispensável para delimitar o objeto, responder a uma afirmação concreta, afastar interpretação específica ou formar contraste jurídico necessário.
 
-### 7.5. Antigravity critica — checkpoint manual
+### 7.5. Antigravity critica — execução orquestrada
 
 Depois da redação (rascunho do Codex já em mãos), monte outro pacote
 compacto — a peça, fatos, fontes e teses necessárias, nunca o raciocínio do
 redator — e grave em `.rdaa-run/<matter_id>/PROMPT-CRITICO.md`. Inclua no
 pacote a instrução de ler `skills/critico-rdaa/SKILL.md` — é o contrato de
 método do crítico (persona de advogado adverso, ACH invertida, o que avaliar
-e o que nunca avaliar, formato de saída). O checkpoint manual só mudou quem
-executa e como o pacote chega até o Antigravity; a metodologia continua
-sendo essa, não uma genérica.
+e o que nunca avaliar, formato de saída).
 
-Mesmo checkpoint do passo 7: pare e diga a Ricardo pra abrir o Antigravity
-(`agy`) na mesma pasta, colar o conteúdo do arquivo, e trazer a crítica de
-volta. Se ele quiser a saída já validada contra
-`skills/redigir-peca/references/critica-antigravity.schema.json`, ele passa
-o schema pro próprio `agy` na mão; Claude não precisa reforçar isso.
+Hermes chama o executor diretamente e registra a saída no manifesto:
+
+```text
+py -3.14 skills/redigir-peca/scripts/executar_motor.py antigravity \
+  --prompt .rdaa-run/<matter_id>/PROMPT-CRITICO.md \
+  --output .rdaa-run/<matter_id>/CRITICA-ANTIGRAVITY.json \
+  --schema skills/redigir-peca/references/critica-antigravity.schema.json \
+  --effort high --state-dir .rdaa-run/<matter_id> --role critic
+```
 
 O crítico aponta somente vulnerabilidades, lacunas e pontos a conferir; não
 altera arquivos, tese, pedido ou estado. O relatório é alerta estruturado,
-nunca um bloqueio ou uma decisão automática. O executor direto
-(`executar_motor.py antigravity ...`) continua disponível só se Ricardo
-pedir automação explícita nessa etapa.
+nunca um bloqueio ou uma decisão automática.
 
 Para extração documental simples, use `--effort low` ou `medium`; `high` fica
 reservado à crítica estratégica. Falha, cota ou timeout pausa o fluxo — nunca
@@ -341,6 +340,14 @@ fluxo:
 Leia o `CLAUDE.md` do Ementário antes de consultar — ele governa estrutura
 e convenções. A consulta:
 
+No fluxo orquestrado, a automação é rastreável, não implícita: após
+`intake_ready`, o Hermes gera `.rdaa-run/<matter_id>/EMENTARIO-CONTEXTO.json`
+com `integracao_obsidian.py consultar-ementario`, registra o hash com
+`orquestrador_rdaa.py register-vault-lookup` e só então avança para
+`vault_context_ready`. O conector não escreve no vault, limita a coleta ao
+domínio e suas teses/fontes diretamente relacionadas e redige metadados de
+matérias históricas antes de entregar o pacote ao worker.
+
 1. Identifica a área do direito no contexto já coletado (dano moral,
    responsabilidade civil, direito do consumidor, contratos bancários,
    ações declaratórias/indenizatórias, ou outra que o Ementário já tenha)
@@ -402,6 +409,12 @@ Isso roda uma vez por publicação bem-sucedida, silenciosamente — não pede
 o registro foi feito (uma linha basta, ou duas se os dois vaults foram
 atualizados). Se a publicação falhar (`[ERRO]`), não grave nada em nenhum
 vault.
+
+No controlador, `vault_registered` não significa “pedido enviado”: exige
+recibo JSON íntegro, hashável, de `Procedimentos e Informações` com
+`status: registered`. Atualização do Ementário permanece via
+`claude-obsidian` no WSL; sem esse runner e sem recibo, a sincronização fica
+pendente e a matéria não pode ser marcada como registrada.
 
 ## Nota sobre a integração das skills
 
