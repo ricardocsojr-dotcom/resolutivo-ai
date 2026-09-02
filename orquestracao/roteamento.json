@@ -1,0 +1,59 @@
+{
+  "schema_version": "1",
+  "workers": {
+    "planner": {"engine": "claude", "provider": "anthropic", "model_family": "anthropic", "cli": "claude"},
+    "writer": {"engine": "codex", "provider": "openai", "model_family": "openai", "cli": "codex"},
+    "critic": {"engine": "antigravity", "provider": "google", "model_family": "google", "cli": "agy"},
+    "validator": {"engine": "claude", "provider": "anthropic", "model_family": "anthropic", "cli": "claude"}
+  },
+  "risk_escalation": {
+    "baixo": "C",
+    "medio": "C",
+    "médio": "C",
+    "alto": "B",
+    "critico": "A",
+    "crítico": "A"
+  },
+  "worker_allowed_phases": {
+    "planner": ["intake_ready", "sources_ready", "skeleton_ready"],
+    "writer": ["drafting"],
+    "critic": ["criticizing"],
+    "validator": ["validating"]
+  },
+  "vaults": {
+    "ementario-resolutivo": {
+      "mode": "read_only",
+      "context_status": "informada"
+    },
+    "procedimentos-informacoes": {
+      "mode": "registration_receipt_required"
+    }
+  },
+  "levels": {
+    "C": {
+      "stages": ["intake_ready", "drafting", "draft_ready", "validating", "candidate_ready", "qa_passed", "release_ready", "published", "vault_registered"],
+      "required_human_gates": [],
+      "vault": {
+        "lookup": {"enabled": false},
+        "sync": {"required_after_publish": ["procedimentos-informacoes"], "optional_after_publish": ["ementario-resolutivo"]}
+      }
+    },
+    "B": {
+      "stages": ["intake_ready", "vault_context_ready", "sources_ready", "skeleton_ready", "awaiting_skeleton_approval", "skeleton_approved", "drafting", "draft_ready", "criticizing", "critique_ready", "validating", "candidate_ready", "qa_passed", "release_ready", "published", "vault_registered"],
+      "required_human_gates": ["skeleton_approval"],
+      "vault": {
+        "lookup": {"enabled": true, "vault": "ementario-resolutivo", "mode": "read_only", "context_status": "informada"},
+        "sync": {"required_after_publish": ["procedimentos-informacoes"], "optional_after_publish": ["ementario-resolutivo"]}
+      }
+    },
+    "A": {
+      "stages": ["intake_ready", "vault_context_ready", "sources_ready", "council_ready", "skeleton_ready", "awaiting_skeleton_approval", "skeleton_approved", "drafting", "draft_ready", "criticizing", "critique_ready", "validating", "candidate_ready", "qa_passed", "release_ready", "published", "vault_registered"],
+      "required_human_gates": ["skeleton_approval", "release_approval"],
+      "conditional_human_gates": ["strategy_exception"],
+      "vault": {
+        "lookup": {"enabled": true, "vault": "ementario-resolutivo", "mode": "read_only", "context_status": "informada"},
+        "sync": {"required_after_publish": ["procedimentos-informacoes"], "optional_after_publish": ["ementario-resolutivo"]}
+      }
+    }
+  }
+}
