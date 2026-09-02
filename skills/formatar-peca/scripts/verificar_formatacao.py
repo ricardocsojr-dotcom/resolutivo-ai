@@ -323,6 +323,7 @@ def checar(docx_path):
     KEYWORDS_CAIXA = (
         'Processo:', 'Processo ', 'Autor:', 'Autor ', 'Autora:', 'Autora ',
         'Réu:', 'Réu ', 'Reu:', 'Reu ', 'Ré:', 'Ré ', 'Re:', 'Re ',
+        'Corré:', 'Corré ', 'Corre:', 'Corre ', 'Corrés:', 'Corrés ', 'Corres:', 'Corres ',
         'Parte ',
         'Requerente:', 'Requerente ', 'Requerido:', 'Requerido ', 'Requerida:', 'Requerida ',
         'Embargante:', 'Embargante ', 'Embargado:', 'Embargado ', 'Embargada:', 'Embargada ',
@@ -333,8 +334,7 @@ def checar(docx_path):
         'Exeqte:', 'Exeqte ', 'Execdo:', 'Execdo ', 'Execda:', 'Execda '
     )
     caixa_processo = [p for p in paragrafos if _border_top(p) is not None
-                      and (any(k.lower() in textos[paragrafos.index(p)].lower() for k in KEYWORDS_CAIXA)
-                           or (':' in textos[paragrafos.index(p)] and len(textos[paragrafos.index(p)]) < 80))]
+                      and any(k.lower() in textos[paragrafos.index(p)].lower() for k in KEYWORDS_CAIXA)]
     if caixa_processo:
         idx_caixa = paragrafos.index(caixa_processo[-1])
         n_blank = 0

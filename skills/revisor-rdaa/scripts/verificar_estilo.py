@@ -208,16 +208,30 @@ def checar_dois_pontos(paragrafos, bordas=None, estilos=None):
     # _tem_borda_completa. Citação literal (estilo "RDAA Citação") também é
     # isenta pelo mesmo motivo de checar_aposto_explicativo — ementa real de
     # tribunal frequentemente traz dois-pontos ("EMENTA:", "Tema 858:") e a
-    # transcrição verbatim não pode reescrever isso.
+    # transcrição verbatim não pode reescrever isso. Partes do quadro (Autor:,
+    # Réu:, Corrés:, etc.) mesmo sem borda completa também são isentas.
     problemas = []
     if bordas is None:
         bordas = [False] * len(paragrafos)
     if estilos is None:
         estilos = [None] * len(paragrafos)
+    
+    # Padrões de rótulo de parte (detecção por keyword para tolerância com linhas longas)
+    _KEYWORDS_PARTE = (
+        'Autor:', 'Autora:', 'Réu:', 'Ré:', 'Corré:', 'Corrés:',
+        'Requerente:', 'Requerido:', 'Requerida:', 'Embargante:', 'Embargado:',
+        'Embargada:', 'Agravante:', 'Agravado:', 'Agravada:', 'Apelante:',
+        'Apelado:', 'Apelada:', 'Exequente:', 'Executado:', 'Executada:',
+        'Impetrante:', 'Impetrado:', 'Impetrada:', 'Exeqte:', 'Execdo:', 'Execda:'
+    )
+    
     for i, p in enumerate(paragrafos):
         if bordas[i]:
             continue
         if (estilos[i] or "").strip().casefold() == "rdaa citação":
+            continue
+        # Verificar se a linha começa com um rótulo de parte (tolerante com tamanho)
+        if any(p.strip().lower().startswith(k.lower()) for k in _KEYWORDS_PARTE):
             continue
         if ':' in p:
             problemas.append(
