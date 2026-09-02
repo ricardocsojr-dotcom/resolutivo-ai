@@ -1,0 +1,49 @@
+{
+  "titulo": "CADEIA ÚNICA",
+  "subtitulo": "FLUXO E RESPONSABILIDADES NA OPERAÇÃO DE LEITE",
+  "etapas": [
+    {
+      "numero": 1,
+      "titulo": "FORNECIMENTO\nINDIVIDUAL",
+      "ator": "AUTOR (PRODUTOR)",
+      "descricao": "O Autor entrega o leite por\nmeio da APROLI, sem\ncontratar diretamente com a Ré.",
+      "prova": "Relatórios de captação.\nEvento 48",
+      "destacado": false
+    },
+    {
+      "numero": 2,
+      "titulo": "RECEBIMENTO E\nAGREGAÇÃO",
+      "ator": "APROLI",
+      "descricao": "A APROLI reúne o volume de\ncada produtor e forma o\ntotal da rota.",
+      "prova": "Relatórios de captação.\nEvento 48",
+      "destacado": false
+    },
+    {
+      "numero": 3,
+      "titulo": "VENDA DO VOLUME\nAGREGADO",
+      "ator": "APROLI → RÉ (CALU)",
+      "descricao": "A APROLI vende o volume\nagregado à Ré e emite a nota\nfiscal em nome próprio.",
+      "prova": "NF-e 000.090. 335.707 L.\nR$ 976.907,37",
+      "destacado": true
+    },
+    {
+      "numero": 4,
+      "titulo": "PAGAMENTO DO VOLUME",
+      "ator": "RÉ (CALU) → APROLI",
+      "descricao": "A Ré paga a APROLI,\ndestinataária dos valores da\noperação.",
+      "prova": "Vertical Bank e extrato\nBMP. Evento 48",
+      "destacado": true
+    },
+    {
+      "numero": 5,
+      "titulo": "REPASSE AO PRODUTOR",
+      "ator": "APROLI → AUTOR",
+      "descricao": "A distribuição do valor a\ncada produtor cabe à APROLI,\nnão à Ré.",
+      "prova": "Gestão da APROLI. Fora do\nacervo da Ré",
+      "destacado": false
+    }
+  ],
+  "ponto_central": "A Ré participa apenas das etapas 3 e 4. O repasse individual ao produtor (etapa 5) sempre coube à APROLI, que faturou a operação em nome próprio e recebeu os valores.",
+  "disclaimer": "Esquema ilustrativo do fluxo negocial. Não substitui a prova documental. Documentos citados no Evento 48.",
+  "etapas_destacadas": [3, 4]
+}

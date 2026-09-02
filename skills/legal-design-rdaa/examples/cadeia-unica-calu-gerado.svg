@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 314" font-family="Lato, 'Segoe UI', Tahoma, Arial, sans-serif">
+<rect width="1040" height="314" fill="#FFFFFF"/>
+<rect x="24" y="14" width="6" height="40" fill="#F7A800"/>
+<text x="42" y="32" font-size="19" font-weight="800" fill="#000000" letter-spacing="0.5">CADEIA ÚNICA</text>
+<text x="42" y="49" font-size="11" font-weight="700" fill="#63666A" letter-spacing="1.3">FLUXO E RESPONSABILIDADES NA OPERAÇÃO DE LEITE</text>
+<rect x="24" y="62" width="198.4" height="20" rx="3" fill="#63666A"/>
+<text x="123.2" y="76" font-size="9" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">AUTOR (PRODUTOR)</text>
+<rect x="222.4" y="62" width="198.4" height="20" rx="3" fill="#63666A"/>
+<text x="321.6" y="76" font-size="9" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">APROLI</text>
+<rect x="420.8" y="62" width="198.4" height="20" rx="3" fill="#F7A800"/>
+<text x="520.0" y="76" font-size="9" font-weight="800" fill="#000000" text-anchor="middle" letter-spacing="1">APROLI → RÉ (CALU)</text>
+<rect x="619.2" y="62" width="198.4" height="20" rx="3" fill="#F7A800"/>
+<text x="718.4000000000001" y="76" font-size="9" font-weight="800" fill="#000000" text-anchor="middle" letter-spacing="1">RÉ (CALU) → APROLI</text>
+<rect x="817.6" y="62" width="198.4" height="20" rx="3" fill="#63666A"/>
+<text x="916.8000000000001" y="76" font-size="9" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="1">APROLI → AUTOR</text>
+<rect x="24" y="92" width="198.4" height="150" rx="6" fill="#FFFFFF" stroke="#C9CBCD" stroke-width="1"/>
+<rect x="24" y="92" width="198.4" height="4" rx="2" fill="#63666A"/>
+<circle cx="41" cy="116" r="12" fill="#F7A800"/>
+<text x="41" y="120.3" font-size="12.5" font-weight="800" fill="#FFFFFF" text-anchor="middle">1</text>
+<text x="60" y="112" font-size="10.5" font-weight="800" fill="#000000">FORNECIMENTO
+INDIVIDUAL</text>
+<text font-size="9" fill="#2b2b2b">
+<tspan x="38" y="134">O Autor entrega o leite por
+meio da APROLI, sem
+contratar diretamente com a Ré.</tspan>
+</text>
+<line x1="38" y1="178" x2="208.4" y2="178" stroke="#EDEEEF" stroke-width="1"/>
+<rect x="38" y="186" width="7" height="9" rx="1" fill="none" stroke="#63666A" stroke-width="1"/>
+<tspan x="50" y="193">Relatórios de captação.
+Evento 48</tspan>
+<path d="M 222.4 137 L 242.4 137" stroke="#63666A" stroke-width="2"/>
+<path d="M 236.4 132 L 242.4 137 L 236.4 142" fill="#63666A"/>
+<rect x="222.4" y="92" width="198.4" height="150" rx="6" fill="#FFFFFF" stroke="#C9CBCD" stroke-width="1"/>
+<rect x="222.4" y="92" width="198.4" height="4" rx="2" fill="#63666A"/>
+<circle cx="239.4" cy="116" r="12" fill="#F7A800"/>
+<text x="239.4" y="120.3" font-size="12.5" font-weight="800" fill="#FFFFFF" text-anchor="middle">2</text>
+<text x="258.4" y="112" font-size="10.5" font-weight="800" fill="#000000">RECEBIMENTO E
+AGREGAÇÃO</text>
+<text font-size="9" fill="#2b2b2b">
+<tspan x="236.4" y="134">A APROLI reúne o volume de
+cada produtor e forma o
+total da rota.</tspan>
+</text>
+<line x1="236.4" y1="178" x2="406.8" y2="178" stroke="#EDEEEF" stroke-width="1"/>
+<rect x="236.4" y="186" width="7" height="9" rx="1" fill="none" stroke="#63666A" stroke-width="1"/>
+<tspan x="248.4" y="193">Relatórios de captação.
+Evento 48</tspan>
+<path d="M 420.8 137 L 440.8 137" stroke="#63666A" stroke-width="2"/>
+<path d="M 434.8 132 L 440.8 137 L 434.8 142" fill="#63666A"/>
+<rect x="420.8" y="92" width="198.4" height="150" rx="6" fill="#FFFFFF" stroke="#F7A800" stroke-width="1.6"/>
+<rect x="420.8" y="92" width="198.4" height="4" rx="2" fill="#F7A800"/>
+<circle cx="437.8" cy="116" r="12" fill="#F7A800"/>
+<text x="437.8" y="120.3" font-size="12.5" font-weight="800" fill="#FFFFFF" text-anchor="middle">3</text>
+<text x="456.8" y="112" font-size="10.5" font-weight="800" fill="#000000">VENDA DO VOLUME
+AGREGADO</text>
+<text font-size="9" fill="#2b2b2b">
+<tspan x="434.8" y="134">A APROLI vende o volume
+agregado à Ré e emite a nota
+fiscal em nome próprio.</tspan>
+</text>
+<line x1="434.8" y1="178" x2="605.2" y2="178" stroke="#EDEEEF" stroke-width="1"/>
+<rect x="434.8" y="186" width="7" height="9" rx="1" fill="none" stroke="#63666A" stroke-width="1"/>
+<tspan x="446.8" y="193">NF-e 000.090. 335.707 L.
+R$ 976.907,37</tspan>
+<path d="M 619.2 137 L 639.2 137" stroke="#63666A" stroke-width="2"/>
+<path d="M 633.2 132 L 639.2 137 L 633.2 142" fill="#63666A"/>
+<rect x="619.2" y="92" width="198.4" height="150" rx="6" fill="#FFFFFF" stroke="#F7A800" stroke-width="1.6"/>
+<rect x="619.2" y="92" width="198.4" height="4" rx="2" fill="#F7A800"/>
+<circle cx="636.2" cy="116" r="12" fill="#F7A800"/>
+<text x="636.2" y="120.3" font-size="12.5" font-weight="800" fill="#FFFFFF" text-anchor="middle">4</text>
+<text x="655.2" y="112" font-size="10.5" font-weight="800" fill="#000000">PAGAMENTO DO VOLUME</text>
+<text font-size="9" fill="#2b2b2b">
+<tspan x="633.2" y="134">A Ré paga a APROLI,
+destinataária dos valores da
+operação.</tspan>
+</text>
+<line x1="633.2" y1="178" x2="803.6" y2="178" stroke="#EDEEEF" stroke-width="1"/>
+<rect x="633.2" y="186" width="7" height="9" rx="1" fill="none" stroke="#63666A" stroke-width="1"/>
+<tspan x="645.2" y="193">Vertical Bank e extrato
+BMP. Evento 48</tspan>
+<path d="M 817.6 137 L 837.6 137" stroke="#63666A" stroke-width="2"/>
+<path d="M 831.6 132 L 837.6 137 L 831.6 142" fill="#63666A"/>
+<rect x="817.6" y="92" width="198.4" height="150" rx="6" fill="#FFFFFF" stroke="#C9CBCD" stroke-width="1"/>
+<rect x="817.6" y="92" width="198.4" height="4" rx="2" fill="#63666A"/>
+<circle cx="834.6" cy="116" r="12" fill="#F7A800"/>
+<text x="834.6" y="120.3" font-size="12.5" font-weight="800" fill="#FFFFFF" text-anchor="middle">5</text>
+<text x="853.6" y="112" font-size="10.5" font-weight="800" fill="#000000">REPASSE AO PRODUTOR</text>
+<text font-size="9" fill="#2b2b2b">
+<tspan x="831.6" y="134">A distribuição do valor a
+cada produtor cabe à APROLI,
+não à Ré.</tspan>
+</text>
+<line x1="831.6" y1="178" x2="1002.0" y2="178" stroke="#EDEEEF" stroke-width="1"/>
+<rect x="831.6" y="186" width="7" height="9" rx="1" fill="none" stroke="#63666A" stroke-width="1"/>
+<tspan x="843.6" y="193">Gestão da APROLI. Fora do
+acervo da Ré</tspan>
+<rect x="24" y="248" width="992" height="28" rx="4" fill="#EDEEEF"/>
+<rect x="24" y="248" width="6" height="28" fill="#F7A800"/>
+<text x="42" y="266" font-size="9.7" fill="#000000"><tspan font-weight="800">Ponto central. </tspan>A Ré participa apenas das etapas 3 e 4. O repasse individual ao produtor (etapa 5) sempre coube à APROLI, que faturou a operação em nome próprio e recebeu os valores.</text>
+<text x="24" y="291" font-size="7.3" fill="#63666A">Esquema ilustrativo do fluxo negocial. Não substitui a prova documental. Documentos citados no Evento 48.</text>
+</svg>

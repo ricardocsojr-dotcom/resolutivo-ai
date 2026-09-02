@@ -52,17 +52,22 @@ de correção**. Status: `aberto` / `em análise` / `corrigido`.
 - **Impacto:** ✅ Nenhuma conta manual necessária. Imagens retrato cabem automaticamente.
 - **Status:** ✅ corrigido (commit 2026-09-02)
 
-### 7. Esquema de fluxo e responsabilidades ("cadeia única") — capacidade a criar
+### 7. ✅ Esquema de fluxo e responsabilidades (cadeia única) — componente criado
+
 - **Data:** 2026-09-01
-- **Onde:** contestação CALU. Ricardo mandou um infográfico de referência (cadeia de 5 etapas, "fornecimento → agregação → venda → pagamento → repasse") e pediu para termos essa habilidade no Legal Design, com a cara do escritório.
-- **Feito agora:** protótipo em `.rdaa-run/5506114-45.2026.8.09.0074/provas/cadeia-unica-calu.svg` (+ PNG), gerado por script Python, na paleta oficial (`#F7A800` destaque, `#63666A` estrutura, preto/branco, logo `logo_romano_donadel.png` no canto superior direito, conectores ortogonais, bandas de ator, caixa de "ponto central"). Cartões 3-4 destacados em laranja = a etapa em que a Ré efetivamente atua.
-- **Backlog:**
-  - transformar o gerador num componente da `legal-design-rdaa` (ou um `visual_tipo` novo no `construir_peca.py`, tipo `cadeia`/`fluxo-responsabilidades`), recebendo uma lista de etapas `{numero, titulo, ator, descricao, prova}` + marcação de quais etapas destacar + o texto do "ponto central", e devolvendo SVG/PNG pronto para virar `figura`.
-  - parametrizar nº de etapas (3 a 6), orientação (horizontal padrão), e as bandas de ator.
-  - manter a regra do núcleo: sem dois-pontos/travessão no título do esquema, cor semafórica só com legenda (aqui o laranja é "destaque", não "risco" — ok), e o disclaimer "esquema ilustrativo, não substitui a prova".
-  - decidir se entra no `esqueleto-peca` (seção "Legal Design planejado") como opção sugerível quando o caso tem cadeia de partes / fluxo financeiro entre vários agentes.
-  - fonte: identidade visual em `skills/romano-donadel-slide-style/references/identidade-visual-extraida.md`; componentes recorrentes ("Diagrama: conectores ortogonais, caixas alinhadas e legenda").
-- **Status:** aberto (protótipo entregue nesta matéria)
+- **Onde:** contestação CALU. Ricardo pediu esquema de cadeia (fornecimento → agregação → venda → pagamento → repasse) com identidade visual do escritório.
+- **Feito agora (protótipo):** Diagrama SVG em `.rdaa-run/5506114-45.2026.8.09.0074/provas/cadeia-unica-calu.svg` com paleta oficial (`#F7A800` destaque, `#63666A` estrutura).
+- **Correção (2026-09-02):** 
+  - Criado `gerar_cadeia_fluxo.py` — gerador Python parametrizado de diagramas SVG
+  - Input: spec JSON com `titulo`, `subtitulo`, lista de `etapas` (numero, titulo, ator, descricao, prova), `ponto_central`, `disclaimer`, `etapas_destacadas`
+  - Output: SVG renderizado (até 6 etapas, com/sem destaque em laranja)
+  - Exemplo spec: `skills/legal-design-rdaa/examples/cadeia-unica-calu-spec.json`
+  - Teste gerado: `cadeia-unica-calu-gerado.svg` (funciona!)
+- **Próximos passos (backlog):**
+  - Integrar no `construir_peca.py` como novo `visual_tipo: "cadeia-unica"`
+  - Adicionar ao `esqueleto-peca` como sugestão quando caso tem fluxo multi-ator
+  - Permitir geração direta de PNG via PIL (para compatibilidade com Legacy Word)
+- **Status:** ✅ Componente criado e testado; integração pendente
 
 ### 8. Inserir prints já com a marcação do que é importante — workflow a facilitar
 - **Data:** 2026-09-01
