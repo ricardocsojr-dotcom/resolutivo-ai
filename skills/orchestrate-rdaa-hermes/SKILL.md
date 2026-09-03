@@ -64,7 +64,7 @@ All commands are **side-effect-free reads** or **locked writes** (mutex per matt
 
 - For human-interactive matter management: use `orquestrar-rdaa` skill instead (higher-level, Hermes-idiomatic).
 - For worker coding itself: workers don't call the orchestrator; use `executar_motor.py --state-dir` as the entry point.
-- For Ementário writes: only `claude-obsidian` on WSL writes; read queries use `integracao_obsidian.py`.
+- For Cérebro-Ricar writes: use `registrar_cerebro.py` (local, sem WSL). Read queries usam C:\Users\ricar\cerebro-ricar\ direto.
 
 ## Key Constraints
 

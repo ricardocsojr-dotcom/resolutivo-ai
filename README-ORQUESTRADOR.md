@@ -34,9 +34,10 @@ py -3.14 skills/redigir-peca/scripts/orquestrador_rdaa.py status .rdaa-run/matte
 # Avançar fase
 py -3.14 skills/redigir-peca/scripts/orquestrador_rdaa.py advance .rdaa-run/matter-id intake_ready
 
-# Consultar Ementário (B/A apenas)
+# Consultar Cérebro-Ricar (B/A apenas)
 py -3.14 skills/redigir-peca/scripts/integracao_obsidian.py consultar-ementario \
-  --domain dano-moral --output .rdaa-run/matter-id/EMENTARIO.json
+  --domain dano-moral --cerebro C:\\Users\\ricar\\cerebro-ricar \
+  --output .rdaa-run/matter-id/EMENTARIO.json
 
 # Registrar consulta no manifesto
 py -3.14 skills/redigir-peca/scripts/orquestrador_rdaa.py register-vault-lookup .rdaa-run/matter-id \

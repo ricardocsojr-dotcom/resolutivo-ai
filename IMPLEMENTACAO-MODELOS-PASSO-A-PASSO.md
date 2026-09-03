@@ -128,9 +128,10 @@ cat .rdaa-run/TEST-2026-09-02/run_manifest.json | jq '.route'
 py -3.14 skills/redigir-peca/scripts/orquestrador_rdaa.py route \
   .rdaa-run/TEST-2026-09-02
 
-# 4. Consultar vault (Obsidian)
+# 4. Consultar vault (Cérebro-Ricar)
 py -3.14 skills/redigir-peca/scripts/integracao_obsidian.py consultar-ementario \
   --domain "direito-civil" \
+  --cerebro C:\\Users\\ricar\\cerebro-ricar \
   --output .rdaa-run/TEST-2026-09-02/EMENTARIO-CONTEXTO.json
 
 # 5. Avançar para drafting (planner + approval)

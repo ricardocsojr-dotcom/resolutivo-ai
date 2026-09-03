@@ -71,7 +71,7 @@ O estado persistido é `.rdaa-run/<matter_id>/run_manifest.json`. Kanban e conve
 
 8. **Falhar fechado.** Quota, timeout, saída inválida, lock ou conflito de rota bloqueiam a matéria. Registre a falha e apresente as opções; não faça fallback silencioso e não publique.
 
-9. **Registrar publicação no vault.** Depois da publicação real, o registro operacional precisa devolver um recibo JSON com `vault: procedimentos-informacoes` e `status: registered`; registre-o antes de `vault_registered`. Atualização do Ementário é opcional e só conclui com recibo do `claude-obsidian` no WSL — uma solicitação pendente não basta.
+9. **Registrar no Cérebro-Ricar.** Depois da publicação real, rode `registrar_cerebro.py` para gravar a matéria no Cérebro-Ricar (`C:\Users\ricar\cerebro-ricar\wiki\operacional\`). Script: `py -3.14 skills/redigir-peca/scripts/registrar_cerebro.py .rdaa-run/<matter_id>/ --matter-id <matter_id> --level <C|B|A>`. Isso cria/atualiza matter-XXX.md, recount index.json e atualiza hot.md.
 
 10. **Gerar painel quando precisar de visão operacional.**
    ```text

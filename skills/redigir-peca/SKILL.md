@@ -345,16 +345,14 @@ decisão de tese, pedido ou estratégia permanece explícito para Ricardo.
 
 Existem dois vaults distintos, e só um deles entra automaticamente neste
 fluxo:
-- **Ementário do Resolutivo** (tese e jurisprudência) — vault gerido pelo
-  `claude-obsidian`, mora em `~/vaults/ementario-resolutivo` dentro do WSL
-  (não mais no OneDrive — motor de escrita exige filesystem nativo Linux).
-  Leitura funciona direto pelo caminho de rede
-  `\\wsl.localhost\Ubuntu\home\ricar\vaults\ementario-resolutivo` (Read
-  normal). Qualquer gravação (nota nova, atualização) deve passar pelas
-  skills do `claude-obsidian` (`save`/`wiki-ingest`) executadas via `wsl
-  -e ...`, nunca por edição direta de arquivo — isso mantém os ledgers de
-  fonte/afirmação consistentes. Consultado **automaticamente nos tipos B e
-  A**, depois do passo 1 (contexto coletado) e antes do passo 6
+Ementário do Resolutivo (tese e jurisprudência) — agora integrado no
+  Cérebro-Ricar local (`C:\Users\ricar\cerebro-ricar\wiki\`). Leitura e
+  gravação via scripts Python (`registrar_cerebro.py`,
+  `registrar_estudo_cerebro.py`), sem dependência WSL. Consulta automática
+  nos tipos B e A via `integracao_obsidian.py` (lê Cérebro-Ricar diretamente,
+  não WSL). Gravação automática após publicação (step 10) via
+  `registrar_cerebro.py` — zero edição manual. Consultado **automaticamente
+  nos tipos B e A**, depois do passo 1 (contexto coletado) e antes do passo 6
   (esqueleto). O tipo C nunca consulta.
 - **Procedimentos e Informações** (operacional, continua no OneDrive) —
   leitura continua **sempre manual**, só com pedido expresso de Ricardo
@@ -393,51 +391,35 @@ matérias históricas antes de entregar o pacote ao worker.
 independente do vault. Não altere `nivel_peca` por causa do que a consulta
 encontrar ou deixar de encontrar.
 
-### 10. Gravação automática no vault — após publicação
+### 10. Gravação automática no Cérebro-Ricar — após publicação
 
 Depois que `publicar_docx.py` retornar `[OK]` (passo Entrega), grave
-automaticamente um resumo da matéria no vault, sem pedir — isso não é
-consulta, é registro do que já aconteceu. Vault:
-`C:\Users\ricar\OneDrive\Documentos\Cerébros\Pessoal\Procedimentos e Informações\`.
-Leia o `CLAUDE.md` desse subvault antes de escrever, ele governa estrutura e
-convenções.
+automaticamente a matéria no Cérebro-Ricar (`C:\Users\ricar\cerebro-ricar\`),
+sem pedir — isso não é consulta, é registro do que já aconteceu.
 
-1. Crie ou atualize `wiki/sources/peca-[tipo]_[matter_id]_[data].md` com
-   frontmatter mínimo (`type: source`, `title`, `created`) e um resumo:
-   tipo de peça, cliente, fatos essenciais, tese, pedidos, decisões
-   registradas no `provenance.jsonl`, e status (publicada, hash do
-   candidato). Sem prosa longa — é registro, não a peça em si.
-2. Se o cliente já tem página em `wiki/entities/`, adicione um `[[wikilink]]`
-   de volta para a nota nova e uma linha de atualização. Se não tem, crie a
-   entidade seguindo a convenção kebab-case do subvault.
-3. Referencie a nota nova em `wiki/index.md` — nunca deixe órfã.
-4. Atualize `wiki/hot.md` do subvault com o fato novo, seguindo o limite de
-   ~500 palavras e a regra de sobrescrever (não é histórico cumulativo).
+**Script:** `skills/redigir-peca/scripts/registrar_cerebro.py`
 
-Se a peça usou tese ou jurisprudência nova ou relevante (aprovada
-explicitamente no passo 6, vinda do Ementário ou de pesquisa nova),
-atualize também o **Ementário do Resolutivo**, seguindo o `CLAUDE.md` dele
-— gravação via skill `claude-obsidian` (`save`/`wiki-ingest`) executada
-com `wsl -e ...`, nunca edição direta de arquivo (mantém os ledgers
-consistentes):
-5. Tese nova ou refinada → cria ou atualiza a página em `wiki/concepts/`.
-   Fonte nova → cria a página em `wiki/sources/` com ementa/trecho literal
-   e origem completa. Nunca duplique o resumo operacional do passo 1-4 —
-   referencie a matéria por `matter_id`, não copie o conteúdo dela.
-6. Vincule a tese/fonte ao domínio correspondente em `wiki/domains/`.
-7. Atualize `wiki/index.md` e `wiki/hot.md` do Ementário.
+**Comando:**
+```bash
+py -3.14 skills/redigir-peca/scripts/registrar_cerebro.py \
+  .rdaa-run/<matter_id>/ \
+  --matter-id <matter_id> \
+  --level <C|B|A>
+```
 
-Isso roda uma vez por publicação bem-sucedida, silenciosamente — não pede
-`AskUserQuestion` nem aprovação prévia, mas relate na mensagem de entrega que
-o registro foi feito (uma linha basta, ou duas se os dois vaults foram
-atualizados). Se a publicação falhar (`[ERRO]`), não grave nada em nenhum
-vault.
+**Faz:**
+1. Cria/atualiza `wiki/operacional/matter-[matter_id].md` com frontmatter mínimo
+   (`type: matter`, `title`, `process_number`, `client`, `level`, `status`, timestamps)
+   e resumo: tipo de peça, cliente, fatos essenciais, tese, pedidos, decisões
+   registradas no `provenance.jsonl`, e status (publicada).
+2. Recount `index.json` (total de arquivos por tipo).
+3. Atualiza `hot.md` (adiciona linha com link da matéria nova).
 
-No controlador, `vault_registered` não significa “pedido enviado”: exige
-recibo JSON íntegro, hashável, de `Procedimentos e Informações` com
-`status: registered`. Atualização do Ementário permanece via
-`claude-obsidian` no WSL; sem esse runner e sem recibo, a sincronização fica
-pendente e a matéria não pode ser marcada como registrada.
+Não cria registros redundantes — se a matéria já existe em operacional,
+atualiza data/status.
+
+Na entrega, relate em uma linha que a gravação foi feita (ex.: "Registrada em
+Cérebro-Ricar como [[matter-XXX]]")
 
 ## Nota sobre a integração das skills
 
