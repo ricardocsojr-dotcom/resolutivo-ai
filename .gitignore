@@ -1,3 +1,4 @@
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -6,13 +7,53 @@ __pycache__/
 env/
 venv/
 .venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Environment & secrets
 .env
 .env.*
+!.env.example
+
+# IDE & editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Testing
 .pytest_cache/
 .coverage
 htmlcov/
+.tox/
+.hypothesis/
+
+# Build & dist
+build/
+dist/
+*.egg-info/
+*.egg
+
+# RDAA execution — never commit (matter state lives in vault/OneDrive)
 .rdaa-run/
+
+# Temporary files
 *.tmp
 *.bak
-.DS_Store
-Thumbs.db
+*.log
+*.tmp.*
+
+# Local outputs (generated peças, backups, audit trails)
+outputs/
+_qa_render/
+
+# Continuum worktrees (local development)
+.continuum-worktrees/
+
+# Claude Desktop / plugin local state
+.claude-plugin/
+.mcp.json
+plugin.json

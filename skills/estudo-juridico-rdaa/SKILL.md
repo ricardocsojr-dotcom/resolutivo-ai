@@ -148,28 +148,46 @@ python3 skills/revisor-rdaa/scripts/contexto_rdaa.py .rdaa-run/<matter_id> regis
 Mesma regra de sempre: só `verificada_externamente` quando a fonte foi
 conferida nesta execução (passos 3 e 4 já conferem).
 
-### 9. Gravação automática no Ementário do Resolutivo
+### 9. Gravação automática no Cérebro-Ricar
 
-Ao final de todo estudo publicado, grave automaticamente no Ementário —
-sem pedir, do mesmo jeito que `redigir-peca` grava depois de publicar uma
-peça (passo 10 daquela skill). Vault: `~/vaults/ementario-resolutivo`
-(WSL). Leia o `CLAUDE.md` do Ementário antes de escrever. Gravação sempre
-via skills do `claude-obsidian` (`save`/`wiki-ingest`) executadas com `wsl
--e ...` — nunca edição direta de arquivo, isso mantém os ledgers de
-fonte/afirmação consistentes.
+Ao final de todo estudo publicado, grave automaticamente no Cérebro-Ricar
+(`C:\Users\ricar\cerebro-ricar\`) — sem pedir, do mesmo jeito que `redigir-peca`
+faz (script `registrar_cerebro.py`). Leia `CLAUDE.md` do Cérebro antes de
+escrever.
 
-1. Tese nova ou refinada pelo estudo → cria ou atualiza a página em
-   `wiki/concepts/`.
-2. Fonte de jurisprudência/lei nova → cria a página em `wiki/sources/` com
-   ementa/trecho literal e origem completa. Não duplique o texto do estudo
-   inteiro — referencie o link do Artifact publicado.
-3. Vincule ao domínio correspondente em `wiki/domains/`.
-4. Atualize `wiki/index.md` e `wiki/hot.md` do Ementário.
+Crie/atualize os seguintes arquivos em `wiki/`:
+
+1. **Tese nova ou refinada** → `wiki/concepts/[kebab-case].md`
+   - Frontmatter: `type: concept`, `title`, `domain: [area]`, `status: aprovada`
+   - Conteúdo: resumo da tese + fundamento legal + link pro Artifact publicado
+   - Linkada ao domain: `[[domain-link]]`
+
+2. **Fonte jurisprudência/lei nova** → `wiki/sources/[PREC-NNN ou LEI-NNN].md`
+   - Frontmatter: `type: source`, `title`, `court`, `date`, `origin: artifact`
+   - Conteúdo: **ementa/trecho literal** (nunca resumo)
+   - Referencie o link do Artifact, não copie tudo
+
+3. **Vincule ao domínio** → atualizar `wiki/domains/[area].md`
+   - Adicionar wikilink da tese/fonte nova no corpo do arquivo
+
+4. **Atualize índices**
+   - `index.json` → recount automático (script faz)
+   - `hot.md` → adicione linha "Estudo novo: [tema] [[artifact-link]]"
+
+**Script de automação:**
+```bash
+python3 skills/estudo-juridico-rdaa/scripts/registrar_estudo_cerebro.py \
+  --theme "Tema do estudo" \
+  --artifact-url "https://artifact.link" \
+  --concepts "[tese1, tese2]" \
+  --sources "[PREC-001, LEI-CIVIL]" \
+  --domain "direito-contratual"
+```
 
 Relate na entrega que o registro foi feito (uma linha basta). Se o estudo
-não chegou a produzir tese ou fonte nova (ex.: confirmou o que já estava no
-Ementário, sem achado novo), não crie registro redundante — mencione que
-não houve gravação por esse motivo.
+não produziu tese ou fonte nova (ex.: confirmou o que já tá no Cérebro,
+sem achado novo), não crie registro redundante — mencione que não houve
+complemento por esse motivo.
 
 ## Nota sobre integração
 
