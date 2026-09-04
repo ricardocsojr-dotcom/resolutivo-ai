@@ -21,12 +21,9 @@
     "validator": ["validating"]
   },
   "vaults": {
-    "ementario-resolutivo": {
-      "mode": "read_only",
+    "cerebro-ricar": {
+      "mode": "read_only_and_registration_receipt_required",
       "context_status": "informada"
-    },
-    "procedimentos-informacoes": {
-      "mode": "registration_receipt_required"
     }
   },
   "levels": {
@@ -35,15 +32,15 @@
       "required_human_gates": [],
       "vault": {
         "lookup": {"enabled": false},
-        "sync": {"required_after_publish": ["procedimentos-informacoes"], "optional_after_publish": ["ementario-resolutivo"]}
+        "sync": {"required_after_publish": ["cerebro-ricar"], "optional_after_publish": []}
       }
     },
     "B": {
       "stages": ["intake_ready", "vault_context_ready", "sources_ready", "skeleton_ready", "awaiting_skeleton_approval", "skeleton_approved", "drafting", "draft_ready", "validating", "candidate_ready", "qa_passed", "release_ready", "published", "vault_registered"],
       "required_human_gates": ["skeleton_approval"],
       "vault": {
-        "lookup": {"enabled": true, "vault": "ementario-resolutivo", "mode": "read_only", "context_status": "informada"},
-        "sync": {"required_after_publish": ["procedimentos-informacoes"], "optional_after_publish": ["ementario-resolutivo"]}
+        "lookup": {"enabled": true, "vault": "cerebro-ricar", "mode": "read_only", "context_status": "informada"},
+        "sync": {"required_after_publish": ["cerebro-ricar"], "optional_after_publish": []}
       }
     },
     "A": {
@@ -51,8 +48,8 @@
       "required_human_gates": ["skeleton_approval", "release_approval"],
       "conditional_human_gates": ["strategy_exception"],
       "vault": {
-        "lookup": {"enabled": true, "vault": "ementario-resolutivo", "mode": "read_only", "context_status": "informada"},
-        "sync": {"required_after_publish": ["procedimentos-informacoes"], "optional_after_publish": ["ementario-resolutivo"]}
+        "lookup": {"enabled": true, "vault": "cerebro-ricar", "mode": "read_only", "context_status": "informada"},
+        "sync": {"required_after_publish": ["cerebro-ricar"], "optional_after_publish": []}
       }
     }
   }

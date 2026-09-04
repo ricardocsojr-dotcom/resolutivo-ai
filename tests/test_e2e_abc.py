@@ -67,7 +67,7 @@ class TestE2EIntegracaoObsidian:
         # Registrar consulta do Ementário
         vault_context_file = state_dir / "EMENTARIO-CONTEXTO.json"
         vault_context_file.write_text(json.dumps({
-            "origin": "ementario-resolutivo",
+            "origin": "cerebro-ricar",
             "mode": "read_only",
             "status": "informada",
             "domain": "dano-moral",
@@ -81,7 +81,7 @@ class TestE2EIntegracaoObsidian:
         # Registrar consulta no manifesto
         ORCHESTRATOR.registrar_consulta_vault(
             state_dir,
-            vault="ementario-resolutivo",
+            vault="cerebro-ricar",
             artifact_path=vault_context_file,
             metadata={"domain": "dano-moral"},
         )
@@ -94,7 +94,7 @@ class TestE2EIntegracaoObsidian:
         # Verificar que consulta foi registrada
         assert len(manifest.get("vault", {}).get("lookups", [])) == 1
         lookup = manifest["vault"]["lookups"][0]
-        assert lookup["vault"] == "ementario-resolutivo"
+        assert lookup["vault"] == "cerebro-ricar"
         assert lookup["status"] == "informada"
         assert lookup["documents_count"] == 2
 
@@ -146,7 +146,7 @@ class TestE2EIntegracaoObsidian:
         
         vault_file = state_dir / "EMENTARIO-CONTEXTO.json"
         vault_file.write_text(json.dumps({
-            "origin": "ementario-resolutivo",
+            "origin": "cerebro-ricar",
             "mode": "read_only",
             "status": "informada",
             "domain": "dano-moral",
@@ -156,7 +156,7 @@ class TestE2EIntegracaoObsidian:
         
         ORCHESTRATOR.registrar_consulta_vault(
             state_dir,
-            vault="ementario-resolutivo",
+            vault="cerebro-ricar",
             artifact_path=vault_file,
         )
         
@@ -181,7 +181,7 @@ class TestE2EIntegracaoObsidian:
         
         # Verificar conteúdo
         assert "vault_context_ready" in html_content  # Fase
-        assert "ementario-resolutivo" in html_content  # Vault mostrado
+        assert "cerebro-ricar" in html_content  # Vault mostrado
         assert "dano-moral" in html_content  # Domínio
         assert "informada" in html_content  # Status read-only
 

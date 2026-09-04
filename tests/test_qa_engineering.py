@@ -177,6 +177,25 @@ def test_style_enforcement(folder: Path) -> None:
     result = run([sys.executable, str(STYLE_CHECKER), str(allowed)])
     assert result.returncode == 0, result.stdout + result.stderr
 
+    # Parênteses técnicos liberados: lei, ID, valor, data
+    parenteses_tecnicos = folder / "parenteses-tecnicos.docx"
+    document = Document()
+    document.add_paragraph("A decisão agravada (ID 160549795) fixou honorários (CPC, art. 85, § 2º).")
+    document.add_paragraph("O valor pago (R$ 1.500,00) foi depositado na data da audiência (13 de junho de 2025).")
+    document.save(parenteses_tecnicos)
+    result = run([sys.executable, str(STYLE_CHECKER), str(parenteses_tecnicos)])
+    assert result.returncode == 0, result.stdout + result.stderr
+
+    # Dois-pontos no final do parágrafo antecedendo alíneas/pedidos
+    colon_pedidos = folder / "colon-pedidos.docx"
+    document = Document()
+    document.add_paragraph("A Autora requer a condenação nos seguintes pedidos:")
+    document.add_paragraph("a) o pagamento da indenização;")
+    document.add_paragraph("b) a fixação de honorários sucumbenciais.")
+    document.save(colon_pedidos)
+    result = run([sys.executable, str(STYLE_CHECKER), str(colon_pedidos)])
+    assert result.returncode == 0, result.stdout + result.stderr
+
     # Ementa real de tribunal frequentemente traz dois-pontos ("EMENTA:",
     # "Tema 858:") — citação literal (estilo RDAA Citação) é isenta, a
     # peça não pode reescrever o texto do tribunal pra tirar o dois-pontos.

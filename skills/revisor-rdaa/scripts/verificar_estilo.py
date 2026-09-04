@@ -132,6 +132,8 @@ def checar_ponto_e_virgula(paragrafos, estilos=None):
         estilo = (estilos[i] or "").strip().casefold()
         if estilo in _ESTILOS_LISTA:
             continue
+        if re.match(r'^\s*(?:[a-z]\)|\d+[.)]|[ivxlcdm]+[.)]|[-•–])\s+', p, re.IGNORECASE):
+            continue
         if ';' in p:
             problemas.append(
                 f"Paragrafo {i}: ponto-e-virgula fora de lista/alinea proibido — "
@@ -233,11 +235,42 @@ def checar_dois_pontos(paragrafos, bordas=None, estilos=None):
         # Verificar se a linha começa com um rótulo de parte (tolerante com tamanho)
         if any(p.strip().lower().startswith(k.lower()) for k in _KEYWORDS_PARTE):
             continue
+        if _dois_pontos_permitido(i, p, paragrafos, estilos):
+            continue
         if ':' in p:
             problemas.append(
                 f"Paragrafo {i}: dois-pontos proibido na peça final — reescrever com ponto, vírgula ou conectivo."
             )
     return problemas
+
+
+def _antecede_lista_ou_pedido(idx, paragrafos, estilos):
+    """Verifica se o parágrafo antecede uma lista de pedidos, alíneas ou itens."""
+    for j in range(idx + 1, len(paragrafos)):
+        texto = paragrafos[j].strip()
+        if not texto:
+            continue
+        estilo = (estilos[j] or "").strip().casefold()
+        if estilo in {"rdaa alínea", "rdaa alinea", "rdaa numerado", "rdaa citação", "rdaa citacao"}:
+            return True
+        if re.match(r'^(?:[a-z]\)|\d+[.)]|[ivxlcdm]+[.)]|[-•–])\s+', texto, re.IGNORECASE):
+            return True
+        return False
+    return False
+
+
+def _dois_pontos_permitido(idx, p, paragrafos, estilos):
+    """Permite dois-pontos estritamente no final do parágrafo antes de listas/pedidos."""
+    texto = p.strip()
+    if not texto.endswith(':'):
+        return False
+    if ':' in texto[:-1]:
+        return False
+    if _antecede_lista_ou_pedido(idx, paragrafos, estilos):
+        return True
+    if re.search(r'\b(?:requer(?:em)?|pedidos?|al[ií]neas?|provimentos?|termos?|seguinte[s]?)\b', texto, re.IGNORECASE):
+        return True
+    return False
 
 
 _MARCADOR_PARENTESES = re.compile(r'^(?:[a-z]{1,3}|[ivxlcdm]{1,8}|\d{1,4})$', re.IGNORECASE)
@@ -246,6 +279,24 @@ _MARCADOR_PARENTESES = re.compile(r'^(?:[a-z]{1,3}|[ivxlcdm]{1,8}|\d{1,4})$', re
 # assinatura eletrônica) — não são aposto explicativo em prosa argumentativa,
 # são elementos estruturais exigidos por verificar_formatacao.py.
 _MARCADORES_INSTITUCIONAIS_PARENTESES = {"assinado eletronicamente"}
+
+# Whitelist por regex para parênteses técnicos (dados objetivos de individualização)
+_REGEX_CITACAO_LEGAL = re.compile(r'\b(?:CPC|CC|CDC|CF|CLT|STJ|STF|Lei|S[uú]mula|art\.)\b', re.IGNORECASE)
+_REGEX_ID_AUTOS = re.compile(r'\b(?:ID|fls?\.?|evento)\s*\d+', re.IGNORECASE)
+_REGEX_VALOR_MONETARIO = re.compile(r'R\$\s*[\d.,]+', re.IGNORECASE)
+_REGEX_DATA_COMPLETA = re.compile(r'\b\d{1,2}\s+de\s+[a-zç]+\s+de\s+\d{4}\b', re.IGNORECASE)
+
+_WHITELIST_PARENTESES_TECNICOS = [
+    _REGEX_CITACAO_LEGAL,
+    _REGEX_ID_AUTOS,
+    _REGEX_VALOR_MONETARIO,
+    _REGEX_DATA_COMPLETA,
+]
+
+
+def _eh_parenteses_tecnico(conteudo):
+    """Permite parênteses técnicos: citação de lei, ID/fls, valor monetário ou data."""
+    return any(rx.search(conteudo) for rx in _WHITELIST_PARENTESES_TECNICOS)
 
 
 def checar_aposto_explicativo(paragrafos, estilos=None):
@@ -257,7 +308,7 @@ def checar_aposto_explicativo(paragrafos, estilos=None):
     problemas = []
     if estilos is None:
         estilos = [None] * len(paragrafos)
-    padrao = re.compile(r'\(([^()\r\n]*)\)')
+    padrao = re.compile(r"\(([^()\r\n]*)\)")
     for i, p in enumerate(paragrafos):
         estilo = (estilos[i] or "").strip().casefold()
         if estilo == "rdaa citação":
@@ -267,6 +318,8 @@ def checar_aposto_explicativo(paragrafos, estilos=None):
             if not conteudo or _MARCADOR_PARENTESES.fullmatch(conteudo):
                 continue
             if conteudo.casefold() in _MARCADORES_INSTITUCIONAIS_PARENTESES:
+                continue
+            if _eh_parenteses_tecnico(conteudo):
                 continue
             problemas.append(
                 f"Paragrafo {i}: aposto explicativo entre parênteses proibido — reescrever em frase própria."
@@ -284,6 +337,8 @@ def listar_dois_pontos(paragrafos, bordas=None, estilos=None):
     candidatos = []
     for i, p in enumerate(paragrafos):
         if bordas[i] or (estilos[i] or "").strip().casefold() == "rdaa citação":
+            continue
+        if _dois_pontos_permitido(i, p, paragrafos, estilos):
             continue
         for s in _split_sentencas(p):
             if ':' in s:

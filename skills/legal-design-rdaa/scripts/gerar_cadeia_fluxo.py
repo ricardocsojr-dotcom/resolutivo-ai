@@ -28,7 +28,7 @@ Spec (JSON):
 
 import json
 import sys
-import os
+from html import escape
 from pathlib import Path
 
 # Paleta oficial do escritório
@@ -48,6 +48,12 @@ ESPACO_ETAPAS = 62  # Y inicial das caixas de etapas
 ALTURA_CAIXA = 150
 ALTURA_HEADER = 48  # Espaço para título e subtítulo
 
+
+def _xml_text(value):
+    """Escapa qualquer conteúdo controlado pelo spec antes de inseri-lo no SVG."""
+    return escape(str(value or ""), quote=True)
+
+
 def gerar_cadeia_unica(spec_path, output_path=None):
     """Gera diagram SVG de cadeia única a partir de spec JSON."""
     
@@ -55,10 +61,10 @@ def gerar_cadeia_unica(spec_path, output_path=None):
         spec = json.load(f)
     
     etapas = spec.get('etapas', [])
-    titulo = spec.get('titulo', 'CADEIA ÚNICA')
-    subtitulo = spec.get('subtitulo', '')
-    ponto_central = spec.get('ponto_central', '')
-    disclaimer = spec.get('disclaimer', '')
+    titulo = _xml_text(spec.get('titulo', 'CADEIA ÚNICA'))
+    subtitulo = _xml_text(spec.get('subtitulo', ''))
+    ponto_central = _xml_text(spec.get('ponto_central', ''))
+    disclaimer = _xml_text(spec.get('disclaimer', ''))
     etapas_destacadas = set(spec.get('etapas_destacadas', []))
     
     # Validação
@@ -89,7 +95,7 @@ def gerar_cadeia_unica(spec_path, output_path=None):
     # Headers de ator (faixa de informação)
     x_etapa = MARGIN_X
     for i, etapa in enumerate(etapas):
-        ator = etapa.get('ator', '')
+        ator = _xml_text(etapa.get('ator', ''))
         cor_faixa = COR_DESTAQUE if (etapa.get('numero', i+1) in etapas_destacadas) else COR_ESTRUTURA
         cor_texto_faixa = COR_TEXTO if (etapa.get('numero', i+1) in etapas_destacadas) else COR_FUNDO
         
@@ -102,9 +108,10 @@ def gerar_cadeia_unica(spec_path, output_path=None):
     x_etapa = MARGIN_X
     for i, etapa in enumerate(etapas):
         num_etapa = etapa.get('numero', i+1)
-        titulo_etapa = etapa.get('titulo', '')
-        descricao = etapa.get('descricao', '')
-        prova = etapa.get('prova', '')
+        num_text = _xml_text(num_etapa)
+        titulo_etapa = _xml_text(etapa.get('titulo', ''))
+        descricao = _xml_text(etapa.get('descricao', ''))
+        prova = _xml_text(etapa.get('prova', ''))
         destacado = num_etapa in etapas_destacadas
         
         cor_borda_caixa = COR_DESTAQUE if destacado else COR_BORDA
@@ -122,7 +129,7 @@ def gerar_cadeia_unica(spec_path, output_path=None):
         cx = x_etapa + 17
         cy = ESPACO_ETAPAS + 54
         svg_lines.append(f'<circle cx="{cx}" cy="{cy}" r="12" fill="{cor_numero}"/>')
-        svg_lines.append(f'<text x="{cx}" y="{cy + 4.3}" font-size="12.5" font-weight="800" fill="{COR_FUNDO}" text-anchor="middle">{num_etapa}</text>')
+        svg_lines.append(f'<text x="{cx}" y="{cy + 4.3}" font-size="12.5" font-weight="800" fill="{COR_FUNDO}" text-anchor="middle">{num_text}</text>')
         
         # Título da etapa (com quebras de linha automáticas)
         txt_x = x_etapa + 36
@@ -178,8 +185,12 @@ def gerar_cadeia_unica(spec_path, output_path=None):
     svg_lines.append('</svg>')
     
     # Escrever arquivo
-    output = output_path or spec_path.replace('.json', '.svg')
-    with open(output, 'w', encoding='utf-8') as f:
+    spec_file = Path(spec_path)
+    output = Path(output_path) if output_path else spec_file.with_suffix('.svg')
+    if output.resolve() == spec_file.resolve():
+        raise ValueError("a saída não pode sobrescrever o spec")
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open('w', encoding='utf-8') as f:
         f.write('\n'.join(svg_lines))
     
     print(f"✅ Diagrama gerado: {output}")

@@ -17,10 +17,15 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-DEFAULT_EMENTARIO_ROOT = Path(r"\\wsl.localhost\Ubuntu\home\ricar\vaults\ementario-resolutivo")
+DEFAULT_CEREBRO_ROOT = Path(os.environ.get("RDAA_CEREBRO_PATH", r"C:\Users\ricar\cerebro-ricar"))
 _LINK_PATTERN = re.compile(r"\[\[([^\]|#]+)(?:[|#][^\]]*)?\]\]")
 _DOMAIN_PATTERN = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
-_LEGACY_MATTER_METADATA = re.compile(r"(?im)^-\s*(?:\*\*)?(?:Arquivo|Matéria|Cliente|Processo) de origem.*$")
+_SENSITIVE_METADATA = re.compile(
+    r"(?im)^\s*(?:-\s*)?(?:\*\*)?(?:arquivo|matéria|cliente|processo|cpf|cnpj|email|telefone)"
+    r"(?:\*\*)?\s*(?:de origem)?\s*[:—-].*$"
+)
+_CPF_CNPJ = re.compile(r"\b(?:\d{3}\.\d{3}\.\d{3}-\d{2}|\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2})\b")
+_EMAIL = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")
 
 
 def _now() -> str:
@@ -62,10 +67,25 @@ def _safe_link_name(value: str) -> str | None:
     return candidate
 
 
+def _require_within_root(root: Path, candidate: Path) -> Path:
+    resolved_root = root.resolve()
+    resolved_candidate = candidate.resolve()
+    try:
+        resolved_candidate.relative_to(resolved_root)
+    except ValueError as exc:
+        raise ValueError("caminho fora do Cérebro-Ricar") from exc
+    return resolved_candidate
+
+
+def _redact_content(content: str) -> str:
+    content = _SENSITIVE_METADATA.sub("[REDACTED]", content)
+    content = _CPF_CNPJ.sub("[REDACTED]", content)
+    return _EMAIL.sub("[REDACTED]", content)
+
+
 def _document(vault_root: Path, path: Path) -> dict[str, str]:
-    content = path.read_text(encoding="utf-8")
-    if "wiki/sources/" in path.relative_to(vault_root).as_posix():
-        content = _LEGACY_MATTER_METADATA.sub("- [REDACTED]", content)
+    path = _require_within_root(vault_root, path)
+    content = _redact_content(path.read_text(encoding="utf-8"))
     return {
         "relative_path": path.relative_to(vault_root).as_posix(),
         "sha256": _sha256(path),
@@ -76,10 +96,10 @@ def _document(vault_root: Path, path: Path) -> dict[str, str]:
 def consultar_ementario(vault_root: Path | str, domain: str, output_path: Path | str) -> dict[str, Any]:
     """Cria um pacote fechado de contexto sem alterar um único arquivo do vault."""
     root = Path(vault_root).resolve()
-    manual = root / "CLAUDE.md"
+    manual = _require_within_root(root, root / "CLAUDE.md")
     if not manual.is_file():
-        raise FileNotFoundError(f"manual do Ementário ausente: {manual}")
-    domain_path = _domain_path(root, domain)
+        raise FileNotFoundError(f"manual do Cérebro-Ricar ausente: {manual}")
+    domain_path = _require_within_root(root, _domain_path(root, domain))
     documents: list[dict[str, str]] = []
     if domain_path.is_file():
         documents.append(_document(root, domain_path))
@@ -88,6 +108,7 @@ def consultar_ementario(vault_root: Path | str, domain: str, output_path: Path |
         concept_paths: list[Path] = []
 
         def capture(candidate: Path) -> bool:
+            candidate = _require_within_root(root, candidate)
             relative_path = candidate.relative_to(root).as_posix()
             if not candidate.is_file() or relative_path in captured:
                 return False
@@ -111,7 +132,7 @@ def consultar_ementario(vault_root: Path | str, domain: str, output_path: Path |
     package = {
         "schema_version": "1",
         "captured_at": _now(),
-        "origin": "ementario-resolutivo",
+        "origin": "cerebro-ricar",
         "status": "informada",
         "mode": "read_only",
         "vault_root": str(root),
@@ -151,10 +172,17 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Integração determinística RDAA ↔ Obsidian")
     commands = parser.add_subparsers(dest="command", required=True)
 
-    lookup = commands.add_parser("consultar-ementario", help="gera contexto read-only do Ementário")
+    lookup = commands.add_parser("consultar-ementario", help="gera contexto read-only do Cérebro-Ricar")
     lookup.add_argument("--domain", required=True)
     lookup.add_argument("--output", type=Path, required=True)
-    lookup.add_argument("--vault-root", type=Path, default=Path(os.environ.get("RDAA_EMENTARIO_VAULT", DEFAULT_EMENTARIO_ROOT)))
+    lookup.add_argument(
+        "--cerebro",
+        "--vault-root",
+        dest="vault_root",
+        type=Path,
+        default=DEFAULT_CEREBRO_ROOT,
+        help="raiz local do Cérebro-Ricar",
+    )
 
     request = commands.add_parser("preparar-registro-ementario", help="gera solicitação para claude-obsidian")
     request.add_argument("--state-dir", type=Path, required=True)

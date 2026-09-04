@@ -19,7 +19,24 @@ for _stream in (sys.stdout, sys.stderr):
         _stream.reconfigure(encoding="utf-8")
 
 ROOT = Path(__file__).resolve().parents[3]
+ROUTING_PATH = ROOT / "orquestracao" / "roteamento.json"
 MAX_OUTPUT_BYTES = 16 * 1024 * 1024
+
+
+def _modelo_configurado(motor: str, role: str | None) -> str | None:
+    """Resolve o modelo canônico do worker, sem escolher fallback implícito."""
+    workers = json.loads(ROUTING_PATH.read_text(encoding="utf-8")).get("workers", {})
+    if role is not None:
+        worker = workers.get(role)
+        if not isinstance(worker, dict) or worker.get("engine") != motor:
+            raise ValueError(f"papel incompatível com o motor configurado: {role}/{motor}")
+    else:
+        candidates = [worker for worker in workers.values() if worker.get("engine") == motor]
+        if len(candidates) != 1:
+            return None
+        worker = candidates[0]
+    model = worker.get("model")
+    return str(model) if model else None
 
 
 def _executavel(name: str) -> str:
@@ -48,17 +65,27 @@ def executar(
     if not prompt.strip():
         raise ValueError("prompt vazio")
 
+    model = _modelo_configurado(motor, role)
     if motor == "codex":
         cmd = [
             _executavel("codex"), "exec", "--ephemeral", "--sandbox", "read-only",
-            "--color", "never", "-C", str(ROOT), "-",
+            "--color", "never", "-C", str(ROOT),
         ]
+        if model:
+            cmd += ["--model", model]
+        cmd += ["-"]
         stdin = prompt
     elif motor == "antigravity":
         cmd = [
-            _executavel("agy"), "--sandbox", "--input-format", "stream-json", "--output-format", "stream-json",
-            "--effort", effort,
+            _executavel("agy"), "--print", "", "--sandbox", "--input-format", "stream-json", "--output-format", "stream-json",
+            "--print-timeout", f"{timeout}s",
         ]
+        # IDs do Agy já codificam o esforço (p.ex. gemini-3.1-pro-high).
+        # Repassar --effort ao mesmo tempo é rejeitado pela CLI.
+        if not model or not model.endswith(("-low", "-medium", "-high")):
+            cmd += ["--effort", effort]
+        if model:
+            cmd += ["--model", model]
         if schema:
             cmd += ["--json-schema", str(schema)]
         stdin = json.dumps({"event": "user", "message": {"content": prompt}}, ensure_ascii=False) + "\n"
@@ -67,6 +94,8 @@ def executar(
             _executavel("claude"), "-p", "Use integralmente o pacote anexado pela entrada padrão e responda somente com o resultado solicitado.",
             "--output-format", "json", "--no-session-persistence", "--tools", "", "--max-turns", "1",
         ]
+        if model:
+            cmd += ["--model", model]
         if max_budget_usd is not None:
             cmd += ["--max-budget-usd", str(max_budget_usd)]
         if schema:

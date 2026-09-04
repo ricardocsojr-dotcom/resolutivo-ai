@@ -54,7 +54,15 @@ revisão objetiva e entregue o DOCX candidato pela publicação protegida. Não
 use `contencioso-rdaa` para estratégia, não monte esqueleto, não faça pesquisa,
 não acione vault e não transforme o texto em redação por blocos.
 
-## Fluxo — níveis B e A
+**Nível C não exige esqueleto, consulta ao Ementário ou validação independente do Claude.** A rota `draft_ready → candidate_ready` é automática quando `piece-level C` é declarado. Não há stage `validating` nem `criticizing` nessa fase.
+
+- Evite parágrafos curtos em série, frase-tese isolada e uniformidade que revele IA; preferir 3–7 linhas quando a ideia comportar, com variação real de abertura e extensão.
+- A abertura de cada parágrafo argumentativo deve conter uma tese concreta fundida ao seu desenvolvimento. Nunca use frases-tese isoladas em linha propria.
+- Varie a sintaxe inicial entre parágrafos e não inicie dois parágrafos seguidos com a mesma palavra/estrutura.
+- Não use dois-pontos, travessões, parênteses explicativos nem ponto e vírgula em prosa.
+- Citações legais somente no padrão "Lei, art. X". Não inclua jurisprudência.
+
+**Correção de cliente:** quando o usuário indicar "cliente é a Trivale", a peça deve ser endereçada a TRIVALE INSTITUIÇÃO DE PAGAMENTO LTDA como embargante/re, e não Q & P como autora.## Fluxo — níveis B e A
 
 ### 1. Coletar contexto
 

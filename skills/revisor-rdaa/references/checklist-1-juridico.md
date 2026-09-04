@@ -109,8 +109,9 @@ Uma abertura negativa isolada não é erro automático. A revisão deve avaliar 
 - [ ] Parágrafo com mais de 10-12 linhas reunindo mais de um argumento/fato/fundamento? (redacao-rdaa.md — extensão do parágrafo)
 - [ ] Número repetido por extenso entre parênteses ("5 (cinco) dias")? Regra: 1-9 por extenso, 10+ numeral, nunca os dois juntos (redacao-rdaa.md / Manual §2.8)
 - [ ] Verbo de comando ("exige", "impõe", "veda"...) atribuindo à parte/advogado o poder de ordenar o julgador? (admitido quando o sujeito é a lei/precedente/contrato — redacao-rdaa.md)
-- [ ] Existe qualquer dois-pontos na peça final? Corrigir antes da entrega (redacao-rdaa.md).
-- [ ] Existe aposto explicativo isolado por parênteses ou travessões pareados? Reescrever em frase própria (redacao-rdaa.md).
+- [ ] Existe dois-pontos fora de abertura de pedidos, alíneas e citações? (permitido apenas nessas hipóteses)
+- [ ] Existe aposto explicativo prolixo entre parênteses? (parênteses são admitidos apenas para ID, lei, valor ou data)
+- [ ] Existe travessão na peça final? Proibido sem exceção (redacao-rdaa.md).
 
 ---
 

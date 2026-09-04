@@ -23,12 +23,26 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
+_DOMAIN_PATTERN = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
+_SOURCE_ID_PATTERN = re.compile(r"[A-Za-z0-9]+(?:[-_][A-Za-z0-9]+)*")
+
+
 def kebab_case(text: str) -> str:
     """Converte para kebab-case."""
     text = text.lower().strip()
     text = re.sub(r"[^\w\s-]", "", text)
     text = re.sub(r"[\s_]+", "-", text)
-    return text.strip("-")
+    result = text.strip("-")
+    if not result:
+        raise ValueError("título de conceito inválido")
+    return result
+
+
+def _safe_identifier(value: str, pattern: re.Pattern[str], label: str) -> str:
+    normalized = str(value).strip()
+    if not pattern.fullmatch(normalized):
+        raise ValueError(f"{label} inválido")
+    return normalized
 
 
 def criar_concept(title: str, domain: str, artifact_url: str, content: str) -> Path:
@@ -54,7 +68,8 @@ def criar_concept(title: str, domain: str, artifact_url: str, content: str) -> P
 
 def criar_source(source_id: str, ementa: str, court: str, date_str: str) -> Path:
     """Cria/atualiza arquivo de fonte."""
-    path = CEREBRO / "wiki" / "sources" / f"{source_id}.md"
+    safe_source_id = _safe_identifier(source_id, _SOURCE_ID_PATTERN, "fonte")
+    path = CEREBRO / "wiki" / "sources" / f"{safe_source_id}.md"
     
     frontmatter = (
         "---\n"
@@ -74,7 +89,8 @@ def criar_source(source_id: str, ementa: str, court: str, date_str: str) -> Path
 
 def atualizar_domain(domain: str, concept_names: list[str], source_names: list[str]) -> None:
     """Linkeia conceitos e fontes ao domínio."""
-    domain_file = CEREBRO / "wiki" / "domains" / f"{domain}.md"
+    safe_domain = _safe_identifier(domain, _DOMAIN_PATTERN, "domínio")
+    domain_file = CEREBRO / "wiki" / "domains" / f"{safe_domain}.md"
     
     if not domain_file.exists():
         # Cria domain básico
@@ -186,10 +202,13 @@ def registrar(theme: str, artifact_url: str, concepts: list[str], sources: list[
             path = criar_concept(concept, domain, artifact_url, f"Vide estudo: {artifact_url}")
             concept_files.append(str(path))
         
-        # Cria fontes (simplificado — você preencherá manualmente depois se quiser)
+        # Fontes precisam existir com ementa literal já verificada; nunca crie placeholders.
         source_files = []
         for source in sources:
-            path = criar_source(source, "[Ementa a ser preenchida]", "N/A", _now()[:10])
+            safe_source = _safe_identifier(source, _SOURCE_ID_PATTERN, "fonte")
+            path = CEREBRO / "wiki" / "sources" / f"{safe_source}.md"
+            if not path.is_file():
+                raise ValueError(f"fonte sem ementa literal verificada: {safe_source}")
             source_files.append(str(path))
         
         # Linkeia ao domain

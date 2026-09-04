@@ -25,6 +25,11 @@ def _now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
 
+def _single_line(value: Any) -> str:
+    """Evita que dados de contexto criem campos YAML/Markdown adicionais."""
+    return re.sub(r"[\r\n]+", " ", str(value)).strip()
+
+
 def normalizar_process_number(num: str) -> str:
     """0130354-80.2018.8.13.0702 → 0130354-80-2018-8-13-0702 (seguro pra filename)."""
     return re.sub(r"[./]", "-", num.strip())
@@ -41,17 +46,20 @@ def carregar_contexto(path: Path) -> dict[str, Any]:
 def gerar_frontmatter(ctx: dict[str, Any], matter_id: str, level: str) -> str:
     """Monta YAML frontmatter."""
     partes = ctx.get("partes", {})
-    cliente = partes.get("autor", {}).get("nome", "Desconhecido")
-    titulo = ctx.get("titulo_peca", "Sem título").replace('"', '\\"')
+    cliente = _single_line(partes.get("autor", {}).get("nome", "Desconhecido"))
+    titulo = _single_line(ctx.get("titulo_peca", "Sem título"))
+    matter_id = _single_line(matter_id)
+    process_number = _single_line(ctx.get("numero_processo", "N/A"))
+    level = _single_line(level)
     
     frontmatter_text = (
         "---\n"
         'type: matter\n'
-        f'title: "{titulo}"\n'
-        f'matter_id: {matter_id}\n'
-        f'process_number: {ctx.get("numero_processo", "N/A")}\n'
-        f'client: {cliente}\n'
-        f'level: {level}\n'
+        f"title: {json.dumps(titulo, ensure_ascii=False)}\n"
+        f"matter_id: {json.dumps(matter_id, ensure_ascii=False)}\n"
+        f"process_number: {json.dumps(process_number, ensure_ascii=False)}\n"
+        f"client: {json.dumps(cliente, ensure_ascii=False)}\n"
+        f"level: {json.dumps(level, ensure_ascii=False)}\n"
         f'status: published\n'
         f'created: {_now()}\n'
         f'updated: {_now()}\n'
@@ -62,10 +70,10 @@ def gerar_frontmatter(ctx: dict[str, Any], matter_id: str, level: str) -> str:
 
 def gerar_conteudo(ctx: dict[str, Any]) -> str:
     """Monta conteúdo do arquivo."""
-    titulo = ctx.get("titulo_peca", "Peça sem título")
-    tipo = ctx.get("tipo_peca", "Desconhecido")
-    nivel = ctx.get("nivel_peca", "?")
-    processo = ctx.get("numero_processo", "N/A")
+    titulo = _single_line(ctx.get("titulo_peca", "Peça sem título"))
+    tipo = _single_line(ctx.get("tipo_peca", "Desconhecido"))
+    nivel = _single_line(ctx.get("nivel_peca", "?"))
+    processo = _single_line(ctx.get("numero_processo", "N/A"))
     
     partes = ctx.get("partes", {})
     autor = partes.get("autor", {})
@@ -185,6 +193,15 @@ def registrar(state_dir: Path | str, matter_id: str, level: str) -> dict[str, An
     
     WIKI_OPERACIONAL.mkdir(parents=True, exist_ok=True)
     
+    # Confirma que o estado determinístico já registrou publicação real.
+    manifest_path = state_dir / "run_manifest.json"
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (FileNotFoundError, json.JSONDecodeError) as exc:
+        return {"success": False, "error": f"manifesto inválido: {manifest_path}", "matter_id": matter_id}
+    if manifest.get("phase") != "published":
+        return {"success": False, "error": "matéria não está em fase published", "matter_id": matter_id}
+
     # Carrega contexto
     ctx_path = state_dir / "contexto_peca.json"
     try:
@@ -216,10 +233,21 @@ def registrar(state_dir: Path | str, matter_id: str, level: str) -> dict[str, An
             "matter_id": matter_id
         }
     
+    receipt_path = state_dir / "CEREBRO-RECIBO.json"
+    receipt = {
+        "vault": "cerebro-ricar",
+        "status": "registered",
+        "matter_id": matter_id,
+        "record_path": str(file_path),
+        "registered_at": _now(),
+    }
+    receipt_path.write_text(json.dumps(receipt, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
     return {
         "success": True,
         "matter_id": matter_id,
         "file": str(file_path),
+        "receipt": str(receipt_path),
         "level": level,
         "title": ctx.get("titulo_peca", "Sem título"),
         "process_number": ctx.get("numero_processo", "N/A"),

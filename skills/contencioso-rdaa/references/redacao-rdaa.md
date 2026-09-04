@@ -20,21 +20,21 @@ antigas ("Frankenstein jurídico").
 | Jurisprudência com aterrissagem | Frase introdutória que já anuncia a tese → ementa literal entre aspas/bloco → parágrafo seguinte reconectando ao caso concreto. A referência completa (tribunal, número, relator, órgão, data) vai **entre parênteses ao final da própria ementa, no mesmo bloco e no mesmo corpo de fonte da citação** — nunca em parágrafo separado, nem com parágrafo vazio entre ementa e fonte. Nunca ementa solta. Nunca inventada: toda jurisprudência deve ser verificada no site oficial do tribunal antes de citar. |
 | Qualificação das partes | O quadro inicial (Processo/partes) usa a qualificação processual pertinente ao tipo de peça (Autora/Ré, Agravante/Agravado, Recorrente/Recorrido, Exequente/Executado etc.), com dois-pontos entre rótulo e parte — ex.: `Autora: Trivale Instituição de Pagamento Ltda.`. Nunca fixar Autora/Ré como rótulo universal. O corpo, inclusive os pedidos, reutiliza exatamente a qualificação definida no quadro — não substituir pela razão social, salvo necessidade real de individualização (mais de um réu, por exemplo). |
 | Amarração probatória | Todo parágrafo fático segue: Fato relevante → Prova/ID/Data/Valor → Fundamento aplicável → Consequência jurídica. Em processo eletrônico, referência por ID/evento — nunca "fls.". |
-| Ordem direta | Sujeito + Verbo + Complemento. Evitar inversões e cadeias de subordinadas. |
+| Ordem direta com fluidez | A ordem direta vigora no núcleo oracional (evitar sujeito distante do verbo e orações intercaladas prolixas). É PERMITIDO e RECOMENDADO abrir parágrafos com conectivos, circunstâncias fáticas ou temporais curtas (ex.: "Em 13 de junho de 2025...", "Diante da improcedência...", "Ao afastar o CDC..."). A regra de Variação de Abertura prevalece sobre a posição inicial absoluta do sujeito. Proibido iniciar parágrafos sucessivos com o mesmo sujeito abstrato ("A sentença...", "O juiz...", "A decisão..."). |
 | Abertura afirmativa | Iniciar argumentos apresentando diretamente o objeto, a tese, o vício, o fato ou a consequência. Evitar começar por negação, ressalva ou justificativa defensiva, especialmente fórmulas como “não se pretende”, “não se busca”, “não se trata”, “não se ignora” e “não se desconhece”. Reescrever positivamente quando isso preservar o sentido. Manter a negativa quando ela for indispensável para delimitar o objeto, responder a uma afirmação concreta, afastar interpretação específica ou formar contraste jurídico necessário. A ocorrência isolada não é erro automático. |
-| Frases curtas | Dividir períodos que ultrapassem três linhas. |
-| Extensão do parágrafo | 3 a 7 linhas é a faixa confortável; 8 a 10 aceitável se houver uma única ideia; acima de 10-12 linhas, dividir — normalmente esconde mais de um argumento. |
+| Frases curtas encadeadas | Frases curtas (até 3 linhas) não significam parágrafos de uma frase só. Um parágrafo argumentativo maduro reúne de 2 a 4 frases curtas encadeadas por conectivos lógicos. |
+| Extensão e densidade do parágrafo | Parágrafo argumentativo não é tópico de slide nem post de rede social. Em seções de mérito e fundamentação recursal, o parágrafo adota o modelo clássico de Othon Garcia: Premissa + Fato/Prova (ID) + Vício/Consequência, operando entre 5 e 8 linhas. Parágrafos isolados de 1 ou 2 linhas são proibidos na argumentação (admitidos apenas em tempestividade ou transição isolada). |
 | Um parágrafo = uma ideia | Tópico frasal na primeira frase; o resto exemplifica ou fundamenta. |
 | Variação de abertura | Proibido iniciar parágrafos sucessivos com a mesma palavra/estrutura. |
 | Títulos específicos | Nunca "Dos Fatos"/"Do Direito". Sempre nomear a tese. Nunca iniciar com "Da", "Do", "De", "Dos" ou "Das" — "DA TEMPESTIVIDADE" → "TEMPESTIVIDADE". |
 | Números | 1 a 9 por extenso, 10 ou mais em numeral. Não repetir o número por extenso em seguida. Escrever valores com numeral e, quando necessário, explicar o valor em frase própria. Datas por extenso no corpo, sem zero à esquerda. Artigo em ordinal até 9º, cardinal do 10 em diante. |
 | Verbo de comando | "Exige", "impõe", "veda", "determina", "obriga" e afins só podem ter como sujeito a lei, o precedente ou o contrato. Nunca atribuir à parte ou ao advogado o poder de ordenar o julgador. |
 | Tempestividade | Nunca questionar se a peça está no prazo — o pedido de redação já é a premissa. Para montar a seção de tempestividade, perguntar apenas data de publicação e se houve suspensão de prazo no período. Sem consulta processual (CNJ/DJEN está desativado). |
-| Dois-pontos | Proibidos na peça final. Reescrever com ponto, vírgula ou conectivo natural. |
-| Travessão | Proibido na peça final, sem exceção — não é uma questão de recorrência, uma única ocorrência já bloqueia. Reescrever com vírgula, ponto ou conectivo natural. |
+| Dois-pontos | Proibido em prosa corrida. PERMITIDO estritamente para introduzir: (a) rol de pedidos e alíneas; (b) citações literais de julgados e transcrições em bloco; (c) o quadro inicial Processo/partes. |
+| Travessão | Proibido na peça final, sem exceção — qualquer ocorrência (isolada ou pareada) bloqueia a entrega. Reescrever com vírgula, ponto ou conectivo natural. (Mantido integralmente). |
 | Ponto-e-vírgula | Permitido apenas em listas/alíneas (ex.: pedidos em cascata, onde separa itens). Proibido em prosa corrida — reescrever com ponto ou conectivo. |
 | Títulos | Proibidos dois pontos e travessões em `titulo`, `titulo2`, `titulo3` e `titulo_razoes`. Reescrever o título com formulação direta. |
-| Aposto explicativo | Proibido na peça final quando estiver isolado por parênteses ou por um par de travessões. Reescrever a informação em frase própria ou integrá-la diretamente ao período. Marcadores simples de lista não são aposto explicativo. |
+| Parênteses técnicos | Proibido para apostos explicativos prolixos. PERMITIDO estritamente para dados objetivos de individualização: IDs de autos (ID 160549795), artigos de lei (CPC, art. 85, § 2º), valores monetários e datas. |
 | Pedidos em cascata | Mais de um pedido possível exige hierarquia entre principal, preliminar, sucessivo, sucumbência e honorários. Usar uma frase introdutória sem dois-pontos antes das alíneas. Não repetir pedidos que já estejam abrangidos por outro. |
 | Fechamento fixo | Cláusula de publicação exclusiva (nome, OAB, e-mail) + endereço completo + "sob pena de nulidade" + "Nestes termos, aguarda deferimento." + "Cidade/UF, dia de mês de ano." (barra, não hífen). |
 | Vocabulário proibido | Ver tabela seção 4. Sem exceção de gênero. |
@@ -46,8 +46,8 @@ antigas ("Frankenstein jurídico").
 - Abertura defensiva recorrente: evitar iniciar argumentos com fórmulas negativas de contenção. Uma ocorrência pode ser legítima; três ou mais ocorrências na mesma peça exigem reescrita ou justificativa expressa.
 - Tricolon de negação: 3+ "não X, não Y, não Z" na mesma frase — no máximo 1 por página.
 - Eco de conclusão: parágrafo que abre e fecha dizendo a mesma coisa sem fato, prova ou consequência nova.
-- Aposto explicativo entre parênteses ou travessões pareados.
-- Dois-pontos em qualquer posição da peça final.
+- Aposto explicativo prolixo entre parênteses (parênteses são admitidos apenas para ID, lei, valor ou data).
+- Dois-pontos em prosa corrida fora de introdução de pedidos, alíneas, citações ou quadro de partes.
 - 4+ parágrafos seguidos com extensão, número de frases e progressão retórica idênticos.
 
 ## 3. Dosagem por tipo de peça
@@ -83,7 +83,7 @@ nunca contradiz o núcleo.
 | Espaçamento | 1,5 entrelinhas (simples só em citação, endereçamento e títulos) |
 | Alinhamento | Justificado |
 | Recuo | 2 cm na primeira linha |
-| Parágrafos numerados | Contínuo do início ao fim, nunca reiniciar por tópico |
+| Parágrafos numerados (sem estilo tópico) | A numeração contínua (1, 2, 3...) é obrigatória para localização e citação textual em todas as peças. É terminantemente PROIBIDO transformar a numeração em micro-tópicos telegráficos ou bullet points. Cada número deve corresponder a um parágrafo argumentativo completo, denso e articulado (5 a 8 linhas). |
 | Títulos principais | Algarismos romanos + caixa alta + negrito; subtítulos em arábicos + negrito |
 | Destaques | Negrito (tese, conclusão, nome da peça, oração de ênfase — ver regra de dosagem abaixo). O nome da parte na abertura é a única exceção: negrito **+ sublinhado** (praxe forense de identificação — decisão de 2026-08). Fora dessa linha, sublinhado é proibido em qualquer posição (Manual §2.9). *Itálico* só para estrangeirismos e citação indireta de conduta. |
 | QR Code | Proibido para prova essencial — toda prova visual encartada diretamente nos autos. |
@@ -111,6 +111,7 @@ só pelos trechos em negrito.
 - Exemplo: "O banco **negativou o nome do autor antes de qualquer notificação
   prévia**, em violação direta ao CDC, art. 43, § 2º." — a oração em negrito
   carrega o fato decisivo; o resto do período só amarra o fundamento.
+- **Negrito estratégico em peças curtas**: Em peças recursais curtas e técnicas (Embargos de Declaração, Agravo Interno e manifestações simples), fica PROIBIDO o uso de orações inteiras em negrito no meio dos parágrafos. O negrito fica restrito ao nome da peça, aos títulos e à identificação das partes. A sobriedade tradicional prevalece.
 
 ## 6. Checklist de conformidade (usar em redação E em revisão — mesmo critério nos dois momentos)
 
@@ -128,10 +129,11 @@ só pelos trechos em negrito.
 - [ ] Algum título genérico ("Dos Fatos") ou iniciado por Da/Do/De? Renomear pela tese.
 - [ ] Número seguiu a regra 1-9 extenso / 10+ numeral, sem duplicar?
 - [ ] Verbo de comando tem como sujeito a lei, o precedente ou o contrato, não a parte?
-- [ ] Não há dois-pontos na peça final?
+- [ ] Não há dois-pontos fora de abertura de pedidos, alíneas, citações ou quadro de partes?
 - [ ] Nenhum título contém dois pontos ou travessão?
-- [ ] Não há aposto explicativo isolado por parênteses ou travessões pareados?
-- [ ] Há mais de um pedido possível sem cascata? Hierarquizar com frase introdutória sem dois-pontos antes das alíneas. Algum pedido redundante?
+- [ ] Não há aposto explicativo prolixo isolado por parênteses (parênteses admitidos apenas para ID, lei, valor ou data)?
+- [ ] Não há nenhum travessão na peça final (proibido 100%, sem exceção)?
+- [ ] Há mais de um pedido possível sem cascata? Hierarquizar com frase introdutória antes das alíneas. Algum pedido redundante?
 - [ ] Fechamento tem cláusula de publicação + endereço + "aguarda deferimento" + "Cidade/UF, dia de mês de ano."?
 - [ ] Alguma expressão proibida da tabela 4 escapou? Algum sublinhado fora do nome da parte na abertura?
 - [ ] O nome da parte na abertura está em negrito **+ sublinhado**?

@@ -5,6 +5,7 @@ import importlib.util
 import json
 import tempfile
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -30,7 +31,7 @@ class TestHermesOrchestratorIntegration:
         route_b = ORCH.get_route("B", "medio")
         assert route_b["declared_piece_level"] == "B"
         assert route_b["vault"]["lookup"]["enabled"]
-        assert route_b["vault"]["lookup"]["vault"] == "ementario-resolutivo"
+        assert route_b["vault"]["lookup"]["vault"] == "cerebro-ricar"
 
     def test_initialize_matter_creates_idempotent_manifest(self):
         """initialize_matter() creates run_manifest.json with route."""
@@ -85,7 +86,7 @@ class TestHermesOrchestratorIntegration:
     def test_query_ementario_returns_read_only_payload(self):
         """query_ementario() generates a read-only Ementário package (if vault accessible)."""
         # Skip if vault not accessible
-        vault_path = Path("\\wsl.localhost\\Ubuntu\\home\\ricar\\vaults\\ementario-resolutivo\\CLAUDE.md")
+        vault_path = Path("\\wsl.localhost\\Ubuntu\\home\\ricar\\vaults\\cerebro-ricar\\CLAUDE.md")
         if not vault_path.exists():
             pytest.skip("Ementário vault not accessible (expected on Windows without WSL mount)")
         
@@ -94,7 +95,7 @@ class TestHermesOrchestratorIntegration:
             
             result = ORCH.query_ementario(
                 "dano-moral",
-                vault_root="\\wsl.localhost\\Ubuntu\\home\\ricar\\vaults\\ementario-resolutivo",
+                vault_root="\\wsl.localhost\\Ubuntu\\home\\ricar\\vaults\\cerebro-ricar",
                 output_path=output,
             )
             
@@ -102,7 +103,7 @@ class TestHermesOrchestratorIntegration:
             assert output.exists()
             
             payload = result["payload"]
-            assert payload["origin"] == "ementario-resolutivo"
+            assert payload["origin"] == "cerebro-ricar"
             assert payload["mode"] == "read_only"
             assert payload["status"] == "informada"
             assert payload["domain"] == "dano-moral"
@@ -110,7 +111,7 @@ class TestHermesOrchestratorIntegration:
 
     def test_register_vault_lookup_records_consulta_in_manifest(self):
         """register_vault_lookup() links Ementário query to manifest (if vault accessible)."""
-        vault_path = Path("\\wsl.localhost\\Ubuntu\\home\\ricar\\vaults\\ementario-resolutivo\\CLAUDE.md")
+        vault_path = Path("\\wsl.localhost\\Ubuntu\\home\\ricar\\vaults\\cerebro-ricar\\CLAUDE.md")
         if not vault_path.exists():
             pytest.skip("Ementário vault not accessible")
         
@@ -124,18 +125,18 @@ class TestHermesOrchestratorIntegration:
             ementario_file = state_dir / "EMENTARIO.json"
             query_result = ORCH.query_ementario(
                 "dano-moral",
-                vault_root="\\wsl.localhost\\Ubuntu\\home\\ricar\\vaults\\ementario-resolutivo",
+                vault_root="\\wsl.localhost\\Ubuntu\\home\\ricar\\vaults\\cerebro-ricar",
                 output_path=ementario_file,
             )
             
             # Register lookup
             record = ORCH.register_vault_lookup(
                 state_dir,
-                vault="ementario-resolutivo",
+                vault="cerebro-ricar",
                 artifact_path=ementario_file,
             )
             
-            assert record["vault"] == "ementario-resolutivo"
+            assert record["vault"] == "cerebro-ricar"
             assert record["status"] == "informada"
             assert record["mode"] == "read_only"
             assert record["domain"] == "dano-moral"
@@ -146,7 +147,7 @@ class TestHermesOrchestratorIntegration:
 
     def test_generate_dashboard_creates_html(self):
         """generate_dashboard() renders HTML with phase + vault status (if vault accessible)."""
-        vault_path = Path("\\wsl.localhost\\Ubuntu\\home\\ricar\\vaults\\ementario-resolutivo\\CLAUDE.md")
+        vault_path = Path("\\wsl.localhost\\Ubuntu\\home\\ricar\\vaults\\cerebro-ricar\\CLAUDE.md")
         if not vault_path.exists():
             pytest.skip("Ementário vault not accessible")
         
@@ -160,12 +161,12 @@ class TestHermesOrchestratorIntegration:
             ementario_file = state_dir / "EMENTARIO.json"
             ORCH.query_ementario(
                 "dano-moral",
-                vault_root="\\wsl.localhost\\Ubuntu\\home\\ricar\\vaults\\ementario-resolutivo",
+                vault_root="\\wsl.localhost\\Ubuntu\\home\\ricar\\vaults\\cerebro-ricar",
                 output_path=ementario_file,
             )
             ORCH.register_vault_lookup(
                 state_dir,
-                vault="ementario-resolutivo",
+                vault="cerebro-ricar",
                 artifact_path=ementario_file,
             )
             
@@ -178,8 +179,22 @@ class TestHermesOrchestratorIntegration:
             # Verify key content is present
             assert "painel-test" in html_content  # Matter ID
             assert "intake_ready" in html_content  # Phase
-            assert "ementario-resolutivo" in html_content  # Vault
+            assert "cerebro-ricar" in html_content  # Vault
             assert "dano-moral" in html_content  # Domain
+
+    def test_execute_worker_allows_cli_timeout_plus_grace_period(self, tmp_path):
+        """O wrapper não pode matar o executor antes do timeout do worker."""
+        with patch.object(ORCH, "_run_cmd", return_value={"exit_code": 0, "stdout": "", "stderr": ""}) as run_cmd:
+            ORCH.execute_worker(
+                "codex",
+                tmp_path / "PROMPT.md",
+                tmp_path / "RASCUNHO.md",
+                tmp_path / "matter",
+                "writer",
+                timeout_seconds=600,
+            )
+
+        assert run_cmd.call_args.kwargs["timeout_seconds"] == 630
 
     def test_wrapper_handles_errors_gracefully(self):
         """OrchestratorError raised on invalid operations."""

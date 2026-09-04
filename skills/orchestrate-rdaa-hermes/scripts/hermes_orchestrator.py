@@ -20,14 +20,16 @@ class OrchestratorError(Exception):
     """Orchestrator command failed."""
 
 
-def _run_cmd(cmd: list[str], check: bool = True) -> dict[str, Any]:
+def _run_cmd(cmd: list[str], check: bool = True, timeout_seconds: int = 30) -> dict[str, Any]:
     """Run a command via subprocess, capture stdout/stderr."""
+    if timeout_seconds <= 0:
+        raise ValueError("timeout_seconds deve ser positivo")
     try:
         result = subprocess.run(
             cmd,
             capture_output=True,
             text=True,
-            timeout=30,
+            timeout=timeout_seconds,
             check=False,
         )
         if check and result.returncode != 0:
@@ -118,7 +120,7 @@ def query_ementario(
 ) -> dict[str, Any]:
     """Query Ementário (Obsidian vault)."""
     if vault_root is None:
-        vault_root = "\\wsl.localhost\\Ubuntu\\home\\ricar\\vaults\\ementario-resolutivo"
+        vault_root = Path("C:/Users/ricar/cerebro-ricar")
     if output_path is None:
         output_path = ROOT / ".rdaa-run" / f"EMENTARIO-{domain}.json"
     
@@ -183,7 +185,9 @@ def execute_worker(
     if max_budget_usd is not None:
         cmd.extend(["--max-budget-usd", str(max_budget_usd)])
     
-    result = _run_cmd(cmd)
+    # O executor aplica o timeout do worker; o wrapper só pode expirar depois
+    # dele, com margem fixa para serializar/registrar a saída.
+    result = _run_cmd(cmd, timeout_seconds=timeout_seconds + 30)
     
     return {
         "motor": motor,

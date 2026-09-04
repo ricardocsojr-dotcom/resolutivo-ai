@@ -39,6 +39,7 @@ redigir ou revisar qualquer peça. Em resumo (a fonte completa é o núcleo):
 - Citação literal de jurisprudência com aterrissagem (ementa completa, nunca paráfrase)
 - Citação legal no formato "Lei, art. X" (ex.: CPC, art. 373, inciso II)
 - Dosagem por tipo de peça (manifestação simples → recursal extenso) definida na seção 3 do núcleo
+- Cláusula de Naturalidade: Em caso de aparente tensão entre a ordem direta gramatical e o ritmo do texto, a naturalidade da leitura, a variação das aberturas e o encadeamento de parágrafos densos (5 a 8 linhas) têm prioridade sobre a rigidez sintática estrita. O travessão duplo permanece 100% proibido.
 
 ## Backoffice e operacional
 

@@ -49,6 +49,13 @@ dist/
 # Local outputs (generated peças, backups, audit trails)
 outputs/
 _qa_render/
+*.docx
+*.pdf
+
+# Matérias e análises locais — nunca versionar
+Itau-Resp/
+tmp/
+tmp_*
 
 # Continuum worktrees (local development)
 .continuum-worktrees/

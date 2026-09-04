@@ -389,6 +389,15 @@ def avancar_fase(state_dir: Path | str, target_phase: str) -> dict[str, Any]:
             names = ", ".join(sorted(missing_syncs))
             raise WorkflowStateError(f"registro no vault operacional exigido: {names}")
     required_role = _COMPLETION_ROLES.get(target_phase)
+    # O nível C admite rascunho direto fornecido pelo usuário. As etapas
+    # adicionais de agentes não existem nessa rota, e o redator também não
+    # é requisito para encerrar o rascunho simples.
+    if (
+        required_role == "writer"
+        and route.get("effective_piece_level") == "C"
+        and not any(item.get("role") == "writer" for item in manifest.get("executions", []))
+    ):
+        required_role = None
     # Papel só é exigido se o próprio estágio existir na rota do nível
     # (nível C não tem "validating"/"criticizing" nos stages — não bloqueia).
     if required_role == "validator" and "validating" not in stages:
@@ -416,6 +425,8 @@ def avancar_fase(state_dir: Path | str, target_phase: str) -> dict[str, Any]:
 def validar_inicio_worker(state_dir: Path | str, role: str, motor: str) -> dict[str, Any]:
     """Falha antes de chamar a CLI se papel/motor/fase não forem autorizados."""
     manifest = _read_manifest(state_dir)
+    if manifest.get("open_gate") or manifest.get("status") == "awaiting_approval":
+        raise WorkflowStateError("aprovação pendente para gate humano aberto")
     identities = manifest.get("route", {}).get("worker_identity", {})
     worker = identities.get(role)
     if not isinstance(worker, dict):

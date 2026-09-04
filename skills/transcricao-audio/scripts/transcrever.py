@@ -18,7 +18,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -29,7 +31,21 @@ for _stream in (sys.stdout, sys.stderr):
 MODELOS_VALIDOS = {"tiny", "base", "small", "medium"}
 FORMATOS_VALIDOS = {"txt", "srt", "json"}
 
-# Vocabulário jurídico pt-BR — melhora reconhecimento de termos do domínio.
+
+def _gravar_saida_atomica(path: Path, content: str) -> None:
+    """Publica a transcrição sem expor arquivo parcial em caso de falha."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary_path = tempfile.mkstemp(dir=path.parent)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as destination:
+            destination.write(content)
+        os.replace(temporary_path, path)
+    except Exception:
+        if os.path.exists(temporary_path):
+            os.remove(temporary_path)
+        raise
+
+
 PROMPT_JURIDICO = (
     "Transcricao juridica em portugues do Brasil. Termos possiveis: processo, "
     "autos, peticao, comarca, vara, juizo, exequente, executado, autor, reu, "
@@ -130,8 +146,7 @@ def main() -> int:
     saida = formatar_saida(resultado, args.formato)
 
     if args.saida:
-        args.saida.parent.mkdir(parents=True, exist_ok=True)
-        args.saida.write_text(saida, encoding="utf-8")
+        _gravar_saida_atomica(args.saida, saida)
         print(f"[OK] transcrição salva em {args.saida}")
         print(
             f"[INFO] idioma={resultado['idioma_detectado']} "

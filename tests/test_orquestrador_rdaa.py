@@ -17,10 +17,10 @@ def _avancar_fluxo_b_ate_fontes(state_dir: Path) -> None:
     MODULE.avancar_fase(state_dir, "intake_ready")
     context = state_dir / "EMENTARIO-CONTEXTO.json"
     context.write_text(
-        '{"origin": "ementario-resolutivo", "status": "informada", "mode": "read_only"}',
+        '{"origin": "cerebro-ricar", "status": "informada", "mode": "read_only"}',
         encoding="utf-8",
     )
-    MODULE.registrar_consulta_vault(state_dir, vault="ementario-resolutivo", artifact_path=context)
+    MODULE.registrar_consulta_vault(state_dir, vault="cerebro-ricar", artifact_path=context)
     MODULE.avancar_fase(state_dir, "vault_context_ready")
     MODULE.avancar_fase(state_dir, "sources_ready")
 
@@ -45,7 +45,7 @@ def test_rota_b_exige_contexto_do_ementario_antes_das_fontes():
     route = MODULE.selecionar_rota("B", "baixo")
 
     assert route["vault"]["lookup"]["enabled"] is True
-    assert route["vault"]["lookup"]["vault"] == "ementario-resolutivo"
+    assert route["vault"]["lookup"]["vault"] == "cerebro-ricar"
     assert route["stages"].index("vault_context_ready") < route["stages"].index("sources_ready")
 
 
@@ -145,13 +145,13 @@ def test_fluxo_c_avanca_de_draft_ready_direto_para_candidate_ready(tmp_path):
     assert manifest["phase"] == "candidate_ready"
 
 
-def test_nao_permite_finalizar_rascunho_sem_execucao_do_redator(tmp_path):
+def test_fluxo_c_aceita_rascunho_direto_sem_execucao_do_redator(tmp_path):
     MODULE.inicializar_execucao(tmp_path, "caso-123", "C", "baixo")
     MODULE.avancar_fase(tmp_path, "intake_ready")
     MODULE.avancar_fase(tmp_path, "drafting")
 
-    with pytest.raises(MODULE.WorkflowStateError, match="execução do papel writer"):
-        MODULE.avancar_fase(tmp_path, "draft_ready")
+    manifest = MODULE.avancar_fase(tmp_path, "draft_ready")
+    assert manifest["phase"] == "draft_ready"
 
 
 def test_contexto_do_ementario_e_exigido_antes_de_avancar_fluxo_b(tmp_path):
@@ -163,12 +163,12 @@ def test_contexto_do_ementario_e_exigido_antes_de_avancar_fluxo_b(tmp_path):
 
     context = tmp_path / "EMENTARIO-CONTEXTO.json"
     context.write_text(
-        '{"origin": "ementario-resolutivo", "status": "informada", "mode": "read_only"}',
+        '{"origin": "cerebro-ricar", "status": "informada", "mode": "read_only"}',
         encoding="utf-8",
     )
     record = MODULE.registrar_consulta_vault(
         tmp_path,
-        vault="ementario-resolutivo",
+        vault="cerebro-ricar",
         artifact_path=context,
         metadata={"status": "informada", "mode": "read_only"},
     )
@@ -187,10 +187,10 @@ def test_registro_operacional_e_exigido_antes_de_vault_registered(tmp_path):
         MODULE.avancar_fase(tmp_path, "vault_registered")
 
     receipt = tmp_path / "RECIBO-VAULT-OPERACIONAL.json"
-    receipt.write_text('{"vault": "procedimentos-informacoes", "status": "registered"}', encoding="utf-8")
+    receipt.write_text('{"vault": "cerebro-ricar", "status": "registered"}', encoding="utf-8")
     record = MODULE.registrar_sincronizacao_vault(
         tmp_path,
-        vault="procedimentos-informacoes",
+        vault="cerebro-ricar",
         artifact_path=receipt,
         metadata={"status": "registered"},
     )
@@ -225,6 +225,15 @@ def test_gate_estrategico_condicional_pausa_e_exige_aprovacao_explicita(tmp_path
         MODULE.avancar_fase(tmp_path, "intake_ready")
     assert MODULE.registrar_aprovacao(tmp_path, "strategy_exception", artifact, "Ricardo")["gate"] == "strategy_exception"
     assert MODULE._read_manifest(tmp_path)["status"] == "ready"
+
+
+def test_gate_aberto_tambem_bloqueia_execucao_de_worker(tmp_path):
+    MODULE.inicializar_execucao(tmp_path, "caso-123", "A", "baixo")
+    MODULE.avancar_fase(tmp_path, "intake_ready")
+    MODULE.abrir_gate_humano(tmp_path, "strategy_exception", "decisão pendente")
+
+    with pytest.raises(MODULE.WorkflowStateError, match="aprovação pendente"):
+        MODULE.validar_inicio_worker(tmp_path, "planner", "claude")
 
 
 def test_lock_da_materia_exclui_segunda_operacao_simultanea(tmp_path):

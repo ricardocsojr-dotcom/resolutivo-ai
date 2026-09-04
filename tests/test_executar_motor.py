@@ -32,6 +32,8 @@ def test_motores_usam_entrada_direta_e_so_gravam_no_sucesso(tmp_path):
         command = run.call_args.args[0]
         assert Path(command[0]).stem.lower() == "codex"
         assert command[1] == "exec"
+        assert "--model" in command
+        assert command[command.index("--model") + 1] == "gpt-5.5"
         assert run.call_args.kwargs["input"] == "analise isto"
         assert codex_out.read_text(encoding="utf-8") == "rascunho\n"
 
@@ -43,6 +45,11 @@ def test_motores_usam_entrada_direta_e_so_gravam_no_sucesso(tmp_path):
         MODULE.executar("antigravity", prompt, agy_out, None, 30)
         command = run.call_args.args[0]
         assert Path(command[0]).stem.lower() == "agy" and "stream-json" in command
+        assert "--print" in command
+        assert command[command.index("--print") + 1] == ""
+        assert "--model" in command
+        assert command[command.index("--model") + 1] == "gemini-3.1-pro-high"
+        assert "--effort" not in command
         assert "--sandbox" in command
         assert "dangerously-skip-permissions" not in " ".join(command)
         assert json.loads(run.call_args.kwargs["input"])["message"]["content"] == "analise isto"
@@ -81,10 +88,10 @@ def test_executor_registra_saida_no_manifesto_quando_recebe_papel(tmp_path):
     ORCHESTRATOR.avancar_fase(tmp_path, "intake_ready")
     vault_context = tmp_path / "EMENTARIO-CONTEXTO.json"
     vault_context.write_text(
-        '{"origin": "ementario-resolutivo", "status": "informada", "mode": "read_only"}',
+        '{"origin": "cerebro-ricar", "status": "informada", "mode": "read_only"}',
         encoding="utf-8",
     )
-    ORCHESTRATOR.registrar_consulta_vault(tmp_path, vault="ementario-resolutivo", artifact_path=vault_context)
+    ORCHESTRATOR.registrar_consulta_vault(tmp_path, vault="cerebro-ricar", artifact_path=vault_context)
     for phase in ("vault_context_ready", "sources_ready", "skeleton_ready", "awaiting_skeleton_approval"):
         ORCHESTRATOR.avancar_fase(tmp_path, phase)
     skeleton = tmp_path / "ESQUELETO.md"

@@ -45,7 +45,7 @@ def test_consulta_ementario_cria_pacote_somente_leitura_com_proveniencia(tmp_pat
     after = {path.relative_to(vault): path.read_bytes() for path in vault.rglob("*") if path.is_file()}
     assert package == saved
     assert after == before
-    assert saved["origin"] == "ementario-resolutivo"
+    assert saved["origin"] == "cerebro-ricar"
     assert saved["status"] == "informada"
     assert saved["mode"] == "read_only"
     assert [item["relative_path"] for item in saved["documents"]] == [
@@ -90,3 +90,27 @@ def test_cli_de_consulta_nao_expoe_conteudo_do_vault(tmp_path, monkeypatch, caps
     assert "Cliente histórico" not in stdout
     assert "Ementa literal" not in stdout
     assert '"documents_count": 3' in stdout
+
+
+def test_caminho_resolvido_fora_do_cerebro_e_rejeitado(tmp_path):
+    vault = _vault(tmp_path)
+    external = tmp_path / "segredo.txt"
+    external.write_text("conteúdo externo", encoding="utf-8")
+
+    with pytest.raises(ValueError, match="fora do Cérebro"):
+        MODULE._require_within_root(vault, external)
+
+
+def test_consulta_ementario_rejeita_link_simbolico_para_arquivo_externo(tmp_path):
+    vault = _vault(tmp_path)
+    external = tmp_path / "segredo.txt"
+    external.write_text("conteúdo externo", encoding="utf-8")
+    linked_source = vault / "wiki" / "sources" / "prec-001.md"
+    linked_source.unlink()
+    try:
+        linked_source.symlink_to(external)
+    except OSError as exc:
+        pytest.skip(f"symlink indisponível neste ambiente: {exc}")
+
+    with pytest.raises(ValueError, match="fora do Cérebro"):
+        MODULE.consultar_ementario(vault, "dano-moral", tmp_path / "resultado.json")
