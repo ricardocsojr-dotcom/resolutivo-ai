@@ -1,0 +1,6 @@
+.DS_Store
+# Evidência e dados de cliente NUNCA sobem para o repositório
+evidence/log.jsonl
+casos/
+clientes/
+*.local.*

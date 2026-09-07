@@ -22,6 +22,19 @@ assim toda citação deve vir com link de origem pra conferência.
 
 ## Fontes por tipo
 
+### Busca Local Instantânea (Offline - Súmulas STJ / STF / Vinculantes)
+
+Antes de qualquer busca web externa para súmulas, utilize a ferramenta local consolidada:
+
+```bash
+python skills/lei-e-sumula/scripts/buscar_sumula_local.py --numero <NUMERO> -t [stj|stf|vinculante]
+python skills/lei-e-sumula/scripts/buscar_sumula_local.py "<termo>" -t [stj|stf|vinculante]
+```
+
+Ela contém todo o acervo de Súmulas do STJ (1 a 676), Súmulas do STF (1 a 736) e Súmulas Vinculantes (1 a 62) com enunciado literal, órgão julgador, data de publicação e URL oficial.
+
+### Fontes Web (para dispositivos de leis ou temas não indexados)
+
 | O que buscar | Fonte |
 |---|---|
 | Lei/decreto federal | [Portal da Legislação](http://www4.planalto.gov.br/legislacao) |

@@ -414,6 +414,63 @@ def _adicionar_texto_formatado(paragraph, texto, bold_default=False, italic_defa
     return runs
 
 
+def _configurar_idioma_documento(doc, lang_val='pt-BR'):
+    """Configura o idioma padrão (w:lang) como pt-BR no documento base e nos estilos.
+
+    Seta w:lang em w:docDefaults (herança global do documento), no estilo 'Normal'
+    e em w:themeFontLang nas configurações do Word. Isso impede que o Microsoft
+    Word assuma en-US (padrão de templates python-docx) e ative a correção ortográfica
+    em inglês em toda a peça.
+    """
+    styles_elm = doc.styles.element
+
+    # 1. docDefaults -> rPrDefault -> rPr -> lang
+    docDefaults = styles_elm.find(qn('w:docDefaults'))
+    if docDefaults is None:
+        docDefaults = OxmlElement('w:docDefaults')
+        styles_elm.insert(0, docDefaults)
+
+    rPrDefault = docDefaults.find(qn('w:rPrDefault'))
+    if rPrDefault is None:
+        rPrDefault = OxmlElement('w:rPrDefault')
+        docDefaults.append(rPrDefault)
+
+    rPr = rPrDefault.find(qn('w:rPr'))
+    if rPr is None:
+        rPr = OxmlElement('w:rPr')
+        rPrDefault.append(rPr)
+
+    lang = rPr.find(qn('w:lang'))
+    if lang is None:
+        lang = OxmlElement('w:lang')
+        rPr.append(lang)
+    lang.set(qn('w:val'), lang_val)
+    lang.set(qn('w:eastAsia'), lang_val)
+    lang.set(qn('w:bidi'), 'ar-SA')
+
+    # 2. Estilo Normal
+    try:
+        sn = doc.styles['Normal']
+        sn_rPr = sn._element.get_or_add_rPr()
+        sn_lang = sn_rPr.find(qn('w:lang'))
+        if sn_lang is None:
+            sn_lang = OxmlElement('w:lang')
+            sn_rPr.append(sn_lang)
+        sn_lang.set(qn('w:val'), lang_val)
+        sn_lang.set(qn('w:bidi'), 'ar-SA')
+    except Exception:
+        pass
+
+    # 3. themeFontLang em settings.xml
+    try:
+        themeFontLang = doc.settings.element.find(qn('w:themeFontLang'))
+        if themeFontLang is not None:
+            themeFontLang.set(qn('w:val'), lang_val)
+            themeFontLang.set(qn('w:bidi'), 'ar-SA')
+    except Exception:
+        pass
+
+
 def _criar_estilos_rdaa(doc):
     """Configura os estilos de parágrafo RDAA no documento para que fiquem
     visíveis no painel de navegação do Word e garantam consistência visual."""
@@ -1506,6 +1563,8 @@ def construir_peca(context: dict, output_path: str) -> str:
     sn.font.size = TAMANHO
     sn.font.color.rgb = COR
     _base_pf(sn.paragraph_format, line_rule=WD_LINE_SPACING.ONE_POINT_FIVE)
+
+    _configurar_idioma_documento(doc, 'pt-BR')
 
     _configurar_rodape(sec)
     _configurar_cabecalho(sec, context.get('logo_path'))
