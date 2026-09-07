@@ -98,6 +98,30 @@ def test_default_mg_is_preserved_without_declared_uf() -> None:
     assert selected[1][1] == "OAB/MG 96.919"
 
 
+
+def test_explicit_signatories_override_the_default_roster() -> None:
+    builder = _load_builder()
+    context = _context()
+    context["signatarios"] = [
+        {
+            "nome": "Wanderley Romano Donadel",
+            "oab": "OAB/MG 78.870",
+            "email": "wanderley@romanodonadel.com.br",
+            "obs": "Assinado Eletronicamente",
+        },
+        {
+            "nome": "Flávia Almeida Forti da Fonseca",
+            "oab": "OAB/MG 96.919",
+            "email": "flavia@romanodonadel.com.br",
+        },
+    ]
+
+    assert builder._signatarios_para_contexto(context) == [
+        ("Wanderley Romano Donadel", "OAB/MG 78.870", "wanderley@romanodonadel.com.br", "Assinado Eletronicamente"),
+        ("Flávia Almeida Forti da Fonseca", "OAB/MG 96.919", "flavia@romanodonadel.com.br", None),
+    ]
+
+
 def test_unknown_uf_blocks_validation_and_generation() -> None:
     builder = _load_builder()
     context = _context("XX")

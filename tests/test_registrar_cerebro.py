@@ -69,3 +69,26 @@ def test_registrar_normaliza_campos_para_nao_forjar_frontmatter(tmp_path, monkey
     assert "\nstatus: forjado\n" not in content
     assert 'title: "Título status: forjado"' in content
     assert content.count("---\n") == 2
+
+
+def test_registrar_aceita_partes_textuais_do_contexto_docx(tmp_path, monkeypatch):
+    cerebro = _cerebro(tmp_path)
+    monkeypatch.setattr(MODULE, "CEREBRO", cerebro)
+    monkeypatch.setattr(MODULE, "WIKI_OPERACIONAL", cerebro / "wiki" / "operacional")
+    (tmp_path / "contexto_peca.json").write_text(
+        json.dumps(
+            {
+                "titulo_peca": "Desistência",
+                "partes": "Embargante: Cooperativa Agropecuária Ltda.\nEmbargado: Escritório Credor",
+            }
+        ),
+        encoding="utf-8",
+    )
+    (tmp_path / "run_manifest.json").write_text(json.dumps({"phase": "published"}), encoding="utf-8")
+
+    result = MODULE.registrar(tmp_path, "caso-123", "C")
+
+    assert result["success"] is True
+    content = Path(result["file"]).read_text(encoding="utf-8")
+    assert 'client: "Cooperativa Agropecuária Ltda."' in content
+    assert "- **Autor:** Cooperativa Agropecuária Ltda." in content

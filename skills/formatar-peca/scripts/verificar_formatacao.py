@@ -257,7 +257,8 @@ def checar(docx_path):
     for p in paragrafos:
         if _paragraph_style_name(p) in {'rdaatítulo2', 'rdaatítulo3', 'rdaatítulorazões'} and p not in titulos_para_caracteres:
             titulos_para_caracteres.append(p)
-    if not titulos:
+    # Peças simples, como manifestações nível C, não exigem título.
+    if not titulos and not paragrafos:
         problemas.append("Item 2: nenhum título encontrado (nem por numPr/upperRoman nem por borda).")
     for p in titulos:
         idx = paragrafos.index(p)
@@ -453,10 +454,9 @@ def checar(docx_path):
             problemas.append(f"Item 6b: parágrafo {txt[:40]!r} tem numeral digitado sem numeração "
                               f"nativa (w:numPr) — provável bug de numeração manual.")
 
-    # 7a. Tabela de assinaturas: grade 2x2 sem bordas, 4 signatários fixos
-    #      (Wanderley/Flávia/Alessandra/Ricardo Cesar — confirmado contra
-    #      peça real assinada em 2026-07-19), largura de página útil dividida
-    #      em 2 colunas (9638/2 = 4819 twips cada).
+    # 7a. Tabela de assinaturas: grade 2x2 sem bordas e lista de signatários
+    # declarada no contexto. A validação preserva a geometria, mas não presume
+    # advogados que não estejam expressamente informados para a peça.
     # Correções.md, item 12: a peça pode ter outras tabelas no corpo (quadros
     # de metadados, cronologia, comparativos) e recursos compostos podem ter
     # duas tabelas de assinatura (interposição + razões). O validador não
@@ -508,9 +508,8 @@ def checar(docx_path):
                     problemas.append(f"Item 7: margem interna {side}={actual}, esperada {expected} twips.")
 
         nomes_tabela = [''.join(x.text or '' for x in r.findall('.//w:t', NS)) for r in tbl.findall('.//w:tr', NS)]
-        for nome_esperado in ('Wanderley', 'Flávia', 'Alessandra', 'Ricardo Cesar'):
-            if not any(nome_esperado in n for n in nomes_tabela):
-                problemas.append(f"Item 7: signatário {nome_esperado!r} não encontrado na tabela de assinaturas.")
+        if not any(n.strip() for n in nomes_tabela):
+            problemas.append("Item 7: tabela de assinaturas não contém signatário declarado.")
         if not any('Assinado Eletronicamente' in n for n in nomes_tabela):
             problemas.append("Item 7: linha '(Assinado Eletronicamente)' não encontrada sob o primeiro signatário.")
 

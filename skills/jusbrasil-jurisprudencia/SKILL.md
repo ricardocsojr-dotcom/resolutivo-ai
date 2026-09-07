@@ -99,6 +99,20 @@ Só agora, para cada resultado selecionado no passo 4a:
 6. Volte à lista de resultados com `mcp__Claude_in_Chrome__navigate` para o URL
    anterior, ou use o botão voltar
 
+**A ementa é o padrão e basta na grande maioria dos casos** — é o que será
+citado literalmente na peça, e citação não exige mais que isso.
+
+**Só busque o inteiro teor/voto completo (além da ementa) quando houver sinal
+prévio e explícito de risco de distinguishing** — isto é, quando um fato
+específico do caso atual (idade de parte, natureza de garantia, momento
+processual, etc.) pode tornar o precedente inaplicável ou exigir ressalva, e
+esse fato não é visível pela ementa. Esse sinal deve vir do esqueleto ou de
+instrução explícita de Ricardo, nunca de uma decisão ad hoc durante a busca —
+exemplo real: verificar se o precedente envolvia parte menor de idade antes de
+citá-lo sem ressalva. Não vá ao inteiro teor "por precaução" ou "para garantir"
+sem esse gatilho concreto — isso é navegação extra sem ganho, e é a diferença
+entre uma busca de minutos e uma busca que multiplica o tempo por acórdão.
+
 ### Passo 5 — Apresentar os resultados
 
 Formate cada ementa desta forma:

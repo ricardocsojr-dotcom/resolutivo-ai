@@ -609,7 +609,22 @@ def _normalizar_uf(valor):
 
 
 def _signatarios_para_contexto(context):
-    """Seleciona OAB apenas de UF declarada do processo originário."""
+    """Seleciona a lista declarada ou aplica a alternância de OAB por UF."""
+    declarados = context.get('signatarios')
+    if declarados is not None:
+        if not isinstance(declarados, list) or not 1 <= len(declarados) <= 4:
+            raise ValueError("signatarios deve conter de um a quatro registros declarados.")
+        selecionados = []
+        for item in declarados:
+            if not isinstance(item, dict):
+                raise ValueError("Cada signatário declarado deve ser um objeto.")
+            nome, oab, email = (str(item.get(campo, '')).strip() for campo in ('nome', 'oab', 'email'))
+            if not nome or not oab or not email:
+                raise ValueError("Cada signatário declarado exige nome, OAB e e-mail.")
+            obs = item.get('obs')
+            selecionados.append((nome, oab, email, str(obs).strip() if obs else None))
+        return selecionados
+
     uf_bruta = context.get('uf_processo_originario')
     if uf_bruta is None:
         uf_bruta = context.get('estado_processo_originario')

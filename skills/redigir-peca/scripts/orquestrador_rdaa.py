@@ -477,6 +477,46 @@ def registrar_execucao(
     return record
 
 
+_INTERVAL_KINDS = {
+    "pesquisa_jurisprudencia",  # busca/confirmação de ementa literal fora do worker
+    "correcao_manual",          # reescrita de prompt/rascunho fora do worker
+    "espera_ricardo",           # aguardando decisão/insumo do usuário
+    "outro",
+}
+
+
+@operacao_exclusiva
+def registrar_intervalo(
+    state_dir: Path | str,
+    *,
+    kind: str,
+    reason: str,
+    seconds: float | None = None,
+    started_at: str | None = None,
+) -> dict[str, Any]:
+    """Registra tempo gasto fora de uma execução de worker (não gatilha nada).
+
+    Existe para explicar o gap entre transições de fase no manifesto: sem
+    isso, tempo de pesquisa de jurisprudência ou de correção manual de
+    prompt aparece como "tempo morto" indistinguível de travamento.
+    """
+    if kind not in _INTERVAL_KINDS:
+        raise ValueError(f"kind inválido: {kind}. Use um de {sorted(_INTERVAL_KINDS)}")
+    manifest = _read_manifest(state_dir)
+    record = {
+        "kind": kind,
+        "reason": reason,
+        "seconds": seconds,
+        "started_at": started_at,
+        "recorded_at": _now(),
+        "phase": manifest.get("phase"),
+    }
+    manifest.setdefault("intervals", []).append(record)
+    manifest["updated_at"] = _now()
+    _write_json(_manifest_path(state_dir), manifest)
+    return record
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Máquina de estados determinística do fluxo RDAA")
     commands = parser.add_subparsers(dest="command", required=True)
@@ -519,6 +559,16 @@ def main() -> int:
     route.add_argument("--piece-level", required=True, choices=("A", "B", "C", "a", "b", "c"))
     route.add_argument("--risk-level", required=True)
 
+    log_interval = commands.add_parser(
+        "log-interval",
+        help="registra tempo gasto fora de uma execução de worker (pesquisa, correção manual, espera)",
+    )
+    log_interval.add_argument("state_dir", type=Path)
+    log_interval.add_argument("--kind", required=True, choices=sorted(_INTERVAL_KINDS))
+    log_interval.add_argument("--reason", required=True)
+    log_interval.add_argument("--seconds", type=float)
+    log_interval.add_argument("--started-at")
+
     args = parser.parse_args()
     if args.command == "init":
         result = inicializar_execucao(args.state_dir, args.matter_id, args.piece_level, args.risk_level)
@@ -534,6 +584,14 @@ def main() -> int:
         result = registrar_consulta_vault(args.state_dir, vault=args.vault, artifact_path=args.artifact)
     elif args.command == "register-vault-sync":
         result = registrar_sincronizacao_vault(args.state_dir, vault=args.vault, artifact_path=args.artifact)
+    elif args.command == "log-interval":
+        result = registrar_intervalo(
+            args.state_dir,
+            kind=args.kind,
+            reason=args.reason,
+            seconds=args.seconds,
+            started_at=args.started_at,
+        )
     else:
         result = selecionar_rota(args.piece_level, args.risk_level)
     print(json.dumps(result, ensure_ascii=False, indent=2))

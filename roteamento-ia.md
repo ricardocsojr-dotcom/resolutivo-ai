@@ -44,6 +44,22 @@ initialized → intake_ready → [vault_context_ready em B/A] → [sources/counc
 
 A máquina de estados não permite pular fases. A aprovação do esqueleto grava o hash do arquivo; qualquer alteração invalida a aprovação. Cada papel tem fases permitidas na política e é validado **antes** de qualquer chamada externa. Em peça A, uma vulnerabilidade de tese central abre o gate condicional `strategy_exception`, bloqueando novas transições até a decisão humana ser registrada.
 
+## Registro de intervalos fora de worker
+
+Nem todo tempo de uma fase é execução de worker. Pesquisa de jurisprudência
+literal, correção manual de prompt/rascunho e espera de decisão de Ricardo
+são trabalho legítimo, mas ficavam invisíveis no manifesto — apareciam como
+"gap" indistinguível de travamento numa auditoria de tempo. Registre-os:
+
+```text
+py -3.14 skills/redigir-peca/scripts/orquestrador_rdaa.py log-interval .rdaa-run/<matter_id> \
+  --kind pesquisa_jurisprudencia --reason "confirmar texto literal de 3 ementas" --seconds 6420
+```
+
+`--kind` aceita `pesquisa_jurisprudencia`, `correcao_manual`, `espera_ricardo`
+ou `outro`. Gravado em `manifest["intervals"]`, somente leitura para o
+restante do fluxo — não afeta transições, gates nem validações.
+
 ## Execução direta
 
 Chamadas de worker passam pelo executor, sem `Agent` ou subagente mensageiro:

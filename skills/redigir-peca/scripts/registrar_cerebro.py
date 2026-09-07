@@ -30,6 +30,35 @@ def _single_line(value: Any) -> str:
     return re.sub(r"[\r\n]+", " ", str(value)).strip()
 
 
+def _partes_estruturadas(ctx: dict[str, Any]) -> dict[str, dict[str, str]]:
+    """Aceita partes estruturadas ou o texto usado pelo contexto nativo do DOCX."""
+    partes = ctx.get("partes", {})
+    if isinstance(partes, dict):
+        return partes
+    if not isinstance(partes, str):
+        return {}
+
+    resultado: dict[str, dict[str, str]] = {}
+    restantes: list[str] = []
+    for linha in partes.splitlines():
+        rotulo, separador, nome = linha.partition(":")
+        valor = _single_line(nome if separador else rotulo)
+        if not valor:
+            continue
+        chave = rotulo.strip().casefold()
+        if chave in {"autor", "autora", "embargante", "apelante", "agravante", "exequente", "impetrante"}:
+            resultado.setdefault("autor", {"nome": valor})
+        elif chave in {"réu", "reu", "ré", "embargado", "embargada", "apelado", "apelada", "agravado", "agravada", "executado", "executada", "impetrado", "impetrada"}:
+            resultado.setdefault("reu", {"nome": valor})
+        else:
+            restantes.append(valor)
+    if "autor" not in resultado and restantes:
+        resultado["autor"] = {"nome": restantes.pop(0)}
+    if "reu" not in resultado and restantes:
+        resultado["reu"] = {"nome": restantes.pop(0)}
+    return resultado
+
+
 def normalizar_process_number(num: str) -> str:
     """0130354-80.2018.8.13.0702 → 0130354-80-2018-8-13-0702 (seguro pra filename)."""
     return re.sub(r"[./]", "-", num.strip())
@@ -45,7 +74,7 @@ def carregar_contexto(path: Path) -> dict[str, Any]:
 
 def gerar_frontmatter(ctx: dict[str, Any], matter_id: str, level: str) -> str:
     """Monta YAML frontmatter."""
-    partes = ctx.get("partes", {})
+    partes = _partes_estruturadas(ctx)
     cliente = _single_line(partes.get("autor", {}).get("nome", "Desconhecido"))
     titulo = _single_line(ctx.get("titulo_peca", "Sem título"))
     matter_id = _single_line(matter_id)
@@ -75,7 +104,7 @@ def gerar_conteudo(ctx: dict[str, Any]) -> str:
     nivel = _single_line(ctx.get("nivel_peca", "?"))
     processo = _single_line(ctx.get("numero_processo", "N/A"))
     
-    partes = ctx.get("partes", {})
+    partes = _partes_estruturadas(ctx)
     autor = partes.get("autor", {})
     reu = partes.get("reu", {})
     

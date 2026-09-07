@@ -84,7 +84,24 @@ def criar_source(source_id: str, ementa: str, court: str, date_str: str) -> Path
     
     conteudo = f"{frontmatter}\n{ementa}\n"
     path.write_text(conteudo, encoding="utf-8")
+    _reindexar_fonte(path)
     return path
+
+
+def _reindexar_fonte(path: Path) -> None:
+    """Atualiza o índice temático (FTS5) para refletir a fonte recém-gravada.
+
+    Best-effort: falha de indexação nunca deve impedir o registro da fonte em
+    si — o .md continua sendo a fonte de verdade, o índice é derivado e pode
+    ser reconstruído a qualquer momento via `indexador_fontes.py reindex`.
+    """
+    try:
+        import sys
+        sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "buscar-jurisprudencia" / "scripts"))
+        from indexador_fontes import index_one
+        index_one(path, CEREBRO)
+    except Exception:
+        pass
 
 
 def atualizar_domain(domain: str, concept_names: list[str], source_names: list[str]) -> None:
