@@ -100,7 +100,7 @@ def main() -> int:
             shutil.rmtree(candidate_state_dir)
         evaluation_state_dir = candidate_state_dir
 
-    result = run_gate(args.input)
+    result = run_gate(args.input, context_path=args.context)
     semantic_report = None
     route = None
     visual_report = None

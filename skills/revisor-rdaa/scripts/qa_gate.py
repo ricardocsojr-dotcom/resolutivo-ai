@@ -31,8 +31,8 @@ FORMAT_SCRIPT = PLUGIN_ROOT / "skills" / "formatar-peca" / "scripts" / "verifica
 STYLE_SCRIPT = SCRIPT_DIR / "verificar_estilo.py"
 
 
-def _run_check(name: str, script: Path, docx: Path) -> dict:
-    command = [sys.executable, str(script), str(docx)]
+def _run_check(name: str, script: Path, docx: Path, extra_args: list[str] | None = None) -> dict:
+    command = [sys.executable, str(script), str(docx)] + (extra_args or [])
     # ponytail: sem encoding explícito, o Windows decodifica a saída do
     # subprocesso com o codepage ANSI do console (cp1252), corrompendo acento
     # de mensagem em UTF-8 ("não está" -> "nÃ£o estÃ¡") antes mesmo de chegar
@@ -53,10 +53,11 @@ def _run_check(name: str, script: Path, docx: Path) -> dict:
     }
 
 
-def run_gate(docx: Path) -> dict:
+def run_gate(docx: Path, context_path: Path | None = None) -> dict:
+    style_args = ["--context", str(context_path)] if context_path else None
     checks = [
         _run_check("formatacao", FORMAT_SCRIPT, docx),
-        _run_check("estilo", STYLE_SCRIPT, docx),
+        _run_check("estilo", STYLE_SCRIPT, docx, extra_args=style_args),
     ]
     errors = [check for check in checks if not check["passed"]]
     return {
@@ -78,13 +79,20 @@ def main() -> int:
         type=Path,
         help="caminho para salvar o resultado estruturado",
     )
+    parser.add_argument(
+        "--context",
+        dest="context_path",
+        type=Path,
+        default=None,
+        help="contexto_peca.json opcional, usado por verificar_estilo.py para checar consistência terminológica",
+    )
     args = parser.parse_args()
 
     if not args.docx.is_file():
         print(f"[ERRO] DOCX não encontrado: {args.docx}", file=sys.stderr)
         return 2
 
-    result = run_gate(args.docx)
+    result = run_gate(args.docx, context_path=args.context_path)
     if args.json_path:
         args.json_path.parent.mkdir(parents=True, exist_ok=True)
         args.json_path.write_text(

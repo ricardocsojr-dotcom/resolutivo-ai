@@ -434,6 +434,113 @@ def checar_aberturas_consecutivas(paragrafos, minimo=2):
     return problemas
 
 
+_PRIMEIRA_PALAVRA = re.compile(r"^[\wÀ-ÿ]+")
+
+
+def _primeira_palavra(paragrafo):
+    """Extrai a primeira palavra de um parágrafo (sem numeração nativa —
+    isso é aplicado por estilo no DOCX, o texto lido nunca a inclui — e sem
+    marcação de lista legada em .txt), normalizada em minúsculas para
+    comparação. Usada para flagrar QUALQUER repetição de palavra inicial
+    entre um parágrafo argumentativo e o imediatamente anterior, não só
+    artigos definidos."""
+    primeira_frase = re.split(r'(?<=[.!?])\s+', paragrafo.strip(), maxsplit=1)[0]
+    texto = _NUMERACAO_INICIAL.sub('', primeira_frase).strip()
+    match = _PRIMEIRA_PALAVRA.match(texto)
+    return match.group(0).lower() if match else None
+
+
+def checar_primeira_palavra_repetida(paragrafos, estilos=None):
+    # Regra do Ricardo (2026-09): nenhum parágrafo argumentativo pode começar
+    # com a mesma palavra do parágrafo IMEDIATAMENTE anterior, qualquer que
+    # seja essa palavra — não só quando os dois usam o mesmo artigo (A/A,
+    # O/O), mas mesmo quando a palavra é um conectivo, advérbio ou qualquer
+    # outra. É comparação par a par (2 já é erro, não é preciso esperar 3+),
+    # porque a leitura mecânica acontece a partir da segunda repetição, não
+    # da terceira. Reinicia a cada título ou parágrafo vazio. Restrito ao
+    # estilo 'RDAA Numerado' (prosa argumentativa em cascata) para não
+    # marcar falso positivo em alíneas de pedido, que legitimamente podem
+    # repetir a primeira palavra entre itens de uma lista.
+    if estilos is None:
+        estilos = [None] * len(paragrafos)
+    problemas = []
+    anterior_idx = None
+    anterior_palavra = None
+    for i, p in enumerate(paragrafos):
+        texto = p.strip()
+        estilo = (estilos[i] or "").strip().casefold()
+        if not texto or _parece_titulo(texto) or estilo not in ("rdaa numerado", ""):
+            anterior_idx, anterior_palavra = None, None
+            continue
+        palavra = _primeira_palavra(texto)
+        if palavra and palavra == anterior_palavra:
+            problemas.append(
+                f"Paragrafo {i}: comeca com a mesma palavra do paragrafo anterior "
+                f"({anterior_idx}) — {palavra!r}. Variar a abertura, mesmo quando "
+                "a palavra repetida nao for um artigo."
+            )
+        anterior_idx, anterior_palavra = i, palavra
+    return problemas
+
+
+def checar_consistencia_terminologica(paragrafos, estilos, partes_texto):
+    # Regra do Ricardo (2026-09): uma vez que o quadro de qualificação
+    # estabelece o papel processual da parte (ex.: "Executada:"), o corpo da
+    # peça deve usar esse mesmo termo até o fim, nunca alternando com a razão
+    # social ou apelido comercial (ex.: "COTRIAL", "a cooperativa"). A regra
+    # de redacao-rdaa.md já previa isso ("o corpo... reutiliza exatamente a
+    # qualificação definida no quadro — não substituir pela razão social,
+    # salvo necessidade real de individualização"), mas não havia verificação
+    # automática. `partes_texto` é o campo `partes` do contexto JSON
+    # (ex.: "Executada: COOPERATIVA ... COTRIAL\nExequente: ...").
+    problemas = []
+    if not partes_texto:
+        return problemas
+
+    papel_re = re.compile(
+        r'^\s*(Autor[a]?|R[ée][us]?|Corr[ée]s?|Requerente|Requerid[oa]|'
+        r'Embargante|Embargad[oa]|Agravante|Agravad[oa]|Apelante|Apelad[oa]|'
+        r'Exequente|Executad[oa]|Impetrante|Impetrad[oa])\s*:\s*(.+)$',
+        re.IGNORECASE,
+    )
+    # Nome comercial/apelido: só o trecho literal após um travessão/hífen no
+    # FINAL da razão social (ex.: "... LTDA. – COTRIAL" -> "COTRIAL"), nunca
+    # cada palavra isolada da razão social — fatiar palavra a palavra pegaria
+    # preposições comuns do português (DOS, DAS, DO) e explodiria em falso
+    # positivo contra qualquer texto normal.
+    apelido_re = re.compile(r'[\u2013\u2014-]\s*([A-ZÀ-Ü][A-ZÀ-Ü0-9.]{2,})\s*$')
+    alvos = []
+    for linha in partes_texto.splitlines():
+        match = papel_re.match(linha.strip())
+        if not match:
+            continue
+        papel, razao_social = match.group(1), match.group(2).strip()
+        if razao_social:
+            alvos.append((papel, razao_social))
+        apelido_match = apelido_re.search(razao_social)
+        if apelido_match:
+            apelido = apelido_match.group(1).strip('.')
+            if apelido not in {"LTDA", "S.A", "SA", "EPP", "MEI", "EIRELI", "ME"}:
+                alvos.append((papel, apelido))
+
+    if not alvos:
+        return problemas
+
+    for i, p in enumerate(paragrafos):
+        estilo = (estilos[i] or "").strip().casefold()
+        if estilo != "rdaa numerado":
+            continue
+        for papel, termo in alvos:
+            if re.search(r'\b' + re.escape(termo) + r'\b', p, re.IGNORECASE):
+                problemas.append(
+                    f"Paragrafo {i}: usa {termo!r} no corpo da peca, mas o quadro de "
+                    f"qualificacao ja define esse papel como {papel!r} — reutilizar "
+                    f"a qualificacao processual ({papel}), nao a razao social/apelido, "
+                    "salvo necessidade real de individualizacao (ex.: mais de um reu)."
+                )
+    return problemas
+
+
 def checar_aberturas_repetidas(paragrafos, minimo_palavras=4, limite=3):
     problemas = []
     aberturas = {}
@@ -451,7 +558,7 @@ def checar_aberturas_repetidas(paragrafos, minimo_palavras=4, limite=3):
     return problemas
 
 
-def checar(path):
+def checar(path, partes_texto=None):
     paragrafos, estilos, bordas = carregar_paragrafos(path)
 
     problemas = []
@@ -464,6 +571,8 @@ def checar(path):
     problemas += checar_aposto_explicativo(paragrafos, estilos)
     problemas += checar_aberturas_repetidas(paragrafos)
     problemas += checar_aberturas_consecutivas(paragrafos)
+    problemas += checar_primeira_palavra_repetida(paragrafos, estilos)
+    problemas += checar_consistencia_terminologica(paragrafos, estilos, partes_texto)
 
     dois_pontos = listar_dois_pontos(paragrafos, bordas, estilos)
 
@@ -471,12 +580,26 @@ def checar(path):
 
 
 def main():
-    if len(sys.argv) != 2:
-        print("Uso: python3 verificar_estilo.py caminho/para/peca.docx", file=sys.stderr)
+    import json as _json
+
+    args = sys.argv[1:]
+    context_path = None
+    if '--context' in args:
+        idx = args.index('--context')
+        context_path = args[idx + 1]
+        del args[idx:idx + 2]
+
+    if len(args) != 1:
+        print("Uso: python3 verificar_estilo.py caminho/para/peca.docx [--context contexto.json]", file=sys.stderr)
         sys.exit(2)
 
-    path = sys.argv[1]
-    problemas, dois_pontos = checar(path)
+    path = args[0]
+    partes_texto = None
+    if context_path:
+        with open(context_path, encoding='utf-8') as f:
+            partes_texto = _json.load(f).get('partes')
+
+    problemas, dois_pontos = checar(path, partes_texto)
 
     if problemas:
         print(f"[ERRO] {len(problemas)} problema(s) de cadencia/estilo em {path}:")
