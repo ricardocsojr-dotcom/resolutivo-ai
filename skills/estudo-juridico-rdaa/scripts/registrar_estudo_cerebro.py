@@ -18,6 +18,50 @@ CEREBRO_PATH = "C:\\Users\\ricar\\cerebro-ricar"
 CEREBRO = Path(CEREBRO_PATH)
 
 
+def _sincronizar_openviking(
+    source_dir: Path,
+    *,
+    cerebro_root: Path,
+    processing_mode: str = "vectors_only",
+    watch_interval: int = 60,
+    timeout: int = 300,
+) -> dict[str, Any]:
+    """Sincroniza uma coleção do Cérebro no OpenViking."""
+    try:
+        import sys
+        sync_dir = Path(__file__).resolve().parents[2] / "redigir-peca" / "scripts"
+        if str(sync_dir) not in sys.path:
+            sys.path.insert(0, str(sync_dir))
+        from sincronizar_openviking import sync_path
+
+        return sync_path(
+            source_dir,
+            cerebro_root=cerebro_root,
+            processing_mode=processing_mode,
+            timeout=timeout,
+        )
+    except Exception as exc:
+        return {"success": False, "error": f"falha ao carregar sincronizador OpenViking: {exc}"}
+
+
+def _sincronizar_colecoes_openviking(cerebro: Path) -> dict[str, Any]:
+    resultados = []
+    for collection in ("concepts", "sources", "domains"):
+        resultados.append(
+            _sincronizar_openviking(
+                cerebro / "wiki" / collection,
+                cerebro_root=cerebro,
+                processing_mode="vectors_only",
+                watch_interval=0,
+                timeout=300,
+            )
+        )
+    return {
+        "success": all(item.get("success") for item in resultados),
+        "collections": resultados,
+    }
+
+
 def _now() -> str:
     """ISO 8601 com Z."""
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
@@ -234,6 +278,15 @@ def registrar(theme: str, artifact_url: str, concepts: list[str], sources: list[
         # Atualiza índices
         atualizar_indices()
         atualizar_hot(theme, artifact_url)
+        openviking_sync = _sincronizar_colecoes_openviking(CEREBRO)
+        if not openviking_sync["success"]:
+            return {
+                "success": False,
+                "cerebro_registered": True,
+                "openviking_sync": openviking_sync,
+                "error": "estudo registrado no Cérebro, mas a sincronização OpenViking ficou pendente",
+                "theme": theme,
+            }
         
         return {
             "success": True,
@@ -242,6 +295,7 @@ def registrar(theme: str, artifact_url: str, concepts: list[str], sources: list[
             "concepts_created": len(concept_files),
             "sources_created": len(source_files),
             "domain": domain,
+            "openviking_sync": openviking_sync,
             "timestamp": _now()
         }
     

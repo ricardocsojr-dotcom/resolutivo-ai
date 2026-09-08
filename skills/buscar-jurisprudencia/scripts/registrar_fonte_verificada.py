@@ -34,6 +34,31 @@ DEFAULT_CEREBRO_ROOT = Path(os.environ.get("RDAA_CEREBRO_PATH", r"C:\Users\ricar
 _PREC_PATTERN = re.compile(r"prec-(\d+)\.md$", re.IGNORECASE)
 
 
+def _sincronizar_openviking(
+    source_dir: Path,
+    *,
+    cerebro_root: Path,
+    processing_mode: str = "vectors_only",
+    watch_interval: int = 60,
+    timeout: int = 300,
+) -> dict[str, Any]:
+    """Sincroniza uma coleção do Cérebro no OpenViking."""
+    try:
+        sync_dir = Path(__file__).resolve().parents[2] / "redigir-peca" / "scripts"
+        if str(sync_dir) not in sys.path:
+            sys.path.insert(0, str(sync_dir))
+        from sincronizar_openviking import sync_path
+
+        return sync_path(
+            source_dir,
+            cerebro_root=cerebro_root,
+            processing_mode=processing_mode,
+            timeout=timeout,
+        )
+    except Exception as exc:
+        return {"success": False, "error": f"falha ao carregar sincronizador OpenViking: {exc}"}
+
+
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
 
@@ -131,12 +156,22 @@ def registrar_fonte_verificada(
     except Exception:
         pass
 
+    openviking_sync = _sincronizar_openviking(
+        sources_dir,
+        cerebro_root=root,
+        processing_mode="vectors_only",
+        watch_interval=0,
+        timeout=300,
+    )
+
     return {
-        "success": True,
+        "success": openviking_sync.get("success", False),
+        "cerebro_registered": True,
         "source_id": prec_id,
         "path": str(path),
         "indexed": indexado,
         "review_due": review_due,
+        "openviking_sync": openviking_sync,
     }
 
 
@@ -174,7 +209,7 @@ def main() -> int:
         cerebro_root=args.cerebro,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
-    return 0
+    return 0 if result.get("success") else 1
 
 
 if __name__ == "__main__":

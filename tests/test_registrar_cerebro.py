@@ -44,6 +44,7 @@ def test_registrar_publicado_emite_recibo_para_vault_registered(tmp_path, monkey
         encoding="utf-8",
     )
     (tmp_path / "run_manifest.json").write_text(json.dumps({"phase": "published"}), encoding="utf-8")
+    monkeypatch.setattr(MODULE, "_sincronizar_openviking", lambda *args, **kwargs: {"success": True})
 
     result = MODULE.registrar(tmp_path, "caso-123", "B")
 
@@ -62,6 +63,7 @@ def test_registrar_normaliza_campos_para_nao_forjar_frontmatter(tmp_path, monkey
         encoding="utf-8",
     )
     (tmp_path / "run_manifest.json").write_text(json.dumps({"phase": "published"}), encoding="utf-8")
+    monkeypatch.setattr(MODULE, "_sincronizar_openviking", lambda *args, **kwargs: {"success": True})
 
     result = MODULE.registrar(tmp_path, "caso-123", "B")
 
@@ -85,6 +87,7 @@ def test_registrar_aceita_partes_textuais_do_contexto_docx(tmp_path, monkeypatch
         encoding="utf-8",
     )
     (tmp_path / "run_manifest.json").write_text(json.dumps({"phase": "published"}), encoding="utf-8")
+    monkeypatch.setattr(MODULE, "_sincronizar_openviking", lambda *args, **kwargs: {"success": True})
 
     result = MODULE.registrar(tmp_path, "caso-123", "C")
 
@@ -92,3 +95,30 @@ def test_registrar_aceita_partes_textuais_do_contexto_docx(tmp_path, monkeypatch
     content = Path(result["file"]).read_text(encoding="utf-8")
     assert 'client: "Cooperativa Agropecuária Ltda."' in content
     assert "- **Autor:** Cooperativa Agropecuária Ltda." in content
+
+
+def test_registrar_publicado_dispara_sincronizacao_openviking(tmp_path, monkeypatch):
+    cerebro = _cerebro(tmp_path)
+    monkeypatch.setattr(MODULE, "CEREBRO", cerebro)
+    monkeypatch.setattr(MODULE, "WIKI_OPERACIONAL", cerebro / "wiki" / "operacional")
+    (tmp_path / "contexto_peca.json").write_text(
+        json.dumps({"titulo_peca": "Manifestação", "partes": {"autor": {"nome": "Cliente"}}}),
+        encoding="utf-8",
+    )
+    (tmp_path / "run_manifest.json").write_text(json.dumps({"phase": "published"}), encoding="utf-8")
+    calls = []
+
+    def fake_sync(*args, **kwargs):
+        calls.append((args, kwargs))
+        return {"success": True, "receipt": str(tmp_path / "OPENVIKING-RECIBO.json")}
+
+    monkeypatch.setattr(MODULE, "_sincronizar_openviking", fake_sync)
+
+    result = MODULE.registrar(tmp_path, "caso-123", "B")
+
+    assert result["success"] is True
+    assert result["openviking_sync"]["success"] is True
+    assert calls
+    assert calls[0][0][0] == cerebro / "wiki" / "operacional"
+    assert calls[0][1]["processing_mode"] == "vectors_only"
+    assert calls[0][1]["receipt_path"] == tmp_path / "OPENVIKING-RECIBO.json"

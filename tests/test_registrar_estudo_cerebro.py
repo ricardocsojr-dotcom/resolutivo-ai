@@ -39,3 +39,23 @@ def test_registrar_estudo_recusa_fonte_sem_ementa_literal(tmp_path, monkeypatch)
 
     assert result["success"] is False
     assert not (cerebro / "wiki" / "sources" / "PREC-999.md").exists()
+
+
+def test_registrar_estudo_sincroniza_conceitos_e_fontes(tmp_path, monkeypatch):
+    cerebro = _cerebro(tmp_path)
+    monkeypatch.setattr(MODULE, "CEREBRO", cerebro)
+    (cerebro / "wiki" / "sources" / "PREC-001.md").write_text("ementa literal", encoding="utf-8")
+    calls = []
+
+    def fake_sync(*args, **kwargs):
+        calls.append((args, kwargs))
+        return {"success": True, "root_uri": "viking://resources"}
+
+    monkeypatch.setattr(MODULE, "_sincronizar_openviking", fake_sync)
+
+    result = MODULE.registrar("Tema", "artifact", ["Conceito novo"], ["PREC-001"], "direito-civil")
+
+    assert result["success"] is True
+    assert result["openviking_sync"]["success"] is True
+    assert len(calls) == 3
+    assert {call[0][0].name for call in calls} == {"concepts", "sources", "domains"}

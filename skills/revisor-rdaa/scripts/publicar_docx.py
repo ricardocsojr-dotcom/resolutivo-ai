@@ -13,6 +13,7 @@ import json
 import shutil
 import sys
 from pathlib import Path
+from typing import Any, Callable
 
 # ponytail: mesmo fix de construir_peca.py/verificar_formatacao.py/qa_gate.py
 # — sem isso, mensagem com acento (incl. a saída agregada do qa_gate) sai
@@ -44,6 +45,26 @@ from verificar_semantica_docx import verify_docx_semantics  # noqa: E402
 from verificar_visual_law import verify_visual_law  # noqa: E402
 from validar_esqueleto import validate_skeleton  # noqa: E402
 from classificacao_peca import validate_piece_contract  # noqa: E402
+
+
+def _registrar_cerebro_pos_publicacao(
+    state_dir: Path,
+    matter_id: str,
+    context: dict[str, Any],
+    *,
+    registrar_fn: Callable[[Path, str, str], dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Registra no Cérebro e dispara a sincronização OpenViking após publicação."""
+    level = context.get("nivel_peca")
+    if level not in {"C", "B", "A"}:
+        return {"success": False, "error": "contexto publicado sem nivel_peca válido (C/B/A)"}
+    if registrar_fn is None:
+        repo_root = SCRIPT_DIR.parents[2]
+        redigir_scripts = repo_root / "skills" / "redigir-peca" / "scripts"
+        if str(redigir_scripts) not in sys.path:
+            sys.path.insert(0, str(redigir_scripts))
+        from registrar_cerebro import registrar as registrar_fn
+    return registrar_fn(state_dir, matter_id, level)
 
 
 def main() -> int:
@@ -258,6 +279,16 @@ def main() -> int:
         promoted_state_files=promoted_files,
         route=route,
     )
+    if context is not None:
+        if context.get("nivel_peca") is not None:
+            cerebro_result = _registrar_cerebro_pos_publicacao(state_dir, matter_id, context)
+            if not cerebro_result.get("success"):
+                print("[ERRO] DOCX publicado, mas registro/sincronização do Cérebro falhou", file=sys.stderr)
+                print(json.dumps(cerebro_result, ensure_ascii=False), file=sys.stderr)
+                return 1
+            print("[OK] Cérebro-Ricar e OpenViking sincronizados")
+        else:
+            print("[INFO] contexto legado sem nivel_peca: registro automático não executado")
     print(f"[OK] DOCX publicado após QA: {args.output}")
     print(f"[INFO] backup anterior: {backup or 'não havia arquivo anterior'}")
     return 0
