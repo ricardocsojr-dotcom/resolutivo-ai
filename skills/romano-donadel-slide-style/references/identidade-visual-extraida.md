@@ -1,5 +1,9 @@
 # Identidade visual Romano Donadel extraída de materiais de referência
 
+## Atualização de precedência
+
+A orientação atual de Ricardo prevalece sobre os padrões históricos abaixo: tipografia preferencialmente no cinza oficial `#63666A`; laranja `#F7A800` para estrutura, linhas, quadros e diagramas; Lato verificada no render, sem fallback silencioso. Preto é contraste pontual. Verde/vermelho só quando realmente informativos, nunca como paleta de parte adversa versus escritório. As antigas indicações de texto preto e fallback automático abaixo descrevem referências históricas, não o padrão atual.
+
 ## Fonte e finalidade
 
 Esta referência consolida padrões observados em 12 apresentações enviadas pelo escritório, totalizando 106 slides, além de um relatório em PDF e do logotipo oficial fornecido por Ricardo. Ela existe para orientar a criação e a padronização de novos decks sem embutir apresentações de clientes no plugin.

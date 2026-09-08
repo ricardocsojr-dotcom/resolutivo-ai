@@ -1,0 +1,677 @@
+1|--- Pagina 1 ---
+2| 
+3| 
+4| 
+5|Avenida dos Vinhedos, 200 | conj. 4 | Gávea Office | Morada da Colina | 38411 -159 | Uberlândia MG | +55 34 3229 0020 
+6|romanodonadel.com.br 
+7|Página 1 de 22 
+8|EXCELENTÍSSIMO SENHOR DOUTOR DESEMBARGADOR  PRESIDENTE DO  EGRÉGIO 
+9|TRIBUNAL DE JUSTIÇA DO ESTADO DE MINAS GERAIS 
+10| 
+11| 
+12| 
+13|PEDIDO DE TUTELA DE URGÊNCIA 
+14|DISTRIBUIÇÃO POR DEPENDÊNCIA AOS AUTOS Nº 1.0702.15.092464-6/001 
+15| 
+16|AÇÃO RESCISÓRIA PARCIAL CUMULADA COM PEDIDO DE TUTELA CAUTELAR INCIDENTAL 
+17| 
+18| 
+19|Autora:  
+20|TRIVALE INSTITUIÇÃO DE PAGAMENTO LTDA. , pessoa jurídica de direito privado, inscrita no 
+21|CNPJ/MF sob o n.º 00.604.122/0001-97, com sede na Av. Jacarandá, n° 200, Bairro Jaraguá, no Município 
+22|de Uberlândia/MG, CEP 38.413 -069, com endereço eletrônico para recebimento de intimações 
+23|cit@romanodonadel.com.br; 
+24| 
+25|Ré:  
+26|MINARE COMÉRCIO DE ALIMENTOS LTDA., pessoa jurídica de direito privado, inscrita no CNPJ/MF 
+27|sob o n.º 08.507.404/0001 -88, com sede na Avenida Airton Senna do Brasil, n.º 1.190, Bairro Baiano 
+28|Cirino, Iturama/MG. 
+29| 
+30|Objeto:   
+31|Ação Rescisória Parcial – Erro de Fato – CPC, art. 966, inciso VIII, § 1º; 
+32|Tutela Cautelar Incidental – CPC, arts. 295 e 300. 
+33| 
+34|Foro:  
+35|Tribunal de Justiça do Estado de Minas Gerais – TJMG 
+36| 
+37|Valor da causa:  
+38|R$ 2.118.062,84 (dois milhões, cento e dezoito mil, sessenta e dois reais e oitenta e quatro centavos) , 
+39|correspondente ao proveito econômico pretendido com a exclusão da parcela da condenação fundada 
+40|em valores já quitados, nos termos do CPC, art. 292, inciso II.  
+41| 
+42|
+43|--- Pagina 2 ---
+44| 
+45| 
+46| 
+47|Avenida dos Vinhedos, 200 | conj. 4 | Gávea Office | Morada da Colina | 38411 -159 | Uberlândia MG | +55 34 3229 0020 
+48|romanodonadel.com.br 
+49|Página 2 de 22 
+50| 
+51|I. SÚMULA DA AÇÃO 
+52| 
+53|Trata-se de ação rescisória parcial fundada no CPC, art. 966, inciso VIII, por meio da qual a Autora busca 
+54|a desconstituição parcial do acórdão proferido pela 17ª Câmara Cível do Tribunal de Justiça de Minas 
+55|Gerais na Apelação Cível nº 1.0702.15.092464-6/001, bem como da sentença de 20/08/2020. Ambas as 
+56|decisões mantiveram condenação baseada na premissa de que estavam em aberto dois grupos de títulos 
+57|nos termos do  laudo pericial (identificados como Blocos IV -C e V -C) embora parte relevante desses 
+58|títulos já estivesse quitada conforme comprovantes bancários e extratos de conveniada encartados 
+59|nos autos originários antes mesmo da sentença. 
+60| 
+61|A controvérsia rescindenda é delimitada. A Autora não pretende rediscutir a metodologia do laudo 
+62|pericial, a escolha dos índices de atualização ou a valoração da prova técnica, mas afastar a parcela da 
+63|condenação preservada sem exame individualizado dos pagamentos já documentados nos autos. 
+64| 
+65|Em valores originais, antes de juros, correção monetária e honorários, a perícia apontou R$ 150.730,93 
+66|como saldo em aberto nos Blocos IV-C e V-C. Excluindo os títulos repetidos desses dois grupos de cálculo, 
+67|a base correta de conferência passa a ser R$ 146.893,71. Desse total, os documentos já juntados nos 
+68|autos comprovam a quitação de R$ 128.370,50, de modo que o saldo original remanescente – 
+69|efetivamente não pago – é de R$ 18.523,21. A depuração do cálculo segue a seguinte lógica: 
+70| 
+71|CONTEXTO DO VALOR VALOR HISTÓRICO OBSERVAÇÃO 
+72|Valor original tratado como não pago 
+73|pela perícia R$ 150.730,93 Ponto de partida do laudo 
+74|Ajuste por títulos repetidos -R$ 3.837,22 Retirada de valores contados em duplicidade 
+75|Valor original após o ajuste R$ 146.893,71 Base correta para conferência 
+76|Pagamentos já comprovados nos autos -R$ 128.370,50 Parte indevidamente tratada como dívida, mas 
+77|com comprovantes de pagamento nos autos 
+78|Saldo original que permanece em 
+79|aberto, sem pagamento R$ 18.523,21 
+80|Parcela não atingida pela rescisória e já 
+81|objeto de depósito voluntário no 
+82|Cumprimento de Sentença (Doc. anexo) 
+83| 
+84|Diante desse quadro, a Autora requer, no juízo rescindente, a desconstituição parcial do julgado na 
+85|fração correspondente ao valor original de R$ 128.370,50 indevidamente classificado como inadimplido 
+86|– uma vez que constam nos autos os comprovantes – somado à concessão de tutela cautelar incidental 
+87|para suspensão dos atos executivos   da execução e, no juízo rescisório, a exclusão dessa parcela  da 
+88|condenação mediante os comprovantes de pagamento já existentes, sob pena de enriquecimento ilícito. 
+89| 
+90|Houve comprovação do pagamento pela Autora (constante nos autos), mas foi mantida a condenação 
+91|para o pagamento de mais de 2 milhões de reais (valor atualizado dos R$ 150.730,93). 
+92|
+93|--- Pagina 3 ---
+94| 
+95| 
+96| 
+97|Avenida dos Vinhedos, 200 | conj. 4 | Gávea Office | Morada da Colina | 38411 -159 | Uberlândia MG | +55 34 3229 0020 
+98|romanodonadel.com.br 
+99|Página 3 de 22 
+100|Em síntese, trata -se o erro de fato de uma suposição inexata, de 
+101|um erro de  percepção ou de uma falha que escapou à vista do 
+102|julgador, ao compulsar os autos do processo. 
+103|E é sob esse viés que o pedido rescindendo deve ser acolhido. 
+104| 
+105|STJ - AR: 6870 DF 2020/0293790 -3, Relator.: Ministro PAULO DE TARSO 
+106|SANSEVERINO, 23/03/2022. 
+107| 
+108|II. PRELIBAÇÃO POSITIVA 
+109| 
+110|1. Antes do exame do vício rescindendo, a Autora demonst ra que foram atendidos todos os 
+111|pressupostos de constituição e de desenvolvimento válido e regular do processo. 
+112| 
+113|2. Legitimidade. A Autora figurou como ré no processo originário – Ação de Cobrança n.º 
+114|0924646-21.2015.8.13.0702, em trâmite perante a 2ª Vara Cível da Comarca de Uberlândia/MG — e foi 
+115|diretamente atingida pelas decisões rescindendas. Sua legitimidade decorre do CPC, art. 967, inciso I, 
+116|pois a condenação se apoiou em premissa fática incompatível com documentos de quitação já existentes 
+117|nos autos. 
+118| 
+119|3. Competência. A decisão rescindenda é o acórdão proferido pela 17ª Câmara Cível do Tribunal 
+120|de Justiça de Minas Gerais na Apelação Cível nº 1.0702.15.092464-6/001 (DJe 27/07/2023), que manteve 
+121|a sentença de 1º grau de 20/08/2020 (Docs. 07 e doc. 08). 
+122| 
+123|4. O Superior Tribunal de Justiça, ao apreciar o AREsp 2.615.252/MG (Rel. Min. Humberto 
+124|Martins, DJe 26/06/2024), inadmitiu o recurso (Súmulas 282, 356 e 284/STF) não se operando o efeito 
+125|substitutivo do acórdão estadual  – CPC, art. 1008 . Em consequência, a última decisão de mérito 
+126|rescindenda continua sendo o acórdão da 17ª Câmara Cível do TJMG, sendo este E. Tribunal competente 
+127|para processar e julgar a presente ação rescisória.  
+128| 
+129|5. A Súmula 515/STF1 corrobora essa compreensão ao afirmar que a competência rescisória 
+130|não se transfere ao tribunal superior quando a questão por ele apreciada não coincide com 
+131|aquela deduzida no pedido rescisório . No caso, a conclusão é ainda mais evidente, porque o STJ 
+132|limitou-se ao juízo de admissibilidade e não apreciou o mérito da controvérsia. 
+133| 
+134|6. Prazo. O trânsito em julgado ocorreu em 4 de setembro de 2024, data certificada pelo STJ 
+135|na certidão de trânsito e termo de baixa do AREsp 2.615.252/MG (Doc. 02). O prazo bienal previsto no 
+136|CPC, art. 975, caput, expira em 4 de setembro de 2026 – Súmula 401 do STJ. A presente ação é, portanto, 
+137|tempestiva. 
+138| 
+139|1BRASIL. Supremo Tribunal Federal. Súmula 515: “A competência para a ação rescisória não é do Supremo Tribunal Federal, quando a 
+140|questão federal, apreciada no recurso extraordinário ou no agravo de instrumento, seja diversa da que foi suscitada no pedido rescisório.” 
+141|
+142|--- Pagina 4 ---
+143| 
+144| 
+145| 
+146|Avenida dos Vinhedos, 200 | conj. 4 | Gávea Office | Morada da Colina | 38411 -159 | Uberlândia MG | +55 34 3229 0020 
+147|romanodonadel.com.br 
+148|Página 4 de 22 
+149|7. Depósito Prévio (CPC, Art. 968, inciso II). A Autora declara ciência da exigência prevista no 
+150|CPC, art. 968, inciso II, relativa ao depósito prévio de 5% sobre o valor atribuído à causa. No âmbito do 
+151|TJMG, a operacionalização do recolhimento depende da geração da guia própria e/ou da vinculação ao 
+152|feito após o protocolo/distribuição da ação rescisória, razão pela qual a Autora requer seja oportunizado 
+153|o recolhimento tão logo disponibilizado o meio adequado para tanto, sem prejuízo do regular 
+154|processamento inicial da presente demanda. 
+155| 
+156|III. O ERRO DE FATO DOCUMENTADO NOS AUTOS – CPC, ART. 966, VIII 
+157| 
+158|8. A Autora não pretende anular o laudo pericial, rediscutir ou instaurar nova apuração técnica, 
+159|rever a metodologia adotada pela perita, tampouco utilizar esta via como sucedâneo recursal da apelação 
+160|já julgada. Inclusive, a parcela incontroversa da condenação  no valor histórico de R$ 18.523,21 
+161|permanece hígida, foi devidamente corrigida e depositada em juízo no Cumprimento de Sentença nº 
+162|1016569-45.2026.8.13.070 como pagamento voluntário, não integrando o objeto desta rescisória. 
+163| 
+164|9. O vício rescindendo é estrito e verificável, uma vez que títulos foram considerados 
+165|inadimplidos apesar dos respectivos comprovantes de quitação já constarem dos autos  
+166|originários, não tendo ocorrido o devido exame individualizado pelo juízo ou pelo colegiado. 
+167| 
+168|10. O cabimento da presente ação rescisória , que é fundamentada na existência de  erro 
+169|de fato , depende da adequada demonstração dos seguintes requisitos 2:  
+170| 
+171|a) que o erro seja relevante para o julgamento da questão : não há dúvidas de que a 
+172|existência nos autos de comprovante de pagamento de valores tido como não pagos 
+173|pela condenação  transitada em julgado, revela-se de extrema relevância , pois se 
+174|permanecer convalida , inclusive, enriquecimento ilícito ; 
+175| 
+176|b) que seja apurável mediante simples exame das provas já constantes dos autos da ação 
+177|originária, sendo inadmissível a produção, na rescisória, de novas provas para 
+178|demonstrá -lo: todos os comprovantes consta m do processo originário, sendo 
+179|desnecessário novas provas que serão aqui tão somente reforçadas;   
+180| 
+181|c) que não tenha havido controvérsia nem pronunciamento judicial sobre o fato : o v. 
+182|acórdão que ensejou a presente rescisória não analisou os comprovantes apontados 
+183|pela Autora como prova do respectivo pagamento  – CPC, arts. 479 e 371 . 
+184| 
+185|2 STJ - AR: 6870 DF 2020/0293790 -3, Relator.: Ministro PAULO DE TARSO SANSEVERINO, Data de Julgamento: 23/03/2022, S2 - 
+186|SEGUNDA SEÇÃO, Data de Publicação: DJe 04/04/2022. 
+187|
+188|--- Pagina 5 ---
+189| 
+190| 
+191| 
+192|Avenida dos Vinhedos, 200 | conj. 4 | Gávea Office | Morada da Colina | 38411 -159 | Uberlândia MG | +55 34 3229 0020 
+193|romanodonadel.com.br 
+194|Página 5 de 22 
+195|a) RELATO DO NECESSÁRIO – O LITÍGIO ORIGINÁRIO 
+196| 
+197|11. Em 2015 a Ré ajuizou Ação de Cobrança (nº 0924646 -21.2015.8.13.0702) em face da 
+198|Autora, afirmando ser credora de R$ 1.000.801,52 referente a  repasses não realizados de  vendas 
+199|processadas por meio do cartão Valecard entre maio de 2008 e janeiro de 2012, somando ao mencionado 
+200|débito danos morais aos quais atribuiu o valor de quatro milhões de reais.  
+201| 
+202|12. Determinada a realização de perícia contábil, a expert judicial elaborou laudo estruturado em 
+203|Anexos numerados, dividindo os valores apurados por categorias. 
+204| 
+205|13. Para o objeto desta rescisória, importam os Blocos IV-C e V-C, que congregavam os valores 
+206|reputados pela perita como pendentes de pagamento: 
+207| 
+208|Bloco Valor histórico apontado como em aberto 
+209|no laudo Observação 
+210|IV-C R$ 6.321,88 Títulos da petição inicial 
+211|V-C R$ 144.409,05 Títulos fora da petição inicial 
+212|TOTAL R$ 150.730,93 Valor principal histórico atribuído pelo 
+213|laudo como não pago (em aberto)  
+214| 
+215|14. Com atualização monetária e juros (TJMG, tabela setembro/2015, 1% a.m.), o laudo apontou 
+216|saldo devedor de R$ 724.882,33 à data de junho/2019 – valor este que compôs integralmente a 
+217|condenação dos R$ 150.730,93 históricos. A premissa fática para se afirmar o débito nesse valor 
+218|(valor histórico de R$ 150.730,93) estava errada, o que é verificável no exame dos próprios autos. 
+219| 
+220|b) LEVANTAMENTO ANALÍTICO E CRONOLOGIA DOS COMPROVANTES 
+221| 
+222|15. Esta petição é acompanhada de quadro-índice elaborado pelos subscritores (Doc. 11), que 
+223|localiza, título por título, a folha do e-STJ em que cada comprovante de quitação já se encontra nos autos 
+224|originários. Não produz prova, não cria fatos nem substitui os documentos, apenas remete a eles.  
+225| 
+226|16. A prova da quitação está nos documentos originários — TED, DOC e Extratos de Conveniada 
+227|— juntados pela Autora entre 2015 e 2019, antes da sentença, e que permanecem nos autos desde 
+228|então (Docs. 09, 10 e 12). 
+229| 
+230|17. O quadro -índice serve à ergonomia da conferência: permite ao julgador localizar cada 
+231|comprovante pela folha correspondente, sem que a demonstração dependa de qualquer elemento 
+232|externo aos autos originários. 
+233|
+234|--- Pagina 6 ---
+235| 
+236| 
+237| 
+238|Avenida dos Vinhedos, 200 | conj. 4 | Gávea Office | Morada da Colina | 38411 -159 | Uberlândia MG | +55 34 3229 0020 
+239|romanodonadel.com.br 
+240|Página 6 de 22 
+241|18. A cronologia processual confirma o ponto decisivo: os comprovantes de quitação já estavam 
+242|nos autos antes da sentença, afastando, de plano, qualquer alegação de prova nova: 
+243| 
+244| 
+245|Instrução probatória . A Autora juntou os comprovantes de pagamento 
+246|correspondentes aos títulos contestados — TED/DOC e extratos de conveniada 
+247|— em folhas identificadas do e-STJ, antes da prolação da sentença. 
+248| 
+249|Apresentação do laudo pericial  (fls. 1553/1685 — Doc. 05). A perita 
+250|classificou como inadimplidos os títulos dos Blocos IV -C e V-C sem confrontar 
+251|individualmente os comprovantes de pagamento já encartados nos autos e o v. 
+252|acórdão não enfrentou esse tema. 
+253| 
+254|Fase de esclarecimentos e memoriais . Quesitos complementares 
+255|respondidos pela perita nas fls. 1701/1703 ( Doc. 06). Não houve 
+256|pronunciamento individualizado sobre a quitação de título específico com 
+257|indicação do respectivo comprovante encartado nos autos. 
+258| 
+259|Sentença (doc. 07). O juiz da 2.ª Vara Cível de Uberlândia aderiu globalmente 
+260|ao saldo pericial, sem cotejo individualizado dos comprovantes de pagamento.  
+261| 
+262|Acórdão do TJMG (doc. 08). A 17.ª Câmara Cível manteve a condenação sem 
+263|mencionar, em nenhuma passagem, qualquer uma das folhas do e -STJ que 
+264|contêm os comprovantes de quitação. 
+265| 
+266|Decisão do STJ no AREsp 2.615.252/MG (doc. 02). O STJ não conheceu do 
+267|recurso especial por óbices de admissibilidade, sem reexaminar o mérito. Não 
+268|houve efeito substitutivo sobre o acórdão estadual. 
+269| 
+270|Trânsito em julgado  (doc. 02). A certidão emitida no âmbito do AREsp  
+271|2.615.252/MG marcou o início do prazo decadencial bienal previsto no CPC, art. 
+272|975. 
+273| 
+274| 
+275|c) A MECÂNICA DO PAGAMENTO: COMO SE PROVA A QUITAÇÃO NESTE 
+276|MODELO DE NEGÓCIO 
+277| 
+278|19. A Autora não sustenta que todos os comprovantes bancários indiquem, isoladamente, o 
+279|número do título liquidado. Em operações dessa natureza, o comprovante bancário registra o repasse 
+280|financeiro – data, favorecido, valor líquido e, quando aplicável, número do lote ou agrupamento. A 
+281|identificação do título decorre do cotejo entre esse comprovante e o Extrato de Conveniada, que 
+282|individualiza o título, o valor bruto, os abatimentos contratuais e o valor líquido efetivamente repassado. 
+283| 
+284|20.  Para que se possa acompanhar a verificação documental com plena compreensão dos 
+285|termos do negócio, apresenta-se abaixo o glossário dos conceitos operacionais relevantes, o fluxo que 
+286|conecta cada participante da cadeia e a sequência documental que comprova cada pagamento: 
+287| 
+288|Marco 2 
+289|2019 
+290|Marco 1 
+291|2015 a 2019 
+292|Marco 3 
+293|2019/2020 
+294|Marco 4 
+295|20/08/2020 
+296|Marco 5 
+297|27/07/2023 
+298|Marco 6 
+299|26/06/2024 
+300|Marco 7 
+301|04/09/2024 
+302|
+303|
+304|--- Pagina 7 ---
+305| 
+306| 
+307| 
+308|Avenida dos Vinhedos, 200 | conj. 4 | Gávea Office | Morada da Colina | 38411 -159 | Uberlândia MG | +55 34 3229 0020 
+309|romanodonadel.com.br 
+310|Página 7 de 22 
+311|GLOSSÁRIO  
+312|Definições relevantes do negócio de cartões  
+313| 
+314|Termo Definição Relevância para o caso 
+315|Conveniada Estabelecimento credenciado que aceita o cartão da rede como 
+316|forma de pagamento. 
+317|A Ré Minare era conveniada da 
+318|rede Valecard, recebia o repasse 
+319|das vendas por esse canal. 
+320|Taxa de 
+321|desconto 
+322|(MDR) 
+323|Percentual retido pela rede credenciadora sobre cada 
+324|transação. O estabelecimento recebe o valor da venda já 
+325|deduzida a taxa de desconto. 
+326|Explica por que o valor líquido 
+327|repassado é menor que o valor 
+328|bruto constante no laudo. 
+329|Extrato de 
+330|Conveniada 
+331|Documento emitido pela rede credenciadora listando, por 
+332|período, os títulos liquidados, o valor bruto de cada um, os 
+333|descontos aplicados e o valor líquido repassado. 
+334|Documento central da cadeia 
+335|probatória: conecta o título ao 
+336|valor líquido repassado. 
+337|Agrupamento 
+338|bancário 
+339|Repasse financeiro que consolida múltiplos títulos em um único 
+340|TED ou DOC. Um único comprovante bancário pode quitar 
+341|dezenas de títulos simultaneamente. 
+342|Explica por que um TED pode 
+343|corresponder a vários títulos do 
+344|laudo. 
+345|TED / DOC 
+346|Transferência Eletrônica Disponível / Documento de Ordem de 
+347|Crédito. Instrumentos bancários que comprovam a 
+348|transferência do valor líquido. 
+349|Prova final e objetiva do 
+350|pagamento efetivo — constam nas 
+351|fls. do e-STJ. 
+352| 
+353|FLUXO OPERACIONAL  
+354|Da Venda Realizada pela Ré à prova do repasse feito pela Autora 
+355| 
+356|PASSO 1 — Venda PASSO 2 — Apuração PASSO 3 — Repasse PASSO 4 — Registro 
+357|Ré realiza venda aceita 
+358|pelo cartão Valecard 
+359|(Estabelecimento 
+360|Conveniado) 
+361|Autora registra a 
+362|transação, apura valor 
+363|bruto e aplica taxa de 
+364|desconto (MDR) 
+365|Autora repassa o valor 
+366|líquido por TED ou DOC, 
+367|individual ou agrupado por 
+368|lote 
+369|Autora emite o Extrato de 
+370|Conveniada registrando os 
+371|títulos liquidados 
+372|Título de venda 
+373|(lançamento) 
+374|Extrato de Conveniada 
+375|(apuração) 
+376|TED / DOC  
+377|(comprovante bancário) Cadeia documental completa 
+378| 
+379|CADEIA DOCUMENTAL  
+380|Roteiro de verificação título a título 
+381| 
+382|Etapa Documento O que demonstra 
+383|1 Título de venda (número do lançamento) Existência da obrigação apurada no laudo 
+384|2 Extrato de Conveniada Que o título foi liquidado, com valor bruto e líquido 
+385|identificados 
+386|3 Agrupamento bancário (quando aplicável) Que vários títulos foram consolidados em um único 
+387|repasse via TED/DOC 
+388|4 TED / DOC (comprovante bancário) Que o valor líquido foi efetivamente transferido para a Ré 
+389|Minare 
+390| 
+391|21. Assim, a prova do pagamento resulta de uma cadeia documental objetiva, pois o Extrato de 
+392|Conveniada identifica os títulos e a composição do lote, o comprovante bancário demonstra o repasse 
+393|líquido e, nos casos de agrupamento, o número do lote vincula os títulos individualizados ao pagamento 
+394|consolidado. Essa verificação não exige nova prova nem revaloração técnica do laudo.  
+395| 
+396|22. Exige apenas o exame dos documentos já encartados nos autos originários. 
+397|
+398|--- Pagina 8 ---
+399| 
+400| 
+401| 
+402|Avenida dos Vinhedos, 200 | conj. 4 | Gávea Office | Morada da Colina | 38411 -159 | Uberlândia MG | +55 34 3229 0020 
+403|romanodonadel.com.br 
+404|Página 8 de 22 
+405|d) A PREMISSA FÁTICA EQUIVOCADA: QUADRO CONSOLIDADO DOS 
+406|PAGAMENTOS 
+407| 
+408|23. A matriz documental foi organizada em três grupos: (i) títulos do Bloco IV -C constantes da 
+409|inicial; (ii) títulos do Bloco V -C liquidados por agrupamentos bancários; e (iii) títulos do Bloco V -C 
+410|vinculados individualmente por espelhamento documental. 
+411| 
+412|24. Antes dos quadros, é preciso esclarecer a base de cálculo utilizada. O laudo apontou R$ 
+413|150.730,93 como principal histórico em aberto nos Blocos IV-C e V-C, mas esse montante continha títulos 
+414|lançados simultaneamente nos dois blocos — 009324997, 008133445 e 009548138 —, gerando dupla 
+415|contagem de R$ 3.837,22 . A base correta para conferência, depurada da duplicidade, é R$ 
+416|146.893,71, e os quadros abaixo trabalham exclusivamente sobre esse valor. 
+417| 
+418|Bloco Base depurada  
+419|(sem dupla contagem) Valor quitado comprovado Saldo remanescente 
+420|IV-C R$ 6.321,88 R$ 4.780,58 R$ 1.541,30 
+421|V-C R$ 140.571,83 R$ 123.589,92 R$ 16.981,91 
+422|Total R$ 146.893,71 R$ 128.370,50 R$ 18.523,21 
+423| 
+424|25. O quadro demonstra a premissa fática falsa incorporada à condenação: o laudo tratou como 
+425|integralmente inadimplido o principal histórico de R$ 150.730,93, embora os próprios autos originários 
+426|demonstrassem a quitação de R$ 128.370,50. O principal efetivamente em aberto nos Blocos IV-C e V-
+427|C era de apenas R$ 18.523,21. 
+428| 
+429|e) A PROVA TÍTULO A TÍTULO 
+430| 
+431|I) Bloco IV -C: vinculação documental entre título, extrato e 
+432|comprovante bancário 
+433| 
+434|26. Do total de R$ 6.321,88 apontado como em aberto no laudo, apenas R$ 1.541,30 
+435|permanece como saldo real e incontroverso, sem integrar o pedido rescindente: 
+436| 
+437|N.º do título 
+438|Extrato de 
+439|Conveniada (fl. 
+440|e-STJ) 
+441|Comprovante 
+442|bancário (fl. 
+443|e-STJ) 
+444|Valor bruto 
+445|(extrato) Valor total Tarifa 
+446|DOC/TED 
+447|Valor 
+448|líquido pago 
+449|Há 
+450|DOC? 
+451|7679302 1723 1316 R$ 494,89 R$ 475,09 R$ 6,25 R$ 468,84 Sim 
+452|8133445 1723 1345 R$ 596,09 R$ 558,54 R$ 6,25 R$ 552,29 Sim 
+453|9287836 1723 1411 R$ 506,43 R$ 474,52 R$ 0,00 R$ 474,52 Não 
+454|9324997 1723 1413 R$ 1.916,44 R$ 1.760,70 R$ 0,00 R$ 1.760,70 Não 
+455|9548138 53 e 230 / 1723 1441 R$ 1.633,38 R$ 1.530,48 R$ 6,25 R$ 1.524,23 Sim 
+456|Total IV-C — — — — — R$ 4.780,58 — 
+457|
+458|--- Pagina 9 ---
+459| 
+460| 
+461| 
+462|Avenida dos Vinhedos, 200 | conj. 4 | Gávea Office | Morada da Colina | 38411 -159 | Uberlândia MG | +55 34 3229 0020 
+463|romanodonadel.com.br 
+464|Página 9 de 22 
+465| 
+466|27. Nesse Bloco IV-C, a quitação de R$ 4.780,58 é demonstrada pelo cotejo entre os títulos 
+467|apontados como inadimplidos no laudo, os respectivos Extratos de Conveniada e os comprovantes 
+468|bancários já constantes dos autos originários. A diferença entre o valor bruto do extrato e o valor líquido 
+469|pago decorre dos abatimentos contratuais e, quando aplicável, da tarifa DOC/TED , na forma acima 
+470|demonstrada. 
+471| 
+472|II) Bloco V-C: agrupamentos bancários 
+473| 
+474|28. No Bloco V-C, parte dos pagamentos foi realizada por agrupamentos bancários. A quitação 
+475|se comprova pelo cotejo entre o Extrato de Conveniada, que individualiza os títulos integrantes do lote, 
+476|e o respectivo comprovante bancário: 
+477| 
+478|Agrupamento TED (fl. 
+479|e-STJ) 
+480|Extrato conv. (fl. e-
+481|STJ) 
+482|Valor líquido 
+483|do lote Tarifa Títulos componentes e 
+484|data 
+485|703022 1449 1481 R$ 3.391,24 R$ 10,90 017190846; 017338232 — lote 
+486|pago em 27/07/2015 
+487|705174 1441 230/1723 R$ 34.213,38 R$ 6,25/título 41 títulos (ver nota abaixo) 
+488|705175 1438 1723/1726/1727/1729 R$ 6.235,51 — 
+489|009529151; 009417319; 
+490|009507471; 009514268; 
+491|009536518 — lote pago em 
+492|23/07/2015 
+493|841415 1472 1510/1533 R$ 82,84 — 019139526; 019149353 — lote 
+494|pago em 12/02/2016 
+495|850650 1474 1730 R$ 218,37 — 019097907; 019102866 — lote 
+496|pago em 29/02/2016 
+497|TOTAL 
+498|agrupamentos — — R$ 44.141,34 — — 
+499| 
+500| 
+501|Nota técnica — Agrupamento 000705174 (TED de quitação à fl. 1441; extratos de conveniada às fls. 
+502|230/1723). O lote totaliza R$ 361.364,62, dos quais R$ 34.213,38 correspondem aos títulos cobrados nestes 
+503|autos. A composição dos títulos vinculados e seus valores líquidos é  conferível diretamente pelos Extratos 
+504|de Conveniada encartados nos autos (Docs. 10 e 12), independentemente de qualquer documento externo. 
+505|Eventual diferença residual de arredondamento é apurável pelos próprios extratos. 
+506| 
+507|29. Nos agrupamentos, um único comprovante bancário quita simultaneamente diversos títulos. 
+508|Essa circunstância não enfraquece a prova — reforça-a. O comprovante demonstra, por si, o repasse 
+509|efetivo do valor; o Extrato de Conveniada correspondente, também encar tado nos autos (Doc. 12), 
+510|discrimina os títulos que compõem o lote. Reconhecer esse pagamento não exige revalorar o laudo: exige 
+511|apenas ler o teor do documento que já está nos autos. É precisamente a hipótese do erro de fato — a 
+512|decisão afirmou inadimplência sobre título cujo verdadeiro teor do comprovante demonstra a quitação 
+513|(STJ, AR 6.870/DF, Rel. Min. Paulo de Tarso Sanseverino, 2ª Seção, DJe 04/04/2022). 
+514| 
+515| 
+516|
+517|--- Pagina 10 ---
+518| 
+519| 
+520| 
+521|Avenida dos Vinhedos, 200 | conj. 4 | Gávea Office | Morada da Colina | 38411 -159 | Uberlândia MG | +55 34 3229 0020 
+522|romanodonadel.com.br 
+523|Página 10 de 22 
+524|III) Bloco V-C: títulos individuais com TED direto 
+525| 
+526|30. Além dos agrupamentos bancários, a matriz documental identifica títulos do Bloco V-C cuja 
+527|quitação se comprova pela vinculação individual entre o Extrato de Conveniada e o respectivo 
+528|comprovante bancário constante dos autos originários: 
+529| 
+530|N.º do 
+531|título 
+532|Comprovantes 
+533|(fl. e-STJ) 
+534|Data do 
+535|pagamento 
+536|Valor líquido 
+537|pago 
+538|Forma de 
+539|pagamento Critério / Status 
+540|008542980 1375 13/08/2011 R$ 2.728,37 TED individual Espelhamento extrato↔TED 
+541|008245650 1351 11/05/2011 R$ 291,07 TED individual Espelhamento extrato↔TED 
+542|008153292 1347 18/04/2011 R$ 107,85 TED individual Espelhamento extrato↔TED 
+543|008192598 1348 25/04/2011 R$ 4.043,22 TED individual Espelhamento extrato↔TED 
+544|008004661 1338 14/03/2011 R$ 504,26 TED individual Espelhamento extrato↔TED 
+545|008032071 1340 18/04/2011 R$ 294,14 TED individual Espelhamento extrato↔TED 
+546|007918862 1333 18/02/2011 R$ 364,28 TED individual Espelhamento extrato↔TED 
+547|007786364 1324 18/01/2011 R$ 334,71 TED individual Espelhamento extrato↔TED 
+548|009435653 1422 23/01/2012 R$ 1.135,95 TED individual Espelhamento extrato↔TED 
+549|009424315 1420 18/01/2012 R$ 196,24 TED individual Espelhamento extrato↔TED 
+550|009388868 1418 11/01/2012 R$ 1.108,31 TED individual Espelhamento extrato↔TED 
+551|009368134 1416 04/01/2012 R$ 2.143,40 TED individual Espelhamento extrato↔TED 
+552|009354376 1414 28/12/2011 R$ 284,72 TED individual Espelhamento extrato↔TED 
+553|009347500 1421 19/01/2012 R$ 268,33 TED individual Espelhamento extrato↔TED 
+554|009324997 1413 26/12/2011 R$ 1.760,70 TED individual Título também lançado no IV-C; 
+555|excluído da consolidação final 
+556|009318649 1419 12/01/2012 R$ 753,46 TED individual Espelhamento extrato↔TED 
+557|009299771 1412 23/12/2011 R$ 442,39 TED individual Espelhamento extrato↔TED 
+558|009287835 1411 19/12/2011 R$ 474,52 TED individual Espelhamento extrato↔TED 
+559|009281173 1417 10/01/2012 R$ 1.229,92 TED individual Espelhamento extrato↔TED 
+560|009242869 1410 05/12/2011 R$ 696,06 TED individual Espelhamento extrato↔TED 
+561|009255251 1413 26/12/2011 R$ 4.595,03 TED individual Espelhamento extrato↔TED 
+562|009229436 1408 28/11/2011 R$ 1.790,13 TED individual Espelhamento extrato↔TED 
+563|009222590 1411 19/12/2011 R$ 43,42 TED individual Espelhamento extrato↔TED 
+564|008526804 1368 12/07/2011 R$ 563,69 TED individual Espelhamento extrato↔TED 
+565|008504168 1366 05/07/2011 R$ 1.082,46 TED individual Espelhamento extrato↔TED 
+566|008491611 1365 28/06/2011 R$ 2.215,69 TED individual Espelhamento extrato↔TED 
+567|008456978 1363 27/06/2011 R$ 1.696,34 TED individual Espelhamento extrato↔TED 
+568|008443285 1369 12/07/2011 R$ 294,42 TED individual Espelhamento extrato↔TED 
+569|008412372 1362 24/06/2011 R$ 62,44 TED individual Espelhamento extrato↔TED 
+570|008399750 1361 20/06/2011 R$ 122,03 TED individual Espelhamento extrato↔TED 
+571|008382666 1367 11/07/2011 R$ 1.158,70 TED individual Espelhamento extrato↔TED 
+572|008367002 1358 10/06/2011 R$ 93,70 TED individual Espelhamento extrato↔TED 
+573|008357997 1359 10/06/2011 R$ 695,14 TED individual Espelhamento extrato↔TED 
+574|008339679 1357 03/06/2011 R$ 280,59 TED individual Espelhamento extrato↔TED 
+575|008350443 1364 27/06/2011 R$ 3.589,82 TED individual Espelhamento extrato↔TED 
+576|
+577|--- Pagina 11 ---
+578| 
+579| 
+580| 
+581|Avenida dos Vinhedos, 200 | conj. 4 | Gávea Office | Morada da Colina | 38411 -159 | Uberlândia MG | +55 34 3229 0020 
+582|romanodonadel.com.br 
+583|Página 11 de 22 
+584|008334047 1360 15/06/2011 R$ 5.566,99 TED individual Espelhamento extrato↔TED 
+585|008326618 1356 30/05/2011 R$ 2.157,63 TED individual Espelhamento extrato↔TED 
+586|008298774 1355 25/05/2011 R$ 771,67 TED individual Espelhamento extrato↔TED 
+587|008379499 1354 23/05/2011 R$ 327,80 TED individual Espelhamento extrato↔TED 
+588|008265905 1353 18/05/2011 R$ 63,35 TED individual Espelhamento extrato↔TED 
+589|008229335 1350 04/05/2011 R$ 560,67 TED individual Espelhamento extrato↔TED 
+590|008222164 1352 16/05/2011 R$ 6.596,57 TED individual Espelhamento extrato↔TED 
+591|008214308 1349 28/04/2011 R$ 927,08 TED individual Espelhamento extrato↔TED 
+592|008143234 1345 12/04/2011 R$ 55,81 TED individual Espelhamento extrato↔TED 
+593|008133445 1345 12/04/2011 R$ 552,29 TED individual Título também lançado no IV-C; 
+594|excluído da consolidação final 
+595|008117975 1344 05/04/2011 R$ 347,75 TED individual Espelhamento extrato↔TED 
+596|008110865 1346 15/04/2011 R$ 6.196,32 TED individual Espelhamento extrato↔TED 
+597|008103256 1343 28/03/2011 R$ 1.404,69 TED individual Espelhamento extrato↔TED 
+598|008045314 1341 23/03/2011 R$ 178,34 TED individual Espelhamento extrato↔TED 
+599|007989353 1337 03/03/2011 R$ 9,59 TED individual Espelhamento extrato↔TED 
+600|007974901 1336 28/02/2011 R$ 825,85 TED individual Espelhamento extrato↔TED 
+601|008081709 1342 25/03/2011 R$ 496,52 TED individual Espelhamento extrato↔TED 
+602|007953725 1335 25/02/2011 R$ 203,31 TED individual Espelhamento extrato↔TED 
+603|007933826 1334 23/02/2011 R$ 201,90 TED individual Espelhamento extrato↔TED 
+604|007868609 1332 15/02/2011 R$ 5.042,84 TED individual Espelhamento extrato↔TED 
+605|007861391 1329 28/01/2011 R$ 2.433,73 TED individual Espelhamento extrato↔TED 
+606|007822809 1327 24/01/2011 R$ 4,31 TED individual Espelhamento extrato↔TED 
+607|007818771 1326 18/01/2011 R$ 109,91 TED individual Espelhamento extrato↔TED 
+608|007982370 1339 15/03/2011 R$ 6.060,09 TED individual Espelhamento extrato↔TED 
+609|008830770 1427 24/07/2015 R$ 27,12 TED individual Espelhamento extrato↔TED 
+610|008799126 1447 24/07/2015 R$ 226,03 TED individual Espelhamento extrato↔TED 
+611|008772267 1440 24/07/2015 R$ 863,04 TED individual Espelhamento extrato↔TED 
+612|008721610 1429 24/07/2015 R$ 4,17 TED individual Espelhamento extrato↔TED 
+613|008666925 1444 24/07/2015 R$ 47,81 TED individual Espelhamento extrato↔TED 
+614|008632467 1436 24/07/2015 R$ 451,50 TED individual Espelhamento extrato↔TED 
+615|008589755 1431 24/07/2015 R$ 700,16 TED individual Espelhamento extrato↔TED 
+616|008532963 1430 24/07/2015 R$ 5,80 TED individual Espelhamento extrato↔TED 
+617|008498179 1439 24/07/2015 R$ 947,21 TED individual Espelhamento extrato↔TED 
+618|008464062 1443 24/07/2015 R$ 37,40 TED individual Espelhamento extrato↔TED 
+619|008364037 1445 24/07/2015 R$ 78,81 TED individual Espelhamento extrato↔TED 
+620|008345641 1433 24/07/2015 R$ 448,72 TED individual Espelhamento extrato↔TED 
+621|008332872 1437 24/07/2015 R$ 635,80 TED individual Espelhamento extrato↔TED 
+622|008285195 1442 24/07/2015 R$ 36,07 TED individual Espelhamento extrato↔TED 
+623|008251601 1448 24/07/2015 R$ 233,43 TED individual Espelhamento extrato↔TED 
+624|008811194 1428 24/07/2015 R$ 2,22 TED individual Espelhamento extrato↔TED 
+625|Subtotal dos títulos individuais, antes da exclusão da 
+626|dupla contagem R$ 83.285,80 
+627| 
+628| 
+629|
+630|--- Pagina 12 ---
+631| 
+632| 
+633| 
+634|Avenida dos Vinhedos, 200 | conj. 4 | Gávea Office | Morada da Colina | 38411 -159 | Uberlândia MG | +55 34 3229 0020 
+635|romanodonadel.com.br 
+636|Página 12 de 22 
+637|31. Para preservar a correspondência com a estrutura do laudo e, ao mesmo tempo, evitar dupla 
+638|contagem nesta rescisória, os pagamentos comprovados são consolidados em duas etapas: primeiro o 
+639|subtotal dos valores identificados nos quadros analíticos; em seguida, a subtração dos títulos 009324997, 
+640|008133445 e 009548138, computados em duplicidade na organização dos Blocos IV-C e V-C. A depuração 
+641|não reduz a prova do pagamento , apenas impede que o mesmo título seja considerado duas vezes no 
+642|cálculo final: 
+643|Composição dos pagamentos comprovados Valor 
+644|Bloco IV-C — títulos quitados R$ 4.780,58 
+645|Bloco V-C — agrupamentos bancários R$ 44.141,34 
+646|Bloco V-C — títulos individuais, conforme quadro analítico R$ 83.285,80 
+647|Subtotal antes da exclusão da dupla contagem R$ 132.207,72 
+648|(−) Exclusão da dupla contagem — títulos 009324997, 
+649|008133445 e 009548138 -R$ 3.837,22 
+650|Total quitado comprovado, sem dupla contagem R$ 128.370,50 
+651| 
+652|Nota técnica. A matriz completa, com título, folha do e -STJ, valor líquido, forma de pagamento e critério de 
+653|vinculação, instrui esta petição como documento anexo (doc. 11). O corpo da inicial apresenta o quadro 
+654|consolidado para preservar a fluidez da leitura, sem prejuízo da conferência título a título pelo julgador. 
+655| 
+656|f) O IMPACTO ECONÔMICO DO ERRO DE FATO 
+657| 
+658|32. Há nexo causal direto e verificável entre o erro de percepção  documental e o resultado da 
+659|condenação. Em base depurada, sem a dupla contagem identificada no laudo, os Blocos IV -C e V -C 
+660|continham principal histórico de R$ 146.893,71. Desse montante, R$ 128.370,50 já estavam 
+661|quitados por documentos constantes dos autos originários . Corrigida a premissa fática, o 
+662|principal histórico efetivamente remanescente era de apenas R$ 18.523,21  — composto por 
+663|R$ 1.541,30 do Bloco IV-C e R$ 16.981,91 do Bloco V-C. 
+664| 
+665|33. No segundo momento, esse saldo correto é atualizado pelos mesmos critérios utilizados na 
+666|condenação originária. A memória de cálculo demonstra que o principal remanescente de R$ 18.523,21, 
+667|com correção monetária e juros moratórios, resulta em R$ 140.930,97. Com a incidência de honorários 
+668|sucumbenciais de 15% (R$ 21.139,65), o valor total recalculado chega a R$ 162.070,62: 
+669| 
+670|CONTEXTO DOS VALORES VALOR ATUALIZADO 
+671|Valor total atualmente executado  R$ 2.280.133,46 
+672|Valor efetivamente devido recalculado (sem honorários) R$ 140.930,97 
+673|Honorários sucumbenciais de 15% sobre o valor recalculado R$ 21.139,65 
+674|Valor correto recalculado (com honorários) R$ 162.070,62 
+675|DIFERENÇA ATUALIZADA – OBJETO DA RESCISÓRIA R$ 2.118.062,84 
+676|
+677|

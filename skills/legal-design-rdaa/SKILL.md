@@ -103,6 +103,18 @@ estar correto segundo estes princípios:
 O Legal Design entra **depois** que o texto está correto. Elementos visuais sobre texto confuso
 são maquiagem — e o RDAA rejeita maquiagem documental.
 
+### 2.05 Univocidade semântica de dados (regra crítica — mesma que romano-donadel-slide-style §3.5)
+
+O leitor de uma peça — juiz, desembargador, cliente — está fora da zona de controle do caso e lê uma vez. **Se ele precisar ler o texto de apoio pequeno para entender a relação entre dois números num quadro-resumo ou tabela, a peça já falhou** nesse ponto, mesmo com o texto tecnicamente correto.
+
+Nunca apresentar dois valores no mesmo destaque visual (mesmo tamanho, mesma ênfase, lado a lado) quando pertencem a categorias diferentes na argumentação — devido vs. pago, alegado vs. provado, valor da causa vs. valor da condenação, bruto vs. líquido. Essa composição é lida automaticamente como "A contra B" (um placar), e se um dos valores for na verdade uma parcela ou consequência do outro, a leitura sai errada antes mesmo do raciocínio jurídico começar.
+
+Antes de montar qualquer quadro com mais de um número, declarar a relação lógica entre eles (parte-todo, evolução temporal, oposição real, ajuste/correção de erro) e escolher a estrutura visual correspondente — decomposição proporcional para parte-todo, sequência com sinais para evolução, comparação lado a lado somente quando os valores realmente se opõem. Teste antes de aprovar: cobrir o texto de apoio e verificar se a relação ainda fica clara só pela disposição visual.
+
+### 2.06 Hierarquia da conclusão (mesma regra de romano-donadel-slide-style §3.6)
+
+A conclusão executiva de um quadro-resumo ou síntese precisa ser o elemento de maior peso visual do bloco, não apenas uma frase em negrito dentro de um parágrafo de corpo. Negrito sozinho, no mesmo tamanho de fonte do texto ao redor, é processado como legenda — não como conclusão. Extrair a conclusão como cláusula curta (5–12 palavras), em escala maior que o corpo, isolada com espaço próprio; ressalvas e fundação legal vêm abaixo, em corpo normal, claramente subordinadas. Teste: olhar o quadro por dois segundos — se o olho não pousa primeiro na conclusão, refazer a hierarquia.
+
 ### 2.1 O que nunca fazer (Linha Vermelha Estética)
 - Gradientes decorativos, sombras excessivas, imagens genéricas de banco (balanças, martelos).
 - Negrito em excesso — perde o efeito quando tudo está em destaque.

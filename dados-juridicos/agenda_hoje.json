@@ -1,0 +1,457 @@
+{
+  "arquivo": "Agenda 07.09.2026.xlsx",
+  "total_prazos": 45,
+  "data_extracao": "07/09/2026 12:00",
+  "prazos": [
+    {
+      "prazo": "RESPOSTA AO OFÍCIO",
+      "cliente": "Servnet Instituicao de Pagamento Ltda",
+      "processo": "5787157-83.2023.8.09.0087",
+      "tramitacao": "12015230",
+      "prazo_fatal": "31/08/2026",
+      "prazo_fatal_iso": "2026-08-31",
+      "adv": "Ric - cancelado",
+      "responsavel": "Alessandra Xavier Coutinho"
+    },
+    {
+      "prazo": "EMBARGOS DE DECLARAÇÃO CÍVEL",
+      "cliente": "TRIVALE INSTITUICAO DE PAGAMENTO LTDA",
+      "processo": "0074335-53.2025.8.16.0014",
+      "tramitacao": "12034160",
+      "prazo_fatal": "08/09/2026",
+      "prazo_fatal_iso": "2026-09-08",
+      "adv": "Ric",
+      "responsavel": "Alessandra Xavier Coutinho"
+    },
+    {
+      "prazo": "MEMORIAIS",
+      "cliente": "TRIVALE INSTITUICAO DE PAGAMENTO LTDA",
+      "processo": "0001032-71.2019.8.17.3220",
+      "tramitacao": "12088001",
+      "prazo_fatal": "08/09/2026",
+      "prazo_fatal_iso": "2026-09-08",
+      "adv": "Ric",
+      "responsavel": "Alessandra Xavier Coutinho"
+    },
+    {
+      "prazo": "MANIFESTAÇÃO CÍVEL",
+      "cliente": "CARDIO DIAGNOSIS LTDA",
+      "processo": "5012964-89.2023.8.13.0035",
+      "tramitacao": "12063500",
+      "prazo_fatal": "08/09/2026",
+      "prazo_fatal_iso": "2026-09-08",
+      "adv": "Ric",
+      "responsavel": "Ricardo Cesar Souza De Oliveira Junior"
+    },
+    {
+      "prazo": "JULGAMENTO",
+      "cliente": "",
+      "processo": "3593222-03.2025.8.13.0000",
+      "tramitacao": "11941938",
+      "prazo_fatal": "08/09/2026",
+      "prazo_fatal_iso": "2026-09-08",
+      "adv": "Ric",
+      "responsavel": "Alessandra Xavier Coutinho"
+    },
+    {
+      "prazo": "JULGAMENTO",
+      "cliente": "",
+      "processo": "3315741-45.2025.8.13.0000",
+      "tramitacao": "11941907",
+      "prazo_fatal": "08/09/2026",
+      "prazo_fatal_iso": "2026-09-08",
+      "adv": "Ric",
+      "responsavel": "Alessandra Xavier Coutinho"
+    },
+    {
+      "prazo": "IMPUGNAÇÃO A PENHORA",
+      "cliente": "COTRIAL - COOPERATIVA DOS PRODUTORES RURAIS DO TRIANGULO MIN",
+      "processo": "5015753-29.2025.8.13.0702",
+      "tramitacao": "12060111",
+      "prazo_fatal": "08/09/2026",
+      "prazo_fatal_iso": "2026-09-08",
+      "adv": "Ric",
+      "responsavel": "Alessandra Xavier Coutinho"
+    },
+    {
+      "prazo": "EMBARGOS DE DECLARAÇÃO CÍVEL",
+      "cliente": "Silvio Luiz Afonso",
+      "processo": "1037722-37.2026.8.13.0702",
+      "tramitacao": "12084343",
+      "prazo_fatal": "08/09/2026",
+      "prazo_fatal_iso": "2026-09-08",
+      "adv": "Flávia",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "OPOSIÇÃO AO JULGAMENTO VIRTUAL",
+      "cliente": "TRIVALE INSTITUICAO DE PAGAMENTO LTDA",
+      "processo": "0001032-71.2019.8.17.3220",
+      "tramitacao": "12087998",
+      "prazo_fatal": "08/09/2026",
+      "prazo_fatal_iso": "2026-09-08",
+      "adv": "Ric",
+      "responsavel": "Alessandra Xavier Coutinho"
+    },
+    {
+      "prazo": "INSCRIÇÃO PARA SUSTENTAÇÃO ORAL",
+      "cliente": "TRIVALE INSTITUICAO DE PAGAMENTO LTDA",
+      "processo": "0001032-71.2019.8.17.3220",
+      "tramitacao": "12088006",
+      "prazo_fatal": "08/09/2026",
+      "prazo_fatal_iso": "2026-09-08",
+      "adv": "Ric",
+      "responsavel": "Alessandra Xavier Coutinho"
+    },
+    {
+      "prazo": "JULGAMENTO",
+      "cliente": "PARANAÍBA FERTILIZANTES INDÚSTRIA E COMÉRCIO LTDA",
+      "processo": "5001503-98.2024.8.13.0710",
+      "tramitacao": "11942387",
+      "prazo_fatal": "08/09/2026",
+      "prazo_fatal_iso": "2026-09-08",
+      "adv": "Ric",
+      "responsavel": "Alessandra Xavier Coutinho"
+    },
+    {
+      "prazo": "MANIFESTAÇÃO CÍVEL",
+      "cliente": "Fabiano Cassiano Tormin",
+      "processo": "1003082-54.2026.8.13.0040",
+      "tramitacao": "12071525",
+      "prazo_fatal": "08/09/2026",
+      "prazo_fatal_iso": "2026-09-08",
+      "adv": "FLÁVIA",
+      "responsavel": "Alessandra Xavier Coutinho"
+    },
+    {
+      "prazo": "EMBARGOS DE DECLARAÇÃO CÍVEL",
+      "cliente": "TRIVALE INSTITUICAO DE PAGAMENTO LTDA",
+      "processo": "0879903-83.2025.8.14.0301",
+      "tramitacao": "12072250",
+      "prazo_fatal": "08/09/2026",
+      "prazo_fatal_iso": "2026-09-08",
+      "adv": "Ric",
+      "responsavel": "Alessandra Xavier Coutinho"
+    },
+    {
+      "prazo": "ESPECIFICAÇÃO DE PROVAS",
+      "cliente": "TRIVALE INSTITUICAO DE PAGAMENTO LTDA",
+      "processo": "0879903-83.2025.8.14.0301",
+      "tramitacao": "12072257",
+      "prazo_fatal": "08/09/2026",
+      "prazo_fatal_iso": "2026-09-08",
+      "adv": "Ric",
+      "responsavel": "Alessandra Xavier Coutinho"
+    },
+    {
+      "prazo": "MANIFESTAÇÃO CÍVEL",
+      "cliente": "TRIVALE INSTITUICAO DE PAGAMENTO LTDA",
+      "processo": "0879903-83.2025.8.14.0301",
+      "tramitacao": "12072268",
+      "prazo_fatal": "08/09/2026",
+      "prazo_fatal_iso": "2026-09-08",
+      "adv": "Ric",
+      "responsavel": "Alessandra Xavier Coutinho"
+    },
+    {
+      "prazo": "EMBARGOS DE DECLARAÇÃO CÍVEL",
+      "cliente": "LUCIANA MARIA FAGUNDES SORTINO TORMIN",
+      "processo": "1165281-45.2024.8.26.0100",
+      "tramitacao": "12079801",
+      "prazo_fatal": "09/09/2026",
+      "prazo_fatal_iso": "2026-09-09",
+      "adv": "Flávia",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO",
+      "cliente": "Cooperativa Agropecuária Ltda de Uberlândia - CALU",
+      "processo": "5001256-10.2025.8.13.0702",
+      "tramitacao": "10923232",
+      "prazo_fatal": "09/09/2026",
+      "prazo_fatal_iso": "2026-09-09",
+      "adv": "Ric",
+      "responsavel": "Ricardo Cesar Souza De Oliveira Junior"
+    },
+    {
+      "prazo": "INSCRIÇÃO PARA SUSTENTAÇÃO ORAL",
+      "cliente": "PARANAÍBA FERTILIZANTES INDÚSTRIA E COMÉRCIO LTDA",
+      "processo": "5001503-98.2024.8.13.0710",
+      "tramitacao": "12005714",
+      "prazo_fatal": "09/09/2026",
+      "prazo_fatal_iso": "2026-09-09",
+      "adv": "Ric - reagendado",
+      "responsavel": "Alessandra Xavier Coutinho"
+    },
+    {
+      "prazo": "MANIFESTAÇÃO CÍVEL",
+      "cliente": "Geotech & Fal Ltda",
+      "processo": "0747080-19.2014.8.13.0024",
+      "tramitacao": "12008946",
+      "prazo_fatal": "10/09/2026",
+      "prazo_fatal_iso": "2026-09-10",
+      "adv": "Ric - reagendado",
+      "responsavel": "Alessandra Xavier Coutinho"
+    },
+    {
+      "prazo": "EMBARGOS DE DECLARAÇÃO CÍVEL",
+      "cliente": "LUCIANA MARIA FAGUNDES SORTINO TORMIN",
+      "processo": "4001000-55.2026.8.26.0260",
+      "tramitacao": "12079851",
+      "prazo_fatal": "11/09/2026",
+      "prazo_fatal_iso": "2026-09-11",
+      "adv": "Flávia",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "ESPECIFICAÇÃO DE PROVAS",
+      "cliente": "Servnet Instituicao de Pagamento Ltda",
+      "processo": "1056201-15.2025.8.26.0100",
+      "tramitacao": "11499881",
+      "prazo_fatal": "11/09/2026",
+      "prazo_fatal_iso": "2026-09-11",
+      "adv": "Flávia",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "EMBARGOS DE DECLARAÇÃO CÍVEL",
+      "cliente": "Silvio Luiz Afonso",
+      "processo": "5033450-63.2025.8.13.0702",
+      "tramitacao": "12052287",
+      "prazo_fatal": "14/09/2026",
+      "prazo_fatal_iso": "2026-09-14",
+      "adv": "Ric - reagendado",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "MANIFESTAÇÃO CÍVEL",
+      "cliente": "LUCIANA MARIA FAGUNDES SORTINO TORMIN",
+      "processo": "1001667-36.2026.8.13.0040",
+      "tramitacao": "12034189",
+      "prazo_fatal": "14/09/2026",
+      "prazo_fatal_iso": "2026-09-14",
+      "adv": "Flávia - reagendado",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "MANIFESTAÇÃO CÍVEL",
+      "cliente": "LUCIANA MARIA FAGUNDES SORTINO TORMIN",
+      "processo": "1006370-61.2026.8.26.0100",
+      "tramitacao": "12039677",
+      "prazo_fatal": "14/09/2026",
+      "prazo_fatal_iso": "2026-09-14",
+      "adv": "Flávia",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "AGRAVO DE INSTRUMENTO CÍVEL",
+      "cliente": "",
+      "processo": "1041344-27.2026.8.13.0702",
+      "tramitacao": "12084312",
+      "prazo_fatal": "15/09/2026",
+      "prazo_fatal_iso": "2026-09-15",
+      "adv": "Ric - reagendado",
+      "responsavel": "Ricardo Cesar Souza De Oliveira Junior"
+    },
+    {
+      "prazo": "EMBARGOS DE DECLARAÇÃO CÍVEL",
+      "cliente": "LUCIANA MARIA FAGUNDES SORTINO TORMIN",
+      "processo": "1120843-94.2025.8.26.0100",
+      "tramitacao": "12094694",
+      "prazo_fatal": "15/09/2026",
+      "prazo_fatal_iso": "2026-09-15",
+      "adv": "Flávia",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "MANIFESTAÇÃO CÍVEL",
+      "cliente": "ROMANO DONADEL ADVOGADOS ASSOCIADOS",
+      "processo": "0011327-60.2021.8.19.0014",
+      "tramitacao": "12044277",
+      "prazo_fatal": "16/09/2026",
+      "prazo_fatal_iso": "2026-09-16",
+      "adv": "Ric - reagendado",
+      "responsavel": "Ricardo Cesar Souza De Oliveira Junior"
+    },
+    {
+      "prazo": "MANIFESTAÇÃO CÍVEL",
+      "cliente": "Servnet Instituicao de Pagamento Ltda",
+      "processo": "1056201-15.2025.8.26.0100",
+      "tramitacao": "11901013",
+      "prazo_fatal": "16/09/2026",
+      "prazo_fatal_iso": "2026-09-16",
+      "adv": "Flávia",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "CONTRARRAZÕES CÍVEL",
+      "cliente": "",
+      "processo": "0027405-89.2026.8.16.0030",
+      "tramitacao": "12072849",
+      "prazo_fatal": "17/09/2026",
+      "prazo_fatal_iso": "2026-09-17",
+      "adv": "Flávia",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "ESPECIFICAÇÃO DE PROVAS",
+      "cliente": "Silvio Luiz Afonso",
+      "processo": "5033450-63.2025.8.13.0702",
+      "tramitacao": "12052305",
+      "prazo_fatal": "21/09/2026",
+      "prazo_fatal_iso": "2026-09-21",
+      "adv": "Flávia",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "AGRAVO DE INSTRUMENTO CÍVEL",
+      "cliente": "Silvio Luiz Afonso",
+      "processo": "5072971-49.2024.8.13.0702",
+      "tramitacao": "12060147",
+      "prazo_fatal": "21/09/2026",
+      "prazo_fatal_iso": "2026-09-21",
+      "adv": "Flávia",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "CONTESTAÇÃO CÍVEL",
+      "cliente": "Silvio Luiz Afonso",
+      "processo": "1037722-37.2026.8.13.0702",
+      "tramitacao": "12084339",
+      "prazo_fatal": "22/09/2026",
+      "prazo_fatal_iso": "2026-09-22",
+      "adv": "Flávia",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "APELAÇÃO CÍVEL",
+      "cliente": "LUCIANA MARIA FAGUNDES SORTINO TORMIN",
+      "processo": "1165281-45.2024.8.26.0100",
+      "tramitacao": "12079803",
+      "prazo_fatal": "23/09/2026",
+      "prazo_fatal_iso": "2026-09-23",
+      "adv": "Flávia",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "CONTRARRAZÕES CÍVEL",
+      "cliente": "Alt Participações Ltda",
+      "processo": "2146811-21.2025.8.26.0000",
+      "tramitacao": "12079995",
+      "prazo_fatal": "24/09/2026",
+      "prazo_fatal_iso": "2026-09-24",
+      "adv": "Flávia",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "CONTESTAÇÃO CÍVEL",
+      "cliente": "WANDERLEI ELOI DONADEL",
+      "processo": "5837349-20.2025.8.09.0129",
+      "tramitacao": "11394596",
+      "prazo_fatal": "24/09/2026",
+      "prazo_fatal_iso": "2026-09-24",
+      "adv": "Ric - reagendadado para sexta",
+      "responsavel": "Ricardo Cesar Souza De Oliveira Junior"
+    },
+    {
+      "prazo": "MANIFESTAÇÃO CÍVEL",
+      "cliente": "LUCIANA MARIA FAGUNDES SORTINO TORMIN",
+      "processo": "4001000-55.2026.8.26.0260",
+      "tramitacao": "12079884",
+      "prazo_fatal": "25/09/2026",
+      "prazo_fatal_iso": "2026-09-25",
+      "adv": "Flávia",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "EMENDA A INICIAL/AP. PEDIDO PRINCIPAL",
+      "cliente": "Silvio Luiz Afonso",
+      "processo": "5033450-63.2025.8.13.0702",
+      "tramitacao": "12084056",
+      "prazo_fatal": "28/09/2026",
+      "prazo_fatal_iso": "2026-09-28",
+      "adv": "Flávia",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "AGRAVO DE INSTRUMENTO CÍVEL",
+      "cliente": "Silvio Luiz Afonso",
+      "processo": "5033450-63.2025.8.13.0702",
+      "tramitacao": "12052292",
+      "prazo_fatal": "28/09/2026",
+      "prazo_fatal_iso": "2026-09-28",
+      "adv": "Flávia",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "APELAÇÃO CÍVEL",
+      "cliente": "LUCIANA MARIA FAGUNDES SORTINO TORMIN",
+      "processo": "1120843-94.2025.8.26.0100",
+      "tramitacao": "12094708",
+      "prazo_fatal": "29/09/2026",
+      "prazo_fatal_iso": "2026-09-29",
+      "adv": "Flávia",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "MANIFESTAÇÃO CÍVEL",
+      "cliente": "THERMO TRUCK EQUIPAMENTOS PECAS E SERVICOS LTDA - ME",
+      "processo": "5051550-37.2023.8.13.0702",
+      "tramitacao": "11841741",
+      "prazo_fatal": "04/11/2026",
+      "prazo_fatal_iso": "2026-11-04",
+      "adv": "Ric",
+      "responsavel": "Ricardo Cesar Souza De Oliveira Junior"
+    },
+    {
+      "prazo": "INSCRIÇÃO PARA SUSTENTAÇÃO ORAL",
+      "cliente": "CEPHAS PARTICIPAÇÕES SOCIETARIAS S/A",
+      "processo": "2012158-45.2025.8.13.0000",
+      "tramitacao": "11768641",
+      "prazo_fatal": "24/11/2026",
+      "prazo_fatal_iso": "2026-11-24",
+      "adv": "Ric",
+      "responsavel": "Alessandra Xavier Coutinho"
+    },
+    {
+      "prazo": "AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO",
+      "cliente": "THERMO TRUCK EQUIPAMENTOS PECAS E SERVICOS LTDA - ME",
+      "processo": "5051550-37.2023.8.13.0702",
+      "tramitacao": "11827361",
+      "prazo_fatal": "25/11/2026",
+      "prazo_fatal_iso": "2026-11-25",
+      "adv": "Ric",
+      "responsavel": "Ricardo Cesar Souza De Oliveira Junior"
+    },
+    {
+      "prazo": "CONTESTAÇÃO CÍVEL",
+      "cliente": "TUTTO INVESTIMENTOS SA",
+      "processo": "4135773-32.2026.8.26.0100",
+      "tramitacao": "11917533",
+      "prazo_fatal": "25/12/2026",
+      "prazo_fatal_iso": "2026-12-25",
+      "adv": "Flávia - reagendado",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    },
+    {
+      "prazo": "MANIFESTAÇÃO CÍVEL",
+      "cliente": "JULIA VIDAL REIS LANA",
+      "processo": "0462472-41.2015.8.13.0702",
+      "tramitacao": "11012601",
+      "prazo_fatal": "01/02/2027",
+      "prazo_fatal_iso": "2027-02-01",
+      "adv": "Ric",
+      "responsavel": "Ricardo Cesar Souza De Oliveira Junior"
+    },
+    {
+      "prazo": "MANIFESTAÇÃO CÍVEL",
+      "cliente": "Servnet Instituicao de Pagamento Ltda",
+      "processo": "1056201-15.2025.8.26.0100",
+      "tramitacao": "11857521",
+      "prazo_fatal": "24/08/2028",
+      "prazo_fatal_iso": "2028-08-24",
+      "adv": "Flávia reagendado",
+      "responsavel": "Flavia Almeida Forti Da Fonseca"
+    }
+  ]
+}
