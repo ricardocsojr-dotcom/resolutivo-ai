@@ -12,8 +12,9 @@ Estrutura:
           ├── 02. <anexo-1>.<ext>
           └── 03. <anexo-2>.<ext>
 
-Se o processo já tem pasta (em qualquer data anterior), a entrega
-CONTINUA naquela mesma pasta — não fragmenta por data.
+Se o mesmo processo já tem pasta em uma data anterior, ela NÃO é
+reaproveitada: cada dia gera sua própria pasta. Isso facilita achar,
+no dia do protocolo, exatamente o que está pronto para enviar.
 
 Uso:
   python3 entregar_peca.py peca "<processo>" "<nome-peça>" "<docx>"
@@ -35,34 +36,14 @@ PRODUCAO = DESKTOP / "Produção Jurídica"
 CONVERTER = Path(__file__).resolve().parent / "converter_docx_pdf.py"
 
 
-def pasta_existente_do_processo(numero_processo):
-    """Procura em TODAS as pastas de data se o processo já tem pasta.
-    Retorna o Path se achar, senão None."""
-    if not PRODUCAO.exists():
-        return None
-    for data_dir in sorted(PRODUCAO.iterdir()):
-        if not data_dir.is_dir():
-            continue
-        candidata = data_dir / numero_processo
-        if candidata.is_dir():
-            return candidata
-    return None
-
-
-def pasta_do_processo(numero_processo, criar=True):
-    """Retorna a pasta do processo, reaproveitando a existente
-    (de qualquer data) ou criando uma nova sob a data de hoje."""
-    existente = pasta_existente_do_processo(numero_processo)
-    if existente:
-        return existente
-
-    if not criar:
-        return None
-
+def pasta_do_processo(numero_processo):
+    """Pasta do processo sempre sob a data de HOJE. Cada dia de
+    trabalho gera sua própria pasta — assim fica fácil abrir a
+    pasta do dia e ver o que está pronto para protocolar."""
     hoje = datetime.now().strftime("%Y-%m-%d")
-    nova = PRODUCAO / hoje / numero_processo
-    nova.mkdir(parents=True, exist_ok=True)
-    return nova
+    pasta = PRODUCAO / hoje / numero_processo
+    pasta.mkdir(parents=True, exist_ok=True)
+    return pasta
 
 
 def proximo_sequencial(pasta):
