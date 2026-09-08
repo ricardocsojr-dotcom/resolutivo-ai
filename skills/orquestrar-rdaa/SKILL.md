@@ -44,7 +44,7 @@ O estado persistido é `.rdaa-run/<matter_id>/run_manifest.json`. Kanban e conve
 3. **Consultar o Ementário em B/A.** Depois de `intake_ready`, selecione o domínio já identificado no contexto, gere o pacote somente leitura, registre o hash e avance a etapa específica. O tipo C não executa este passo.
    ```text
    terminal(command="py -3.14 skills/redigir-peca/scripts/integracao_obsidian.py consultar-ementario --domain <dominio> --output .rdaa-run/<matter_id>/EMENTARIO-CONTEXTO.json")
-   terminal(command="py -3.14 skills/redigir-peca/scripts/orquestrador_rdaa.py register-vault-lookup .rdaa-run/<matter_id> --vault ementario-resolutivo --artifact .rdaa-run/<matter_id>/EMENTARIO-CONTEXTO.json")
+   terminal(command="py -3.14 skills/redigir-peca/scripts/orquestrador_rdaa.py register-vault-lookup .rdaa-run/<matter_id> --vault cerebro-ricar --artifact .rdaa-run/<matter_id>/EMENTARIO-CONTEXTO.json")
    terminal(command="py -3.14 skills/redigir-peca/scripts/orquestrador_rdaa.py advance .rdaa-run/<matter_id> vault_context_ready")
    ```
    Critério: o pacote tem origem `ementario-resolutivo`, status `informada`, hashes e nenhum dado de matéria histórica no conteúdo entregue ao worker. O achado não aprova tese.

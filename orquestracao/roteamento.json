@@ -1,34 +1,24 @@
 {
-  "schema_version": "1",
-  "workers": {
-    "planner": {"engine": "claude", "provider": "anthropic", "model": "claude-sonnet-5", "model_family": "anthropic", "cli": "claude"},
-    "writer": {"engine": "codex", "provider": "openai", "model": "gpt-5.5", "model_family": "openai", "cli": "codex"},
-    "critic": {"engine": "antigravity", "provider": "google", "model": "gemini-3.1-pro-high", "model_family": "google", "cli": "agy"},
-    "validator": {"engine": "claude", "provider": "anthropic", "model": "claude-haiku-4.5", "model_family": "anthropic", "cli": "claude"}
-  },
-  "risk_escalation": {
-    "baixo": "C",
-    "medio": "C",
-    "médio": "C",
-    "alto": "B",
-    "critico": "A",
-    "crítico": "A"
-  },
-  "worker_allowed_phases": {
-    "planner": ["intake_ready", "sources_ready", "skeleton_ready"],
-    "writer": ["drafting"],
-    "critic": ["criticizing"],
-    "validator": ["validating"]
-  },
-  "vaults": {
-    "cerebro-ricar": {
-      "mode": "read_only_and_registration_receipt_required",
-      "context_status": "informada"
-    }
-  },
+  "schema_version": "2",
   "levels": {
     "C": {
-      "stages": ["intake_ready", "drafting", "draft_ready", "candidate_ready", "qa_passed", "release_ready", "published", "vault_registered"],
+      "description": "Peça simples/juntada: escrita pelo modelo do chat, sem CLI externa, direto para QA e DOCX",
+      "workers": {
+        "writer": {"engine": "chat", "provider": "hermes", "model": "chat_session"}
+      },
+      "worker_allowed_phases": {
+        "writer": ["drafting"]
+      },
+      "stages": [
+        "intake_ready",
+        "drafting",
+        "draft_ready",
+        "candidate_ready",
+        "qa_passed",
+        "release_ready",
+        "published",
+        "vault_registered"
+      ],
       "required_human_gates": [],
       "vault": {
         "lookup": {"enabled": false},
@@ -36,7 +26,33 @@
       }
     },
     "B": {
-      "stages": ["intake_ready", "vault_context_ready", "sources_ready", "skeleton_ready", "awaiting_skeleton_approval", "skeleton_approved", "drafting", "draft_ready", "validating", "candidate_ready", "qa_passed", "release_ready", "published", "vault_registered"],
+      "description": "Peça desenvolvida: planejada e escrita pelo modelo do chat, validada pelo Claude Sonnet 5",
+      "workers": {
+        "planner": {"engine": "chat", "provider": "hermes", "model": "chat_session"},
+        "writer": {"engine": "chat", "provider": "hermes", "model": "chat_session"},
+        "validator": {"engine": "claude", "provider": "anthropic", "model": "claude-sonnet-5", "effort": "medium", "cli": "claude"}
+      },
+      "worker_allowed_phases": {
+        "planner": ["intake_ready", "sources_ready", "skeleton_ready"],
+        "writer": ["drafting"],
+        "validator": ["validating"]
+      },
+      "stages": [
+        "intake_ready",
+        "vault_context_ready",
+        "sources_ready",
+        "skeleton_ready",
+        "awaiting_skeleton_approval",
+        "skeleton_approved",
+        "drafting",
+        "draft_ready",
+        "validating",
+        "candidate_ready",
+        "qa_passed",
+        "release_ready",
+        "published",
+        "vault_registered"
+      ],
       "required_human_gates": ["skeleton_approval"],
       "vault": {
         "lookup": {"enabled": true, "vault": "cerebro-ricar", "mode": "read_only", "context_status": "informada"},
@@ -44,13 +60,83 @@
       }
     },
     "A": {
-      "stages": ["intake_ready", "vault_context_ready", "sources_ready", "council_ready", "skeleton_ready", "awaiting_skeleton_approval", "skeleton_approved", "drafting", "draft_ready", "criticizing", "critique_ready", "validating", "candidate_ready", "qa_passed", "release_ready", "published", "vault_registered"],
+      "description": "Peça premium: planejada pelo Claude Sonnet 5, redigida pelo Codex Terra 5.6, criticada pelo Gemini 3.7 Flash, validada pelo modelo do chat",
+      "workers": {
+        "planner": {"engine": "claude", "provider": "anthropic", "model": "claude-sonnet-5", "effort": "medium", "cli": "claude"},
+        "writer": {"engine": "codex", "provider": "openai", "model": "gpt-5.6-terra", "effort": "high", "cli": "codex"},
+        "critic": {"engine": "antigravity", "provider": "google", "model": "gemini-3.7-flash-high", "effort": "high", "cli": "agy"},
+        "validator": {"engine": "chat", "provider": "hermes", "model": "chat_session"}
+      },
+      "worker_allowed_phases": {
+        "planner": ["intake_ready", "sources_ready", "skeleton_ready"],
+        "writer": ["drafting"],
+        "critic": ["criticizing"],
+        "validator": ["validating"]
+      },
+      "stages": [
+        "intake_ready",
+        "vault_context_ready",
+        "sources_ready",
+        "council_ready",
+        "skeleton_ready",
+        "awaiting_skeleton_approval",
+        "skeleton_approved",
+        "drafting",
+        "draft_ready",
+        "criticizing",
+        "critique_ready",
+        "validating",
+        "candidate_ready",
+        "qa_passed",
+        "release_ready",
+        "published",
+        "vault_registered"
+      ],
       "required_human_gates": ["skeleton_approval", "release_approval"],
       "conditional_human_gates": ["strategy_exception"],
       "vault": {
         "lookup": {"enabled": true, "vault": "cerebro-ricar", "mode": "read_only", "context_status": "informada"},
         "sync": {"required_after_publish": ["cerebro-ricar"], "optional_after_publish": []}
       }
+    }
+  },
+  "standalone_tasks": {
+    "council": {
+      "engine": "claude",
+      "provider": "anthropic",
+      "model": "claude-sonnet-5",
+      "effort": "high",
+      "cli": "claude"
+    },
+    "adversarial_review": {
+      "engine": "claude",
+      "provider": "anthropic",
+      "model": "claude-sonnet-5",
+      "effort": "high",
+      "cli": "claude"
+    },
+    "doc_extraction_primary": {
+      "engine": "chat",
+      "provider": "hermes",
+      "model": "chat_session"
+    },
+    "doc_extraction_secondary": {
+      "engine": "antigravity",
+      "provider": "google",
+      "model": "gemini-3.7-flash-medium",
+      "effort": "medium",
+      "cli": "agy"
+    },
+    "general_corrections": {
+      "engine": "chat",
+      "provider": "hermes",
+      "model": "chat_session"
+    }
+  },
+  "vaults": {
+    "cerebro-ricar": {
+      "mode": "read_only_and_registration_receipt_required",
+      "context_status": "informada"
     }
   }
 }

@@ -15,6 +15,8 @@ description: >
 
 # Redação de Peça Processual — RDAA
 
+**Regra de ativação — inegociável (2026-09-08):** toda peça nova passa por esta orquestração completa. Nenhuma etapa (classificação de nível, esqueleto, redação pelo Codex, aplicação de `redacao-rdaa.md`, crítica do Antigravity quando nível A) pode ser pulada por inferência de frase ambígua do Ricardo. Só o Ricardo autoriza pular uma etapa específica, e só quando ele disser isso de forma explícita e pontual sobre aquela etapa — nunca por dedução. Frases como "sem validação do Antigravity" descrevem apenas o fluxo padrão de B/C (que já não aciona Antigravity) e NÃO autorizam pular esqueleto, Codex ou o núcleo de redação. Na dúvida, pergunte antes de escrever.
+
 Esta skill orquestra o fluxo completo de produção de uma peça do RDAA,
 mas não trata toda peça igual. A classificação C, B ou A define o modo de
 produção da peça e não representa risco processual, validade, pertinência ou
@@ -24,11 +26,11 @@ de um número de processo ou de uma matéria.
 
 ## 0. Classificar o nível da peça — SEMPRE PRIMEIRO
 
-| Tipo | O que é | Redação | Pesquisa e estrutura |
+| Tipo | O que é | Redação e Motores | Validação e Estrutura |
 |---|---|---|---|
-| **C** | Peça muito simples, normalmente resolvida em parágrafos curtos. Exemplos são juntadas, oposições simples, manifestações simples, ciência, concordância e pedidos objetivos de prazo | Direta, sem redação por blocos e sem tópicos complexos | Não consulta vault, não pesquisa e não exige esqueleto |
-| **B** | Peça baseada principalmente no que já existe no processo, mas que merece desenvolvimento melhor, explicação mais clara, organização superior, Legal Design ou ilustração. Exemplos são manifestações complexas, memoriais, especificação de provas, impugnações e réplicas desenvolvidas | Redação por blocos permitida e preferencial quando houver divisão útil | Usa os fatos e documentos explicitamente fornecidos. Pesquisa externa somente quando Ricardo pedir ou quando o plano da matéria a autorizar |
-| **A** | Peça premium, com todo o conjunto de recursos que o RDAA puder oferecer para o caso | Redação por blocos permitida e preferencial | Esqueleto, fontes selecionadas, pesquisa autorizada, Visual Law, Legal Design, ilustrações, decisões anotadas, crítica por risco e revisão completa quando cabível |
+| **C** | Peça muito simples (juntadas, oposições simples, manifestações simples, ciência, concordância, prazo) | Escrita direta pelo **modelo do próprio chat** (sem chamada externa de CLI) | Sem esqueleto, sem consulta a vault, sem validação de LLM externa; direto para compilador nativo e QA protegida |
+| **B** | Peça baseada nos autos com desenvolvimento (manifestações complexas, memoriais, especificação de provas, réplicas) | Planejada (esqueleto) e redigida pelo **modelo do próprio chat** (sem chamada de CLI) | Consulta read-only ao Ementário no Cérebro; esqueleto aprovado por Ricardo; validação independente pelo **Claude Sonnet 5** (esforço médio); compilador nativo e QA |
+| **A** | Peça premium (iniciais complexas, recursos aos tribunais superiores, teses estratégicas) | Planejada pelo **Claude Sonnet 5** (médio); redigida pelo **Codex Terra 5.6** (alto) | Consulta ao Ementário; esqueleto aprovado por Ricardo; crítica pelo **Gemini 3.7 Flash** (Antigravity); validação pelo **modelo do próprio chat**; compilador e QA |
 
 **Como classificar**
 
@@ -372,7 +374,7 @@ e convenções. A consulta:
 No fluxo orquestrado, a automação é rastreável, não implícita: após
 `intake_ready`, o Hermes gera `.rdaa-run/<matter_id>/EMENTARIO-CONTEXTO.json`
 com `integracao_obsidian.py consultar-ementario`, registra o hash com
-`orquestrador_rdaa.py register-vault-lookup` e só então avança para
+`orquestrador_rdaa.py register-vault-lookup` com `--vault cerebro-ricar` e só então avança para
 `vault_context_ready`. O conector não escreve no vault, limita a coleta ao
 domínio e suas teses/fontes diretamente relacionadas e redige metadados de
 matérias históricas antes de entregar o pacote ao worker.

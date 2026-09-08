@@ -231,8 +231,15 @@ def registrar(state_dir: Path | str, matter_id: str, level: str) -> dict[str, An
     if manifest.get("phase") != "published":
         return {"success": False, "error": "matéria não está em fase published", "matter_id": matter_id}
 
-    # Carrega contexto
-    ctx_path = state_dir / "contexto_peca.json"
+    # Carrega contexto tolerando variações de nome de arquivo
+    ctx_path = None
+    for cand_name in ["contexto_peca.json", "CONTEXTO-PECA.json", "contexto.json", "context.json"]:
+        p = state_dir / cand_name
+        if p.is_file():
+            ctx_path = p
+            break
+    if ctx_path is None:
+        ctx_path = state_dir / "contexto_peca.json"
     try:
         ctx = carregar_contexto(ctx_path)
     except ValueError as e:

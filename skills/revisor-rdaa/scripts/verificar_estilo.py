@@ -284,18 +284,25 @@ _MARCADORES_INSTITUCIONAIS_PARENTESES = {"assinado eletronicamente"}
 _REGEX_CITACAO_LEGAL = re.compile(r'\b(?:CPC|CC|CDC|CF|CLT|STJ|STF|Lei|S[uú]mula|art\.)\b', re.IGNORECASE)
 _REGEX_ID_AUTOS = re.compile(r'\b(?:ID|fls?\.?|evento)\s*\d+', re.IGNORECASE)
 _REGEX_VALOR_MONETARIO = re.compile(r'R\$\s*[\d.,]+', re.IGNORECASE)
+# Valor por extenso é obrigatório no padrão RDAA quando acompanha a cifra,
+# como em "R$ 1.000,00 (mil reais)". O conteúdo é restrito a vocabulário
+# monetário para não liberar apartes explicativos genéricos.
+_REGEX_VALOR_POR_EXTENSO = re.compile(
+    r'^(?=[a-záàâãéêíóôõúç\s-]+$).*\brea(?:l|is)\b', re.IGNORECASE
+)
 _REGEX_DATA_COMPLETA = re.compile(r'\b\d{1,2}\s+de\s+[a-zç]+\s+de\s+\d{4}\b', re.IGNORECASE)
 
 _WHITELIST_PARENTESES_TECNICOS = [
     _REGEX_CITACAO_LEGAL,
     _REGEX_ID_AUTOS,
     _REGEX_VALOR_MONETARIO,
+    _REGEX_VALOR_POR_EXTENSO,
     _REGEX_DATA_COMPLETA,
 ]
 
 
 def _eh_parenteses_tecnico(conteudo):
-    """Permite parênteses técnicos: citação de lei, ID/fls, valor monetário ou data."""
+    """Permite parênteses técnicos: citação de lei, ID/fls, valor ou data."""
     return any(rx.search(conteudo) for rx in _WHITELIST_PARENTESES_TECNICOS)
 
 

@@ -11,6 +11,8 @@ description: >
 
 # Formatar Peça — RDAA (Gerador Nativo OOXML)
 
+**Pré-requisito — inegociável (2026-09-08):** esta skill converte um texto já redigido no padrão RDAA em `.docx`. Ela NÃO redige. Se o conteúdo da peça ainda não passou pelo núcleo de escrita (`contencioso-rdaa/references/redacao-rdaa.md`) e pelo fluxo de `redigir-peca` — esqueleto aprovado, redação pelo Codex, validação — não monte o JSON de contexto e não chame `construir_peca.py` direto. Rode `redigir-peca` primeiro. Só pule essa exigência se Ricardo autorizar de forma explícita e pontual (não por inferência de frase ambígua).
+
 Constrói a peça processual `.docx` parágrafo a parágrafo com **numeração nativa do Word (`numbering.xml`)**, fontes Tahoma 10.5pt, estilos RDAA nomeados, notas de rodapé reais e validação estrutural automática via XML.
 
 ---

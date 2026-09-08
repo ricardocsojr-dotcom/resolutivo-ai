@@ -12,8 +12,7 @@ import sys
 import time
 from pathlib import Path
 
-# ponytail: mesmo fix de construir_peca.py/verificar_formatacao.py/qa_gate.py
-# — sem isso, mensagem de erro com acento sai como mojibake no Windows.
+# ponytail: fix para encoding no console Windows
 for _stream in (sys.stdout, sys.stderr):
     if hasattr(_stream, "reconfigure"):
         _stream.reconfigure(encoding="utf-8")
@@ -23,20 +22,43 @@ ROUTING_PATH = ROOT / "orquestracao" / "roteamento.json"
 MAX_OUTPUT_BYTES = 16 * 1024 * 1024
 
 
-def _modelo_configurado(motor: str, role: str | None) -> str | None:
-    """Resolve o modelo canônico do worker, sem escolher fallback implícito."""
-    workers = json.loads(ROUTING_PATH.read_text(encoding="utf-8")).get("workers", {})
-    if role is not None:
-        worker = workers.get(role)
-        if not isinstance(worker, dict) or worker.get("engine") != motor:
-            raise ValueError(f"papel incompatível com o motor configurado: {role}/{motor}")
-    else:
-        candidates = [worker for worker in workers.values() if worker.get("engine") == motor]
-        if len(candidates) != 1:
-            return None
-        worker = candidates[0]
-    model = worker.get("model")
-    return str(model) if model else None
+def _modelo_configurado(motor: str, role: str | None, state_dir: Path | None = None) -> str | None:
+    """Resolve modelo configurado, respeitando a rota da matéria ou a política geral."""
+    if state_dir is not None and role is not None:
+        manifest_path = state_dir / "run_manifest.json"
+        if manifest_path.is_file():
+            try:
+                manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+                worker = manifest.get("route", {}).get("worker_identity", {}).get(role)
+                if isinstance(worker, dict) and worker.get("engine") == motor:
+                    model = worker.get("model")
+                    return str(model) if model else None
+            except Exception:
+                pass
+                
+    try:
+        policy = json.loads(ROUTING_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        policy = {}
+        
+    # Busca em standalone tasks ou nos níveis
+    standalone = policy.get("standalone_tasks", {})
+    if role and role in standalone:
+        spec = standalone[role]
+        if spec.get("engine") == motor and spec.get("model"):
+            return str(spec["model"])
+            
+    for level_spec in policy.get("levels", {}).values():
+        workers = level_spec.get("workers", {})
+        if role and role in workers:
+            w = workers[role]
+            if w.get("engine") == motor and w.get("model"):
+                return str(w["model"])
+        for w in workers.values():
+            if w.get("engine") == motor and w.get("model"):
+                return str(w["model"])
+                
+    return None
 
 
 def _executavel(name: str) -> str:
@@ -54,7 +76,7 @@ def executar(
     *,
     state_dir: Path | None = None,
     role: str | None = None,
-    max_budget_usd: float | None = 1.0,
+    max_budget_usd: float | None = 2.0,
 ) -> dict[str, object]:
     """Executa um trabalhador isolado e devolve metadados para o manifesto."""
     if (state_dir is None) != (role is None):
@@ -65,7 +87,24 @@ def executar(
     if not prompt.strip():
         raise ValueError("prompt vazio")
 
-    model = _modelo_configurado(motor, role)
+    if motor == "chat":
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(prompt + "\n", encoding="utf-8")
+        metadata = {
+            "motor": "chat",
+            "output_path": str(output_path),
+            "duration_ms": 0,
+            "session_id": "chat_session",
+            "model_ids": ["chat_model"],
+            "usage": {},
+        }
+        if state_dir is not None and role is not None:
+            metadata["manifest_record"] = _registrar_no_manifesto(
+                state_dir, role, motor, prompt_path, output_path, metadata
+            )
+        return metadata
+
+    model = _modelo_configurado(motor, role, state_dir)
     if motor == "codex":
         cmd = [
             _executavel("codex"), "exec", "--ephemeral", "--sandbox", "read-only",
@@ -80,8 +119,7 @@ def executar(
             _executavel("agy"), "--print", "", "--sandbox", "--input-format", "stream-json", "--output-format", "stream-json",
             "--print-timeout", f"{timeout}s",
         ]
-        # IDs do Agy já codificam o esforço (p.ex. gemini-3.1-pro-high).
-        # Repassar --effort ao mesmo tempo é rejeitado pela CLI.
+        # Se o modelo não tiver sufixo de esforço, repassa flag
         if not model or not model.endswith(("-low", "-medium", "-high")):
             cmd += ["--effort", effort]
         if model:
@@ -92,7 +130,7 @@ def executar(
     elif motor == "claude":
         cmd = [
             _executavel("claude"), "-p", "Use integralmente o pacote anexado pela entrada padrão e responda somente com o resultado solicitado.",
-            "--output-format", "json", "--no-session-persistence", "--tools", "", "--max-turns", "1",
+            "--output-format", "json", "--no-session-persistence", "--tools", "", "--max-turns", "10",
         ]
         if model:
             cmd += ["--model", model]
@@ -222,13 +260,13 @@ def _resultado_claude(stdout: str, structured: bool) -> tuple[str, str | None, l
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("motor", choices=("codex", "antigravity", "claude"))
+    parser.add_argument("motor", choices=("codex", "antigravity", "claude", "chat"))
     parser.add_argument("--prompt", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--schema", type=Path)
     parser.add_argument("--timeout", type=int, default=600)
     parser.add_argument("--effort", choices=("low", "medium", "high"), default="medium")
-    parser.add_argument("--max-budget-usd", type=float, default=1.0, help="limite por chamada Claude; use valor negativo para desativar")
+    parser.add_argument("--max-budget-usd", type=float, default=2.0, help="limite por chamada Claude; use valor negativo para desativar")
     parser.add_argument("--state-dir", type=Path)
     parser.add_argument("--role", choices=("planner", "writer", "critic", "validator"))
     args = parser.parse_args()

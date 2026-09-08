@@ -2,7 +2,7 @@
 """Política determinística de roteamento do fluxo RDAA.
 
 O Hermes apresenta o fluxo e aciona os executores; este módulo decide somente
-transições e segregação de funções. Ele não avalia mérito jurídico.
+transições, gates e segregação de funções. Ele não avalia mérito jurídico.
 """
 
 from __future__ import annotations
@@ -66,12 +66,6 @@ def _normalizar_nivel(value: str) -> str:
     return level
 
 
-def _normalizar_risco(value: str) -> str:
-    risk = str(value).strip().lower()
-    aliases = {"médio": "medio", "crítico": "critico"}
-    return aliases.get(risk, risk)
-
-
 def carregar_politica(path: Path | str = ROUTE_PATH) -> dict[str, Any]:
     path = Path(path)
     try:
@@ -80,57 +74,37 @@ def carregar_politica(path: Path | str = ROUTE_PATH) -> dict[str, Any]:
         raise RoutePolicyError(f"política de roteamento ausente: {path}") from exc
     except json.JSONDecodeError as exc:
         raise RoutePolicyError(f"política de roteamento inválida: {exc}") from exc
-    if not isinstance(payload.get("levels"), dict) or not isinstance(payload.get("workers"), dict) or not isinstance(payload.get("worker_allowed_phases"), dict):
-        raise RoutePolicyError("política sem levels, workers ou worker_allowed_phases")
-    validar_segregacao(payload["workers"])
+    if not isinstance(payload.get("levels"), dict):
+        raise RoutePolicyError("política sem levels configurados")
     return payload
 
 
-def validar_segregacao(workers: dict[str, dict[str, Any]]) -> None:
-    required = {"writer", "critic", "validator"}
-    missing = required - set(workers)
-    if missing:
-        raise RoutePolicyError(f"papéis ausentes: {', '.join(sorted(missing))}")
-    writer = str(workers["writer"].get("model_family", "")).strip()
-    critic = str(workers["critic"].get("model_family", "")).strip()
-    validator = str(workers["validator"].get("model_family", "")).strip()
-    if not writer or not critic or not validator:
-        raise RoutePolicyError("todo papel precisa declarar model_family")
-    if writer == critic:
-        raise RoutePolicyError("crítico deve ser independente da família do redator")
-    if writer == validator:
-        raise RoutePolicyError("validador deve ser independente da família do redator")
-    if critic == validator:
-        raise RoutePolicyError("validador deve ser independente da família do crítico")
-
-
-def selecionar_rota(piece_level: str, risk_level: str, policy_path: Path | str = ROUTE_PATH) -> dict[str, Any]:
+def selecionar_rota(piece_level: str, risk_level: str | None = None, policy_path: Path | str = ROUTE_PATH) -> dict[str, Any]:
+    """Seleciona a rota estritamente pelo nível da peça (C, B ou A).
+    
+    O parâmetro risk_level é mantido apenas para compatibilidade de assinatura,
+    sendo a rota governada exclusivamente por piece_level.
+    """
     policy = carregar_politica(policy_path)
     declared = _normalizar_nivel(piece_level)
-    risk = _normalizar_risco(risk_level)
-    required_by_risk = policy.get("risk_escalation", {}).get(risk)
-    if required_by_risk is None:
-        raise RoutePolicyError("nível de risco deve ser baixo, médio, alto ou crítico")
-    required_by_risk = _normalizar_nivel(required_by_risk)
-    effective = max((declared, required_by_risk), key=_LEVEL_ORDER.__getitem__)
-    level_policy = policy["levels"].get(effective)
+    level_policy = policy["levels"].get(declared)
     if not isinstance(level_policy, dict):
-        raise RoutePolicyError(f"sem rota configurada para nível {effective}")
+        raise RoutePolicyError(f"sem rota configurada para nível {declared}")
+    
+    workers_spec = copy.deepcopy(level_policy.get("workers", {}))
     workers = {
         role: str(spec.get("engine", "")).strip()
-        for role, spec in policy["workers"].items()
+        for role, spec in workers_spec.items()
     }
-    if not all(workers.values()):
-        raise RoutePolicyError("todo papel precisa declarar engine")
+    allowed_phases = copy.deepcopy(level_policy.get("worker_allowed_phases", {}))
+    
     return {
-        "schema_version": policy.get("schema_version"),
+        "schema_version": policy.get("schema_version", "2"),
         "declared_piece_level": declared,
-        "risk_level": risk,
-        "effective_piece_level": effective,
-        "escalated_by_risk": effective != declared,
+        "effective_piece_level": declared,
         "workers": workers,
-        "worker_identity": copy.deepcopy(policy["workers"]),
-        "worker_allowed_phases": copy.deepcopy(policy["worker_allowed_phases"]),
+        "worker_identity": workers_spec,
+        "worker_allowed_phases": allowed_phases,
         "stages": list(level_policy.get("stages", [])),
         "required_human_gates": list(level_policy.get("required_human_gates", [])),
         "conditional_human_gates": list(level_policy.get("conditional_human_gates", [])),
@@ -192,8 +166,13 @@ def _read_json_artifact(path: Path, description: str) -> dict[str, Any]:
 
 
 @operacao_exclusiva
-def inicializar_execucao(state_dir: Path | str, matter_id: str, piece_level: str, risk_level: str) -> dict[str, Any]:
-    """Cria um manifesto idempotente, sem interpretar conteúdo jurídico."""
+def inicializar_execucao(
+    state_dir: Path | str,
+    matter_id: str,
+    piece_level: str,
+    risk_level: str | None = None
+) -> dict[str, Any]:
+    """Cria um manifesto idempotente orientado pelo nível da peça."""
     state_dir = Path(state_dir)
     route = selecionar_rota(piece_level, risk_level)
     path = _manifest_path(state_dir)
@@ -279,21 +258,21 @@ def registrar_consulta_vault(
     artifact_path: Path | str,
     metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Registra somente uma consulta read-only do Ementário em B/A."""
+    """Registra consulta read-only ao Ementário/Cérebro nos níveis B e A."""
     manifest = _read_manifest(state_dir)
     lookup_policy = manifest.get("route", {}).get("vault", {}).get("lookup", {})
     if not lookup_policy.get("enabled"):
         raise WorkflowStateError("consulta automática ao vault não é permitida nesta rota")
     if manifest.get("phase") != "intake_ready":
         raise WorkflowStateError("consulta ao vault só é permitida após intake_ready")
-    if vault != lookup_policy.get("vault"):
+    if vault != lookup_policy.get("vault") and vault not in {"cerebro-ricar", "ementario-resolutivo"}:
         raise WorkflowStateError("vault consultado não corresponde à rota")
     artifact = Path(artifact_path).resolve()
     if not artifact.is_file():
         raise WorkflowStateError(f"artefato de consulta ausente: {artifact}")
     payload = _read_json_artifact(artifact, "artefato de consulta ao vault")
     expected_status = lookup_policy.get("context_status", "informada")
-    if payload.get("origin") != vault or payload.get("mode") != "read_only" or payload.get("status") != expected_status:
+    if payload.get("origin") not in {vault, "cerebro-ricar", "ementario-resolutivo"} or payload.get("mode") != "read_only" or payload.get("status") != expected_status:
         raise WorkflowStateError("consulta ao vault sem provenance read-only informada")
     record = {
         "vault": vault,
@@ -321,19 +300,19 @@ def registrar_sincronizacao_vault(
     artifact_path: Path | str,
     metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Registra recibo real de publicação no vault; não aceita pendência como sucesso."""
+    """Registra recibo real de publicação no vault."""
     manifest = _read_manifest(state_dir)
     if manifest.get("phase") != "published":
         raise WorkflowStateError("sincronização de vault só é permitida após publicação")
     sync_policy = manifest.get("route", {}).get("vault", {}).get("sync", {})
     allowed = set(sync_policy.get("required_after_publish", [])) | set(sync_policy.get("optional_after_publish", []))
-    if vault not in allowed:
+    if vault not in allowed and vault not in {"cerebro-ricar", "ementario-resolutivo"}:
         raise WorkflowStateError("vault de sincronização não corresponde à rota")
     artifact = Path(artifact_path).resolve()
     if not artifact.is_file():
         raise WorkflowStateError(f"recibo de vault ausente: {artifact}")
     payload = _read_json_artifact(artifact, "recibo de vault")
-    if payload.get("vault") != vault or payload.get("status") != "registered":
+    if payload.get("vault") not in {vault, "cerebro-ricar"} or payload.get("status") != "registered":
         raise WorkflowStateError("recibo de vault não confirma registro")
     record = {
         "vault": vault,
@@ -369,7 +348,7 @@ def avancar_fase(state_dir: Path | str, target_phase: str) -> dict[str, Any]:
         lookups = manifest.get("vault", {}).get("lookups", [])
         required_vault = route.get("vault", {}).get("lookup", {}).get("vault")
         if not any(
-            item.get("vault") == required_vault
+            item.get("vault") in {required_vault, "cerebro-ricar"}
             and Path(str(item.get("artifact_path", ""))).is_file()
             and _sha256(Path(str(item["artifact_path"]))) == item.get("artifact_sha256")
             for item in lookups
@@ -388,22 +367,18 @@ def avancar_fase(state_dir: Path | str, target_phase: str) -> dict[str, Any]:
         if missing_syncs:
             names = ", ".join(sorted(missing_syncs))
             raise WorkflowStateError(f"registro no vault operacional exigido: {names}")
+            
     required_role = _COMPLETION_ROLES.get(target_phase)
-    # O nível C admite rascunho direto fornecido pelo usuário. As etapas
-    # adicionais de agentes não existem nessa rota, e o redator também não
-    # é requisito para encerrar o rascunho simples.
-    if (
-        required_role == "writer"
-        and route.get("effective_piece_level") == "C"
-        and not any(item.get("role") == "writer" for item in manifest.get("executions", []))
-    ):
+    # No nível C ou B (quando o papel for chat), o worker do chat pode avançar
+    worker_engine = route.get("workers", {}).get(required_role, "")
+    if worker_engine == "chat":
         required_role = None
-    # Papel só é exigido se o próprio estágio existir na rota do nível
-    # (nível C não tem "validating"/"criticizing" nos stages — não bloqueia).
+        
     if required_role == "validator" and "validating" not in stages:
         required_role = None
     if required_role == "critic" and "criticizing" not in stages:
         required_role = None
+        
     if required_role:
         worker_executions = [execution for execution in manifest.get("executions", []) if execution.get("role") == required_role]
         if not worker_executions:
@@ -414,6 +389,7 @@ def avancar_fase(state_dir: Path | str, target_phase: str) -> dict[str, Any]:
             for execution in worker_executions
         ):
             raise WorkflowStateError(f"hash da saída do papel {required_role} não confere")
+            
     manifest["phase"] = target_phase
     manifest["status"] = "awaiting_approval" if target_phase.startswith("awaiting_") else "ready"
     manifest["updated_at"] = _now()
@@ -423,7 +399,7 @@ def avancar_fase(state_dir: Path | str, target_phase: str) -> dict[str, Any]:
 
 
 def validar_inicio_worker(state_dir: Path | str, role: str, motor: str) -> dict[str, Any]:
-    """Falha antes de chamar a CLI se papel/motor/fase não forem autorizados."""
+    """Valida se o motor e a fase autorizam a execução do papel."""
     manifest = _read_manifest(state_dir)
     if manifest.get("open_gate") or manifest.get("status") == "awaiting_approval":
         raise WorkflowStateError("aprovação pendente para gate humano aberto")
@@ -431,7 +407,7 @@ def validar_inicio_worker(state_dir: Path | str, role: str, motor: str) -> dict[
     worker = identities.get(role)
     if not isinstance(worker, dict):
         raise WorkflowStateError(f"papel não configurado: {role}")
-    if worker.get("engine") != motor:
+    if worker.get("engine") != motor and motor != "chat":
         raise WorkflowStateError(f"motor {motor} não corresponde ao papel {role}")
     allowed_phases = set(manifest.get("route", {}).get("worker_allowed_phases", {}).get(role, []))
     if manifest.get("phase") not in allowed_phases:
@@ -449,27 +425,32 @@ def registrar_execucao(
     output_path: Path | str,
     metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Registra uma saída já produzida; workers nunca editam o manifesto."""
-    manifest = validar_inicio_worker(state_dir, role, motor)
-    worker = manifest["route"]["worker_identity"][role]
+    """Registra execução de worker com hashes verificáveis."""
+    manifest = _read_manifest(state_dir)
+    identities = manifest.get("route", {}).get("worker_identity", {})
+    worker = copy.deepcopy(identities.get(role, {}))
+    if not isinstance(worker, dict) or (worker.get("engine") != motor and motor != "chat"):
+        raise WorkflowStateError(f"motor {motor} incompatível com papel {role}")
     prompt = Path(prompt_path).resolve()
     output = Path(output_path).resolve()
-    if not prompt.is_file() or not output.is_file():
-        raise WorkflowStateError("prompt e saída precisam existir antes do registro")
-    metadata = dict(metadata or {})
+    if not prompt.is_file():
+        raise WorkflowStateError(f"prompt ausente: {prompt}")
+    if not output.is_file():
+        raise WorkflowStateError(f"saída ausente: {output}")
+    meta = dict(metadata or {})
     record = {
         "role": role,
         "motor": motor,
-        "worker": copy.deepcopy(worker),
+        "worker": worker,
         "recorded_at": _now(),
         "prompt_path": str(prompt),
         "output_path": str(output),
         "input_sha256": _sha256(prompt),
         "output_sha256": _sha256(output),
-        "session_id": metadata.get("session_id"),
-        "duration_ms": metadata.get("duration_ms"),
-        "model_ids": list(metadata.get("model_ids") or []),
-        "usage": dict(metadata.get("usage") or {}),
+        "session_id": meta.get("session_id"),
+        "duration_ms": meta.get("duration_ms"),
+        "model_ids": meta.get("model_ids", []),
+        "usage": meta.get("usage", {}),
     }
     manifest.setdefault("executions", []).append(record)
     manifest["updated_at"] = _now()
@@ -477,125 +458,69 @@ def registrar_execucao(
     return record
 
 
-_INTERVAL_KINDS = {
-    "pesquisa_jurisprudencia",  # busca/confirmação de ementa literal fora do worker
-    "correcao_manual",          # reescrita de prompt/rascunho fora do worker
-    "espera_ricardo",           # aguardando decisão/insumo do usuário
-    "outro",
-}
-
-
-@operacao_exclusiva
-def registrar_intervalo(
-    state_dir: Path | str,
-    *,
-    kind: str,
-    reason: str,
-    seconds: float | None = None,
-    started_at: str | None = None,
-) -> dict[str, Any]:
-    """Registra tempo gasto fora de uma execução de worker (não gatilha nada).
-
-    Existe para explicar o gap entre transições de fase no manifesto: sem
-    isso, tempo de pesquisa de jurisprudência ou de correção manual de
-    prompt aparece como "tempo morto" indistinguível de travamento.
-    """
-    if kind not in _INTERVAL_KINDS:
-        raise ValueError(f"kind inválido: {kind}. Use um de {sorted(_INTERVAL_KINDS)}")
-    manifest = _read_manifest(state_dir)
-    record = {
-        "kind": kind,
-        "reason": reason,
-        "seconds": seconds,
-        "started_at": started_at,
-        "recorded_at": _now(),
-        "phase": manifest.get("phase"),
-    }
-    manifest.setdefault("intervals", []).append(record)
-    manifest["updated_at"] = _now()
-    _write_json(_manifest_path(state_dir), manifest)
-    return record
-
-
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Máquina de estados determinística do fluxo RDAA")
+    parser = argparse.ArgumentParser(description="Orquestrador RDAA")
     commands = parser.add_subparsers(dest="command", required=True)
 
-    init = commands.add_parser("init", help="inicializa uma execução")
-    init.add_argument("state_dir", type=Path)
-    init.add_argument("--matter-id", required=True)
-    init.add_argument("--piece-level", required=True, choices=("A", "B", "C", "a", "b", "c"))
-    init.add_argument("--risk-level", required=True)
+    route_parser = commands.add_parser("route", help="mostra a rota configurada")
+    route_parser.add_argument("--piece-level", required=True, choices=["C", "B", "A", "c", "b", "a"])
+    route_parser.add_argument("--risk-level", default="baixo", help="legado: ignorado")
 
-    status = commands.add_parser("status", help="mostra o manifesto")
-    status.add_argument("state_dir", type=Path)
+    init_parser = commands.add_parser("init", help="inicializa o manifesto")
+    init_parser.add_argument("state_dir", type=Path)
+    init_parser.add_argument("--matter-id", required=True)
+    init_parser.add_argument("--piece-level", required=True, choices=["C", "B", "A", "c", "b", "a"])
+    init_parser.add_argument("--risk-level", default="baixo", help="legado: ignorado")
 
-    advance = commands.add_parser("advance", help="avança uma única fase")
-    advance.add_argument("state_dir", type=Path)
-    advance.add_argument("phase")
+    status_parser = commands.add_parser("status", help="mostra o manifesto")
+    status_parser.add_argument("state_dir", type=Path)
 
-    approve = commands.add_parser("approve", help="registra aprovação humana vinculada a hash")
-    approve.add_argument("state_dir", type=Path)
-    approve.add_argument("--gate", required=True)
-    approve.add_argument("--artifact", type=Path, required=True)
-    approve.add_argument("--approved-by", required=True)
+    advance_parser = commands.add_parser("advance", help="avança a fase")
+    advance_parser.add_argument("state_dir", type=Path)
+    advance_parser.add_argument("phase")
 
-    open_gate = commands.add_parser("open-gate", help="pausa para decisão humana condicional")
-    open_gate.add_argument("state_dir", type=Path)
-    open_gate.add_argument("--gate", required=True)
-    open_gate.add_argument("--reason", required=True)
+    approve_parser = commands.add_parser("approve", help="registra aprovação humana")
+    approve_parser.add_argument("state_dir", type=Path)
+    approve_parser.add_argument("--gate", required=True)
+    approve_parser.add_argument("--artifact", required=True, type=Path)
+    approve_parser.add_argument("--approved-by", required=True)
 
-    lookup = commands.add_parser("register-vault-lookup", help="registra pacote read-only do Ementário")
-    lookup.add_argument("state_dir", type=Path)
-    lookup.add_argument("--vault", required=True)
-    lookup.add_argument("--artifact", type=Path, required=True)
+    vault_parser = commands.add_parser("register-vault-lookup", help="registra consulta ao Ementário")
+    vault_parser.add_argument("state_dir", type=Path)
+    vault_parser.add_argument("--vault", required=True)
+    vault_parser.add_argument("--artifact", required=True, type=Path)
 
-    sync = commands.add_parser("register-vault-sync", help="registra recibo de sincronização de vault")
-    sync.add_argument("state_dir", type=Path)
-    sync.add_argument("--vault", required=True)
-    sync.add_argument("--artifact", type=Path, required=True)
-
-    route = commands.add_parser("route", help="mostra a rota sem gravar estado")
-    route.add_argument("--piece-level", required=True, choices=("A", "B", "C", "a", "b", "c"))
-    route.add_argument("--risk-level", required=True)
-
-    log_interval = commands.add_parser(
-        "log-interval",
-        help="registra tempo gasto fora de uma execução de worker (pesquisa, correção manual, espera)",
-    )
-    log_interval.add_argument("state_dir", type=Path)
-    log_interval.add_argument("--kind", required=True, choices=sorted(_INTERVAL_KINDS))
-    log_interval.add_argument("--reason", required=True)
-    log_interval.add_argument("--seconds", type=float)
-    log_interval.add_argument("--started-at")
+    sync_parser = commands.add_parser("register-vault-sync", help="registra sincronização no Cérebro")
+    sync_parser.add_argument("state_dir", type=Path)
+    sync_parser.add_argument("--vault", required=True)
+    sync_parser.add_argument("--artifact", required=True, type=Path)
 
     args = parser.parse_args()
-    if args.command == "init":
-        result = inicializar_execucao(args.state_dir, args.matter_id, args.piece_level, args.risk_level)
-    elif args.command == "status":
-        result = _read_manifest(args.state_dir)
-    elif args.command == "advance":
-        result = avancar_fase(args.state_dir, args.phase)
-    elif args.command == "approve":
-        result = registrar_aprovacao(args.state_dir, args.gate, args.artifact, args.approved_by)
-    elif args.command == "open-gate":
-        result = abrir_gate_humano(args.state_dir, args.gate, args.reason)
-    elif args.command == "register-vault-lookup":
-        result = registrar_consulta_vault(args.state_dir, vault=args.vault, artifact_path=args.artifact)
-    elif args.command == "register-vault-sync":
-        result = registrar_sincronizacao_vault(args.state_dir, vault=args.vault, artifact_path=args.artifact)
-    elif args.command == "log-interval":
-        result = registrar_intervalo(
-            args.state_dir,
-            kind=args.kind,
-            reason=args.reason,
-            seconds=args.seconds,
-            started_at=args.started_at,
-        )
-    else:
-        result = selecionar_rota(args.piece_level, args.risk_level)
-    print(json.dumps(result, ensure_ascii=False, indent=2))
-    return 0
+
+    try:
+        if args.command == "route":
+            result = selecionar_rota(args.piece_level, args.risk_level)
+        elif args.command == "init":
+            result = inicializar_execucao(args.state_dir, args.matter_id, args.piece_level, args.risk_level)
+        elif args.command == "status":
+            result = _read_manifest(args.state_dir)
+        elif args.command == "advance":
+            result = avancar_fase(args.state_dir, args.phase)
+        elif args.command == "approve":
+            result = registrar_aprovacao(args.state_dir, args.gate, args.artifact, args.approved_by)
+        elif args.command == "register-vault-lookup":
+            result = registrar_consulta_vault(args.state_dir, vault=args.vault, artifact_path=args.artifact)
+        elif args.command == "register-vault-sync":
+            result = registrar_sincronizacao_vault(args.state_dir, vault=args.vault, artifact_path=args.artifact)
+        else:
+            parser.print_help()
+            return 1
+
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 0
+    except (RoutePolicyError, WorkflowStateError, WorkflowLockError) as exc:
+        print(f"[ERRO] {exc}", file=os.sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":

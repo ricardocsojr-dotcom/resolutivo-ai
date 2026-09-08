@@ -21,6 +21,7 @@ Formato do JSON de contexto — ver references/schema_blocos.md.
 """
 
 import argparse
+from datetime import datetime
 import json
 import os
 import re
@@ -1670,10 +1671,17 @@ def construir_peca(context: dict, output_path: str) -> str:
     bloco_paragrafo_recuo(doc, context.get('fecho', 'Nestes termos, aguarda deferimento.'))
     _blank(doc)
 
-    # Data / local
-    if context.get('data_local'):
-        bloco_paragrafo_recuo(doc, context['data_local'])
-        _blank(doc)
+    # Data / local (sempre padronizado em Uberlândia/MG como sede institucional)
+    data_local = context.get('data_local')
+    if not data_local or not str(data_local).strip().startswith('Uberlândia/MG'):
+        hoje = datetime.now()
+        meses_pt = [
+            'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+            'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
+        ]
+        data_local = f"Uberlândia/MG, {hoje.day} de {meses_pt[hoje.month - 1]} de {hoje.year}."
+    bloco_paragrafo_recuo(doc, data_local)
+    _blank(doc)
 
     # Assinaturas: sempre por ultimo, depois do fecho — automatica se nao
     # houver bloco explicito, ou o bloco explicito que foi retirado do loop

@@ -18,6 +18,7 @@ no dia do protocolo, exatamente o que está pronto para enviar.
 
 Uso:
   python3 entregar_peca.py peca "<processo>" "<nome-peça>" "<docx>"
+  python3 entregar_peca.py peca-adicional "<processo>" "<nome-peça>" "<docx>"
   python3 entregar_peca.py anexo "<processo>" "<nome-anexo>" "<arquivo>"
   python3 entregar_peca.py listar ["<processo>"]
 """
@@ -96,6 +97,25 @@ def entregar_peca(numero_processo, nome_peca, docx_source):
     return True
 
 
+def entregar_peca_adicional(numero_processo, nome_peca, docx_source):
+    """Entrega outra peça autônoma na mesma pasta, com próximo número e PDF."""
+    docx_source = Path(docx_source)
+    if not docx_source.exists():
+        print(f"✗ DOCX não encontrado: {docx_source}")
+        return False
+    pasta = pasta_do_processo(numero_processo)
+    seq = proximo_sequencial(pasta)
+    docx_destino = pasta / f"{seq:02d}. {nome_peca}.docx"
+    pdf_destino = pasta / f"{seq:02d}. {nome_peca}.pdf"
+    shutil.copy(docx_source, docx_destino)
+    print(f"✓ DOCX: {docx_destino}")
+    if converter_para_pdf(docx_destino, pdf_destino):
+        print(f"✓ PDF:  {pdf_destino}")
+    else:
+        print("⚠ PDF não gerado — DOCX está entregue, converta manualmente")
+    return True
+
+
 def entregar_anexo(numero_processo, nome_anexo, arquivo_source):
     """Entrega um anexo: próximo número livre, extensão original preservada."""
     arquivo_source = Path(arquivo_source)
@@ -143,6 +163,11 @@ def main():
     p_peca.add_argument("nome_peca")
     p_peca.add_argument("docx")
 
+    p_adicional = sub.add_parser("peca-adicional", help="Entregar outra peça autônoma com próximo número e PDF")
+    p_adicional.add_argument("processo")
+    p_adicional.add_argument("nome_peca")
+    p_adicional.add_argument("docx")
+
     p_anexo = sub.add_parser("anexo", help="Entregar anexo (próximo número)")
     p_anexo.add_argument("processo")
     p_anexo.add_argument("nome_anexo")
@@ -155,6 +180,9 @@ def main():
 
     if args.comando == "peca":
         ok = entregar_peca(args.processo, args.nome_peca, args.docx)
+        sys.exit(0 if ok else 1)
+    elif args.comando == "peca-adicional":
+        ok = entregar_peca_adicional(args.processo, args.nome_peca, args.docx)
         sys.exit(0 if ok else 1)
     elif args.comando == "anexo":
         ok = entregar_anexo(args.processo, args.nome_anexo, args.arquivo)
