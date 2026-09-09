@@ -70,7 +70,7 @@ def test_structural_verifier_rejects_adultered_titles() -> None:
         context = _context()
         context["blocos"] = [
             {"tipo": "abertura", "nome_parte": "JOÃO DA SILVA", "resto": ", vem manifestar-se."},
-            {"tipo": "titulo", "texto": "DA SÍNTESE NECESSÁRIA"},
+            {"tipo": "titulo", "texto": "SÍNTESE NECESSÁRIA"},
             {"tipo": "titulo2", "texto": "Da questão central"},
             {"tipo": "titulo3", "texto": "PROVA DOCUMENTAL"},
             {"tipo": "paragrafo", "texto": "A parte apresenta os fundamentos."},
@@ -80,7 +80,7 @@ def test_structural_verifier_rejects_adultered_titles() -> None:
         construir_peca(context, valid)
 
         colon = folder / "colon.docx"
-        _mutate_title(valid, colon, "DA SÍNTESE NECESSÁRIA", ":")
+        _mutate_title(valid, colon, "SÍNTESE NECESSÁRIA", ":")
         colon_findings = checar(colon)
         assert any("dois-pontos proibido" in finding for finding in colon_findings)
 

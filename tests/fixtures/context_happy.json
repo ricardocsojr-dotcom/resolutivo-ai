@@ -4,9 +4,9 @@
   "partes": "Autor: João da Silva\nRéu: Empresa Exemplo Ltda.",
   "blocos": [
     {"tipo": "abertura", "nome_parte": "JOÃO DA SILVA", "resto": ", já qualificado nos autos, vem apresentar ", "nome_peca": "MANIFESTAÇÃO", "resto_depois": ", pelos fundamentos a seguir."},
-    {"tipo": "titulo", "texto": "DA SÍNTESE NECESSÁRIA"},
+    {"tipo": "titulo", "texto": "SÍNTESE NECESSÁRIA"},
     {"tipo": "paragrafo", "texto": "A parte autora apresenta esta manifestação para registrar os fatos relevantes e requerer a apreciação das providências cabíveis."},
-    {"tipo": "titulo", "texto": "DOS PEDIDOS"},
+    {"tipo": "titulo", "texto": "PEDIDOS"},
     {"tipo": "numerado", "texto": "O recebimento desta manifestação.", "sequencia": "pedidos"},
     {"tipo": "numerado", "texto": "A apreciação do pedido conforme os fundamentos apresentados.", "sequencia": "pedidos"}
   ],

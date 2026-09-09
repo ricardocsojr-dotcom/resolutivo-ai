@@ -58,7 +58,7 @@
     },
     {
       "tipo": "titulo",
-      "texto": "DOS PEDIDOS",
+      "texto": "PEDIDOS",
       "sequencia": "contestacao",
       "semantic_ids": ["B-TITULO-PEDIDOS"]
     },

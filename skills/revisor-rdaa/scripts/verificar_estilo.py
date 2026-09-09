@@ -300,10 +300,59 @@ _WHITELIST_PARENTESES_TECNICOS = [
     _REGEX_DATA_COMPLETA,
 ]
 
+# Numeral cardinal por extenso (mesma convenção forense de "02 (duas)
+# parcelas", "03 (três) dias", "10 (dez) anos") — não é aposto explicativo,
+# é a forma redundante algarismo+extenso exigida por praxe processual em
+# qualquer quantidade, não só valores em reais (já coberto acima). O
+# conteúdo do parêntese deve ser só o numeral por extenso (uma ou poucas
+# palavras), e o texto imediatamente anterior ao parêntese deve terminar em
+# algarismo — isso restringe a exceção ao padrão "algarismo (extenso)" e não
+# libera aposto explicativo genérico que por acaso contenha uma palavra
+# numérica.
+_EXTENSO_NUMERAIS = (
+    r'zero|um|uma|dois|duas|tr[êe]s|quatro|cinco|seis|sete|oito|nove|dez|'
+    r'onze|doze|treze|quatorze|catorze|quinze|dezesseis|dezessete|dezoito|dezenove|'
+    r'vinte|trinta|quarenta|cinquenta|sessenta|setenta|oitenta|noventa|'
+    r'cem|cento|duzent[oa]s|trezent[oa]s|quatrocent[oa]s|quinhent[oa]s|'
+    r'seiscent[oa]s|setecent[oa]s|oitocent[oa]s|novecent[oa]s|mil'
+)
+_REGEX_NUMERAL_POR_EXTENSO_CONTEUDO = re.compile(
+    r'^(?:' + _EXTENSO_NUMERAIS + r')(?:\s+e\s+(?:' + _EXTENSO_NUMERAIS + r'))*$',
+    re.IGNORECASE,
+)
+_REGEX_ANTECEDE_ALGARISMO = re.compile(r'\d\s*$')
+
+
+def _eh_numeral_algarismo_extenso(paragrafo, posicao_abre, conteudo):
+    """True quando o parêntese segue o padrão forense 'algarismo (extenso)',
+    ex.: '02 (duas) parcelas', '03 (três) dias'. `posicao_abre` é o índice do
+    '(' no parágrafo; `conteudo` é o texto já sem os parênteses."""
+    if not _REGEX_NUMERAL_POR_EXTENSO_CONTEUDO.match(conteudo.strip()):
+        return False
+    return bool(_REGEX_ANTECEDE_ALGARISMO.search(paragrafo[:posicao_abre]))
+
 
 def _eh_parenteses_tecnico(conteudo):
     """Permite parênteses técnicos: citação de lei, ID/fls, valor ou data."""
     return any(rx.search(conteudo) for rx in _WHITELIST_PARENTESES_TECNICOS)
+
+
+# Aspas retas/curvas que podem envolver uma citação inline dentro de um
+# parágrafo comum (ex.: prosa numerada que transcreve um trecho curto de
+# decisão sem merecer um bloco "citacao" dedicado). Ricardo não proibiu
+# parênteses em geral — a regra mira aposto explicativo do redator; um
+# parêntese que pertence ao texto citado de terceiro (ex.: "03 (duas)
+# parcelas" tal como grafado na decisão) não é aposto nosso e não deve ser
+# reescrito, sob pena de deixar de ser citação literal.
+_REGEX_ASPAS_INLINE = re.compile('["“”\'‘’][^"“”\'‘’\\r\\n]*["“”\'‘’]')
+def _dentro_de_citacao_inline(paragrafo, posicao):
+    """True se `posicao` (índice de caractere) cai dentro de um trecho entre
+    aspas no parágrafo — usado para isentar parênteses que fazem parte de
+    uma citação literal curta embutida em prosa, não em bloco RDAA Citação."""
+    for match in _REGEX_ASPAS_INLINE.finditer(paragrafo):
+        if match.start() <= posicao < match.end():
+            return True
+    return False
 
 
 def checar_aposto_explicativo(paragrafos, estilos=None):
@@ -315,7 +364,7 @@ def checar_aposto_explicativo(paragrafos, estilos=None):
     problemas = []
     if estilos is None:
         estilos = [None] * len(paragrafos)
-    padrao = re.compile(r"\(([^()\r\n]*)\)")
+    padrao = re.compile('\\(([^()\\r\\n]*)\\)')
     for i, p in enumerate(paragrafos):
         estilo = (estilos[i] or "").strip().casefold()
         if estilo == "rdaa citação":
@@ -327,6 +376,10 @@ def checar_aposto_explicativo(paragrafos, estilos=None):
             if conteudo.casefold() in _MARCADORES_INSTITUCIONAIS_PARENTESES:
                 continue
             if _eh_parenteses_tecnico(conteudo):
+                continue
+            if _eh_numeral_algarismo_extenso(p, match.start(), conteudo):
+                continue
+            if _dentro_de_citacao_inline(p, match.start()):
                 continue
             problemas.append(
                 f"Paragrafo {i}: aposto explicativo entre parênteses proibido — reescrever em frase própria."
@@ -565,6 +618,41 @@ def checar_aberturas_repetidas(paragrafos, minimo_palavras=4, limite=3):
     return problemas
 
 
+_ESTILOS_TITULO = {"rdaa título 1", "rdaa título 2", "rdaa título 3", "rdaa título razões"}
+
+# Contração de preposição + artigo no início do título ("Dos Fatos", "Do
+# Direito", "Da Responsabilidade Civil", "Das Provas") — regra do Ricardo
+# (2026-09-09). A vedação é exclusiva de título/subtítulo; a mesma expressão
+# no corpo do texto continua permitida com função gramatical normal
+# ("síntese dos fatos", "análise do direito aplicável") — por isso este
+# check só roda sobre parágrafos com estilo de título nomeado, nunca sobre
+# prosa comum, mesmo quando o .txt não tiver estilo (nesse caso o check é
+# pulado, não aproximado por heurística de "parece título").
+_REGEX_TITULO_PREPOSICAO = re.compile(
+    r'^\s*(?:da|do|das|dos)\b', re.IGNORECASE
+)
+
+
+def checar_titulo_com_preposicao(paragrafos, estilos=None):
+    problemas = []
+    if estilos is None:
+        estilos = [None] * len(paragrafos)
+    for i, p in enumerate(paragrafos):
+        estilo = (estilos[i] or "").strip().casefold()
+        if estilo not in _ESTILOS_TITULO:
+            continue
+        texto = p.strip()
+        if not texto:
+            continue
+        if _REGEX_TITULO_PREPOSICAO.match(texto):
+            problemas.append(
+                f"Paragrafo {i}: título iniciado por contração de preposição+artigo "
+                f"('Da'/'Do'/'Das'/'Dos') proibido — reescrever de forma afirmativa, "
+                f"nomeando a tese: {texto[:100]!r}"
+            )
+    return problemas
+
+
 def checar(path, partes_texto=None):
     paragrafos, estilos, bordas = carregar_paragrafos(path)
 
@@ -580,6 +668,7 @@ def checar(path, partes_texto=None):
     problemas += checar_aberturas_consecutivas(paragrafos)
     problemas += checar_primeira_palavra_repetida(paragrafos, estilos)
     problemas += checar_consistencia_terminologica(paragrafos, estilos, partes_texto)
+    problemas += checar_titulo_com_preposicao(paragrafos, estilos)
 
     dois_pontos = listar_dois_pontos(paragrafos, bordas, estilos)
 
