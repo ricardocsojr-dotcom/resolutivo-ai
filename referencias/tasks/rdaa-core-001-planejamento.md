@@ -4,7 +4,9 @@
 
 **Planejador:** Claude ACP.
 
-Esta tarefa é somente de diagnóstico e plano. Não implementar, não editar arquivos, não criar commit, não alterar configuração do Canvas e não acessar qualquer path fora de `/projects/resolutivo-ai-lab`.
+Esta tarefa é somente de diagnóstico e plano. Não implementar, não criar commit, não alterar configuração do Canvas e não acessar qualquer path fora de `/projects/resolutivo-ai-lab`.
+
+A única escrita autorizada é o artefato final `referencias/plans/rdaa-core-001.md`. Não altere nenhum outro arquivo.
 
 ## Contexto
 
@@ -28,11 +30,11 @@ Leia somente o necessário para mapear:
 - Não propor reescrita geral de skills, roteamento jurídico ou documentos.
 - Não inferir uma operação de limpeza destrutiva. Reconciliação deve iniciar em `--dry-run`, com backup, recibo e sem exclusão direta.
 - Não gastar outro modelo nesta etapa.
-- Não tentar corrigir, testar ou criar arquivo: responda apenas no Canvas.
+- Não tentar corrigir, executar testes ou criar qualquer arquivo além do plano autorizado.
 
 ## Saída obrigatória
 
-Entregue uma proposta em Markdown, nestas seções e nesta ordem:
+Escreva a proposta em `referencias/plans/rdaa-core-001.md` e reproduza um resumo no Canvas. O arquivo deve conter estas seções e nesta ordem:
 
 1. **Diagnóstico comprovado** — arquivos/funções e o mecanismo exato de cada risco.
 2. **Fronteira canônica proposta** — API/tipos mínimos para `MatterId`, `StateDir` e manifesto.
