@@ -337,7 +337,15 @@ def checar(docx_path):
     caixa_processo = [p for p in paragrafos if _border_top(p) is not None
                       and any(k.lower() in textos[paragrafos.index(p)].lower() for k in KEYWORDS_CAIXA)]
     if caixa_processo:
+        # A keyword só precisa achar UMA linha do quadro (normalmente a
+        # primeira, "Processo ..."). O quadro pode ter linhas seguintes sem
+        # nenhuma keyword de polo reconhecida (plural não listado, endereço
+        # extra etc.) — por isso o fim do bloco é achado avançando por bordas
+        # consecutivas a partir da última linha com keyword, não pela keyword
+        # em si (Apontamentos 2026-09, RDAA).
         idx_caixa = paragrafos.index(caixa_processo[-1])
+        while idx_caixa + 1 < len(paragrafos) and _border_top(paragrafos[idx_caixa + 1]) is not None:
+            idx_caixa += 1
         n_blank = 0
         j = idx_caixa + 1
         while j < len(textos) and textos[j].strip() == '':

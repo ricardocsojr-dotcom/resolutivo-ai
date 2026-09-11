@@ -334,14 +334,20 @@ def _select_rows(index: LoadedIndex, start: date, end: date, convention: str) ->
 NEGATIVE_TREATMENTS = {"piso_zero_no_mes", "aplicar_integralmente"}
 
 
+def _monthly_factor(index: LoadedIndex, row: IndexRow, negative_treatment: str | None) -> Decimal:
+    # A unidade do manifesto descreve o CSV, não a unidade publicada na fonte.
+    if index.definition.unit not in {"decimal_mensal", "percentual_mensal"}:
+        raise _error("unidade_indice_invalida", "Taxa mensal exige unidade decimal_mensal ou percentual_mensal explícita.")
+    rate = row.value if index.definition.unit == "decimal_mensal" else row.value / HUNDRED
+    monthly = Decimal("1") + rate
+    return max(Decimal("1"), monthly) if negative_treatment == "piso_zero_no_mes" else monthly
+
+
 def _factor_for_rows(index: LoadedIndex, rows: list[IndexRow], negative_treatment: str | None = None) -> Decimal:
     if index.definition.series_type == "taxa_mensal_percentual":
         factor = Decimal("1")
         for row in rows:
-            monthly = Decimal("1") + row.value / HUNDRED
-            if negative_treatment == "piso_zero_no_mes" and monthly < Decimal("1"):
-                monthly = Decimal("1")
-            factor *= monthly
+            factor *= _monthly_factor(index, row, negative_treatment)
         return factor
     if index.definition.series_type in ("taxa_diaria_decimal", "taxa_aniversario_percentual"):
         factor = Decimal("1")
@@ -593,7 +599,7 @@ def calculate(payload: dict[str, Any], *, indices_dir: Path | str, manifest_path
                 elif definition.series_type == "taxa_diaria_simples_pro_rata":
                     running_factor += row.value
                 else:
-                    running_factor *= Decimal("1") + row.value / HUNDRED
+                    running_factor *= _monthly_factor(index, row, data["negative_treatment"])
                 detail.append(
                     {
                         "data": row.record_date.isoformat(),

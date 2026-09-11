@@ -63,16 +63,22 @@ Olhe a "média de caracteres/página": se estiver muito baixa (poucas dezenas de
 **Antes de rodar o OCR, avise o Ricardo que o documento parece escaneado e pergunte se ele quer que você rode o OCR** — é bem mais lento que a extração direta (na ordem de 1-2s por página, contra frações de segundo no Passo 1) e mais pesado em processamento. Só prossiga com a confirmação dele.
 
 Verifique se `ocrmypdf`, `tesseract` e o idioma português já estão disponíveis no
-ambiente. Não instale pacotes, baixe modelos ou altere o ambiente automaticamente.
-Se algum componente faltar, informe Ricardo e aguarde autorização explícita.
+ambiente (rode o bloco de `export PATH` do Passo 2 primeiro — os binários do
+Windows não entram no PATH de uma sessão bash já aberta sem isso). Não instale
+pacotes, baixe modelos ou altere o ambiente automaticamente sem autorização
+explicita se algo estiver realmente ausente (verificado em 2026-09-10: pypdf,
+pdfplumber, markitdown, tesseract 5.5.3 com `por`, ghostscript 10.08.0 e
+ocrmypdf 17.11.0 estão instalados e testados de ponta a ponta neste ambiente).
 
 Nota: `tesseract --list-langs` só mostra os idiomas disponíveis no ambiente. Se o português ou qualquer componente faltar, não tente corrigir automaticamente. Informe a limitação e aguarde autorização explícita.
 
 Como o OCR de um documento de centenas de páginas não cabe em uma única chamada de 45s, processe em lotes com um arquivo de estado que marca por onde parou — rode o bloco abaixo repetidamente (uma chamada de bash por vez) até ele reportar que chegou na última página:
 
 ```bash
-export PATH="$PATH:$HOME/.local/bin"
-export TESSDATA_PREFIX=~/tessdata
+export PATH="$PATH:$HOME/.local/bin:/c/Program Files/Tesseract-OCR:/c/Program Files/gs/gs10.08.0/bin"
+# TESSDATA_PREFIX não é necessário no Windows: o tesseract acha o tessdata
+# sozinho ao lado do binário. Definir esse env errado só gera um warning
+# inofensivo ("does not exist, ignore it") — não quebra o OCR.
 python3 - <<'EOF'
 import subprocess, time, os
 from pypdf import PdfReader, PdfWriter

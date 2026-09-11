@@ -37,14 +37,16 @@ try {
       .map((item) => `- ${item.matter_id} (fase: ${item.phase || "desconhecida"})`)
       .join("\n");
     pendingNote =
-      "\n\n---\n\nATENÇÃO — sincronização de vault pendente: a(s) matéria(s) abaixo " +
-      "foram tocadas numa sessão anterior sem publicar nada, então a gravação " +
-      "automática do passo 10 de redigir-peca/SKILL.md nunca rodou.\n" +
+      "\n\n---\n\nATENÇÃO — registro no Cérebro pendente: a(s) matéria(s) abaixo " +
+      "foram PUBLICADAS sem recibo de registro no Cérebro-Ricar, então a " +
+      "gravação automática do passo 10 de redigir-peca/SKILL.md não se " +
+      "completou.\n" +
       list +
-      "\nAntes de continuar, siga o passo 10 pra cada uma (grave o resumo no " +
-      "vault, marque `vault_synced_at` no manifesto de cada matéria via " +
-      "`update_manifest`). Depois disso a pendência some sozinha na próxima " +
-      "sessão.";
+      "\nAntes de continuar, rode `registrar_cerebro.py <state_dir> " +
+      "--matter-id <id> --level <C|B|A>` para cada uma e confirme " +
+      "`openviking_sync.success: true` no retorno. O recibo entra em " +
+      "`vault.syncs[]` do manifesto (mesmo critério do gate " +
+      "`vault_registered`) e a pendência some sozinha na próxima sessão.";
   }
 } catch {
   pendingNote = "";

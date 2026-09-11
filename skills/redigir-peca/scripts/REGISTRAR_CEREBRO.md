@@ -52,18 +52,19 @@ Após `publicar_docx.py` retornar `[OK]`, `registrar_cerebro.py`:
 1. grava/atualiza a matéria no Cérebro-Ricar;
 2. chama `sincronizar_openviking.py` sobre `wiki/operacional`;
 3. usa `vectors_only` por padrão, preservando a privacidade do conteúdo jurídico;
-4. cria `OPENVIKING-RECIBO.json` quando o servidor confirma o processamento.
+4. cria `OPENVIKING-RECIBO.json` quando o servidor confirma o processamento;
+5. **grava o recibo `CEREBRO-RECIBO.json` em `vault.syncs[]` do `run_manifest.json`**, que é o array exigido pelo gate `vault_registered`.
 
-O orquestrador pode validar esse recibo com:
+O passo 5 é automático desde 2026-09-11. Antes disso o recibo só existia em disco e `vault.syncs[]` ficava vazio, então a matéria publicada e registrada de verdade travava antes do último estágio até alguém rodar `register-vault-sync` à mão. **Não chame `register-vault-sync` manualmente após `registrar_cerebro.py`** — o registro já aconteceu e o comando existe apenas para reconciliação de matéria antiga ou recibo de outro vault:
 
 ```bash
 py -3.14 skills/redigir-peca/scripts/orquestrador_rdaa.py \
   register-vault-sync .rdaa-run/<matter_id> \
   --vault cerebro-ricar \
-  --artifact .rdaa-run/<matter_id>/OPENVIKING-RECIBO.json
+  --artifact .rdaa-run/<matter_id>/CEREBRO-RECIBO.json
 ```
 
-Se o OpenViking estiver indisponível, o registro no Cérebro-Ricar permanece preservado, mas o retorno do script indica sincronização pendente e a matéria não deve ser considerada `vault_registered`.
+Se o OpenViking estiver indisponível, ou se o recibo não entrar no manifesto, o script devolve `success: false` com `cerebro_registered: true` — o registro no Cérebro-Ricar permanece preservado, mas a matéria **não** pode ser considerada `vault_registered`.
 
 ### Sincronização manual/reconciliação
 

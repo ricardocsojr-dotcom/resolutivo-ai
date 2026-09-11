@@ -823,15 +823,29 @@ def bloco_abertura(doc, nome_parte, resto, nome_peca=None, resto_depois=''):
     `nome_peca` é opcional: quando presente (ex.: "CONTRARRAZÕES AOS EMBARGOS
     DE DECLARAÇÃO"), sai em CAIXA ALTA + negrito logo após "apresentar" /
     "interpor" / etc., no meio do texto `resto` — passe a parte anterior do
-    texto em `resto` e o restante (depois do nome da peça) em `resto_depois`."""
+    texto em `resto` e o restante (depois do nome da peça) em `resto_depois`.
+
+    Bug real 2026-09-09: quando quem monta o JSON esquece o espaço final em
+    `resto` (ou inicial em `resto_depois`), o Word concatena os runs sem
+    espaço nenhum — produzia "apresentarMEMORIAL" colado. O gerador agora
+    normaliza a junção automaticamente em vez de depender de disciplina de
+    quem escreve o contexto."""
     p = doc.add_paragraph()
     r1 = p.add_run(nome_parte)
     _fmt_run(r1, bold=True, underline=True)
     r2 = p.add_run(resto)
     _fmt_run(r2)
     if nome_peca:
+        # Garante exatamente um espaço entre `resto` e o nome da peça, e
+        # entre o nome da peça e `resto_depois`, sem depender de quem
+        # montou o JSON ter lembrado de incluí-lo.
+        if resto and not resto.endswith((' ', '\n')):
+            resto = resto + ' '
+            r2.text = resto
         r3 = p.add_run(nome_peca.upper())
         _fmt_run(r3, bold=True)
+        if resto_depois and not resto_depois.startswith((' ', ',', '.', ';', ':', '\n')):
+            resto_depois = ' ' + resto_depois
         r4 = p.add_run(resto_depois)
         _fmt_run(r4)
     _base_pf(p.paragraph_format, line_rule=WD_LINE_SPACING.ONE_POINT_FIVE, first_line=CM2)
@@ -1324,6 +1338,9 @@ BLOCO_HANDLERS = {
 # primeiro título, conforme o modelo real; "paragrafo" (fecho, publicações,
 # data/local) é tratado à parte na função construir_peca, então não entra aqui.
 BLOCOS_COM_BLANK_DEPOIS = {'abertura', 'titulo', 'titulo2', 'titulo3', 'numerado', 'alinea', 'documento', 'citacao', 'sumula', 'figura', 'decisao_anotada', 'tabela', 'memoria_calculo', 'visual'}
+# quadro_processual exige 2 parágrafos vazios depois (Item 3b do verificador,
+# Apontamentos 2026-07), diferente do padrão de 1 dos demais blocos acima.
+BLOCOS_COM_DOIS_BLANKS_DEPOIS = {'quadro_processual'}
 VISUAL_TIPOS = {'timeline', 'matrix', 'flow', 'confrontation'}
 
 

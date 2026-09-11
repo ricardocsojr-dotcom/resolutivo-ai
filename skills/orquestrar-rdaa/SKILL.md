@@ -81,6 +81,7 @@ O estado persistido é `.rdaa-run/<matter_id>/run_manifest.json`. Kanban e conve
 
 ## Pitfalls
 
+- O registro no Cérebro-Ricar após publicação atualiza automaticamente `wiki/operacional/` e as partes/clientes em `wiki/entities/`, sincronizando ambos no OpenViking. Em produção, a publicação é bloqueada determinística e ruidosamente (exit 1) se o registro no Cérebro falhar — nunca ignore falhas pós-publicação.
 - O lock protege mutações do manifesto; não execute dois workers para a mesma matéria ao mesmo tempo.
 - Uma aprovação fica inválida se o hash do artefato mudar.
 - `model_ids` só aparece quando a CLI devolve essa informação; não invente identificador de modelo. O executor Claude aplica teto de US$ 1 por chamada salvo override explícito.

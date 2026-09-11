@@ -44,9 +44,13 @@ Copie o texto da peça redigida na conversa **literalmente** para uma lista de `
 | `visual` | `visual_tipo`, `funcao_visual`, `texto_pesquisavel`, `linhas`, IDs opcionais | Timeline, matriz, fluxo ou confronto em tabela pesquisável, com função declarada e vínculo semântico. |
 | `inicio_razoes` | `enderecamento` (opcional), `titulo_razoes` (opcional) | Transição para a folha de Razões Recursais em recursos compostos. Injeta quebra de página e reinicia automaticamente as sequências de numeração. |
 | `assinaturas` | *(nenhum)* | Injeta a tabela de assinaturas (permite recursos compostos com assinaturas na interposição e nas razões). |
-| `quadro_processual` | `numero_processo`, `partes` | Injeta caixa com borda contendo dados do processo e partes em qualquer ponto. |
+| `quadro_processual` | `numero_processo`, `partes` | Injeta caixa com borda contendo dados do processo e partes em qualquer ponto. **Não repita** este bloco se `numero_processo`/`partes` já estão no topo do contexto — o gerador já injeta esse quadro automaticamente no cabeçalho; um segundo bloco explícito duplica a caixa no corpo. |
 
 ---
+
+### Regra objetiva — nunca incluir fecho/publicações manualmente
+
+`construir_peca.py` injeta automaticamente, sempre, dois blocos fixos no fim da peça: a cláusula de publicações (boilerplate institucional, `context.get('publicacoes', True)`, corretamente sem numeração) e o fecho `"Nestes termos, aguarda deferimento."` (`context.get('fecho', ...)`). Nunca inclua um bloco `numerado` com esse texto de fecho nos `blocos` — ele vira item numerado indevido e duplica quando o gerador injeta o seu próprio fecho automático no final. Se precisar customizar o fecho, use `context['fecho']`; se precisar desativar a cláusula de publicações, use `context['publicacoes'] = false`. Nunca redija manualmente esses dois elementos como bloco do corpo.
 
 ### Regra objetiva de títulos
 
@@ -99,6 +103,8 @@ O gate verifica no XML do `.docx`:
 3. **Parágrafos Numerados**: alinhamento com `tabStop` em 2cm (1134 twips) e retorno de 2ª linha à margem 0.
 4. **Alíneas e Documentos**: numeração nativa e recuos de 3cm (1701 twips) / 4cm (2268 twips).
 5. **Endereçamento e Quadro**: espaçamento simples e 2 parágrafos em branco de separação.
+
+Se o gate falhar no item de quadro/endereçamento mesmo com o contexto correto, isso pode ser bug real do verificador (ex.: ele localizava o fim da caixa pela última linha com keyword de polo reconhecida — "Autor "/"Réu " etc. — e parava de contar cedo quando a última linha do quadro não batia nenhuma keyword, como plural sem correspondência exata). Se isso ocorrer de novo, inspecione `verificar_formatacao.py` (Item 3b) e `construir_peca.py` diretamente antes de reescrever o JSON às cegas — não é sempre erro de contexto.
 6. **Cabeçalho**: logo e parágrafo de respiro depois da logo.
 7. **Assinaturas**: margem interna, estrutura e ordem depois do fecho.
 8. **Rodapé**: presença de campos `PAGE`/`NUMPAGES` e linha do site em 7pt/dourado (`FFC000`).

@@ -56,9 +56,10 @@ def _paragraphs_from_docx(path):
     paragraphs = []
     estilos = []
     bordas = []
+    em_tabela = []
     seen_paragraphs = set()
 
-    def append_paragraphs(items):
+    def append_paragraphs(items, dentro_de_tabela=False):
         for paragraph in items:
             marker = id(paragraph._p)
             if marker in seen_paragraphs:
@@ -67,32 +68,38 @@ def _paragraphs_from_docx(path):
             paragraphs.append(paragraph.text)
             estilos.append(paragraph.style.name if paragraph.style is not None else None)
             bordas.append(_tem_borda_completa(paragraph))
+            em_tabela.append(dentro_de_tabela)
 
     def append_table(table):
         for row in table.rows:
             for cell in row.cells:
-                append_paragraphs(cell.paragraphs)
+                append_paragraphs(cell.paragraphs, dentro_de_tabela=True)
                 for nested_table in cell.tables:
                     append_table(nested_table)
 
     append_paragraphs(doc.paragraphs)
     for table in doc.tables:
         append_table(table)
-    return paragraphs, estilos, bordas
+    return paragraphs, estilos, bordas, em_tabela
 
 
 def _paragraphs_from_txt(path):
     with open(path, encoding='utf-8') as f:
         linhas = [l.rstrip('\n') for l in f]
-    return linhas, [None] * len(linhas), [False] * len(linhas)
+    return linhas, [None] * len(linhas), [False] * len(linhas), [False] * len(linhas)
 
 
 def carregar_paragrafos(path):
-    """Retorna (paragrafos, estilos, bordas). `estilos[i]` é o nome do
-    estilo do parágrafo i no DOCX (ex.: 'RDAA Numerado', 'RDAA Alínea') ou
-    None quando a fonte é .txt ou o parágrafo não tem estilo nomeado.
-    `bordas[i]` indica se o parágrafo tem borda nos 4 lados (caixa
-    Processo/partes)."""
+    """Retorna (paragrafos, estilos, bordas, em_tabela). `estilos[i]` é o
+    nome do estilo do parágrafo i no DOCX (ex.: 'RDAA Numerado', 'RDAA
+    Alínea') ou None quando a fonte é .txt ou o parágrafo não tem estilo
+    nomeado. `bordas[i]` indica se o parágrafo tem borda nos 4 lados (caixa
+    Processo/partes). `em_tabela[i]` indica que o parágrafo veio de célula
+    de tabela — a leitura achata a tabela na mesma lista linear do corpo,
+    então sem essa marca as checagens de cadência comparam célula com
+    célula (ou célula com prosa) como se fossem parágrafos consecutivos de
+    argumentação, o que é falso positivo garantido em quadro de Visual Law
+    e em bloco de assinatura."""
     if path.lower().endswith('.docx'):
         return _paragraphs_from_docx(path)
     return _paragraphs_from_txt(path)
@@ -288,9 +295,10 @@ _REGEX_VALOR_MONETARIO = re.compile(r'R\$\s*[\d.,]+', re.IGNORECASE)
 # como em "R$ 1.000,00 (mil reais)". O conteúdo é restrito a vocabulário
 # monetário para não liberar apartes explicativos genéricos.
 _REGEX_VALOR_POR_EXTENSO = re.compile(
-    r'^(?=[a-záàâãéêíóôõúç\s-]+$).*\brea(?:l|is)\b', re.IGNORECASE
+    r'^(?=[a-záàâãéêíóôõúç\s,-]+$).*\brea(?:l|is)\b', re.IGNORECASE
 )
 _REGEX_DATA_COMPLETA = re.compile(r'\b\d{1,2}\s+de\s+[a-zç]+\s+de\s+\d{4}\b', re.IGNORECASE)
+_REGEX_OAB = re.compile(r'\bOAB[/-][A-Z]{2}\s*\d', re.IGNORECASE)
 
 _WHITELIST_PARENTESES_TECNICOS = [
     _REGEX_CITACAO_LEGAL,
@@ -298,6 +306,7 @@ _WHITELIST_PARENTESES_TECNICOS = [
     _REGEX_VALOR_MONETARIO,
     _REGEX_VALOR_POR_EXTENSO,
     _REGEX_DATA_COMPLETA,
+    _REGEX_OAB,
 ]
 
 # Numeral cardinal por extenso (mesma convenção forense de "02 (duas)
@@ -423,6 +432,67 @@ _DEMONSTRATIVO_GENERICO = re.compile(
 
 _PALAVRAS_VAZIAS = {'de', 'da', 'do', 'das', 'dos', 'que', 'a', 'o', 'e'}
 
+# Estilos que NÃO são prosa argumentativa e por isso ficam fora das checagens
+# de variedade de abertura: alínea/pedido e citação legitimamente repetem
+# estrutura entre itens, documento é rótulo, título tem regra própria.
+_ESTILOS_NAO_ARGUMENTATIVOS = {
+    "rdaa alínea", "rdaa alinea",
+    "rdaa citação", "rdaa citacao",
+    "rdaa documento",
+    "rdaa título 1", "rdaa titulo 1",
+    "rdaa título 2", "rdaa titulo 2",
+    "rdaa título 3", "rdaa titulo 3",
+    "rdaa título razões", "rdaa titulo razoes",
+}
+
+
+def _estilo_argumentativo(estilo):
+    """Decide se o parágrafo entra nas checagens de repetição de abertura.
+
+    Correção 2026-09-11 (bug real): a condição antiga era uma ALLOWLIST
+    `estilo not in ("rdaa numerado", "")`. O python-docx nomeia o estilo
+    padrão de "Normal", nunca string vazia — então qualquer parágrafo de
+    corpo que não fosse exatamente 'RDAA Numerado' (inclusive todo o texto
+    de um .docx simples e qualquer estilo de corpo novo) era descartado em
+    silêncio e a checagem nunca disparava. Invertido para BLOCKLIST: prosa
+    é o padrão; só estilo declaradamente não-argumentativo fica de fora.
+    Assim, criar um estilo de corpo novo no gerador não desliga o QA sem
+    ninguém perceber."""
+    return (estilo or "").strip().casefold() not in _ESTILOS_NAO_ARGUMENTATIVOS
+
+
+# Marcador de item de lista no PRÓPRIO texto ("a)", "b -", "I -", "1.", "•").
+# Peça vinda do gerador nativo traz a alínea como estilo, mas peça importada,
+# colada ou montada fora do compilador traz o marcador no texto. Item de
+# lista repete abertura por natureza ("a) o pagamento...", "b) a fixação...")
+# e não pode ser medido como prosa argumentativa.
+_MARCADOR_LISTA = re.compile(
+    r'^\s*(?:[\u2022\u25cf\u2013\u2014-]\s+'
+    r'|\(?[a-z]\)\s+'
+    r'|[a-z]\s*[-\u2013]\s+'
+    r'|\(?\d{1,3}[.)]\s+'
+    r'|\(?[ivxlcdm]{1,7}[.)]\s+)',
+    re.IGNORECASE,
+)
+
+
+def _parece_item_lista(texto):
+    return bool(_MARCADOR_LISTA.match(texto or ""))
+
+
+def _entra_na_cadencia(texto, estilo, em_tabela=False):
+    """Parágrafo elegível às checagens de variedade de abertura: prosa
+    argumentativa, não título, não item de lista (por estilo ou marcador),
+    fora de tabela. Célula de tabela (quadro de Visual Law, caixa
+    Processo/partes, bloco de assinatura) não é prosa em cascata e nunca
+    entra na medição de cadência."""
+    return (
+        not em_tabela
+        and not _parece_titulo(texto)
+        and _estilo_argumentativo(estilo)
+        and not _parece_item_lista(texto)
+    )
+
 
 def _assinatura_abertura(paragrafo):
     """Normaliza a abertura de um parágrafo argumentativo só para efeito de
@@ -457,12 +527,25 @@ def _assinatura_abertura(paragrafo):
     return ' '.join(palavras[:6])
 
 
-def checar_aberturas_consecutivas(paragrafos, minimo=2):
+def checar_aberturas_consecutivas(paragrafos, minimo=2, estilos=None, em_tabela=None):
     # Parágrafos argumentativos consecutivos cuja abertura tem a mesma
     # função e estrutura (mesmo sujeito/verbo, mesmo conectivo, mesmo
     # demonstrativo genérico) leem mal, ainda que o resto da frase varie —
     # contagem objetiva sobre a assinatura normalizada, não sobre a palavra
     # literal. A comparação é só de QA: não normaliza nem reescreve a peça.
+    #
+    # Correção 2026-09-09 (mesmo bug de checar_primeira_palavra_repetida):
+    # parágrafo vazio não reinicia mais o grupo — o construir_peca.py insere
+    # um parágrafo em branco entre todo bloco 'numerado' consecutivo, então
+    # o reset antigo em "not texto" apagava o grupo antes de qualquer
+    # comparação real, e a checagem nunca disparava em peça saída do
+    # gerador nativo. Restrito ao estilo 'RDAA Numerado' pelo mesmo motivo
+    # de checar_primeira_palavra_repetida — alíneas de pedido legitimamente
+    # repetem estrutura entre itens de uma lista.
+    if estilos is None:
+        estilos = [None] * len(paragrafos)
+    if em_tabela is None:
+        em_tabela = [False] * len(paragrafos)
     problemas = []
     grupo = []
     assinatura_atual = None
@@ -476,7 +559,10 @@ def checar_aberturas_consecutivas(paragrafos, minimo=2):
 
     for i, p in enumerate(paragrafos):
         texto = p.strip()
-        if not texto or _parece_titulo(texto):
+        if not texto:
+            continue
+        estilo = (estilos[i] or "").strip().casefold()
+        if not _entra_na_cadencia(texto, estilo, em_tabela[i]):
             fechar_grupo()
             grupo, assinatura_atual = [], None
             continue
@@ -510,26 +596,38 @@ def _primeira_palavra(paragrafo):
     return match.group(0).lower() if match else None
 
 
-def checar_primeira_palavra_repetida(paragrafos, estilos=None):
+def checar_primeira_palavra_repetida(paragrafos, estilos=None, em_tabela=None):
     # Regra do Ricardo (2026-09): nenhum parágrafo argumentativo pode começar
     # com a mesma palavra do parágrafo IMEDIATAMENTE anterior, qualquer que
     # seja essa palavra — não só quando os dois usam o mesmo artigo (A/A,
     # O/O), mas mesmo quando a palavra é um conectivo, advérbio ou qualquer
     # outra. É comparação par a par (2 já é erro, não é preciso esperar 3+),
     # porque a leitura mecânica acontece a partir da segunda repetição, não
-    # da terceira. Reinicia a cada título ou parágrafo vazio. Restrito ao
-    # estilo 'RDAA Numerado' (prosa argumentativa em cascata) para não
-    # marcar falso positivo em alíneas de pedido, que legitimamente podem
-    # repetir a primeira palavra entre itens de uma lista.
+    # da terceira. Reinicia a cada título. Restrito ao estilo 'RDAA
+    # Numerado' (prosa argumentativa em cascata) para não marcar falso
+    # positivo em alíneas de pedido, que legitimamente podem repetir a
+    # primeira palavra entre itens de uma lista.
+    #
+    # Correção 2026-09-09 (bug real pego por Ricardo em produção): parágrafo
+    # vazio NÃO reinicia mais o rastreador. O construir_peca.py insere um
+    # parágrafo em branco entre TODO bloco 'numerado' consecutivo
+    # (BLOCOS_COM_BLANK_DEPOIS) — com o reset antigo em "not texto", o
+    # 'anterior' era descartado antes de qualquer comparação real acontecer,
+    # e esta checagem nunca disparava em nenhuma peça saída do gerador
+    # nativo. Só título/alínea/estilo fora de escopo interrompem a sequência.
     if estilos is None:
         estilos = [None] * len(paragrafos)
+    if em_tabela is None:
+        em_tabela = [False] * len(paragrafos)
     problemas = []
     anterior_idx = None
     anterior_palavra = None
     for i, p in enumerate(paragrafos):
         texto = p.strip()
+        if not texto:
+            continue
         estilo = (estilos[i] or "").strip().casefold()
-        if not texto or _parece_titulo(texto) or estilo not in ("rdaa numerado", ""):
+        if not _entra_na_cadencia(texto, estilo, em_tabela[i]):
             anterior_idx, anterior_palavra = None, None
             continue
         palavra = _primeira_palavra(texto)
@@ -654,7 +752,7 @@ def checar_titulo_com_preposicao(paragrafos, estilos=None):
 
 
 def checar(path, partes_texto=None):
-    paragrafos, estilos, bordas = carregar_paragrafos(path)
+    paragrafos, estilos, bordas, em_tabela = carregar_paragrafos(path)
 
     problemas = []
     trav_problemas, trav_candidatos = checar_travessao(paragrafos)
@@ -665,8 +763,8 @@ def checar(path, partes_texto=None):
     problemas += checar_dois_pontos(paragrafos, bordas, estilos)
     problemas += checar_aposto_explicativo(paragrafos, estilos)
     problemas += checar_aberturas_repetidas(paragrafos)
-    problemas += checar_aberturas_consecutivas(paragrafos)
-    problemas += checar_primeira_palavra_repetida(paragrafos, estilos)
+    problemas += checar_aberturas_consecutivas(paragrafos, estilos=estilos, em_tabela=em_tabela)
+    problemas += checar_primeira_palavra_repetida(paragrafos, estilos, em_tabela=em_tabela)
     problemas += checar_consistencia_terminologica(paragrafos, estilos, partes_texto)
     problemas += checar_titulo_com_preposicao(paragrafos, estilos)
 

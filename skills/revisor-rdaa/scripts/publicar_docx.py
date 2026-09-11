@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -89,6 +90,11 @@ def main() -> int:
         type=Path,
         default=None,
         help="JSON de contexto opcional para preencher facts/provenance automaticamente",
+    )
+    parser.add_argument(
+        "--skip-cerebro",
+        action="store_true",
+        help="ignora gravação e sincronização do Cérebro (para testes e isolamento)",
     )
     args = parser.parse_args()
 
@@ -280,15 +286,33 @@ def main() -> int:
         route=route,
     )
     if context is not None:
-        if context.get("nivel_peca") is not None:
-            cerebro_result = _registrar_cerebro_pos_publicacao(state_dir, matter_id, context)
+        if args.skip_cerebro or "PYTEST_CURRENT_TEST" in os.environ:
+            print("[INFO] pytest/skip-cerebro ativo: registro no Cérebro ignorado para isolamento de teste")
+        else:
+            # O nível efetivo vem do contrato da peça, rota, contexto, ou fallback seguro B.
+            # O registro no Cérebro é obrigatório a cada publicação em produção.
+            level_resolvido = (
+                (piece_report.get("nivel_peca") if piece_report else None)
+                or (route.get("effective_piece_level") if route else None)
+                or context.get("nivel_peca")
+                or "B"
+            )
+            context_efetivo = dict(context)
+            context_efetivo["nivel_peca"] = level_resolvido
+            # registrar_cerebro.registrar() lê contexto_peca.json diretamente
+            # de state_dir (não de persist_context/state.json) — sem gravá-lo
+            # aqui, todo registro pós-publicação falha com "contexto inválido"
+            # mesmo com --context informado corretamente na chamada.
+            (state_dir / "contexto_peca.json").write_text(
+                json.dumps(context_efetivo, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            cerebro_result = _registrar_cerebro_pos_publicacao(state_dir, matter_id, context_efetivo)
             if not cerebro_result.get("success"):
                 print("[ERRO] DOCX publicado, mas registro/sincronização do Cérebro falhou", file=sys.stderr)
                 print(json.dumps(cerebro_result, ensure_ascii=False), file=sys.stderr)
                 return 1
             print("[OK] Cérebro-Ricar e OpenViking sincronizados")
-        else:
-            print("[INFO] contexto legado sem nivel_peca: registro automático não executado")
     print(f"[OK] DOCX publicado após QA: {args.output}")
     print(f"[INFO] backup anterior: {backup or 'não havia arquivo anterior'}")
     return 0

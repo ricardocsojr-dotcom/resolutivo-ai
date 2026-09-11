@@ -33,7 +33,7 @@ def _approved_definition(filename: str, digest: str, series_type: str, conventio
     return {
         "arquivo": filename,
         "tipo_serie": series_type,
-        "unidade": "teste",
+        "unidade": "percentual_mensal" if series_type == "taxa_mensal_percentual" else "teste",
         "status": "aprovado",
         "sha256": digest,
         "convencoes": [convention],

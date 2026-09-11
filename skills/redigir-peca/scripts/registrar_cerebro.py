@@ -11,6 +11,8 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import sys
+import unicodedata
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -83,9 +85,113 @@ def _partes_estruturadas(ctx: dict[str, Any]) -> dict[str, dict[str, str]]:
     return resultado
 
 
+def _extrair_titulo_peca(ctx: dict[str, Any], default: str = "Sem título") -> str:
+    """Deriva o título da peça quando ctx não traz 'titulo_peca' explícito.
+
+    O schema padrão de contexto_peca.json (usado por construir_peca.py) nunca
+    grava um campo 'titulo_peca' de nível superior — o nome da peça vive dentro
+    do bloco 'abertura' como 'nome_peca'. Sem este fallback, toda matéria
+    publicada pelo fluxo padrão B/A grava 'Sem título' no Cérebro-Ricar.
+    """
+    titulo = ctx.get("titulo_peca")
+    if titulo:
+        return str(titulo)
+    for bloco in ctx.get("blocos", []):
+        if isinstance(bloco, dict) and bloco.get("tipo") == "abertura":
+            nome_peca = bloco.get("nome_peca")
+            if nome_peca:
+                return str(nome_peca).strip()
+    return default
+
+
+def _extrair_tipo_peca(ctx: dict[str, Any]) -> str:
+    """Deriva o tipo da peça a partir do título quando 'tipo_peca' ausente."""
+    tipo = ctx.get("tipo_peca")
+    if tipo:
+        return str(tipo)
+    titulo = _extrair_titulo_peca(ctx)
+    if titulo and titulo != "Sem título":
+        return titulo.title()
+    return "Desconhecido"
+
+
 def normalizar_process_number(num: str) -> str:
     """0130354-80.2018.8.13.0702 → 0130354-80-2018-8-13-0702 (seguro pra filename)."""
     return re.sub(r"[./]", "-", num.strip())
+
+
+def _slugify(text: str) -> str:
+    text = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("ascii")
+    text = re.sub(r"[^\w\s-]", "", text).strip().lower()
+    return re.sub(r"[-\s]+", "-", text)[:60]
+
+
+def _split_party_names(text: str) -> list[str]:
+    text = text.strip()
+    tokens = [t.strip() for t in re.split(r",|\be\b", text) if t.strip()]
+    cleaned = []
+    for t in tokens:
+        if t.lower() in ("desconhecido", "n/a", "e", "&", ""):
+            continue
+        t = re.sub(r"^[\s\-:]+|[\s\-:]+$", "", t).strip()
+        if len(t) > 2:
+            cleaned.append(t)
+    return cleaned
+
+
+def _upsert_entity_file(fpath: Path, nome: str, role: str, matter_link: str) -> None:
+    now_str = _now()
+    if not fpath.exists():
+        content = (
+            f"---\n"
+            f"type: entity\n"
+            f"title: \"{nome}\"\n"
+            f"role: {role}\n"
+            f"created: {now_str}\n"
+            f"updated: {now_str}\n"
+            f"---\n\n"
+            f"# {nome}\n\n"
+            f"**Papel:** {role}\n\n"
+            f"## Matérias Relacionadas\n"
+            f"{matter_link}\n"
+        )
+        fpath.write_text(content, encoding="utf-8")
+    else:
+        existing = fpath.read_text(encoding="utf-8")
+        if matter_link not in existing:
+            if "## Matérias Relacionadas" in existing:
+                existing = existing.replace("## Matérias Relacionadas\n", f"## Matérias Relacionadas\n{matter_link}\n")
+            else:
+                existing += f"\n## Matérias Relacionadas\n{matter_link}\n"
+            existing = re.sub(r"updated:.*", f"updated: {now_str}", existing)
+            fpath.write_text(existing, encoding="utf-8")
+
+
+def _registrar_entidades(ctx: dict[str, Any], matter_id: str, cerebro_root: Path) -> list[str]:
+    entities_dir = cerebro_root / "wiki" / "entities"
+    entities_dir.mkdir(parents=True, exist_ok=True)
+    partes = _partes_estruturadas(ctx)
+    normalized_matter = normalizar_process_number(matter_id)
+    matter_link = f"- [[matter-{normalized_matter}]]"
+
+    registered = []
+    autor_dict = partes.get("autor", {})
+    autor_nome = autor_dict.get("nome", "")
+    for nome in _split_party_names(autor_nome):
+        slug = _slugify(nome)
+        if slug:
+            _upsert_entity_file(entities_dir / f"{slug}.md", nome, "cliente", matter_link)
+            registered.append(slug)
+
+    reu_dict = partes.get("reu", {})
+    reu_nome = reu_dict.get("nome", "")
+    for nome in _split_party_names(reu_nome):
+        slug = _slugify(nome)
+        if slug:
+            _upsert_entity_file(entities_dir / f"{slug}.md", nome, "adversario", matter_link)
+            registered.append(slug)
+
+    return registered
 
 
 def carregar_contexto(path: Path) -> dict[str, Any]:
@@ -100,7 +206,7 @@ def gerar_frontmatter(ctx: dict[str, Any], matter_id: str, level: str) -> str:
     """Monta YAML frontmatter."""
     partes = _partes_estruturadas(ctx)
     cliente = _single_line(partes.get("autor", {}).get("nome", "Desconhecido"))
-    titulo = _single_line(ctx.get("titulo_peca", "Sem título"))
+    titulo = _single_line(_extrair_titulo_peca(ctx))
     matter_id = _single_line(matter_id)
     process_number = _single_line(ctx.get("numero_processo", "N/A"))
     level = _single_line(level)
@@ -123,8 +229,8 @@ def gerar_frontmatter(ctx: dict[str, Any], matter_id: str, level: str) -> str:
 
 def gerar_conteudo(ctx: dict[str, Any]) -> str:
     """Monta conteúdo do arquivo."""
-    titulo = _single_line(ctx.get("titulo_peca", "Peça sem título"))
-    tipo = _single_line(ctx.get("tipo_peca", "Desconhecido"))
+    titulo = _single_line(_extrair_titulo_peca(ctx, default="Peça sem título"))
+    tipo = _single_line(_extrair_tipo_peca(ctx))
     nivel = _single_line(ctx.get("nivel_peca", "?"))
     processo = _single_line(ctx.get("numero_processo", "N/A"))
     
@@ -201,8 +307,8 @@ def atualizar_hot(ctx: dict[str, Any], matter_id: str) -> None:
     """Atualiza hot.md com a matéria nova."""
     hot_path = CEREBRO / "hot.md"
     
-    titulo = ctx.get("titulo_peca", "Sem título")
-    tipo = ctx.get("tipo_peca", "Desconhecido")
+    titulo = _extrair_titulo_peca(ctx)
+    tipo = _extrair_tipo_peca(ctx)
     processo = ctx.get("numero_processo", "N/A")
     normalized = normalizar_process_number(matter_id)
     
@@ -222,6 +328,30 @@ def atualizar_hot(ctx: dict[str, Any], matter_id: str) -> None:
     )
     
     hot_path.write_text(conteudo, encoding="utf-8")
+
+
+def _registrar_sync_no_manifesto(state_dir: Path, receipt_path: Path) -> dict[str, Any]:
+    """Grava o recibo do Cérebro em `vault.syncs[]` do run_manifest.json.
+
+    Delega ao orquestrador (`registrar_sincronizacao_vault`) para reaproveitar
+    a validação, o lock e o hash do artefato — duplicar a escrita do manifesto
+    aqui criaria dois caminhos divergentes para o mesmo estado, que é a
+    origem desta classe de bug. Falha fechada: devolve success=False com o
+    motivo; o chamador decide se bloqueia."""
+    try:
+        script_dir = Path(__file__).resolve().parent
+        if str(script_dir) not in sys.path:
+            sys.path.insert(0, str(script_dir))
+        from orquestrador_rdaa import registrar_sincronizacao_vault
+
+        record = registrar_sincronizacao_vault(
+            state_dir,
+            vault="cerebro-ricar",
+            artifact_path=receipt_path,
+        )
+        return {"success": True, "record": record}
+    except Exception as exc:  # noqa: BLE001 — qualquer falha aqui bloqueia o gate
+        return {"success": False, "error": f"{type(exc).__name__}: {exc}"}
 
 
 def registrar(state_dir: Path | str, matter_id: str, level: str) -> dict[str, Any]:
@@ -280,7 +410,13 @@ def registrar(state_dir: Path | str, matter_id: str, level: str) -> dict[str, An
     # Escreve
     full_text = frontmatter + conteudo
     file_path.write_text(full_text, encoding="utf-8")
-    
+
+    # Registra e atualiza entidades envolvidas em wiki/entities
+    try:
+        _registrar_entidades(ctx, matter_id, CEREBRO)
+    except Exception as e:
+        print(f"[AVISO] Falha ao registrar entidades no Cérebro: {e}", file=sys.stderr)
+
     # Atualiza índices
     try:
         atualizar_index(matter_id)
@@ -322,14 +458,49 @@ def registrar(state_dir: Path | str, matter_id: str, level: str) -> dict[str, An
             "receipt": str(receipt_path),
         }
 
+    entities_dir = CEREBRO / "wiki" / "entities"
+    if entities_dir.exists():
+        _sincronizar_openviking(
+            entities_dir,
+            cerebro_root=CEREBRO,
+            receipt_path=state_dir / "OPENVIKING-RECIBO-ENTITIES.json",
+            processing_mode="vectors_only",
+            watch_interval=0,
+            timeout=300,
+        )
+
+    # Grava o recibo NO MANIFESTO, não só em disco.
+    #
+    # Correção 2026-09-11 (bug real): até aqui o script escrevia
+    # CEREBRO-RECIBO.json e devolvia success=True, mas `vault.syncs[]` do
+    # manifesto continuava vazio — e é exatamente esse array que o gate
+    # `vault_registered` do orquestrador exige. Resultado: matéria publicada
+    # e efetivamente registrada no Cérebro ficava travada antes do último
+    # estágio para sempre, e o registro do manifesto dependia de alguém
+    # lembrar de rodar `register-vault-sync` à mão. Registro obrigatório
+    # vira passo do código, nunca instrução em documentação.
+    sync_record = _registrar_sync_no_manifesto(state_dir, receipt_path)
+    if not sync_record.get("success"):
+        return {
+            "success": False,
+            "cerebro_registered": True,
+            "openviking_sync": openviking_result,
+            "manifest_sync": sync_record,
+            "error": "Cérebro e OpenViking sincronizados, mas o recibo não entrou em vault.syncs[] do manifesto",
+            "matter_id": matter_id,
+            "file": str(file_path),
+            "receipt": str(receipt_path),
+        }
+
     return {
         "success": True,
         "matter_id": matter_id,
         "file": str(file_path),
         "receipt": str(receipt_path),
         "openviking_sync": openviking_result,
+        "manifest_sync": sync_record,
         "level": level,
-        "title": ctx.get("titulo_peca", "Sem título"),
+        "title": _extrair_titulo_peca(ctx),
         "process_number": ctx.get("numero_processo", "N/A"),
         "timestamp": _now()
     }

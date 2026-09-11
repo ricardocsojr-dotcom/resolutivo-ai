@@ -75,6 +75,25 @@ O contexto pode declarar `uf_processo_originario` com a sigla de duas letras ou 
 
 Os e-mails da tabela de assinaturas são hyperlinks `mailto:` azuis e sublinhados, como no padrão visual fornecido. A publicação continua passando pelo candidato temporário e pelo gate protegido.
 
+## Boilerplate automático de publicações (`publicacoes` / `publicacoes_texto`)
+
+**Bug real 2026-09-09**: o gerador injeta automaticamente, ao final do corpo (antes do fecho fixo), um parágrafo padrão pedindo publicação exclusiva em nome de Wanderley Romano Donadel (`PUBLICACOES_PADRAO` em `construir_peca.py`) — a menos que o contexto declare `"publicacoes": false`. Esse comportamento é o default e roda mesmo quando o pedido de publicação exclusiva já foi escrito manualmente como bloco `numerado`/`alinea` no corpo, produzindo **duplicação** (dois parágrafos quase idênticos, com pequenas divergências de e-mail/grafia entre o que foi escrito manualmente e o padrão fixo). Nenhum dos gates de QA (`verificar_formatacao.py`, `verificar_estilo.py`) detecta duplicação semântica de conteúdo — os dois passam limpos mesmo com o texto repetido.
+
+Campos de contexto (nível raiz do JSON, não um bloco):
+
+| Campo | Default | Efeito |
+|---|---|---|
+| `publicacoes` | `true` | Se `true` (ou omitido), injeta o parágrafo padrão de publicação exclusiva automaticamente. Setar `false` quando o pedido de publicação exclusiva já for redigido manualmente dentro do corpo (`numerado` ou `alinea`). |
+| `publicacoes_texto` | `PUBLICACOES_PADRAO` | Substitui o texto do boilerplate automático, mantendo a injeção automática. Não usar junto com um pedido manual equivalente no corpo — mesmo risco de duplicação. |
+
+Regra prática: se a peça já tem, em qualquer bloco do corpo, um pedido de publicação exclusiva (comum em agravos/contraminutas/memoriais que reproduzem a cláusula de publicação de peças anteriores dos mesmos autos), declarar `"publicacoes": false` no JSON de contexto.
+
+**Mesmo risco com o fecho fixo.** O gerador também injeta automaticamente a cláusula final ("Nestes termos, aguarda deferimento." + data/local) antes das assinaturas. Se você escrever essa frase manualmente como bloco `numerado` no fim do corpo, ela aparece duas vezes no docx final — os gates de QA (`verificar_formatacao.py`, `verificar_estilo.py`) não detectam essa duplicação semântica, só aparece ao ler o texto renderizado (docx ou PDF). Nunca escreva "Nestes termos, aguarda deferimento" como bloco manual; deixe o gerador injetar sozinho e o corpo termina no último bloco de pedido/alínea antes de `assinaturas`.
+
+## Pitfall confirmado — path Windows com espaço/acento via bash
+
+Ao chamar `construir_peca.py --output` ou `publicar_docx.py --output`/`--state-dir` de dentro do shell bash (MSYS/git-bash), NUNCA passe o caminho no formato `/c/Users/ricar/Desktop/...`. O Python nativo do Windows reinterpreta `/c` como diretório relativo comum e recria `C:\c\Users\ricar\Desktop\...` na raiz do drive, silenciosamente — o script reporta `[OK]` normalmente, mas o arquivo (e o `matter_state.json`/`run_manifest.json` do state-dir) fica no lugar errado. Sempre passe o caminho no formato nativo Windows (`C:\Users\ricar\Desktop\...`, entre aspas se houver espaço/acento) para esses dois scripts. Se isso já ocorreu, o arquivo estará em `C:\c\...` espelhando o caminho pretendido sem o `C:` inicial — mova de volta com Python (`shutil.move`), nunca com `cmd //c move` (bloqueado por segurança nesta ferramenta).
+
 ## Regras Importantes
 
 1. **Citação Curta vs. Citação em Bloco**:

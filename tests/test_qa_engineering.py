@@ -279,6 +279,52 @@ def test_defensive_openings(folder: Path) -> None:
     assert "Abertura defensiva recorrente" in result.stdout
 
 
+def test_cadencia_escopo_estilo_e_tabela(folder: Path) -> None:
+    """Regressão 2026-09-11: as checagens de cadência (abertura consecutiva
+    equivalente e primeira palavra repetida) usavam ALLOWLIST de estilo
+    `estilo not in ("rdaa numerado", "")`. O python-docx nomeia o estilo
+    padrão de "Normal", nunca "" — então prosa de corpo era descartada em
+    silêncio e a regra nunca disparava fora de 'RDAA Numerado'. Ao inverter
+    para blocklist, o inverso também precisa ficar travado: item de lista e
+    célula de tabela NÃO podem entrar na medição, senão todo quadro de
+    Visual Law e todo bloco de pedidos vira falso positivo."""
+    from docx import Document
+
+    # 1. Prosa em estilo 'Normal' (não 'RDAA Numerado') É medida.
+    prosa_normal = folder / "cadencia-normal.docx"
+    document = Document()
+    document.add_paragraph("O contrato firmado entre as partes previa a entrega em trinta dias.")
+    document.add_paragraph("O contrato firmado nunca chegou a ser cumprido pela ré.")
+    document.save(prosa_normal)
+    result = run([sys.executable, str(STYLE_CHECKER), str(prosa_normal)])
+    assert result.returncode == 1, result.stdout + result.stderr
+    assert "mesma palavra do paragrafo anterior" in result.stdout, result.stdout
+
+    # 2. Item de lista com marcador NO TEXTO (peça importada/colada, sem
+    #    estilo 'RDAA Alínea') repete abertura por natureza e é isento.
+    lista_marcador = folder / "cadencia-lista-marcador.docx"
+    document = Document()
+    document.add_paragraph("A Autora requer:")
+    document.add_paragraph("a) a condenação da Ré ao pagamento da indenização;")
+    document.add_paragraph("b) a condenação da Ré ao pagamento das custas;")
+    document.add_paragraph("c) a condenação da Ré ao pagamento dos honorários.")
+    document.save(lista_marcador)
+    result = run([sys.executable, str(STYLE_CHECKER), str(lista_marcador)])
+    assert result.returncode == 0, result.stdout + result.stderr
+
+    # 3. Célula de tabela (quadro Visual Law, assinatura) é isenta: a
+    #    leitura achata a tabela na mesma lista do corpo, e sem a marca
+    #    `em_tabela` células viram "parágrafos consecutivos".
+    tabela = folder / "cadencia-tabela.docx"
+    document = Document()
+    table = document.add_table(rows=2, cols=1)
+    table.cell(0, 0).text = "Elemento A do quadro comparativo."
+    table.cell(1, 0).text = "Elemento B do quadro comparativo."
+    document.save(tabela)
+    result = run([sys.executable, str(STYLE_CHECKER), str(tabela)])
+    assert result.returncode == 0, result.stdout + result.stderr
+
+
 def test_rollback(folder: Path) -> None:
     stable = folder / "stable.docx"
     new = folder / "new.docx"
@@ -297,19 +343,19 @@ def test_rollback(folder: Path) -> None:
 
 
 def main() -> int:
-    with tempfile.TemporaryDirectory(prefix="rdaa-qa-") as tmp:
-        folder = Path(tmp)
-        source = test_happy_path_and_text_preservation(folder)
-        assert_mutation(folder, source, "no_signature_margin", "word/document.xml", mutate_remove_signature_margins, "margem interna")
-        assert_mutation(folder, source, "signature_before_close", "word/document.xml", mutate_signature_before_close, "não está precedida")
-        assert_mutation(folder, source, "no_header_respiro", "word/header1.xml", mutate_remove_header_respiro, "parágrafo de respiro")
-        assert_mutation(folder, source, "body_blank", "word/document.xml", mutate_insert_body_blank, "corpo iniciado com parágrafo vazio")
-        test_invalid_context(folder)
-        test_style_enforcement(folder)
-        test_defensive_openings(folder)
-        test_rollback(folder)
-    print("[OK] testes P0 de engenharia passaram")
-    return 0
+    """Execução direta (`python tests/test_qa_engineering.py`) delega ao
+    pytest em vez de reimplementar a suíte.
+
+    Correção 2026-09-11: o main() legado montava a sequência à mão e
+    chamava `source = test_happy_path_and_text_preservation(folder)`, que
+    retorna None — `assert_mutation` recebia None como zip de origem e o
+    script morria em AttributeError ANTES de qualquer asserção de conteúdo.
+    Pior: a lista de testes era manual, então qualquer teste novo (como
+    test_cadencia_escopo_estilo_e_tabela) ficava fora sem aviso. Delegar ao
+    pytest elimina as duas fontes de falso verde."""
+    import pytest
+
+    return pytest.main([str(Path(__file__).resolve()), "-q"])
 
 
 if __name__ == "__main__":

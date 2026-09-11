@@ -107,7 +107,7 @@
     "inpc": {
       "arquivo": "inpc.csv",
       "tipo_serie": "taxa_mensal_percentual",
-      "unidade": "percentual_mensal",
+      "unidade": "decimal_mensal",
       "status": "aprovado",
       "sha256": "b4be68bce313ba1c300bd2ca17bf576cbc1c92ac24e3f3c5c389fbb66b5249e2",
       "convencoes": [
@@ -136,7 +136,7 @@
     "ipca": {
       "arquivo": "ipca.csv",
       "tipo_serie": "taxa_mensal_percentual",
-      "unidade": "percentual_mensal",
+      "unidade": "decimal_mensal",
       "status": "aprovado",
       "sha256": "1acd913f6aa060c68d9ab7a4f75e1603aecd3fcb285682287bfb5fdad8525f7c",
       "convencoes": [
@@ -165,7 +165,7 @@
     "igp-m": {
       "arquivo": "igp-m.csv",
       "tipo_serie": "taxa_mensal_percentual",
-      "unidade": "percentual_mensal",
+      "unidade": "decimal_mensal",
       "status": "aprovado",
       "sha256": "14f1382be0cbe2321472371c5e26ed69edf45fb09d9400ffdf75b9efcdcd8cdb",
       "convencoes": [
@@ -194,7 +194,7 @@
     "selic": {
       "arquivo": "selic.csv",
       "tipo_serie": "taxa_mensal_percentual",
-      "unidade": "percentual_mensal",
+      "unidade": "decimal_mensal",
       "status": "aprovado",
       "sha256": "597c89b82611f43eaa1a73674ef6e87c4367882497f2f597869f83ee233cad89",
       "convencoes": [
@@ -223,7 +223,7 @@
     "cdi": {
       "arquivo": "cdi.csv",
       "tipo_serie": "taxa_mensal_percentual",
-      "unidade": "percentual_mensal",
+      "unidade": "decimal_mensal",
       "status": "aprovado",
       "sha256": "caf19b9a4019bddd30353748a82ca06568de01fd7534cd9922d4dcf50fdd53c9",
       "convencoes": [

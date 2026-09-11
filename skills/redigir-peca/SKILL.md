@@ -104,6 +104,15 @@ atual. Não confunda "o vault trouxe uma tese candidata" com "a tese está
 aprovada para este caso": aprovação continua exigindo seleção explícita no
 esqueleto (passo 6).
 
+**Espelhamento de peça anterior (mesma tese, partes trocadas):** nunca herde
+qualificações, valores ou datas do modelo sem recalculá-los contra os
+documentos-fonte do caso novo. Adjetivos temporais ("recente", "atual") e
+equiparações ("equiparada a", "similar a") do modelo não se transferem
+automaticamente — confira a data/fato real do caso novo antes de repetir o
+qualificador. Em pedidos que envolvem partilha ou proporção de valores, some
+todos os valores-fonte do caso novo (ex.: IRPF, extratos) antes de propor uma
+divisão — nunca herde a proporção do modelo como se fosse neutra.
+
 - **Tipo B**: organize o que já existe no processo, identifique lacunas
   objetivas, proponha desenvolvimento de explicações e indique se Legal Design
   ou ilustração pode melhorar a compreensão. As teses candidatas do Ementário
@@ -427,6 +436,15 @@ py -3.14 skills/redigir-peca/scripts/registrar_cerebro.py \
 
 Não cria registros redundantes — se a matéria já existe em operacional,
 atualiza data/status.
+
+**Pré-condição objetiva:** `registrar_cerebro.registrar()` lê o contexto
+diretamente de `state_dir/contexto_peca.json` (ou variantes
+`CONTEXTO-PECA.json`/`contexto.json`/`context.json`), nunca do `state.json`
+que `persist_context` grava. Se você chamar `publicar_docx.py` manualmente
+fora do orquestrador padrão, confirme que esse arquivo literal existe em
+`state_dir` antes de registrar — senão o registro falha com "contexto
+inválido" mesmo com `--context` passado corretamente na publicação. O DOCX já
+publicado não é afetado; só o registro no Cérebro fica pendente.
 
 Na entrega, relate em uma linha que a gravação foi feita (ex.: "Registrada em
 Cérebro-Ricar como [[matter-XXX]]")
