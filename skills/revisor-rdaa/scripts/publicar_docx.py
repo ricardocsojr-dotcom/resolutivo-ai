@@ -48,6 +48,35 @@ from validar_esqueleto import validate_skeleton  # noqa: E402
 from classificacao_peca import validate_piece_contract  # noqa: E402
 
 
+def validar_state_dir_nao_aninhado(state_dir: Path) -> None:
+    """Recusa um `state_dir` que contenha `.rdaa-run` mais de uma vez no path.
+
+    Bug real 2026-09-11: quando `--state-dir` não é passado explicitamente e
+    `--output` já vive dentro de um `.rdaa-run/<matter_id>/` existente (ex.:
+    publicar direto no diretório de trabalho da matéria), a derivação padrão
+    (`output.parent / ".rdaa-run" / matter_id`) cria um SEGUNDO `.rdaa-run`
+    aninhado dentro do primeiro. O manifesto real (fase `published`) fica
+    gravado só no aninhado; o `.rdaa-run/<matter_id>/run_manifest.json`
+    canônico — o que `orquestrador_rdaa.py status`, os hooks de sessão e o
+    registro no Cérebro leem — nunca é atualizado e mostra uma fase antiga
+    para sempre. Aconteceu de verdade em duas matérias reais (0747080-19 e
+    1045435-63), silenciosamente: o script imprimia `[OK]` normalmente.
+    Falha fechada aqui em vez de deixar o estado se bifurcar sem aviso.
+    """
+    resolved = state_dir.resolve()
+    # Windows resolve o path, mas preserva a capitalização usada na criação.
+    # A comparação precisa seguir a semântica case-insensitive do filesystem.
+    occurrences = sum(1 for part in resolved.parts if part.casefold() == ".rdaa-run")
+    if occurrences > 1:
+        raise ValueError(
+            f"state_dir aninhado detectado: {resolved} contém '.rdaa-run' "
+            f"{occurrences} vezes. Isso bifurca o estado da matéria — passe "
+            "--state-dir explícito apontando para o diretório canônico "
+            "'.rdaa-run/<matter_id>/' (fora de qualquer outro '.rdaa-run'), "
+            "ou publique com --output fora da árvore .rdaa-run existente."
+        )
+
+
 def _registrar_cerebro_pos_publicacao(
     state_dir: Path,
     matter_id: str,
@@ -119,6 +148,11 @@ def main() -> int:
         if context is not None
         else args.output.parent / ".rdaa-run"
     )
+    try:
+        validar_state_dir_nao_aninhado(state_dir)
+    except ValueError as exc:
+        print(f"[ERRO] {exc}", file=sys.stderr)
+        return 2
     candidate_state_dir = None
     evaluation_state_dir = state_dir
     if context is not None:
