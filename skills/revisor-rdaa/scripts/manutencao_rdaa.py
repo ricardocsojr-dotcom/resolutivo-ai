@@ -24,6 +24,10 @@ except ImportError:
     from seguro import criar_backup, restaurar
     from estado_rdaa import _safe_matter_id, _write_json
 
+import sys
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from estado_contrato import validar_state_dir, EstadoDirError
+
 
 def _iso_mtime(path: Path) -> str:
     return datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc).isoformat()
@@ -204,6 +208,55 @@ def restore_protected(backup: Path, destination: Path, backup_dir: Path | None) 
     }
 
 
+def reconcile_state(root: Path, apply: bool, quarantine: Path) -> dict[str, Any]:
+    dirs = discover_state_dirs(root)
+    results = []
+    to_quarantine = []
+
+    for d in dirs:
+        path = Path(d["path"])
+        try:
+            validar_state_dir(path)
+            status = "ok"
+        except EstadoDirError as exc:
+            status = "symlink" if "symlink" in str(exc).lower() else "aninhado"
+            to_quarantine.append(d)
+        
+        results.append({
+            "path": str(path),
+            "matter_id": d["matter_id"],
+            "status": status
+        })
+        
+    moved = []
+    if apply and to_quarantine:
+        quarantine.mkdir(parents=True, exist_ok=True)
+        stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+        for item in to_quarantine:
+            source = Path(item["path"])
+            target = quarantine / f"{_safe_matter_id(item['matter_id'])}.{stamp}.reconcile"
+            if target.exists():
+                target = quarantine / f"{_safe_matter_id(item['matter_id'])}.{stamp}.{len(moved)+1}.reconcile"
+            shutil.move(str(source), str(target))
+            moved.append({**item, "quarantine_path": str(target)})
+            
+        manifest = quarantine / f"cleanup-manifest.{stamp}.json"
+        _write_json(manifest, {
+            "generated_at": datetime.now(timezone.utc).isoformat(),
+            "root": str(root),
+            "operation": "reconcile",
+            "moved": moved,
+        })
+
+    return {
+        "root": str(root),
+        "apply": apply,
+        "quarantine": str(quarantine),
+        "results": results,
+        "moved": moved,
+        "status": "APPLIED" if apply else "DRY_RUN",
+    }
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Diagnóstico e manutenção segura do estado RDAA")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -215,6 +268,10 @@ def main() -> int:
     p_clean.add_argument("--matter-id", default=None)
     p_clean.add_argument("--apply", action="store_true")
     p_clean.add_argument("--quarantine", type=Path, default=None)
+    p_rec = sub.add_parser("reconcile")
+    p_rec.add_argument("root", type=Path)
+    p_rec.add_argument("--apply", action="store_true")
+    p_rec.add_argument("--quarantine", type=Path, default=None)
     p_backups = sub.add_parser("list-backups")
     p_backups.add_argument("root", type=Path)
     p_test = sub.add_parser("restore-test")
@@ -230,6 +287,9 @@ def main() -> int:
     elif args.command == "clean":
         quarantine = args.quarantine or (args.root.parent / f"{args.root.name}.quarantine")
         result = clean(args.root, args.older_than_days, args.matter_id, args.apply, quarantine)
+    elif args.command == "reconcile":
+        quarantine = args.quarantine or (args.root.parent / f"{args.root.name}.quarantine")
+        result = reconcile_state(args.root, args.apply, quarantine)
     elif args.command == "list-backups":
         result = list_backups(args.root)
     elif args.command == "restore-test":
