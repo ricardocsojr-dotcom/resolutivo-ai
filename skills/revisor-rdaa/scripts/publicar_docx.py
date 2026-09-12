@@ -117,12 +117,13 @@ def main() -> int:
             print(f"[ERRO] contexto JSON inválido: {exc}", file=sys.stderr)
             return 2
 
-    matter_id = matter_id_from_context(context, args.output) if context else args.output.stem
-    state_dir = args.state_dir or (
-        args.output.parent / ".rdaa-run" / matter_id
-        if context is not None
-        else args.output.parent / ".rdaa-run"
-    )
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from estado_contrato import MatterId
+
+    matter_id = matter_id_from_context(context, args.output) if context else MatterId.normalize(args.output.stem)
+    state_dir = args.state_dir or (args.output.parent / ".rdaa-run" / matter_id)
+
     try:
         validar_state_dir(state_dir, matter_id=matter_id)
     except EstadoDirError as exc:
