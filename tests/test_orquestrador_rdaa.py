@@ -321,3 +321,9 @@ def test_cli_inicializa_e_mostra_status(tmp_path, monkeypatch, capsys):
     monkeypatch.setattr(sys, "argv", ["orquestrador_rdaa.py", "status", str(tmp_path)])
     assert MODULE.main() == 0
     assert json.loads(capsys.readouterr().out)["matter_id"] == "caso-123"
+
+def test_inicializacao_rejeita_estado_dir_aninhado(tmp_path):
+    d = tmp_path / ".rdaa-run" / "x" / ".rdaa-run" / "y"
+    d.mkdir(parents=True)
+    with pytest.raises(MODULE.WorkflowStateError, match="aninhado"):
+        MODULE.inicializar_execucao(d, "matter-123", "B")

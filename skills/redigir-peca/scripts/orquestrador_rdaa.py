@@ -174,6 +174,15 @@ def inicializar_execucao(
 ) -> dict[str, Any]:
     """Cria um manifesto idempotente orientado pelo nível da peça."""
     state_dir = Path(state_dir)
+
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "skills" / "revisor-rdaa" / "scripts"))
+    from estado_contrato import validar_state_dir, EstadoDirError
+    try:
+        validar_state_dir(state_dir)
+    except EstadoDirError as exc:
+        raise WorkflowStateError(f"state_dir invalido para orquestrador: {exc}")
+
     route = selecionar_rota(piece_level, risk_level)
     path = _manifest_path(state_dir)
     if path.exists():

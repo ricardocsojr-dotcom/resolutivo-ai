@@ -18,6 +18,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from estado_contrato import validar_state_dir, MatterId
+
 SCHEMA_VERSION = "3"
 
 
@@ -77,13 +79,13 @@ def promote_candidate_state(candidate_state_dir: Path | str, state_dir: Path | s
 
 
 def _safe_matter_id(value: str) -> str:
-    value = re.sub(r"[^A-Za-z0-9_.-]+", "-", value.strip())
-    return value.strip("-") or "sem-identificador"
+    return MatterId.normalize(value)
 
 
 def initialize_state(state_dir: Path, matter_id: str | None = None, output: Path | str | None = None) -> dict[str, Path]:
     state_dir = Path(state_dir)
     output_path = Path(output) if output is not None else None
+    validar_state_dir(state_dir)  # Nao passamos matter_id aqui senao bloqueia updates quando o ID no json existe
     state_dir.mkdir(parents=True, exist_ok=True)
     matter_id = _safe_matter_id(matter_id or (output_path.stem if output_path else "execucao-rdaa"))
     state_path = state_dir / "matter_state.json"
