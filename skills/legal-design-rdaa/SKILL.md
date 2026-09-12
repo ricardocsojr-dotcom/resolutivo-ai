@@ -153,7 +153,7 @@ A conclusão executiva de um quadro-resumo ou síntese precisa ser o elemento de
 Quando uma visualização for útil nos tipos A ou B, consulte
 `references/data-storytelling-rdaa.md`. A referência organiza pergunta, dados,
 estrutura, provenance e revisão sem criar conteúdo jurídico. Ela é subordinada à
-identidade visual RDAA, ao `verificar_visual_law.py` e ao fluxo de candidato
+identidade visual RDAA, ao (_disparo automatizado via motor_) e ao fluxo de candidato
 temporário. O tipo C não aciona data storytelling como premissa.
 
 ### 2.4 Elementos Visuais por Destinatário

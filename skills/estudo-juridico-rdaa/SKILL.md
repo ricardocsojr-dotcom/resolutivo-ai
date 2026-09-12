@@ -58,7 +58,7 @@ Ricardo se não estiver óbvio pelo pedido — evita gastar esforço na direçã
 errada. Identifique:
 
 - **Tema abstrato ou caso concreto?** Se for uma matéria já em andamento,
-  identifique o `matter_id` em `.rdaa-run/` pra linkar o estudo ao estado
+  identifique o `matter_id` em `espaço de estado do processo/` pra linkar o estudo ao estado
   compartilhado (passo 7). Se for tema abstrato sem matéria associada, siga
   sem `matter_id` — não crie matéria artificial só pra ter onde registrar.
 - **Área do direito** — ajuda a decidir se vale consultar o Ementário do
@@ -138,10 +138,10 @@ Diagramas em Mermaid/SVG conforme `artifact-diagramming`. Entregue o link.
 ### 8. Registrar no estado compartilhado (se houver `matter_id`)
 
 Se o estudo estiver ligado a uma matéria, registre jurisprudência e lei
-usadas com `contexto_rdaa.py`:
+usadas com (_disparo automatizado via motor_):
 
 ```
-python3 skills/revisor-rdaa/scripts/contexto_rdaa.py .rdaa-run/<matter_id> register \
+python3 (_disparo automatizado via motor_) espaço de estado do processo register \
   --source-type jurisprudencia --content-json <arquivo.json>
 ```
 
@@ -152,7 +152,7 @@ conferida nesta execução (passos 3 e 4 já conferem).
 
 Ao final de todo estudo publicado, grave automaticamente no Cérebro-Ricar
 (``) — sem pedir, do mesmo jeito que `redigir-peca`
-faz (script `registrar_cerebro.py`). Leia `CLAUDE.md` do Cérebro antes de
+faz (script (_disparo automatizado via motor_)). Leia `CLAUDE.md` do Cérebro antes de
 escrever.
 
 Crie/atualize os seguintes arquivos em `wiki/`:

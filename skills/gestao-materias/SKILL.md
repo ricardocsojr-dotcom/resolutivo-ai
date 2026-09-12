@@ -12,7 +12,7 @@ description: >
   uma matéria, anotar uma pendência, ou preparar o handoff antes de passar a
   matéria para outra CLI. Não decide tese, não lê o conteúdo dos documentos e
   não substitui `contencioso-rdaa`, `backoffice-juridico` nem o estado de
-  `.rdaa-run` (`matter_state.json`) — só organiza os dados e o repositório
+  `espaço de estado do processo` (`matter_state.json`) — só organiza os dados e o repositório
   de documentos-fonte.
 ---
 
@@ -21,7 +21,7 @@ description: >
 Camada de dados local, sem banco de dados, Docker, WSL ou serviço em segundo
 plano. Cada cliente e cada matéria (contencioso ou consultivo) é uma pasta;
 cada arquivo Markdown dentro dela é a única fonte de verdade. O script
-`scripts/gestao_materias.py` só mantém essas pastas e arquivos consistentes —
+(_disparo automatizado via motor_) só mantém essas pastas e arquivos consistentes —
 quem decide fato, tese e estratégia continua sendo Ricardo (ou Claude,
 quando ele autorizar).
 
@@ -80,9 +80,9 @@ definitivo — Google Drive não entra como destino desta estrutura.
    (`jusbrasil-jurisprudencia`). Esta skill não pesquisa nada — só guarda o
    que já foi decidido registrar como fonte.
 6. **ID de matéria = `matter_id`.** `--id` é normalizado com a mesma regra de
-   `skills/revisor-rdaa/scripts/estado_rdaa.py` (`_safe_matter_id`: só
+   (_disparo automatizado via motor_) (`_safe_matter_id`: só
    `[A-Za-z0-9_.-]`, resto vira `-`) — normalmente o número de processo. É o
-   mesmo identificador usado em `.rdaa-run/<matter_id>/` pelo pipeline de
+   mesmo identificador usado em `espaço de estado do processo` pelo pipeline de
    redação, propositalmente, para que os dois lados apontem pra mesma
    matéria sem tradução.
 7. **`DOC-XXX` de `fontes.json` é o `source_id`** que `provenance.jsonl`/
@@ -91,8 +91,8 @@ definitivo — Google Drive não entra como destino desta estrutura.
    origem, imutabilidade) — o contrato de agentes já previa o campo, mas
    nada gerava ou validava esse identificador até esta skill existir.
 8. **Fato, tese, decisão e risco de uma peça em produção não vivem aqui.**
-   Isso é `.rdaa-run/<matter_id>/matter_state.json`, mantido por
-   `estado_rdaa.py` e usado só por quem carrega as skills do plugin (Claude
+   Isso é `espaço de estado do processo.json`, mantido por
+   (_disparo automatizado via motor_) e usado só por quem carrega as skills do plugin (Claude
    Code e Codex, que instalam o plugin por completo). `CONTEXTO.md` desta
    skill é só narrativa entre peças — não duplica esse estado.
 
@@ -140,7 +140,7 @@ entradas antigas manualmente, só o script ou Ricardo adicionam ao final.
 ## Divisão entre Claude Code, Codex e Gemini
 
 Claude Code **e** Codex instalam o plugin `resolutivo-ai` por completo —
-os dois carregam as skills e leem/escrevem `.rdaa-run/<matter_id>/`
+os dois carregam as skills e leem/escrevem `espaço de estado do processo`
 normalmente. Não há tratamento especial pro Codex aqui: nível A/B e o
 roteamento entre os dois já são resolvidos pelos contratos existentes
 (`redigir-peca`, `contratos-agentes.md`, `roteamento-executavel.md`).
@@ -151,7 +151,7 @@ continuidade ampla, não como transporte obrigatório do fluxo comum.
 
 ## Planilha de curadoria pra importação em massa
 
-`scripts/gerar_planilha_importacao.py --relatorio RELATORIO.md --saida planilha.csv`
+(_disparo automatizado via motor_) --relatorio RELATORIO.md --saida planilha.csv`
 lê um relatório de mapeamento de acervo (formato com blocos
 `### Workspace: \`nome\`` ou `##### Matéria: \`caminho\`` e campos
 `**Grau de Confiança**`, `**Classificação Sugerida**`/`**Classificação

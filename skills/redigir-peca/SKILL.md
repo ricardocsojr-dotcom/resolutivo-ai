@@ -76,7 +76,7 @@ Se não tiver, pergunte:
 - Há prazo para apresentar?
 
 Assim que houver um identificador explícito, use o mesmo diretório isolado de
-`.rdaa-run/<matter_id>/` adotado por `publicar_docx.py`. Não combine o estado
+`espaço de estado do processo` adotado por (_disparo automatizado via motor_). Não combine o estado
 de processos diferentes. O orquestrador pode montar pacotes de contexto ao
 longo do fluxo, mas não deve repassar o estado completo a cada skill.
 
@@ -134,7 +134,7 @@ um dado que só o andamento externo forneceria e Ricardo não o trouxe, registre
 ### 4. Buscar jurisprudência
 
 Depois de cada pesquisa efetivamente conferida, registre as fontes no estado da
-matéria com `contexto_rdaa.py register_research`, preservando o tipo, origem,
+matéria com (_disparo automatizado via motor_) register_research`, preservando o tipo, origem,
 localização, trecho literal e, quando disponível, os dados de conferência. Não
 atribua `verificada_externamente` a conteúdo apenas reaproveitado de mensagem,
 arquivo interno ou histórico. A fonte deve ser selecionada no esqueleto antes
@@ -189,24 +189,21 @@ ok" não substitui o estado persistido.
 ### 7. Codex redige no padrão RDAA
 
 Antes de chamar a skill de redação, monte o pacote `redator` com
-`skills/revisor-rdaa/scripts/contexto_rdaa.py`. Passe apenas fatos, teses
+(_disparo automatizado via motor_). Passe apenas fatos, teses
 aprovadas ou explicitamente selecionadas, decisões aplicáveis, fontes/citações
 selecionadas, pendências, regras necessárias, `nivel_peca`, `modo_redacao`,
 `redacao_por_blocos` e o `modelo_estrutura` selecionado quando houver. Não
 repasse o histórico integral ou o provenance bruto.
 
 Só depois do esqueleto aprovado e validado. Grave o pacote compacto em
-`.rdaa-run/<matter_id>/PROMPT-REDACAO.md`.
+`espaço de estado do processo.md`.
 
 **Execução orquestrada — padrão desde 2026-09-01.** Hermes registra a rota em
 `run_manifest.json` e chama Codex diretamente, sem `Agent` ou subagente
 mensageiro:
 
 ```text
-py -3.14 skills/redigir-peca/scripts/executar_motor.py codex \
-  --prompt .rdaa-run/<matter_id>/PROMPT-REDACAO.md \
-  --output .rdaa-run/<matter_id>/RASCUNHO-CODEX.md \
-  --state-dir .rdaa-run/<matter_id> --role writer
+Ação gerenciada automaticamente pelo Orquestrador Central.
 ```
 
 Só execute depois de `skeleton_approved`. O executor grava apenas a saída e o
@@ -234,14 +231,14 @@ estritamente:
 
 **Somente nível A tem crítica independente.** A rota de B e C
 (`orquestracao/roteamento.json`) não inclui o estágio `criticizing` — o
-orquestrador (`orquestrador_rdaa.py`) bloqueia a tentativa de registrar
+orquestrador ((_disparo automatizado via motor_)) bloqueia a tentativa de registrar
 execução do papel `critic` fora da fase `criticizing`, então essa etapa
 simplesmente não existe fora do nível A. Não há flag ou script alternativo
 para pular — a política já decide isso.
 
 Depois da redação (rascunho do Codex já em mãos), monte outro pacote
 compacto — a peça, fatos, fontes e teses necessárias, nunca o raciocínio do
-redator — e grave em `.rdaa-run/<matter_id>/PROMPT-CRITICO.md`. Inclua no
+redator — e grave em `espaço de estado do processo.md`. Inclua no
 pacote a instrução de ler `skills/critico-rdaa/SKILL.md` — é o contrato de
 método do crítico (persona de advogado adverso, ACH invertida, o que avaliar
 e o que nunca avaliar, formato de saída).
@@ -249,11 +246,7 @@ e o que nunca avaliar, formato de saída).
 Hermes chama o executor diretamente e registra a saída no manifesto:
 
 ```text
-py -3.14 skills/redigir-peca/scripts/executar_motor.py antigravity \
-  --prompt .rdaa-run/<matter_id>/PROMPT-CRITICO.md \
-  --output .rdaa-run/<matter_id>/CRITICA-ANTIGRAVITY.json \
-  --schema skills/redigir-peca/references/critica-antigravity.schema.json \
-  --effort high --state-dir .rdaa-run/<matter_id> --role critic
+Ação gerenciada automaticamente pelo Orquestrador Central.
 ```
 
 O crítico aponta somente vulnerabilidades, lacunas e pontos a conferir; não
@@ -287,7 +280,7 @@ A rota de **nível C não tem o estágio `validating`**: `draft_ready` avança
 direto para `candidate_ready`. É uma peça de modelo fixo e uso cotidiano
 (juntada, ciência, oposição a julgamento virtual, concordância, pedido de
 prazo) — não há redação por blocos nem argumentação nova para validar. O
-`orquestrador_rdaa.py` não bloqueia essa transição porque o papel `validator`
+(_disparo automatizado via motor_) não bloqueia essa transição porque o papel `validator`
 só é exigido quando `validating` existe nos `stages` do nível efetivo.
 
 **Nível A e B**: Claude recebe o rascunho do Codex — no nível A, também o
@@ -295,9 +288,9 @@ relatório do Antigravity — o esqueleto aprovado (quando houver) e as fontes
 selecionadas. Corrige diretamente o que for objetivo. Se o achado exigir
 mudança de tese, pedido ou estratégia, pausa e apresenta o ponto a Ricardo.
 Em seguida, rode o checklist da skill `revisor-rdaa` — incluindo
-`scripts/verificar_estilo.py` (Passo 1b da própria skill) — antes de
-entregar. Depois de gerar o DOCX candidato, use `scripts/publicar_docx.py`:
-ele roda o `qa_gate.py`, o gate estrutural e a revisão semântica objetiva
+(_disparo automatizado via motor_) (Passo 1b da própria skill) — antes de
+entregar. Depois de gerar o DOCX candidato, use (_disparo automatizado via motor_):
+ele roda o (_disparo automatizado via motor_), o gate estrutural e a revisão semântica objetiva
 quando houver contexto, e só substitui o arquivo final quando todos os
 controles objetivos passam. O publicador não cria regra de redação; ele
 apenas impede entrega sem QA, sem referência impossível ou conflito objetivo
@@ -306,8 +299,8 @@ dependem de julgamento jurídico continuam sendo relatados, não corrigidos
 automaticamente.
 
 **Nível C**: pula direto de `draft_ready` para `candidate_ready` sem chamar
-`executar_motor.py claude --role validator`. O checklist de estilo
-(`verificar_estilo.py`) e o `publicar_docx.py` (QA gate, estrutural)
+(_disparo automatizado via motor_) claude --role validator`. O checklist de estilo
+((_disparo automatizado via motor_)) e o (_disparo automatizado via motor_) (QA gate, estrutural)
 continuam rodando normalmente antes da publicação — isso não é validação de
 mérito jurídico, é controle mecânico que roda em toda peça, de qualquer
 nível.
@@ -330,7 +323,7 @@ não é seguido de correção equivale a não ter revisado.
 ## Entrega
 
 Codex/Antigravity devolvem a peça em texto corrido/Markdown. Converter esse
-texto nos blocos tipados que `construir_peca.py` exige (`titulo`, `numerado`,
+texto nos blocos tipados que (_disparo automatizado via motor_) exige (`titulo`, `numerado`,
 `citacao` com `referencia`, `alinea`, `abertura` etc.) é trabalho do Claude,
 não do redator — não está delegado a mais ninguém. Siga a tabela de
 `redacao-rdaa.md` ao montar cada bloco: prosa argumentativa vira `numerado`
@@ -343,13 +336,13 @@ sem a formatação RDAA, então confira a estrutura antes de gerar o `.docx`,
 não só o conteúdo.
 
 Gere o `.docx` **candidato** usando a skill `formatar-peca` em modo nativo,
-`construir_peca.py`, sempre em caminho temporário ou de staging — nunca grave
+(_disparo automatizado via motor_), sempre em caminho temporário ou de staging — nunca grave
 diretamente no caminho final e nunca use a skill genérica `docx`, que não
 aplica o padrão visual RDAA. Em seguida, encaminhe o candidato ao
-`publicar_docx.py`, sempre com `--context <contexto_peca.json>` (o mesmo
+(_disparo automatizado via motor_), sempre com `--context <contexto_peca.json>` (o mesmo
 JSON usado pra gerar o candidato) — sem isso o publicador deriva o
 `matter_id` do nome do arquivo de saída, grava o manifesto num
-`.rdaa-run` aninhado errado dentro da pasta da matéria, e pula a validação de
+`espaço de estado do processo` aninhado errado dentro da pasta da matéria, e pula a validação de
 contrato da peça, esqueleto e semântica do docx que dependem do contexto. Só
 entregue o documento final depois que o publicador retornar `[OK]`. O
 publicador executa o gate, preserva backup, mantém o arquivo anterior se
@@ -366,10 +359,10 @@ Existem dois vaults distintos, e só um deles entra automaticamente neste
 fluxo:
 Ementário do Resolutivo (tese e jurisprudência) — agora integrado no
   Cérebro-Ricar local. Leitura e
-  `registrar_estudo_cerebro.py`), sem dependência WSL. Consulta automática
-  nos tipos B e A via `integracao_obsidian.py` (lê Cérebro-Ricar diretamente,
+  (_disparo automatizado via motor_)), sem dependência WSL. Consulta automática
+  nos tipos B e A via (_disparo automatizado via motor_) (lê Cérebro-Ricar diretamente,
   não WSL). Gravação automática após publicação (step 10) via
-  `registrar_cerebro.py` — zero edição manual. Consultado **automaticamente
+  (_disparo automatizado via motor_) — zero edição manual. Consultado **automaticamente
   nos tipos B e A**, depois do passo 1 (contexto coletado) e antes do passo 6
   (esqueleto). O tipo C nunca consulta.
 - **Procedimentos e Informações** (operacional, continua no OneDrive) —
@@ -380,9 +373,9 @@ Leia o `CLAUDE.md` do Ementário antes de consultar — ele governa estrutura
 e convenções. A consulta:
 
 No fluxo orquestrado, a automação é rastreável, não implícita: após
-`intake_ready`, o Hermes gera `.rdaa-run/<matter_id>/EMENTARIO-CONTEXTO.json`
-com `integracao_obsidian.py consultar-ementario`, registra o hash com
-`orquestrador_rdaa.py register-vault-lookup` com `--vault cerebro-ricar` e só então avança para
+`intake_ready`, o Hermes gera `espaço de estado do processo.json`
+com (_disparo automatizado via motor_) consultar-ementario`, registra o hash com
+(_disparo automatizado via motor_) register-vault-lookup` com `--vault Vault Oficial` e só então avança para
 `vault_context_ready`. O conector não escreve no vault, limita a coleta ao
 domínio e suas teses/fontes diretamente relacionadas e redige metadados de
 matérias históricas antes de entregar o pacote ao worker.
@@ -411,11 +404,11 @@ encontrar ou deixar de encontrar.
 
 ### 10. Gravação automática no Cérebro-Ricar — após publicação
 
-Depois que `publicar_docx.py` retornar `[OK]` (passo Entrega), grave
+Depois que (_disparo automatizado via motor_) retornar `[OK]` (passo Entrega), grave
 automaticamente a matéria no Cérebro-Ricar,
 sem pedir — isso não é consulta, é registro do que já aconteceu.
 
-**Script:** `skills/redigir-peca/scripts/registrar_cerebro.py`
+**Script:** (_disparo automatizado via motor_)
 
 **Comando:**
 
@@ -433,7 +426,7 @@ atualiza data/status.
 **Pré-condição objetiva:** `registrar_cerebro.registrar()` lê o contexto
 diretamente de `state_dir/contexto_peca.json` (ou variantes
 `CONTEXTO-PECA.json`/`contexto.json`/`context.json`), nunca do `state.json`
-que `persist_context` grava. Se você chamar `publicar_docx.py` manualmente
+que `persist_context` grava. Se você chamar (_disparo automatizado via motor_) manualmente
 fora do orquestrador padrão, confirme que esse arquivo literal existe em
 `state_dir` antes de registrar — senão o registro falha com "contexto
 inválido" mesmo com `--context` passado corretamente na publicação. O DOCX já

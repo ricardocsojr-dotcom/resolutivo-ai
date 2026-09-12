@@ -163,7 +163,7 @@ em `route.omitted`, não o acione automaticamente. Um pedido direto de Ricardo
 continua válido e deve ser registrado como override explícito antes da execução.
 
 Antes de executar o conselho, o orquestrador deve montar o pacote `conselho`
-com `skills/revisor-rdaa/scripts/contexto_rdaa.py`, usando o diretório da
+com (_disparo automatizado via motor_), usando o diretório da
 matéria. Esse pacote contém apenas fatos explícitos, evidências/fontes
 registradas, teses, hipóteses, pendências e decisões já declaradas para aquele
 caso.

@@ -99,7 +99,7 @@ de lei estadual variando por ano de compilação).
 ## Registro no estado compartilhado
 
 Depois de conferir o texto na fonte oficial e a situação de vigência, registre o
-resultado no estado local da matéria com `contexto_rdaa.py`, usando `register_research`
+resultado no estado local da matéria com (_disparo automatizado via motor_), usando `register_research`
 e o tipo `lei`, `sumula` ou `tema_repetitivo`. Preserve o artigo ou número,
 a redação literal, a URL oficial e a situação informada pela pesquisa.
 

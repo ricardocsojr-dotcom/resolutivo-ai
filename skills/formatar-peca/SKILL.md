@@ -1,7 +1,7 @@
 ---
 name: formatar-peca
 description: >
-  Gera um arquivo Word (.docx) candidato e o encaminha à publicação protegida usando o gerador nativo RDAA (construir_peca.py).
+  Gera um arquivo Word (.docx) candidato e o encaminha à publicação protegida usando o gerador nativo RDAA ((_disparo automatizado via motor_)).
   Use SEMPRE ao final de qualquer redação de peça processual — depois de redigir-peca, contencioso-rdaa,
   dano-moral-rct ou qualquer outra redação jurídica — para entregar somente o documento publicado no padrão RDAA
   com numeração nativa do Word (OOXML), estilos nomeados, notas de rodapé reais e checklist de verificação pós-geração.
@@ -11,15 +11,15 @@ description: >
 
 # Formatar Peça — RDAA (Gerador Nativo OOXML)
 
-**Pré-requisito — inegociável (2026-09-08):** esta skill converte um texto já redigido no padrão RDAA em `.docx`. Ela NÃO redige. Se o conteúdo da peça ainda não passou pelo núcleo de escrita (`contencioso-rdaa/references/redacao-rdaa.md`) e pelo fluxo de `redigir-peca` — esqueleto aprovado, redação pelo Codex, validação — não monte o JSON de contexto e não chame `construir_peca.py` direto. Rode `redigir-peca` primeiro. Só pule essa exigência se Ricardo autorizar de forma explícita e pontual (não por inferência de frase ambígua).
+**Pré-requisito — inegociável (2026-09-08):** esta skill converte um texto já redigido no padrão RDAA em `.docx`. Ela NÃO redige. Se o conteúdo da peça ainda não passou pelo núcleo de escrita (`contencioso-rdaa/references/redacao-rdaa.md`) e pelo fluxo de `redigir-peca` — esqueleto aprovado, redação pelo Codex, validação — não monte o JSON de contexto e não chame (_disparo automatizado via motor_) direto. Rode `redigir-peca` primeiro. Só pule essa exigência se Ricardo autorizar de forma explícita e pontual (não por inferência de frase ambígua).
 
 Constrói a peça processual `.docx` parágrafo a parágrafo com **numeração nativa do Word (`numbering.xml`)**, fontes Tahoma 10.5pt, estilos RDAA nomeados, notas de rodapé reais e validação estrutural automática via XML.
 
 ---
 
-## Fluxo Principal Obrigatório (Native Mode — `construir_peca.py`)
+## Fluxo Principal Obrigatório (Native Mode — (_disparo automatizado via motor_))
 
-**Não utilize `docxtpl` com campo único para o corpo da peça.** O gerador nativo `scripts/construir_peca.py` é o fluxo primário e obrigatório, garantindo numeração nativa do Word (renumerável após edição), geometria exata por bloco e validação pós-geração.
+**Não utilize `docxtpl` com campo único para o corpo da peça.** O gerador nativo (_disparo automatizado via motor_) é o fluxo primário e obrigatório, garantindo numeração nativa do Word (renumerável após edição), geometria exata por bloco e validação pós-geração.
 
 ### 1. Montar o JSON de contexto por blocos
 
@@ -50,7 +50,7 @@ Copie o texto da peça redigida na conversa **literalmente** para uma lista de `
 
 ### Regra objetiva — nunca incluir fecho/publicações manualmente
 
-`construir_peca.py` injeta automaticamente, sempre, dois blocos fixos no fim da peça: a cláusula de publicações (boilerplate institucional, `context.get('publicacoes', True)`, corretamente sem numeração) e o fecho `"Nestes termos, aguarda deferimento."` (`context.get('fecho', ...)`). Nunca inclua um bloco `numerado` com esse texto de fecho nos `blocos` — ele vira item numerado indevido e duplica quando o gerador injeta o seu próprio fecho automático no final. Se precisar customizar o fecho, use `context['fecho']`; se precisar desativar a cláusula de publicações, use `context['publicacoes'] = false`. Nunca redija manualmente esses dois elementos como bloco do corpo.
+(_disparo automatizado via motor_) injeta automaticamente, sempre, dois blocos fixos no fim da peça: a cláusula de publicações (boilerplate institucional, `context.get('publicacoes', True)`, corretamente sem numeração) e o fecho `"Nestes termos, aguarda deferimento."` (`context.get('fecho', ...)`). Nunca inclua um bloco `numerado` com esse texto de fecho nos `blocos` — ele vira item numerado indevido e duplica quando o gerador injeta o seu próprio fecho automático no final. Se precisar customizar o fecho, use `context['fecho']`; se precisar desativar a cláusula de publicações, use `context['publicacoes'] = false`. Nunca redija manualmente esses dois elementos como bloco do corpo.
 
 ### Regra objetiva de títulos
 
@@ -58,14 +58,14 @@ Os campos `texto` dos blocos `titulo`, `titulo2` e `titulo3`, assim como `titulo
 
 ### 2. Salvar contexto e gerar o candidato temporário
 
-Salve o payload JSON e execute `scripts/construir_peca.py`:
+Salve o payload JSON e execute (_disparo automatizado via motor_):
 
 
 ---
 
 ### 3. Publicação protegida e verificação obrigatória
 
-O DOCX deve ser gerado primeiro como **candidato**, obrigatoriamente em caminho temporário ou de staging. Nunca use o caminho final como `--output` de `construir_peca.py`. A entrega final passa pelo publicador protegido, que executa o gate de formatação e estilometria antes de substituir qualquer arquivo existente:
+O DOCX deve ser gerado primeiro como **candidato**, obrigatoriamente em caminho temporário ou de staging. Nunca use o caminho final como `--output` de (_disparo automatizado via motor_). A entrega final passa pelo publicador protegido, que executa o gate de formatação e estilometria antes de substituir qualquer arquivo existente:
 
 
 O publicador só substitui `peca_final.docx` se o gate retornar `PASS`. Se falhar, o arquivo final anterior permanece intacto; o candidato fica disponível para diagnóstico. Antes de substituir um arquivo existente, o publicador cria backup local e realiza a troca de forma atômica.
@@ -77,7 +77,7 @@ O gate verifica no XML do `.docx`:
 4. **Alíneas e Documentos**: numeração nativa e recuos de 3cm (1701 twips) / 4cm (2268 twips).
 5. **Endereçamento e Quadro**: espaçamento simples e 2 parágrafos em branco de separação.
 
-Se o gate falhar no item de quadro/endereçamento mesmo com o contexto correto, isso pode ser bug real do verificador (ex.: ele localizava o fim da caixa pela última linha com keyword de polo reconhecida — "Autor "/"Réu " etc. — e parava de contar cedo quando a última linha do quadro não batia nenhuma keyword, como plural sem correspondência exata). Se isso ocorrer de novo, inspecione `verificar_formatacao.py` (Item 3b) e `construir_peca.py` diretamente antes de reescrever o JSON às cegas — não é sempre erro de contexto.
+Se o gate falhar no item de quadro/endereçamento mesmo com o contexto correto, isso pode ser bug real do verificador (ex.: ele localizava o fim da caixa pela última linha com keyword de polo reconhecida — "Autor "/"Réu " etc. — e parava de contar cedo quando a última linha do quadro não batia nenhuma keyword, como plural sem correspondência exata). Se isso ocorrer de novo, inspecione (_disparo automatizado via motor_) (Item 3b) e (_disparo automatizado via motor_) diretamente antes de reescrever o JSON às cegas — não é sempre erro de contexto.
 6. **Cabeçalho**: logo e parágrafo de respiro depois da logo.
 7. **Assinaturas**: margem interna, estrutura e ordem depois do fecho.
 8. **Rodapé**: presença de campos `PAGE`/`NUMPAGES` e linha do site em 7pt/dourado (`FFC000`).

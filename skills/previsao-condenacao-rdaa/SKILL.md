@@ -20,7 +20,7 @@ como estimativa de trabalho, com limitações visíveis, e não como previsão c
 probabilidade estatística ou decisão jurídica.
 
 A classificação de risco de cada pedido é uma entrada estruturada que deve estar
-justificada por prova ou fato identificado. O script `liquidar_pedidos.py` apenas
+justificada por prova ou fato identificado. O script (_disparo automatizado via motor_) apenas
 normaliza a entrada, calcula meses, soma valores e aplica o percentual fornecido.
 Ele não escolhe `provavel`, `possivel` ou `remoto`, não lê texto livre e não
 avalia pertinência jurídica.

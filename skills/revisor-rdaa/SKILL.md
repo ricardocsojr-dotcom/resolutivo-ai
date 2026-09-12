@@ -83,7 +83,7 @@ Se for ambos: executar JURÍDICO primeiro, VISUAL depois.
 
 ### Passo 1b — Rodar o script determinístico (modo JURÍDICO, sempre antes da leitura)
 
-Antes de ler o texto, rode `scripts/verificar_estilo.py` no arquivo (.docx ou
+Antes de ler o texto, rode (_disparo automatizado via motor_) no arquivo (.docx ou
 .txt exportado). O script conta travessão recorrente, ponto-e-vírgula em cadeia,
 tricolon de negação, aberturas defensivas recorrentes, dois-pontos e apartes
 explicativos entre parênteses ou travessões pareados. Uma LLM lendo
@@ -94,7 +94,7 @@ A leitura qualitativa dos checklists continua necessária para eco de conclusão
 cadência homogênea e demais aspectos que dependem de julgamento.
 
 ```
-python3 scripts/verificar_estilo.py caminho/para/peca.docx
+python3 (_disparo automatizado via motor_) caminho/para/peca.docx
 ```
 
 Se o script sair com código 1, os achados dele são vício confirmado e não
@@ -103,10 +103,10 @@ resultado na Parte 1 e na Parte 2 do relatório.
 
 ### Passo 1c — Revisão semântica objetiva quando houver estado da matéria
 
-Se existir `.rdaa-run/<matter_id>/matter_state.json`, execute também:
+Se existir `espaço de estado do processo.json`, execute também:
 
 ```
-python3 scripts/semantica_rdaa.py .rdaa-run/<matter_id> review
+python3 (_disparo automatizado via motor_) espaço de estado do processo review
 ```
 
 Esse script compara somente IDs, referências, identidade processual, duplicidade
@@ -246,7 +246,7 @@ Não reproduza essas listas aqui — leia o núcleo antes de revisar.
 ## Estado compartilhado entre agentes
 
 Antes da revisão, o orquestrador monta o pacote `revisor` com
-`skills/revisor-rdaa/scripts/contexto_rdaa.py`, usando o mesmo diretório isolado
+(_disparo automatizado via motor_), usando o mesmo diretório isolado
 da matéria. O pacote fornece fatos necessários para conferência, fontes e
 citações utilizadas, regras aplicáveis, pendências e, quando pertinente, o
 relatório explícito do `critico-rdaa`.

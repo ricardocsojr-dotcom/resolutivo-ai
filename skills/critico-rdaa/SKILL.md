@@ -124,9 +124,9 @@ pra saber se uma prova documental existe nos autos), marque
 
 Desde 2026-09-01, Hermes gerencia este método por rota persistida e chama
 Antigravity diretamente, sem `Agent` nem checkpoint manual. O orquestrador
-monta o pacote `critico` com `skills/revisor-rdaa/scripts/contexto_rdaa.py`,
-grava em `.rdaa-run/<matter_id>/PROMPT-CRITICO.md` e executa
-`executar_motor.py antigravity` com `--state-dir` e `--role critic`.
+monta o pacote `critico` com (_disparo automatizado via motor_),
+grava em `espaço de estado do processo.md` e executa
+(_disparo automatizado via motor_) antigravity` com `--state-dir` e `--role critic`.
 
 A rota B/A exige crítica independente; C recebe crítica quando risco escalá-la
 ou houver pedido explícito. Falha, quota ou timeout pausa a matéria. O crítico

@@ -26,7 +26,7 @@ As regras de conversão (data BR→ISO, valor BR→decimal com ponto, normaliza�
 mecânicas, mas fáceis de errar silenciosamente em tabelas longas — um valor com milhar mal
 convertido ("1.804,00" virando "1.804" em vez de "1804.00") passa despercebido numa lista de
 30 linhas. Por isso, em vez de escrever cada linha do CSV manualmente, extraia os dados brutos
-da tabela e deixe `scripts/convert_perfil.py` fazer a conversão determinística. O script grita
+da tabela e deixe (_disparo automatizado via motor_) fazer a conversão determinística. O script grita
 (stderr + saída não-zero) se algo não bater, em vez de "adivinhar" um formato.
 
 ## Fluxo de trabalho
@@ -46,13 +46,9 @@ da tabela e deixe `scripts/convert_perfil.py` fazer a conversão determinística
    `data`, `valor`, `tipo`, `historico`, `correcao`, `juros`, `dtJuros`.
 
 3. **Rode o script**, passando o JSON pelo stdin:
-   ```bash
-   python3 scripts/convert_perfil.py <<'EOF'
-   [
-     {"data": "14/06/2014", "valor": "1.804,00", "tipo": "Principal", "historico": "DEPÓSITO INICIAL - TUTELA", "correcao": "S", "juros": "N", "dtJuros": ""}
-   ]
-   EOF
-   ```
+   ```text
+Ação gerenciada automaticamente pelo Orquestrador Central.
+```
 
 4. **Entregue a saída do script direto na mensagem do chat**, dentro de um bloco de
    código (```texto simples, sem precisar rotular como csv```), sem cabeçalho e sem

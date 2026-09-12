@@ -89,8 +89,8 @@ vazia.
    de contingência a partir do momento em que há elementos melhores (sentença,
    acórdão, depósito, garantia).
 5. **Montar o CSV** com uma linha por processo, usando exatamente os nomes de
-   coluna documentados no cabeçalho de `scripts/montar_planilha_provisao.py`
-   (rode `head -35 scripts/montar_planilha_provisao.py` para ver a lista).
+   coluna documentados no cabeçalho de (_disparo automatizado via motor_)
+   (rode `head -35 (_disparo automatizado via motor_) para ver a lista).
    Preencha os 17 campos mínimos (ver referência) mais as colunas de
    double-check.
 6. **Gerar a planilha final**:
@@ -100,7 +100,7 @@ vazia.
    (Provável/Possível/Remoto) e destaca em vermelho as linhas com
    divergência, além de somar o valor provisionável e contar divergências
    via fórmulas na aba "Resumo".
-7. **Recalcular fórmulas** com o script `recalc.py` da skill **xlsx** e
+7. **Recalcular fórmulas** com o script (_disparo automatizado via motor_) da skill **xlsx** e
    confirmar `total_errors: 0` antes de entregar.
 8. **Apresentar ao usuário liderando pelas divergências** — não pela lista
    completa. Ex.: "de N processos, M concordam com sua classificação; nos

@@ -30,17 +30,17 @@ Os perfis iniciais ficam em `references/normalization_profiles.json` e são
 apenas mapas técnicos. Perfil não significa aprovação da fonte ou da fórmula.
 Os mapeamentos observados do TJMG e do TJSP ficam em
 `references/fontes-oficiais-indices.md` e continuam com status candidato. O
-atalho `scripts/preparar_fonte_candidata.py` recebe um perfil e um arquivo local
+atalho (_disparo automatizado via motor_) recebe um perfil e um arquivo local
 para repetir a preparação sem reescrever parâmetros no contexto do agente. Ele
 não baixa a fonte, não promove o índice e não altera o manifesto.
 
 Não há consulta automática ao vivo obrigatória. O Ricardo ou a equipe entrega
 o arquivo bruto, planilha, CSV ou PDF, e a skill estrutura uma cópia local sem
-alterar o original. O script `scripts/registrar_indice_candidato.py` valida o
+alterar o original. O script (_disparo automatizado via motor_) valida o
 CSV, calcula o SHA-256 e grava a proveniência, mas não modifica o manifesto nem
 promove o índice para aprovado. Para fontes em XLS, XLSM ou PDF, usar
-`scripts/normalizar_indice_candidato.py`. Após o caso dourado aprovado, usar
-`scripts/promover_indice_aprovado.py` para escrever uma cópia do manifesto.
+(_disparo automatizado via motor_). Após o caso dourado aprovado, usar
+(_disparo automatizado via motor_) para escrever uma cópia do manifesto.
 O manifesto de origem nunca é sobrescrito automaticamente. Esse promotor exige
 proveniência, hashes, fórmula de referência, resultado esperado, resultado
 observado, tolerância, responsável e data de aprovação. O candidato permanece
@@ -73,7 +73,7 @@ não converte vírgula decimal silenciosamente e não altera o arquivo bruto.
 2. **Entrada de nova fonte** — receber o arquivo bruto baixado manualmente,
    registrar órgão, URL, competência, código da série e data de coleta, e
    preservar o original fora do CSV normalizado.
-3. **Candidato local** — executar `registrar_indice_candidato.py` para
+3. **Candidato local** — executar (_disparo automatizado via motor_) para
    validar cabeçalho, datas, ordem, duplicidades, valores e SHA-256. A saída
    será um JSON candidato. O script não consulta a internet, não altera o
    manifesto e não substitui o arquivo aprovado.
@@ -168,14 +168,14 @@ As linhas vazias começam sem status e o resumo considera uma memória sem
 lançamentos como `candidato`, nunca como `aprovado`. O total de cada linha só
 é preenchido quando o status da linha é explicitamente `aprovado`.
 
-O script `scripts/renderizar_memoria_template.py` recebe um JSON com metadados,
+O script (_disparo automatizado via motor_) recebe um JSON com metadados,
 lançamentos, resultados já calculados, fonte do índice, casos dourados e regras
 declaradas. Ele copia o template, transporta os valores explícitos e salva uma
 nova planilha. Não baixa dados, não recalcula a aritmética, não escolhe índice,
 não aprova candidato e não altera o arquivo-base.
 
 **Template simples** (`references/template-calculo-simples-rdaa.xlsx` +
-`scripts/renderizar_memoria_simples.py`, criado em 2026-08-27): pra casos
+(_disparo automatizado via motor_), criado em 2026-08-27): pra casos
 com um índice só e sem juros segmentados/múltiplos lançamentos complexos.
 Uma aba `Cálculo` (uma linha por parcela, coluna `Tipo` = Principal,
 Honorários ou Custas) + uma aba `Notas` (lista de linhas de texto livre,
@@ -192,7 +192,7 @@ externo, não interpola mês/dia ausente, não decide termo inicial.
 dourado aprovado e calculam de verdade —
 `tjmg-nao-expurgada`, `tjsp-tabela-pratica`, `selic`, `cdi`, `ipca`,
 `inpc`, `igp-m` (conferidos contra a API do Banco Central,
-`scripts/atualizar_indice_bcb.py`), `tjrj` (conferido contra a série
+(_disparo automatizado via motor_)), `tjrj` (conferido contra a série
 histórica completa do DrCalc, colada por Ricardo — a tabela do TJRJ é
 atualizada anualmente, não mês a mês, por isso repete o mesmo valor
 durante o ano; `avisar_cobertura: true` avisa até que mês está
@@ -222,16 +222,16 @@ cálculo local somente quando solicitado.
 
 **Índices com fonte automática no BCB** — `selic`, `cdi`, `ipca`, `inpc`,
 `igp-m` e `poupanca-nova` têm série no SGS do Banco Central
-(`scripts/atualizar_indice_bcb.py --indice NOME --csv referencias/indices/NOME.csv
+((_disparo automatizado via motor_) --indice NOME --csv referencias/indices/NOME.csv
 --data-inicial AAAA-MM-DD`, sem chave de API). Poupança usa a série 195, uma
 linha por dia de aniversário — a mesma lógica de data+valor do script já
 funciona sem alteração, confirmado em 2026-08-27.
 
 **Índice sem fonte automática** (ex.: TJRJ, Taxa Legal) — atualização manual
-via `scripts/atualizar_indice_manual.py --indice NOME --csv
+via (_disparo automatizado via motor_) --indice NOME --csv
 referencias/indices/NOME.csv --arquivo-novo NOVO.csv`: só adiciona data
 nova, recusa sobrescrever valor existente que divirja (mesma regra do
-`atualizar_indice_bcb.py`). Taxa Legal não tem série SGS numérica — só a
+(_disparo automatizado via motor_)). Taxa Legal não tem série SGS numérica — só a
 Calculadora do Cidadão do BCB, que não expõe API; conferir manualmente
 contra ela quando atualizar. Manifesto pode marcar `"avisar_cobertura":
 true` num índice — toda vez que ele for usado, o resultado inclui em

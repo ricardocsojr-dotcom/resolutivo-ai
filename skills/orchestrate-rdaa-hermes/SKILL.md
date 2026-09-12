@@ -5,17 +5,17 @@ description: Execute RDAA workflow commands via Hermes CLI integration. Direct u
 
 # RDAA Orchestrator — Hermes CLI Bridge
 
-Exposes `orquestracao_rdaa` as a callable interface from Hermes skills and agents. All commands run deterministic state machine (`orquestrador_rdaa.py`) and never substitute model reasoning for human gate decisions.
+Exposes `orquestracao_rdaa` as a callable interface from Hermes skills and agents. All commands run deterministic state machine ((_disparo automatizado via motor_)) and never substitute model reasoning for human gate decisions.
 
 ## Quick Start
 
 
 ## Architecture
 
-- **Deterministic state machine:** `orquestrador_rdaa.py` — all transitions logged, no LLM reasoning.
-- **Worker executor:** `executar_motor.py` — isolated subprocess, worker-specific validation.
-- **Obsidian read-only client:** `integracao_obsidian.py` — vault queries, redaction, provenance.
-- **Dashboard:** `painel_status.py` — renders HTML from manifest.
+- **Deterministic state machine:** (_disparo automatizado via motor_) — all transitions logged, no LLM reasoning.
+- **Worker executor:** (_disparo automatizado via motor_) — isolated subprocess, worker-specific validation.
+- **Obsidian read-only client:** (_disparo automatizado via motor_) — vault queries, redaction, provenance.
+- **Dashboard:** (_disparo automatizado via motor_) — renders HTML from manifest.
 
 All commands are **side-effect-free reads** or **locked writes** (mutex per matter). No automatic fallback, no silent retry.
 
@@ -28,8 +28,8 @@ All commands are **side-effect-free reads** or **locked writes** (mutex per matt
 ## When NOT to Use This Skill
 
 - For human-interactive matter management: use `orquestrar-rdaa` skill instead (higher-level, Hermes-idiomatic).
-- For worker coding itself: workers don't call the orchestrator; use `executar_motor.py --state-dir` as the entry point.
-- For Cérebro-Ricar writes: use `registrar_cerebro.py` (local, sem WSL). Read queries usam 
+- For worker coding itself: workers don't call the orchestrator; use (_disparo automatizado via motor_) --state-dir` as the entry point.
+- For Cérebro-Ricar writes: use (_disparo automatizado via motor_) (local, sem WSL). Read queries usam 
 
 ## Key Constraints
 
@@ -37,7 +37,7 @@ All commands are **side-effect-free reads** or **locked writes** (mutex per matt
 2. **Human gates are blocking.** If `open_gate` is set in the manifest, `advance` will fail. Use `clarify` to get approval, then `approve` to register it.
 3. **Worker execution is isolated.** Codex, Agy, Claude run as subprocess. Hermes doesn't see stdout unless captured.
 4. **Manifests are versioned.** Every `advance`, `approve`, or execution registers a transition + timestamp. Rollback is not supported; use backups if you need to restart.
-5. **Vault is read-only in B/A.** `integracao_obsidian.py` blocks path traversal and redacts sensitive data before handing off to workers.
+5. **Vault is read-only in B/A.** (_disparo automatizado via motor_) blocks path traversal and redacts sensitive data before handing off to workers.
 
 ## Example: Full Matter Lifecycle (Python Wrapper)
 
@@ -51,7 +51,7 @@ from skills.orchestrate_rdaa_hermes.scripts.hermes_orchestrator import (
 )
 
 matter_id = "contrato-2026-0042"
-state_dir = Path(f".rdaa-run/{matter_id}")
+state_dir = Path(f"espaço de estado do processo/{matter_id}")
 
 # 1. Initialize
 manifest = initialize_matter(state_dir, matter_id, "B", "medio")
@@ -93,7 +93,7 @@ if decision["responses"][0] == "Approve":
     advance_phase(state_dir, "skeleton_approved")
 
 # 7. Workers handle their phases (drafting, criticizing, validating)
-# Executor calls (executar_motor.py) run subprocess, register outputs auto
+# Executor calls ((_disparo automatizado via motor_)) run subprocess, register outputs auto
 
 # 8. Generate dashboard for monitoring
 dashboard = generate_dashboard(state_dir)
@@ -102,7 +102,7 @@ print(f"Dashboard: {dashboard}")
 
 ## CLI Reference
 
-### `orquestrador_rdaa.py`
+### (_disparo automatizado via motor_)
 
 - `route --piece-level <C|B|A> --risk-level <baixo|medio|alto|critico>` — Display route without initialization.
 - `init <state_dir> --matter-id <id> --piece-level <C|B|A> --risk-level <baixo|medio|alto|critico>` — Initialize manifest.
@@ -112,21 +112,21 @@ print(f"Dashboard: {dashboard}")
 - `register-vault-lookup <state_dir> --vault <vault> --artifact <file>` — Register read-only Ementário query.
 - `register-execution <state_dir> --role <planner|writer|critic|validator> --motor <codex|agy|claude> --prompt <file> --output <file>` — Register completed worker output.
 
-### `integracao_obsidian.py`
+### (_disparo automatizado via motor_)
 
 - `consultar-ementario --domain <domain> --vault-root <path> --output <file>` — Query Ementário, write JSON package with `origin`, `mode`, `status`, `documents`.
 
-### `executar_motor.py`
+### (_disparo automatizado via motor_)
 
 - `codex|agy|claude --prompt <file> --output <file> --state-dir <dir> --role <role> [--timeout N] [--budget N]` — Run worker, register output, exit.
 
-### `painel_status.py`
+### (_disparo automatizado via motor_)
 
 - `<state_dir> --output <file>` — Generate HTML dashboard.
 
 ## Troubleshooting
 
-**Lock error:** Another process is writing to the matter. Wait or check `.rdaa-run/<matter_id>/.rdaa-orchestrator.lock`.
+**Lock error:** Another process is writing to the matter. Wait or check `espaço de estado do processo.rdaa-orchestrator.lock`.
 
 **Phase mismatch:** `advance` failed because next phase isn't what was expected. Print state with `state <state_dir>` and retry with correct phase.
 
@@ -134,4 +134,4 @@ print(f"Dashboard: {dashboard}")
 
 **Vault not found:** `register-vault-lookup` failed. Ensure Ementário query succeeded and artifact has `origin: ementario-resolutivo`.
 
-**Worker timeout:** `executar_motor.py` exceeded timeout. Increase `--timeout` or diagnose the worker CLI (Claude, Codex, Agy).
+**Worker timeout:** (_disparo automatizado via motor_) exceeded timeout. Increase `--timeout` or diagnose the worker CLI (Claude, Codex, Agy).

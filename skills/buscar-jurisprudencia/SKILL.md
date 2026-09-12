@@ -20,7 +20,7 @@ primária) só para o que faltar.
 Antes de qualquer busca externa, consulte o índice de fontes já verificadas:
 
 ```text
-py -3.14 skills/buscar-jurisprudencia/scripts/indexador_fontes.py buscar "<tema/tese>" --limit 5
+Ação gerenciada automaticamente pelo Orquestrador Central.
 ```
 
 É busca por tema (FTS5/BM25), não por domínio — não depende de acertar qual
@@ -32,7 +32,7 @@ literalidade). Se o índice não existir ou estiver desatualizado, reconstrua
 com `reindex` antes de assumir que não há resultado:
 
 ```text
-py -3.14 skills/buscar-jurisprudencia/scripts/indexador_fontes.py reindex
+Ação gerenciada automaticamente pelo Orquestrador Central.
 ```
 
 Avalie a aderência real do resultado à tese atual antes de reaproveitar —
@@ -96,7 +96,7 @@ qualquer alteração pode comprometer a citação formal.
 ## Registro no estado compartilhado
 
 Depois de conferir cada resultado na fonte indicada, registre a ementa literal
-no estado local da matéria usando `skills/revisor-rdaa/scripts/contexto_rdaa.py`.
+no estado local da matéria usando (_disparo automatizado via motor_).
 O registro deve conservar tribunal, número do processo, relator, data, URL,
 texto literal, origem, uso e os dados de conferência quando disponíveis. Use o
 tipo `jurisprudencia` e o status automático da função `register_research`, que é
@@ -116,10 +116,7 @@ confirmada na Etapa 1 — não encontrada na Etapa 0 — deve ir para o cérebro
 imediatamente, sem esperar a matéria publicar:
 
 ```text
-py -3.14 skills/buscar-jurisprudencia/scripts/registrar_fonte_verificada.py \
-  --tribunal "..." --numero-processo "..." --relator "..." --data-julgamento "..." \
-  --url "..." --tema "<tese/tema, usado na busca futura>" --matter-id "<matter_id>" \
-  --review-days 365 --ementa-literal "<ementa literal completa>"
+Ação gerenciada automaticamente pelo Orquestrador Central.
 ```
 
 `--review-days` é 365 por padrão e só deve ser alterado por decisão consciente

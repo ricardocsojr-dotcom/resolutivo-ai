@@ -24,8 +24,8 @@ Todos os arquivos estão em:
 ```
 
 Arquivos relevantes:
-- `analise_estrategica.py` — pipeline principal (classifica, filtra histórico, chama IA)
-- `criar_planilha_teste.py` — gera planilha de exemplo quando não há planilha real
+- (_disparo automatizado via motor_) — pipeline principal (classifica, filtra histórico, chama IA)
+- (_disparo automatizado via motor_) — gera planilha de exemplo quando não há planilha real
 - `Andamentos do Dia - Resolutivo.xlsx` (ou similar) — entrada do dia
 - `Relatorio_Estrategico_Final.xlsx` — saída gerada pelo pipeline
 - `historico_andamentos.xlsx` — controle de deduplicação
@@ -41,7 +41,7 @@ Execute via bash na pasta de trabalho:
 
 Se não houver planilha real (apenas os arquivos de controle), informe Ricardo
 que não há planilha nova para processar e pergunte se deseja rodar com dados
-de teste (`criar_planilha_teste.py`).
+de teste ((_disparo automatizado via motor_)).
 
 ### 2. Executar o pipeline de análise
 
@@ -128,7 +128,7 @@ Com os dados lidos, estruture o briefing no formato abaixo.
 - Se o script reportar que "todos os andamentos já foram analisados", informe
   Ricardo e não gere o briefing — não há dados novos para exibir.
 - Se houver erro de autenticação na API Gemini, exiba o erro exato e sugira
-  verificar a chave `API_KEY` em `analise_estrategica.py`.
+  verificar a chave `API_KEY` em (_disparo automatizado via motor_).
 - O histórico de deduplicação (`historico_andamentos.xlsx`) é atualizado
   automaticamente pelo script — não mexa manualmente.
 - Após gerar o briefing, ofereça: "Quer que eu acione a skill `backoffice-juridico`
