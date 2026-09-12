@@ -21,12 +21,10 @@ Recebe um export em Excel do CPJ-3C (planilha "Resolutivo" ou equivalente — um
 1. **Localizar o arquivo de entrada.** Se o usuário anexou/apontou um arquivo, use-o. Se não, procure na pasta do projeto por algo como `Resolutivo.xlsx` ou pergunte qual export usar.
 2. **Rodar o script de diagnóstico**:
    ```bash
-   python scripts/diagnosticar_base.py <entrada.xlsx> <saida.xlsx> --sheet <NOME_DA_ABA>
    ```
    O script lê os dados, aplica todas as classificações (ver `references/regras-diagnostico.md`) e gera o workbook completo (Resumo Executivo, Plano de Ação e abas de detalhe). Ele referencia colunas pelo **nome**, não pela posição — se o export do CPJ-3C mudar de layout e o script falhar reclamando de coluna ausente, ajuste as constantes `COL_*` no topo do script.
 3. **Recalcular fórmulas.** O workbook gerado tem fórmulas vivas na aba "Base (dados + auxiliares)" (o achado de origem arquivada recalcula sozinho se o usuário colar uma nova exportação ali). Use o script `recalc.py` da skill **xlsx** para recalcular e confirmar `total_errors: 0` antes de entregar:
    ```bash
-   python <caminho-skill-xlsx>/scripts/recalc.py <saida.xlsx> 60
    ```
    Nunca entregue o arquivo sem rodar essa verificação.
 4. **Ler os números e comunicar como advogado, não como planilha.** Antes de responder ao usuário, abra o resultado (os prints do script já trazem as contagens) e traduza em risco prático — especialmente a aba "1b. Recursos Soltos", que é o achado mais sensível: significa que a base não tem visibilidade do processo de origem daquele recurso, o que pode indicar processo arquivado e não rastreado, erro de vinculação, ou simplesmente um caso legítimo cuja origem nunca foi cadastrada. Não afirme categoricamente que a origem está arquivada sem confirmação no tribunal — trate como hipótese a verificar.

@@ -2,7 +2,7 @@
 name: gestao-materias
 description: >
   Organiza a base local de clientes e matérias (contencioso e consultivo) do
-  RDAA em C:\Users\ricar\OneDrive\Área de Trabalho\Resolutivo-Dados: cria a estrutura de pastas de um
+  RDAA em : cria a estrutura de pastas de um
   cliente ou matéria nova, registra documentos-fonte com ID/hash, confere
   se um documento já registrado foi alterado, abre e resolve pendências,
   gera um pacote de handoff manual para outra CLI quando necessário e converte relatório de mapeamento de
@@ -46,7 +46,7 @@ Resolutivo-Dados/
 ```
 
 Raiz configurável via variável de ambiente `RESOLUTIVO_DADOS_ROOT` (padrão
-`C:\Users\ricar\OneDrive\Área de Trabalho\Resolutivo-Dados`). Local,
+``). Local,
 definitivo — Google Drive não entra como destino desta estrutura.
 
 ## Regras que o script aplica
@@ -100,7 +100,6 @@ definitivo — Google Drive não entra como destino desta estrutura.
 
 Todos imprimem JSON em stdout (`{"status": "ok", ...}`) e erro estruturado em
 stderr com código (`{"status": "erro", "codigo": ..., "mensagem": ...}`),
-saída 1 em falha ou divergência. Rodar com `python scripts/gestao_materias.py <comando> ...`.
 
 | Comando | Uso |
 |---|---|

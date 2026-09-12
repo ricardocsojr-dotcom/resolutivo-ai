@@ -36,23 +36,6 @@ Cada chamada de bash roda até por volta de 45s antes de expirar, e processos co
 
 A maioria dos PDFs de tribunais/processos é nativa (texto embutido), não escaneada. Para esses, extraia direto com `pypdf` — é muito mais rápido que o CLI do markitdown e evita o problema de timeout (864 páginas em ~10s no teste real):
 
-```bash
-python3 - <<'EOF'
-from pypdf import PdfReader
-IN = "/caminho/para/arquivo.pdf"
-OUT = "/caminho/para/arquivo.md"
-r = PdfReader(IN)
-partes = []
-chars_por_pagina = []
-for i, page in enumerate(r.pages):
-    txt = page.extract_text() or ""
-    chars_por_pagina.append(len(txt))
-    partes.append(f"\n\n--- Página {i+1} ---\n{txt}")
-open(OUT, "w").write("".join(partes))
-media = sum(chars_por_pagina) / max(len(chars_por_pagina), 1)
-print(f"Páginas: {len(r.pages)} | Média de caracteres/página: {media:.0f}")
-EOF
-```
 
 Se `pypdf` não estiver instalado, não instale automaticamente. Informe a limitação e use uma ferramenta local já disponível ou aguarde autorização explícita.
 
@@ -74,43 +57,6 @@ Nota: `tesseract --list-langs` só mostra os idiomas disponíveis no ambiente. S
 
 Como o OCR de um documento de centenas de páginas não cabe em uma única chamada de 45s, processe em lotes com um arquivo de estado que marca por onde parou — rode o bloco abaixo repetidamente (uma chamada de bash por vez) até ele reportar que chegou na última página:
 
-```bash
-export PATH="$PATH:$HOME/.local/bin:/c/Program Files/Tesseract-OCR:/c/Program Files/gs/gs10.08.0/bin"
-# TESSDATA_PREFIX não é necessário no Windows: o tesseract acha o tessdata
-# sozinho ao lado do binário. Definir esse env errado só gera um warning
-# inofensivo ("does not exist, ignore it") — não quebra o OCR.
-python3 - <<'EOF'
-import subprocess, time, os
-from pypdf import PdfReader, PdfWriter
-
-IN = "/caminho/para/arquivo.pdf"
-STATE = "/caminho/para/arquivo.ocr_state"   # guarda a última página já processada
-OUT = "/caminho/para/arquivo.md"
-
-reader = PdfReader(IN)
-total = len(reader.pages)
-page = int(open(STATE).read().strip()) if os.path.exists(STATE) else 0
-
-t0 = time.time()
-with open(OUT, "a") as out:
-    while page < total and time.time() - t0 < 35:  # margem de segurança abaixo do limite de 45s
-        writer = PdfWriter()
-        writer.add_page(reader.pages[page])
-        with open("/tmp/_ocr_in.pdf", "wb") as f:
-            writer.write(f)
-        subprocess.run(
-            ["ocrmypdf", "--jobs", "1", "--language", "por", "--force-ocr", "--quiet",
-             "/tmp/_ocr_in.pdf", "/tmp/_ocr_out.pdf"],
-            check=True,
-        )
-        texto = PdfReader("/tmp/_ocr_out.pdf").pages[0].extract_text() or ""
-        out.write(f"\n\n--- Página {page+1} (OCR) ---\n{texto}")
-        page += 1
-
-open(STATE, "w").write(str(page))
-print(f"Processadas até a página {page} de {total}")
-EOF
-```
 
 Repita a chamada até a saída mostrar `page == total`. Isso pode levar várias chamadas em documentos longos — está tudo bem, é o esperado dado o limite de tempo do ambiente. Apague o arquivo `.ocr_state` quando terminar.
 
@@ -123,13 +69,6 @@ Repita a chamada até a saída mostrar `page == total`. Isso pode levar várias 
 
 Para esses formatos (normalmente bem menores, sem o problema de timeout), o MarkItDown funciona direto:
 
-```bash
-command -v markitdown >/dev/null 2>&1 || { echo "markitdown indisponível; não instalar automaticamente"; exit 2; }
-IN="/caminho/para/arquivo.docx"
-OUT="${IN%.*}.md"
-markitdown "$IN" -o "$OUT"
-wc -c "$OUT"
-```
 
 ## Limitações a avisar o usuário quando relevante
 

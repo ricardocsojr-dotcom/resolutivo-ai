@@ -365,8 +365,7 @@ decisão de tese, pedido ou estratégia permanece explícito para Ricardo.
 Existem dois vaults distintos, e só um deles entra automaticamente neste
 fluxo:
 Ementário do Resolutivo (tese e jurisprudência) — agora integrado no
-  Cérebro-Ricar local (`C:\Users\ricar\cerebro-ricar\wiki\`). Leitura e
-  gravação via scripts Python (`registrar_cerebro.py`,
+  Cérebro-Ricar local. Leitura e
   `registrar_estudo_cerebro.py`), sem dependência WSL. Consulta automática
   nos tipos B e A via `integracao_obsidian.py` (lê Cérebro-Ricar diretamente,
   não WSL). Gravação automática após publicação (step 10) via
@@ -413,18 +412,12 @@ encontrar ou deixar de encontrar.
 ### 10. Gravação automática no Cérebro-Ricar — após publicação
 
 Depois que `publicar_docx.py` retornar `[OK]` (passo Entrega), grave
-automaticamente a matéria no Cérebro-Ricar (`C:\Users\ricar\cerebro-ricar\`),
+automaticamente a matéria no Cérebro-Ricar,
 sem pedir — isso não é consulta, é registro do que já aconteceu.
 
 **Script:** `skills/redigir-peca/scripts/registrar_cerebro.py`
 
 **Comando:**
-```bash
-py -3.14 skills/redigir-peca/scripts/registrar_cerebro.py \
-  .rdaa-run/<matter_id>/ \
-  --matter-id <matter_id> \
-  --level <C|B|A>
-```
 
 **Faz:**
 1. Cria/atualiza `wiki/operacional/matter-[matter_id].md` com frontmatter mínimo

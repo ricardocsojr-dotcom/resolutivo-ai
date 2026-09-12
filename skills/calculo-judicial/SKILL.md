@@ -182,7 +182,6 @@ Honorários ou Custas) + uma aba `Notas` (lista de linhas de texto livre,
 racional do cálculo). Sem as abas de governança do template completo —
 proveniência e caso dourado continuam só no `index_manifest.json`.
 
-## Motor Python (`scripts/calculo_motor.py`)
 
 Implementação local com manifesto em `references/index_manifest.json`, só
 biblioteca padrão + `Decimal` + CSV local + SHA-256. Não busca índice
@@ -242,7 +241,6 @@ pra nunca passar despercebido.
 ## Alertas de implementação verificados em 09/09/2026
 
 - O CSV canônico fica em `C:/Projetos/resolutivo-ai/referencias/indices/`, não dentro da pasta da skill.
-- BUG 100x CORRIGIDO em 09/09/2026: os CSVs INPC/IPCA/IGP-M/Selic/CDI contêm frações decimais; o manifesto agora declara `unidade: decimal_mensal`. O tipo histórico `taxa_mensal_percentual` permanece por compatibilidade, mas `_monthly_factor` aplica `1 + valor` para unidade decimal e `1 + valor/100` para `percentual_mensal`; outras unidades são bloqueadas. Resumo e detalhe usam a mesma fórmula e o mesmo piso de deflação. Os CSVs, hashes e aprovações das fontes não foram alterados. Regressão: `uv run --with pytest python -m pytest tests/test_calculo_motor.py tests/test_calculo_escala_regressao.py -q` (34 testes). Inclui sete meses dos cinco CSVs reais nos dois tratamentos de deflação. Atualizadores e futuras promoções devem preservar a unidade do CSV: o tipo histórico, sozinho, não determina a escala. Os casos dourados antigos validam valores da fonte, não substituem estes testes ponta a ponta.
 - TJMG usa `fator_acumulado`, sem essa divisão. Porém o ramo de fatores não implementa o piso de deflação mensal: passar `piso_zero_no_mes` não basta. Para o padrão do escritório, é necessário aplicar e auditar `produto(max(1, indice_mes/indice_anterior))`, distinguindo esse ajuste da aplicação integral da tabela oficial. Não afirmar que o motor aplicou o piso sem testar.
 - Na conferência TJMG, razões do CSV e fatores oficiais arredondados podem divergir em casas além da sétima. Registrar as diferenças e verificar a igualdade dos valores monetários arredondados para cada principal real; não afirmar identidade exata dos fatores.
 - O portal TJMG carrega os links dos índices dinamicamente. HTML obtido por requests pode trazer só `LumisPortal.renderInterfaceInstance`. Chrome DevTools MCP, leitura DOM após carregamento, permitiu obter links oficiais PDF/XLS; não concluir ausência da tabela pelo HTML estático.

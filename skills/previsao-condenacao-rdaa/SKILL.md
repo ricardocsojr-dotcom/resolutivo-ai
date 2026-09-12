@@ -164,7 +164,6 @@ Pedidos com período e valor definidos (repetição de indébito, lucros cessant
 devem ser somados em prosa. Preencha um JSON estruturado e rode:
 
 ```
-python scripts/liquidar_pedidos.py pedidos.json
 ```
 
 Veja o cabeçalho do script para o formato exato do JSON. O script devolve o valor

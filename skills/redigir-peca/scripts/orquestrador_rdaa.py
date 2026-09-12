@@ -8,6 +8,9 @@ transições, gates e segregação de funções. Ele não avalia mérito jurídi
 from __future__ import annotations
 
 import argparse
+import sys
+sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent))
+import disjuntor
 from contextlib import contextmanager
 from functools import wraps
 import copy
@@ -30,11 +33,11 @@ class WorkflowLockError(ValueError):
 
 
 @contextmanager
-def bloqueio_materia(state_dir: Path | str):
+def bloqueio_materia(state_dir: Path | str, lock_name=".rdaa-orchestrator.lock"):
     """Lock de exclusão mútua por matéria, liberado mesmo após exceção."""
     root = Path(state_dir).resolve()
     root.mkdir(parents=True, exist_ok=True)
-    lock = root / ".rdaa-orchestrator.lock"
+    lock = root / lock_name
     try:
         with lock.open("x", encoding="utf-8") as handle:
             json.dump({"pid": os.getpid(), "created_at": _now()}, handle)
@@ -234,6 +237,8 @@ def abrir_gate_humano(state_dir: Path | str, gate: str, reason: str) -> dict[str
 
 @operacao_exclusiva
 def registrar_aprovacao(state_dir: Path | str, gate: str, artifact_path: Path | str, approved_by: str) -> dict[str, Any]:
+    if str(approved_by).strip().casefold() != "ricardo":
+        raise WorkflowStateError("authority ricardo exigida para aprovação humana")
     manifest = _read_manifest(state_dir)
     route = manifest.get("route", {})
     allowed_gates = set(route.get("required_human_gates", [])) | set(route.get("conditional_human_gates", []))
@@ -338,17 +343,30 @@ def registrar_sincronizacao_vault(
 
 
 @operacao_exclusiva
-def avancar_fase(state_dir: Path | str, target_phase: str) -> dict[str, Any]:
+def avancar_fase(state_dir: Path | str, target_phase: str, outcome: str = "ok") -> dict[str, Any]:
     manifest = _read_manifest(state_dir)
+    disjuntor.exigir_liberado(manifest)
     if manifest.get("open_gate"):
         raise WorkflowStateError("aprovação pendente para gate humano aberto")
     route = manifest.get("route", {})
     stages = list(route.get("stages", []))
     current = str(manifest.get("phase", "initialized"))
-    expected_index = 0 if current == "initialized" else stages.index(current) + 1 if current in stages else -1
-    if expected_index < 0 or expected_index >= len(stages) or target_phase != stages[expected_index]:
+    
+    # DAG transitions override linear stages
+    transitions = {
+        "ok": None, # follows linear next step
+        "escalate_b": "escalated_to_b",
+        "insufficient_context": "blocked_on_context"
+    }
+
+    if outcome != "ok" and outcome in transitions:
+        expected = transitions[outcome]
+    else:
+        expected_index = 0 if current == "initialized" else stages.index(current) + 1 if current in stages else -1
         expected = stages[expected_index] if 0 <= expected_index < len(stages) else "nenhuma"
-        raise WorkflowStateError(f"próxima fase esperada: {expected}")
+
+    if target_phase != expected:
+        raise WorkflowStateError(f"próxima fase esperada: {expected} (outcome: {outcome})")
     gate_by_phase = {"skeleton_approved": "skeleton_approval", "published": "release_approval"}
     gate = gate_by_phase.get(target_phase)
     if gate and gate in route.get("required_human_gates", []) and not aprovacao_valida(state_dir, gate):
@@ -412,6 +430,7 @@ def validar_inicio_worker(state_dir: Path | str, role: str, motor: str) -> dict[
     manifest = _read_manifest(state_dir)
     if manifest.get("open_gate") or manifest.get("status") == "awaiting_approval":
         raise WorkflowStateError("aprovação pendente para gate humano aberto")
+    disjuntor.exigir_liberado(manifest)
     identities = manifest.get("route", {}).get("worker_identity", {})
     worker = identities.get(role)
     if not isinstance(worker, dict):
@@ -465,6 +484,24 @@ def registrar_execucao(
     manifest["updated_at"] = _now()
     _write_json(_manifest_path(state_dir), manifest)
     return record
+
+
+@operacao_exclusiva
+def registrar_falha(state_dir, diagnostic):
+    manifest = _read_manifest(state_dir)
+    item = disjuntor.falhar(manifest, diagnostic, _now())
+    manifest["updated_at"] = _now()
+    _write_json(_manifest_path(state_dir), manifest)
+    return item
+
+
+@operacao_exclusiva
+def decidir_disjuntor(state_dir, action, authority, reason):
+    manifest = _read_manifest(state_dir)
+    disjuntor.decidir(manifest, action, authority, reason, _now())
+    manifest["updated_at"] = _now()
+    _write_json(_manifest_path(state_dir), manifest)
+    return manifest
 
 
 def main() -> int:

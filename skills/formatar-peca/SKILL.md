@@ -60,26 +60,6 @@ Os campos `texto` dos blocos `titulo`, `titulo2` e `titulo3`, assim como `titulo
 
 Salve o payload JSON e execute `scripts/construir_peca.py`:
 
-```bash
-cat > /tmp/rdaa_context.json << 'EOF'
-{
-  "enderecamento": "EXCELENTÍSSIMO(A) SENHOR(A) DOUTOR(A) JUIZ(A) DE DIREITO DA ...",
-  "numero_processo": "0159944-40.1997.8.13.0702",
-  "partes": "Autor: Mayara Almeida Jorge\nRéu: Fulano de Tal S/A",
-  "blocos": [
-    { "tipo": "abertura", "nome_parte": "MAYARA ALMEIDA JORGE", "resto": ", já qualificada, vem apresentar ", "nome_peca": "CONTRARRAZÕES", "resto_depois": "." },
-    { "tipo": "titulo", "texto": "dos fatos" },
-    { "tipo": "numerado", "texto": "Primeiro parágrafo do corpo com <b>termo em negrito</b>.", "nota_rodape": "Jurisprudência citada em nota de rodapé real." }
-  ],
-  "data_local": "Uberlândia/MG, 08 de agosto de 2026."
-}
-EOF
-
-mkdir -p /tmp/rdaa-candidatos
-python3 <skill_path>/scripts/construir_peca.py \
-    --context /tmp/rdaa_context.json \
-    --output /tmp/rdaa-candidatos/peca_candidata.docx
-```
 
 ---
 
@@ -87,13 +67,6 @@ python3 <skill_path>/scripts/construir_peca.py \
 
 O DOCX deve ser gerado primeiro como **candidato**, obrigatoriamente em caminho temporário ou de staging. Nunca use o caminho final como `--output` de `construir_peca.py`. A entrega final passa pelo publicador protegido, que executa o gate de formatação e estilometria antes de substituir qualquer arquivo existente:
 
-```bash
-python3 <skill_path>/../revisor-rdaa/scripts/publicar_docx.py \
-    --input outputs/peca_candidata.docx \
-    --output outputs/peca_final.docx \
-    --qa-json outputs/peca_final.qa.json \
-    --context /tmp/rdaa_context.json
-```
 
 O publicador só substitui `peca_final.docx` se o gate retornar `PASS`. Se falhar, o arquivo final anterior permanece intacto; o candidato fica disponível para diagnóstico. Antes de substituir um arquivo existente, o publicador cria backup local e realiza a troca de forma atômica.
 

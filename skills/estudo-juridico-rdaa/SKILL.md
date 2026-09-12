@@ -151,7 +151,7 @@ conferida nesta execução (passos 3 e 4 já conferem).
 ### 9. Gravação automática no Cérebro-Ricar
 
 Ao final de todo estudo publicado, grave automaticamente no Cérebro-Ricar
-(`C:\Users\ricar\cerebro-ricar\`) — sem pedir, do mesmo jeito que `redigir-peca`
+(``) — sem pedir, do mesmo jeito que `redigir-peca`
 faz (script `registrar_cerebro.py`). Leia `CLAUDE.md` do Cérebro antes de
 escrever.
 
@@ -175,14 +175,6 @@ Crie/atualize os seguintes arquivos em `wiki/`:
    - `hot.md` → adicione linha "Estudo novo: [tema] [[artifact-link]]"
 
 **Script de automação:**
-```bash
-python3 skills/estudo-juridico-rdaa/scripts/registrar_estudo_cerebro.py \
-  --theme "Tema do estudo" \
-  --artifact-url "https://artifact.link" \
-  --concepts "[tese1, tese2]" \
-  --sources "[PREC-001, LEI-CIVIL]" \
-  --domain "direito-contratual"
-```
 
 Relate na entrega que o registro foi feito (uma linha basta). Se o estudo
 não produziu tese ou fonte nova (ex.: confirmou o que já tá no Cérebro,

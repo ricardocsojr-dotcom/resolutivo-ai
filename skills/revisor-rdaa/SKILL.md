@@ -123,17 +123,10 @@ registre que a rastreabilidade semântica não estava disponível.
 A manutenção do estado local não é uma etapa automática de redação ou publicação.
 Quando Ricardo solicitar diagnóstico, use:
 
-```bash
-python3 scripts/manutencao_rdaa.py inspect .rdaa-run
-```
 
 A limpeza sempre começa em simulação. A execução efetiva exige `--apply` e move
 matérias antigas para uma quarentena local, sem exclusão direta:
 
-```bash
-python3 scripts/manutencao_rdaa.py clean .rdaa-run \\
-  --older-than-days 90 --apply --quarantine .rdaa-quarantine
-```
 
 O comando não toca em `.rdaa-backups` sem uma seleção explícita. Para conferir
 um backup sem alterar o destino, use `restore-test`. Para restaurar de fato, use

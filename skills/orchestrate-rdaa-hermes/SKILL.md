@@ -9,41 +9,6 @@ Exposes `orquestracao_rdaa` as a callable interface from Hermes skills and agent
 
 ## Quick Start
 
-```bash
-# Initialize a matter (C/B/A level, risk assessed)
-python3 skills/redigir-peca/scripts/orquestrador_rdaa.py init .rdaa-run/matter-id \
-  --matter-id matter-id --piece-level B --risk-level baixo
-
-# Check current phase + route
-python3 skills/redigir-peca/scripts/orquestrador_rdaa.py state .rdaa-run/matter-id
-
-# (B/A only) Query Ementário and register lookup
-python3 skills/redigir-peca/scripts/integracao_obsidian.py consultar-ementario \
-  --domain dano-moral --output .rdaa-run/matter-id/EMENTARIO-CONTEXTO.json
-
-python3 skills/redigir-peca/scripts/orquestrador_rdaa.py register-vault-lookup .rdaa-run/matter-id \
-  --vault ementario-resolutivo --artifact .rdaa-run/matter-id/EMENTARIO-CONTEXTO.json
-
-# Advance phase (one step at a time, gated)
-python3 skills/redigir-peca/scripts/orquestrador_rdaa.py advance .rdaa-run/matter-id vault_context_ready
-
-# Register human approval (skeleton, release, etc.)
-python3 skills/redigir-peca/scripts/orquestrador_rdaa.py approve .rdaa-run/matter-id \
-  --gate skeleton_approval --artifact ./ESQUELETO.md --approved-by Ricardo
-
-# Execute isolated worker (Codex/Antigravity/Claude)
-python3 skills/redigir-peca/scripts/executar_motor.py codex \
-  --prompt .rdaa-run/matter-id/PROMPT.md --output .rdaa-run/matter-id/DRAFT.md \
-  --state-dir .rdaa-run/matter-id --role writer --timeout 600
-
-# Register executed output (via executar_motor already does this)
-python3 skills/redigir-peca/scripts/orquestrador_rdaa.py register-execution .rdaa-run/matter-id \
-  --role writer --motor codex --prompt ./PROMPT.md --output ./DRAFT.md
-
-# Generate dashboard
-python3 skills/orquestrar-rdaa/scripts/painel_status.py .rdaa-run/matter-id \
-  --output .rdaa-run/matter-id/PAINEL.html
-```
 
 ## Architecture
 
@@ -64,7 +29,7 @@ All commands are **side-effect-free reads** or **locked writes** (mutex per matt
 
 - For human-interactive matter management: use `orquestrar-rdaa` skill instead (higher-level, Hermes-idiomatic).
 - For worker coding itself: workers don't call the orchestrator; use `executar_motor.py --state-dir` as the entry point.
-- For Cérebro-Ricar writes: use `registrar_cerebro.py` (local, sem WSL). Read queries usam C:\Users\ricar\cerebro-ricar\ direto.
+- For Cérebro-Ricar writes: use `registrar_cerebro.py` (local, sem WSL). Read queries usam 
 
 ## Key Constraints
 

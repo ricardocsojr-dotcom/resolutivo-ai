@@ -20,7 +20,7 @@ operacional estruturado, no mesmo padrão do `/legal:brief`.
 
 Todos os arquivos estão em:
 ```
-C:\Projetos\Andamentos Resolutivo\
+
 ```
 
 Arquivos relevantes:
@@ -38,10 +38,6 @@ Arquivos relevantes:
 
 Execute via bash na pasta de trabalho:
 
-```bash
-cd "/sessions/elegant-cool-lovelace/mnt/Andamentos Resolutivo" && \
-ls *.xlsx 2>/dev/null
-```
 
 Se não houver planilha real (apenas os arquivos de controle), informe Ricardo
 que não há planilha nova para processar e pergunte se deseja rodar com dados
@@ -49,11 +45,6 @@ de teste (`criar_planilha_teste.py`).
 
 ### 2. Executar o pipeline de análise
 
-```bash
-cd "/sessions/elegant-cool-lovelace/mnt/Andamentos Resolutivo" && \
-pip install pandas google-genai openpyxl --break-system-packages -q && \
-python analise_estrategica.py 2>&1
-```
 
 Observe o output do script:
 - "Nada novo para processar" → informe Ricardo e encerre
@@ -64,22 +55,6 @@ Observe o output do script:
 
 Após execução bem-sucedida, leia `Relatorio_Estrategico_Final.xlsx` usando Python:
 
-```bash
-cd "/sessions/elegant-cool-lovelace/mnt/Andamentos Resolutivo" && python3 - <<'EOF'
-import pandas as pd, json, sys
-try:
-    df = pd.read_excel("Relatorio_Estrategico_Final.xlsx")
-    # Garante colunas esperadas
-    for col in ["Classificacao","Alerta_Paralisacao","Leitura_Estrategica","Providencia",
-                "Número do Processo","Cliente","Data do andamento","Texto do Andamento",
-                "Dias Paralisado","Cliente VIP?","Processo VIP?"]:
-        if col not in df.columns:
-            df[col] = ""
-    print(df.to_json(orient="records", force_ascii=False))
-except Exception as e:
-    print(json.dumps({"erro": str(e)}))
-EOF
-```
 
 ### 4. Gerar o briefing
 

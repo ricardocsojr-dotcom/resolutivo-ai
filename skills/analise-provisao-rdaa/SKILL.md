@@ -95,7 +95,6 @@ vazia.
    double-check.
 6. **Gerar a planilha final**:
    ```bash
-   python scripts/montar_planilha_provisao.py <analise.csv> <saida.xlsx>
    ```
    O script formata a planilha, colore por classificação de risco
    (Provável/Possível/Remoto) e destaca em vermelho as linhas com
