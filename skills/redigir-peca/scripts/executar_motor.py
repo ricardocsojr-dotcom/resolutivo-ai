@@ -143,35 +143,40 @@ def executar(
         raise ValueError(f"motor não suportado: {motor}")
 
     started = time.monotonic()
-    result = subprocess.run(
-        cmd,
-        cwd=ROOT,
-        input=stdin,
-        capture_output=True,
-        text=True,
-        encoding="utf-8",
-        errors="replace",
-        timeout=timeout,
-        check=False,
-    )
-    duration_ms = round((time.monotonic() - started) * 1000)
-    if result.returncode:
-        diagnostic = result.stderr.strip() or result.stdout.strip()
-        raise RuntimeError(diagnostic or f"{motor} encerrou com código {result.returncode}")
-    if len(result.stdout.encode("utf-8")) > MAX_OUTPUT_BYTES:
-        raise RuntimeError(f"{motor} excedeu o limite de saída de 16 MiB")
+    try:
+        result = subprocess.run(
+            cmd,
+            cwd=ROOT,
+            input=stdin,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=timeout,
+            check=False,
+        )
+        duration_ms = round((time.monotonic() - started) * 1000)
+        if result.returncode:
+            diagnostic = result.stderr.strip() or result.stdout.strip()
+            raise RuntimeError(diagnostic or f"{motor} encerrou com código {result.returncode}")
+        if len(result.stdout.encode("utf-8")) > MAX_OUTPUT_BYTES:
+            raise RuntimeError(f"{motor} excedeu o limite de saída de 16 MiB")
 
-    session_id = None
-    model_ids: list[str] = []
-    usage: dict[str, object] = {}
-    if motor == "codex":
-        content = result.stdout.strip()
-    elif motor == "antigravity":
-        content = _resultado_antigravity(result.stdout, bool(schema))
-    else:
-        content, session_id, model_ids, usage = _resultado_claude(result.stdout, bool(schema))
-    if not content:
-        raise RuntimeError(f"{motor} não devolveu conteúdo")
+        session_id = None
+        model_ids: list[str] = []
+        usage: dict[str, object] = {}
+        if motor == "codex":
+            content = result.stdout.strip()
+        elif motor == "antigravity":
+            content = _resultado_antigravity(result.stdout, bool(schema))
+        else:
+            content, session_id, model_ids, usage = _resultado_claude(result.stdout, bool(schema))
+        if not content:
+            raise RuntimeError(f"{motor} não devolveu conteúdo")
+    except Exception as exc:
+        if state_dir is not None:
+            _registrar_falha_no_manifesto(state_dir, exc)
+        raise
     output_path.parent.mkdir(parents=True, exist_ok=True)
     output_path.write_text(content + "\n", encoding="utf-8")
     metadata: dict[str, object] = {
@@ -196,6 +201,18 @@ def _validar_no_manifesto(state_dir: Path, role: str, motor: str) -> None:
     assert spec and spec.loader
     spec.loader.exec_module(module)
     module.validar_inicio_worker(state_dir, role, motor)
+
+
+def _registrar_falha_no_manifesto(state_dir: Path, exc: Exception) -> None:
+    path = Path(__file__).with_name("orquestrador_rdaa.py")
+    spec = importlib.util.spec_from_file_location("orquestrador_rdaa", path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec and spec.loader
+    spec.loader.exec_module(module)
+    manifest_path = state_dir / "run_manifest.json"
+    if manifest_path.is_file():
+        if hasattr(module, "registrar_falha"):
+            module.registrar_falha(state_dir, str(exc))
 
 
 def _registrar_no_manifesto(

@@ -343,30 +343,57 @@ def registrar_sincronizacao_vault(
 
 
 @operacao_exclusiva
-def avancar_fase(state_dir: Path | str, target_phase: str, outcome: str = "ok") -> dict[str, Any]:
+def avancar_fase(state_dir: Path | str, target_phase: str | None = None, outcome: str = "ok") -> dict[str, Any]:
     manifest = _read_manifest(state_dir)
     disjuntor.exigir_liberado(manifest)
+    current = str(manifest.get("phase", "initialized"))
+
+    if target_phase is None and (current == "awaiting_skeleton_approval" or manifest.get("status") == "awaiting_approval"):
+        raise ValueError("gate humano aberto não pode ser avançado por outcome")
+
     if manifest.get("open_gate"):
         raise WorkflowStateError("aprovação pendente para gate humano aberto")
+
     route = manifest.get("route", {})
     stages = list(route.get("stages", []))
-    current = str(manifest.get("phase", "initialized"))
-    
-    # DAG transitions override linear stages
-    transitions = {
-        "ok": None, # follows linear next step
-        "escalate_b": "escalated_to_b",
-        "insufficient_context": "blocked_on_context"
-    }
 
-    if outcome != "ok" and outcome in transitions:
-        expected = transitions[outcome]
+    if outcome == "needs_revision":
+        rev_count = sum(1 for t in manifest.get("transitions", []) if t.get("outcome") == "needs_revision")
+        if rev_count >= 1:
+            manifest["status"] = "paused"
+            manifest.setdefault("transitions", []).append({
+                "from": current,
+                "to": current,
+                "outcome": "needs_revision",
+                "at": _now(),
+            })
+            manifest["updated_at"] = _now()
+            _write_json(_manifest_path(state_dir), manifest)
+            return manifest
+        else:
+            manifest["phase"] = "drafting"
+            manifest.setdefault("transitions", []).append({
+                "from": current,
+                "to": "drafting",
+                "outcome": "needs_revision",
+                "at": _now(),
+            })
+            manifest["updated_at"] = _now()
+            _write_json(_manifest_path(state_dir), manifest)
+            return manifest
+
+    if target_phase is None:
+        if outcome == "approved":
+            raise ValueError("outcome approved não é permitido diretamente sem aprovação formal")
+        expected_index = 0 if current == "initialized" else stages.index(current) + 1 if current in stages else -1
+        if expected_index < 0 or expected_index >= len(stages):
+            raise WorkflowStateError("não há próxima fase na rota")
+        target_phase = stages[expected_index]
     else:
         expected_index = 0 if current == "initialized" else stages.index(current) + 1 if current in stages else -1
-        expected = stages[expected_index] if 0 <= expected_index < len(stages) else "nenhuma"
-
-    if target_phase != expected:
-        raise WorkflowStateError(f"próxima fase esperada: {expected} (outcome: {outcome})")
+        if expected_index < 0 or expected_index >= len(stages) or target_phase != stages[expected_index]:
+            expected = stages[expected_index] if 0 <= expected_index < len(stages) else "nenhuma"
+            raise WorkflowStateError(f"próxima fase esperada: {expected}")
     gate_by_phase = {"skeleton_approved": "skeleton_approval", "published": "release_approval"}
     gate = gate_by_phase.get(target_phase)
     if gate and gate in route.get("required_human_gates", []) and not aprovacao_valida(state_dir, gate):
@@ -420,7 +447,7 @@ def avancar_fase(state_dir: Path | str, target_phase: str, outcome: str = "ok") 
     manifest["phase"] = target_phase
     manifest["status"] = "awaiting_approval" if target_phase.startswith("awaiting_") else "ready"
     manifest["updated_at"] = _now()
-    manifest.setdefault("transitions", []).append({"from": current, "to": target_phase, "at": _now()})
+    manifest.setdefault("transitions", []).append({"from": current, "to": target_phase, "outcome": outcome, "at": _now()})
     _write_json(_manifest_path(state_dir), manifest)
     return manifest
 

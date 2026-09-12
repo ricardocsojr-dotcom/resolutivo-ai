@@ -1,79 +1,39 @@
-#!/usr/bin/env python3
-import json
-import sys
-import argparse
-from pathlib import Path
+from __future__ import annotations
+from typing import Any
 
-def get_matter_state_path(processo):
-    candidates = [
-        Path.home() / "Resolutivo-Dados" / processo / "matter_state.json",
-        Path.home() / "Resolutivo-Dados" / ".rdaa-run" / processo / "matter_state.json",
-        Path.home() / "Desktop" / ".rdaa-run" / processo / "matter_state.json",
-        Path.cwd() / ".rdaa-run" / processo / "matter_state.json"
-    ]
-    for c in candidates:
-        if c.exists():
-            return c
-    return None
+def exigir_liberado(manifest: dict[str, Any]) -> None:
+    status = manifest.get("status")
+    if status in ("paused", "aborted", "paralisado"):
+        raise ValueError(f"execução bloqueada pelo disjuntor (status: {status})")
 
-def record_failure(processo, node_name):
-    state_file = get_matter_state_path(processo)
-    if not state_file:
-        print(f"Erro: matter_state.json não encontrado para {processo}. Falha crítica.")
-        return 1
+def falhar(manifest: dict[str, Any], diagnostic: str, timestamp: str) -> dict[str, Any]:
+    phase = manifest.get("phase", "unknown")
+    failures = manifest.setdefault("failures", {})
+    entry = failures.setdefault(phase, {"count": 0, "last_failure_at": None, "error": None})
+    entry["count"] += 1
+    entry["last_failure_at"] = timestamp
+    entry["error"] = str(diagnostic)
+    if entry["count"] >= 2:
+        manifest["status"] = "paused"
+    return entry
 
-    with open(state_file, 'r', encoding='utf-8') as f:
-        state = json.load(f)
-
-    if 'disjuntor' not in state:
-        state['disjuntor'] = {}
-        
-    failures = state['disjuntor'].get(node_name, 0)
-    failures += 1
-    state['disjuntor'][node_name] = failures
-    
-    with open(state_file, 'w', encoding='utf-8') as f:
-        json.dump(state, f, indent=2, ensure_ascii=False)
-        
-    print(f"[{node_name}] Falha #{failures} registrada.")
-
-    if failures >= 3:
-        state['status'] = 'paralisado'
-        with open(state_file, 'w', encoding='utf-8') as f:
-            json.dump(state, f, indent=2, ensure_ascii=False)
-        print(f"DISJUNTOR ACIONADO: O nó {node_name} falhou 3 vezes.")
-        print(f"MATÉRIA {processo} PARALISADA. Intervenção humana necessária.")
-        # Pode escalar via notificação ou stdout
-        sys.exit(1)
-        
-    return 0
-
-def reset_node(processo, node_name):
-    state_file = get_matter_state_path(processo)
-    if not state_file: return
-    with open(state_file, 'r', encoding='utf-8') as f:
-        state = json.load(f)
-    if 'disjuntor' in state and node_name in state['disjuntor']:
-        state['disjuntor'][node_name] = 0
-        with open(state_file, 'w', encoding='utf-8') as f:
-            json.dump(state, f, indent=2, ensure_ascii=False)
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("processo")
-    parser.add_argument("node_name")
-    parser.add_argument("--reset", action="store_true")
-    args = parser.parse_args()
-    
-    if args.reset:
-        reset_node(args.processo, args.node_name)
+def decidir(manifest: dict[str, Any], action: str, authority: str, reason: str, timestamp: str) -> None:
+    if str(authority).strip().casefold() != "ricardo":
+        raise ValueError("somente autoridade ricardo pode decidir disjuntor")
+    if not str(reason).strip():
+        raise ValueError("justificativa obrigatória")
+    if action == "resume":
+        manifest["status"] = "ready"
+        phase = manifest.get("phase")
+        if phase and phase in manifest.get("failures", {}):
+            manifest["failures"][phase]["count"] = 0
+    elif action == "abort":
+        manifest["status"] = "aborted"
     else:
-        sys.exit(record_failure(args.processo, args.node_name))
-
-if __name__ == "__main__":
-    main()
-
-def exigir_liberado(manifest):
-    if manifest.get('status') == 'paralisado':
-        raise ValueError("Operação negada: matéria paralisada pelo disjuntor.")
-    return True
+        raise ValueError(f"ação de disjuntor inválida: {action}")
+    manifest.setdefault("disjuntor_decisions", []).append({
+        "action": action,
+        "authority": authority,
+        "reason": reason,
+        "at": timestamp,
+    })

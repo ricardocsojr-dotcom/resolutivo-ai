@@ -209,7 +209,15 @@ def restore_protected(backup: Path, destination: Path, backup_dir: Path | None) 
 
 
 def reconcile_state(root: Path, apply: bool, quarantine: Path) -> dict[str, Any]:
-    dirs = discover_state_dirs(root)
+    root = Path(root)
+    state_files = sorted(root.rglob("matter_state.json")) if root.exists() else []
+    dirs = []
+    for sf in state_files:
+        p = sf.parent
+        if p.name == "candidate":
+            continue
+        data = _read_json(sf)
+        dirs.append({"path": str(p), "matter_id": data.get("matter_id", p.name)})
     results = []
     to_quarantine = []
 
