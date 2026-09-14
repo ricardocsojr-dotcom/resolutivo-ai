@@ -20,7 +20,7 @@ from typing import Any, Callable, Sequence
 from urllib.parse import quote
 
 CEREBRO_PATH = Path(r"C:\Users\ricar\cerebro-ricar")
-DEFAULT_NAMESPACE = "viking://resources/resolutivo-ai"
+DEFAULT_NAMESPACE = "viking://resources/cerebro-ricar"
 DEFAULT_PROCESSING_MODE = "vectors_only"
 DEFAULT_TIMEOUT = 300
 STATE_FILENAME = ".openviking-sync-state.json"
@@ -100,7 +100,7 @@ def build_write_command(
     if write_mode not in {"create", "replace"}:
         raise ValueError(f"modo de escrita inválido: {write_mode}")
     if not viking_uri.startswith(DEFAULT_NAMESPACE + "/"):
-        raise ValueError("URI OpenViking fora do namespace do Resolutivo")
+        raise ValueError("URI OpenViking fora do namespace padrão")
     if timeout <= 0:
         raise ValueError("timeout deve ser positivo")
     return [
@@ -119,6 +119,15 @@ def build_write_command(
         "-o",
         "json",
     ]
+
+
+def build_delete_command(
+    viking_uri: str,
+) -> list[str]:
+    """Build a shell-free command to delete a stable OpenViking resource."""
+    if not viking_uri.startswith(DEFAULT_NAMESPACE + "/"):
+        raise ValueError("URI OpenViking fora do namespace padrão")
+    return ["ov", "rm", viking_uri, "-o", "json"]
 
 
 def _default_runner(command: Sequence[str]) -> tuple[int, str, str]:
@@ -223,6 +232,23 @@ def sync_path(
         synced = 0
         skipped = 0
         file_results: list[dict[str, Any]] = []
+
+        current_relative_keys = {fp.relative_to(root).as_posix() for fp in files}
+        deleted = 0
+        for relative_key, prior_data in list(prior_files.items()):
+            if relative_key not in current_relative_keys:
+                uri_to_remove = prior_data.get("uri")
+                if uri_to_remove:
+                    try:
+                        _run_command(build_delete_command(uri_to_remove), runner)
+                    except RuntimeError as exc:
+                        if "NOT_FOUND" not in str(exc) and "not found" not in str(exc).lower():
+                            print(f"[warning] erro ao remover {uri_to_remove}: {exc}")
+                deleted += 1
+                file_results.append({"file": relative_key, "action": "deleted", "uri": prior_data.get("uri")})
+                if relative_key in next_files:
+                    del next_files[relative_key]
+
         for file_path in files:
             relative_key = file_path.relative_to(root).as_posix()
             digest = hashlib.sha256(file_path.read_bytes()).hexdigest()
@@ -273,6 +299,7 @@ def sync_path(
             "collection_uri": collection_uri,
             "processing_mode": processing_mode,
             "files_synced": synced,
+            "files_deleted": deleted,
             "files_skipped": skipped,
             "files": file_results,
             "state_path": str(state_path),
