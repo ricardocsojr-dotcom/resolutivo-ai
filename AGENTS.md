@@ -28,6 +28,6 @@ Antes de trabalhar, leia `CLAUDE.md`, `referencias/decisoes-roteamento-motores-2
 
 ## Vaults
 
-- O Ementário do Resolutivo é leitura automática somente em peças B/A, nos termos de `skills/redigir-peca/SKILL.md`.
+- O Cérebro-Ricar é leitura automática somente em peças B/A, nos termos de `skills/redigir-peca/SKILL.md`.
 - O vault operacional "Procedimentos e Informações" só é consultado a pedido.
 - Não escreva diretamente no vault WSL. Use apenas o fluxo de ingestão previsto pela skill de redação.

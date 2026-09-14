@@ -12,8 +12,8 @@ papel e gates de publicação já existentes. Não há razão atual para criar u
 
 - CLIs presentes: Claude Code, Codex e Antigravity.
 - Estado canônico existente em `.rdaa-run/<matter_id>/` e publicação protegida.
-- Dois vaults distintos: operacional sob demanda e Ementário automático B/A.
-- Ementário WSL com estrutura e ledgers válidos, auditado somente em leitura.
+- Dois vaults distintos: operacional sob demanda e Cérebro-Ricar automático B/A.
+- Cérebro-Ricar WSL com estrutura e ledgers válidos, auditado somente em leitura.
 - Testes determinísticos do plugin.
 - Contratos de redação, crítica, estilo, gestão de matéria e roteamento.
 
@@ -64,7 +64,7 @@ papel, vault e ausência de contrato comum. Quatro recomendações estavam errad
 - `agy --print < arquivo` não é o transporte correto no PowerShell nem resolve
   prompts longos; o modo documentado é `stream-json`.
 - `publicar_docx.py --matter` não existe; a publicação recebe input/output.
-- O caminho WSL do Ementário já estava explícito em `redigir-peca`.
+- O caminho WSL do Cérebro-Ricar já estava explícito em `redigir-peca`.
 - Transformar o veredito do crítico em bloqueio automático daria autoridade
   jurídica a uma saída probabilística; por isso ficou apenas como alerta.
 

@@ -54,7 +54,7 @@ internos para montar parágrafos e assinatura.
 
 Esta skill (montagem do esqueleto em si) não consulta vault nenhum — ela só
 recebe o material já organizado por `redigir-peca`, que nos tipos B/A já
-inclui o que veio da consulta automática ao Ementário do Resolutivo (passo
+inclui o que veio da consulta automática ao Cérebro-Ricar (passo
 9 de `redigir-peca/SKILL.md`). O playbook de modelos organiza somente
 estruturas aprovadas e não aplica automaticamente tese, fato, fonte,
 pedido ou pertinência jurídica — vindo do vault ou de qualquer outra
@@ -90,7 +90,7 @@ Gatilhos da v1 (ajustáveis — não são regra jurídica, são limiar operacion
    (não de forma), trava aqui em vez de publicar com pendência não resolvida.
 
 Não é gatilho: prazo da peça (nunca questionar tempestividade, ver
-`CLAUDE.md`), nível da peça (A/B/C não é risco), e conteúdo do Ementário
+`CLAUDE.md`), nível da peça (A/B/C não é risco), e conteúdo do Cérebro-Ricar
 do Resolutivo (mesmo sendo consultado automaticamente em B/A, o que ele
 traz é `status: informada` — não vira sinal automático deste gate nem tese
 aprovada sozinho).

@@ -131,7 +131,7 @@ intake_ready -> drafting -> draft_ready -> candidate_ready -> qa_passed
 -> release_ready -> published -> vault_registered
 ```
 
-Redação por Combo leve; sem Ementário, esqueleto ou crítica; QA, publicação e Cérebro obrigatórios.
+Redação por Combo leve; sem Cérebro-Ricar, esqueleto ou crítica; QA, publicação e Cérebro obrigatórios.
 
 ### Nível B
 
@@ -142,7 +142,7 @@ intake_ready -> vault_context_ready -> sources_ready -> skeleton_ready
 -> published -> vault_registered
 ```
 
-Combos de planejamento/redação B e revisão final; Ementário read-only e gate do esqueleto.
+Combos de planejamento/redação B e revisão final; Cérebro-Ricar read-only e gate do esqueleto.
 
 ### Nível A
 
@@ -261,7 +261,7 @@ Nível A exige aprovação de publicação vinculada ao hash do candidato.
 - Skills são inteligência, não memória.
 - Em divergência, prevalece o Cérebro-Ricar.
 
-Peças B/A consultam o Ementário no Cérebro em modo read-only; o material entra como `informada`, não como tese aprovada ou fonte externamente verificada.
+Peças B/A consultam o Cérebro-Ricar no Cérebro em modo read-only; o material entra como `informada`, não como tese aprovada ou fonte externamente verificada.
 
 Após publicar: registrar no Cérebro, obter recibo com hash, registrar no manifesto, sincronizar OpenViking e guardar recibo. Falha no Cérebro impede `vault_registered`. Falha no OpenViking cria pendência reexecutável sem desfazer o Cérebro.
 

@@ -82,7 +82,7 @@ editions/pocket/
 
 ### Capacidades proibidas
 
-- alegar leitura de Cérebro, OpenViking, Ementário, Obsidian, arquivos locais, sistemas judiciais ou e-mail;
+- alegar leitura de Cérebro, OpenViking, Cérebro-Ricar, Obsidian, arquivos locais, sistemas judiciais ou e-mail;
 - criar, alterar ou ler `.rdaa-run`, manifestos, documentos, DOCX, PDFs locais ou planilhas;
 - publicar, protocolar, assinar, calcular prazo real, registrar no Cérebro ou declarar que um gate foi aprovado;
 - chamar CLI, MCP, automação de navegador, aplicativo desktop, PJeOffice ou ferramentas do computador;

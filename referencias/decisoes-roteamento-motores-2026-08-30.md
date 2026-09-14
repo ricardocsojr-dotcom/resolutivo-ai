@@ -76,7 +76,7 @@ Claude decidindo o próprio papel?".
 
 Papéis que o Codex apontou como autoalocação sem justificativa técnica
 real: classificação C/B/A (deveria ser rubrica determinística), consulta ao
-Ementário e pesquisa Jusbrasil (recuperação mecânica, não inteligência),
+Cérebro-Ricar e pesquisa Jusbrasil (recuperação mecânica, não inteligência),
 esqueleto ("template + requisito processual, Claude é excesso"), Conselho
 reusando o mesmo motor da redação ("a pior autoalocação: preserva os
 mesmos vieses e pontos cegos da primeira camada"), correção de achado
@@ -173,7 +173,7 @@ problemas concretos:
 4. Ajustar `redigir-peca/SKILL.md` (passo 7 em diante) pra refletir
    Codex-redator + loop de validação com teto de rodadas.
 5. Tornar a classificação C/B/A um script determinístico.
-6. Separar busca mecânica de julgamento de relevância no Ementário/Jusbrasil
+6. Separar busca mecânica de julgamento de relevância no Cérebro-Ricar/Jusbrasil
    (exploração, não decidida).
 7. Testar esqueleto como template mais determinístico em casos simples B
    (exploração, não decidida).

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Consulta read-only do Ementário e prepara recibos para o workflow RDAA.
+"""Consulta read-only do Cérebro-Ricar e prepara recibos para o workflow RDAA.
 
-Este módulo não decide tese nem grava no Ementário. A escrita naquele vault
+Este módulo não decide tese nem grava no Cérebro-Ricar. A escrita naquele vault
 continua exclusiva do fluxo transacional claude-obsidian executado no WSL.
 """
 
@@ -56,7 +56,7 @@ def _write_json(path: Path, payload: dict[str, Any]) -> None:
 def _domain_path(vault_root: Path, domain: str) -> Path:
     normalized = str(domain).strip().lower()
     if not _DOMAIN_PATTERN.fullmatch(normalized):
-        raise ValueError("domínio do Ementário inválido")
+        raise ValueError("domínio do Cérebro-Ricar inválido")
     return vault_root / "wiki" / "domains" / f"{normalized}.md"
 
 
@@ -93,7 +93,7 @@ def _document(vault_root: Path, path: Path) -> dict[str, str]:
     }
 
 
-def consultar_ementario(vault_root: Path | str, domain: str, output_path: Path | str) -> dict[str, Any]:
+def consultar_cerebro(vault_root: Path | str, domain: str, output_path: Path | str) -> dict[str, Any]:
     """Cria um pacote fechado de contexto sem alterar um único arquivo do vault."""
     root = Path(vault_root).resolve()
     manual = _require_within_root(root, root / "CLAUDE.md")
@@ -145,7 +145,7 @@ def consultar_ementario(vault_root: Path | str, domain: str, output_path: Path |
     return package
 
 
-def preparar_registro_ementario(
+def preparar_registro_cerebro(
     state_dir: Path | str,
     artifact_path: Path | str,
     output_path: Path | str,
@@ -157,7 +157,7 @@ def preparar_registro_ementario(
     request = {
         "schema_version": "1",
         "created_at": _now(),
-        "vault": "ementario-resolutivo",
+        "vault": "cerebro-ricar",
         "status": "pending_external_ingest",
         "required_runner": "claude-obsidian via WSL",
         "matter_state_dir": str(Path(state_dir).resolve()),
@@ -172,7 +172,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Integração determinística RDAA ↔ Obsidian")
     commands = parser.add_subparsers(dest="command", required=True)
 
-    lookup = commands.add_parser("consultar-ementario", help="gera contexto read-only do Cérebro-Ricar")
+    lookup = commands.add_parser("consultar-cerebro", help="gera contexto read-only do Cérebro-Ricar")
     lookup.add_argument("--domain", required=True)
     lookup.add_argument("--output", type=Path, required=True)
     lookup.add_argument(
@@ -184,14 +184,14 @@ def main() -> int:
         help="raiz local do Cérebro-Ricar",
     )
 
-    request = commands.add_parser("preparar-registro-ementario", help="gera solicitação para claude-obsidian")
+    request = commands.add_parser("preparar-registro-cerebro", help="gera solicitação de registro no Cérebro-Ricar")
     request.add_argument("--state-dir", type=Path, required=True)
     request.add_argument("--artifact", type=Path, required=True)
     request.add_argument("--output", type=Path, required=True)
 
     args = parser.parse_args()
-    if args.command == "consultar-ementario":
-        result = consultar_ementario(args.vault_root, args.domain, args.output)
+    if args.command == "consultar-cerebro":
+        result = consultar_cerebro(args.vault_root, args.domain, args.output)
         result = {
             "origin": result["origin"],
             "status": result["status"],
@@ -202,7 +202,7 @@ def main() -> int:
             "output": str(args.output.resolve()),
         }
     else:
-        result = preparar_registro_ementario(args.state_dir, args.artifact, args.output)
+        result = preparar_registro_cerebro(args.state_dir, args.artifact, args.output)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
 

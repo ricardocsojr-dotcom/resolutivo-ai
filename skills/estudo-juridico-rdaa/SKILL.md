@@ -61,7 +61,7 @@ errada. Identifique:
   identifique o `matter_id` em `espaço de estado do processo/` pra linkar o estudo ao estado
   compartilhado (passo 7). Se for tema abstrato sem matéria associada, siga
   sem `matter_id` — não crie matéria artificial só pra ter onde registrar.
-- **Área do direito** — ajuda a decidir se vale consultar o Ementário do
+- **Área do direito** — ajuda a decidir se vale consultar o Cérebro-Ricar do
   Resolutivo antes de pesquisar de novo (mesma lógica do passo 9 de
   `redigir-peca`, mas aqui é sempre automático, não só nos níveis B/A,
   porque esta skill inteira já é sobre aprofundamento).
@@ -189,4 +189,4 @@ complemento por esse motivo.
 - `artifact-design` / `artifact-diagramming` → execução técnica do Artifact (passo 5, pré-requisito)
 - Núcleo de escrita RDAA (`contencioso-rdaa/references/redacao-rdaa.md`) → tom e estrutura do texto (passo 6)
 - `contencioso-rdaa` → consome o estudo pra decidir estratégia (não é acionado por esta skill, é quem usa a saída dela depois)
-- `claude-obsidian` (`save`/`wiki-ingest`) → gravação no Ementário (passo 9)
+- `claude-obsidian` (`save`/`wiki-ingest`) → gravação no Cérebro-Ricar (passo 9)

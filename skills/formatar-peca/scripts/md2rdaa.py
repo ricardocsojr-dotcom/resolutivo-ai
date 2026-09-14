@@ -148,7 +148,7 @@ def compilar_markdown_para_contexto(
             clean_open = re.sub(r'</?[bui]>', '', raw)
             m_open = re.match(r'^(.*?),\s*(já\s+qualificad[ao].*?)(?:,\s*com\s+fundamento\s+no\s+(.*?))?,\s*(?:vem|apresentar|formular|interpor|propor|opor)\s*(.*?)(?:,\s*pelas\s+razões|\.\s*$)', clean_open, re.IGNORECASE)
             
-            nome_parte = "TRIVALE ADMINISTRAÇÃO LTDA."
+            nome_parte = "[NOME DA PARTE]"
             nome_peca = "MANIFESTAÇÃO"
             resto = ", já qualificada nos autos, por seus advogados que esta subscrevem, vem, respeitosamente, à presença de Vossa Excelência, "
             resto_depois = ", pelas razões a seguir expostas."
@@ -242,17 +242,11 @@ def compilar_markdown_para_contexto(
         "modo_redacao": "blocos",
         "redacao_por_blocos": True,
         "exigir_esqueleto": nivel_peca in {"A", "B"},
-        "enderecamento": enderecamento or "EXCELENTÍSSIMO(A) SENHOR(A) DOUTOR(A) JUIZ(A) DE DIREITO DA 14ª VARA CÍVEL E EMPRESARIAL DA COMARCA DE BELÉM/PA",
-        "numero_processo": numero_processo or "0879903-83.2025.8.14.0301",
-        "partes": partes or "Autora: TRIVALE ADMINISTRAÇÃO LTDA.\nRé: EQUATORIAL PARÁ DISTRIBUIDORA DE ENERGIA S.A.",
+        "enderecamento": enderecamento or "[ENDEREÇAMENTO A CONFERIR]",
+        "numero_processo": numero_processo,
+        "partes": partes,
         "blocos": blocos,
-        "publicacoes_texto": publicacoes_texto or (
-            "Requer que as publicações referentes a este feito sejam realizadas exclusivamente "
-            "em nome do advogado Wanderley Romano Donadel, OAB/MG 78.870, pelo endereço eletrônico "
-            "wanderley@romanodonadel.com.br, e que as correspondências postais sejam encaminhadas à "
-            "Avenida dos Vinhedos, n.º 200, Conjunto 4, Gávea Office, Morada da Colina, Uberlândia/MG, "
-            "CEP 38.411-159, sob pena de nulidade."
-        ),
+        "publicacoes_texto": publicacoes_texto,
         "data_local": data_local_uberlandia(),
         "fecho": "Nestes termos, aguarda deferimento."
     }
