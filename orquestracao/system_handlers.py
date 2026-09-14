@@ -48,6 +48,12 @@ def _find_candidate_artifacts(state: RDAAState) -> tuple[Path, Path]:
             docx_path = Path(candidate["docx_path"])
             context_path = Path(candidate["context_path"])
 
+            if not docx_path.is_file() or not context_path.is_file():
+                package = Path(str(state.get("state_dir", ""))) / "packages" / f"{role}-001.md"
+                if package.is_file():
+                    from orquestracao.production_worker import _compile_docx
+                    rebuilt = _compile_docx(state, role, package.read_text(encoding="utf-8"))
+                    return Path(rebuilt["docx_path"]), Path(rebuilt["context_path"])
             if not docx_path.is_file():
                 raise ContractError(f"docx candidato declarado mas ausente em disco: {docx_path}")
             if not context_path.is_file():

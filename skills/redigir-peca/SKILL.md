@@ -67,8 +67,8 @@ processo ou de uma matéria.
 | Tipo | O que é | Redação e Motores | Validação e Estrutura |
 |---|---|---|---|
 | **C** | Peça muito simples (juntadas, oposições simples, manifestações simples, ciência, concordância, prazo) | Escrita direta pelo **modelo do próprio chat** (sem chamada externa de CLI) | Sem esqueleto, sem consulta a vault, sem validação de LLM externa; direto para compilador nativo e QA protegida |
-| **B** | Peça baseada nos autos com desenvolvimento (manifestações complexas, memoriais, especificação de provas, réplicas) | Planejada (esqueleto) e redigida pelo **modelo do próprio chat** (sem chamada de CLI) | Consulta read-only ao Ementário no Cérebro-Ricar; esqueleto aprovado por Ricardo; validação independente pelo **Claude Sonnet 5** (esforço médio); compilador nativo e QA |
-| **A** | Peça premium (iniciais complexas, recursos aos tribunais superiores, teses estratégicas) | Planejada pelo **Claude Sonnet 5** (médio); redigida pelo **Codex Terra 5.6** (alto) | Consulta ao Ementário; esqueleto aprovado por Ricardo; crítica pelo **Gemini 3.7 Flash** (Antigravity); validação pelo **modelo do próprio chat**; compilador e QA |
+| **B** | Peça baseada nos autos com desenvolvimento (manifestações complexas, memoriais, especificação de provas, réplicas) | Planejada (esqueleto) e redigida pelo **modelo do próprio chat** (sem chamada de CLI) | Consulta read-only ao Cérebro-Ricar no Cérebro-Ricar; esqueleto aprovado por Ricardo; validação independente pelo **Claude Sonnet 5** (esforço médio); compilador nativo e QA |
+| **A** | Peça premium (iniciais complexas, recursos aos tribunais superiores, teses estratégicas) | Planejada pelo **Claude Sonnet 5** (médio); redigida pelo **Codex Terra 5.6** (alto) | Consulta ao Cérebro-Ricar; esqueleto aprovado por Ricardo; crítica pelo **Gemini 3.7 Flash** (Antigravity); validação pelo **modelo do próprio chat**; compilador e QA |
 
 **Como classificar**
 
@@ -81,7 +81,7 @@ processo ou de uma matéria.
 - Não altere o nível porque o vault está vazio ou cheio, porque a pesquisa
   encontrou ou não encontrou uma tese, por causa de palavras do texto ou por
   causa de `nivel_risco`. Esses campos são independentes.
-- Nos tipos **B e A**, o vault de tese/jurisprudência ("Ementário do
+- Nos tipos **B e A**, o vault de tese/jurisprudência ("Cérebro-Ricar do
   Resolutivo") é consultado automaticamente antes do esqueleto — o motor
   decide quando. Isso é leitura, não decisão: encontrar ou não encontrar
   conteúdo no vault não altera `nivel_peca`, não substitui pesquisa e não
@@ -101,7 +101,7 @@ a executar aquele papel** — nunca antes, nunca por iniciativa própria.
 
 Trabalhe com os fatos, documentos, decisões, teses, fontes e pedidos que
 Ricardo fornecer ou selecionar nesta execução, mais o que a consulta ao
-Ementário trouxer nos tipos B/A — e nada além disso. A aprovação de modelo
+Cérebro-Ricar trouxer nos tipos B/A — e nada além disso. A aprovação de modelo
 ou peça anterior não aprova o caso atual. Não confunda "o vault trouxe uma
 tese candidata" com "a tese está aprovada para este caso": aprovação
 continua exigindo seleção explícita no esqueleto.
@@ -117,10 +117,10 @@ divisão — nunca herde a proporção do modelo como se fosse neutra.
 
 - **Tipo B**: organize o que já existe no processo, identifique lacunas
   objetivas, proponha desenvolvimento de explicações e indique se Legal Design
-  ou ilustração pode melhorar a compreensão. As teses candidatas do Ementário
+  ou ilustração pode melhorar a compreensão. As teses candidatas do Cérebro-Ricar
   entram como material a avaliar, não como base já aceita.
 - **Tipo A**: organize o conjunto completo de material fornecido, as teses
-  candidatas do Ementário e as fontes selecionadas para a peça premium.
+  candidatas do Cérebro-Ricar e as fontes selecionadas para a peça premium.
 - Consulta ao vault operacional ("Procedimentos e Informações") continua
   manual e só acontece se Ricardo pedir expressamente — registre a origem e
   não altere o tipo automaticamente.
@@ -257,34 +257,34 @@ que roda em toda peça, de qualquer nível.
 
 ---
 
-## Consulta ao Ementário do Resolutivo — regras de epistemologia
+## Consulta ao Cérebro-Ricar — regras de epistemologia
 
 Existem dois vaults distintos, e só um deles entra automaticamente neste
 fluxo:
 
-- **Ementário do Resolutivo** (tese e jurisprudência) — consultado
+- **Cérebro-Ricar** (tese e jurisprudência) — consultado
   automaticamente nos tipos B e A, antes do esqueleto. O tipo C nunca
   consulta.
 - **Procedimentos e Informações** (operacional) — leitura sempre manual, só
   com pedido expresso de Ricardo.
 
-Leia o `CLAUDE.md` do Ementário antes de consultar — ele governa estrutura e
+Leia o `CLAUDE.md` do Cérebro-Ricar antes de consultar — ele governa estrutura e
 convenções.
 
 1. Identifica a área do direito no contexto já coletado (dano moral,
    responsabilidade civil, direito do consumidor, contratos bancários, ações
-   declaratórias/indenizatórias, ou outra que o Ementário já tenha) e lê o
+   declaratórias/indenizatórias, ou outra que o Cérebro-Ricar já tenha) e lê o
    `wiki/domains/<área>.md` correspondente, se existir.
 2. A partir dali, lê as teses ligadas em `wiki/concepts/` e as fontes em
    `wiki/sources/` (ementa/trecho sempre literal, com origem).
-3. Registra o que encontrar com `origem: ementario-resolutivo` e `status:
+3. Registra o que encontrar com `origem: cerebro-ricar` e `status:
    informada` — nunca `verificada_externamente` só por ter vindo do vault.
    Vira tese aprovada, fonte selecionada ou parte do esqueleto somente por
    decisão explícita no esqueleto (papel Planner).
 4. Se não encontrar nada relevante para a área, segue normalmente — vault
    vazio não é pendência e não bloqueia a peça.
 5. Não substitui pesquisa nova (`buscar-jurisprudencia`/
-   `jusbrasil-jurisprudencia`, automática no tipo A) — o Ementário é o que
+   `jusbrasil-jurisprudencia`, automática no tipo A) — o Cérebro-Ricar é o que
    já foi decidido/registrado antes; a pesquisa é o que busca precedente
    novo. Os dois podem coexistir na mesma execução.
 
@@ -356,7 +356,7 @@ Este fluxo combina:
 - `revisor-rdaa` → checklist de qualidade aplicado pelo Claude (papel
   Validator)
 - `docx` → skill genérica, NÃO usar aqui (ver Entrega)
-- Ementário do Resolutivo → consulta automática em B/A antes do esqueleto;
+- Cérebro-Ricar → consulta automática em B/A antes do esqueleto;
   gravação automática de tese/fonte usada após publicação
 - Procedimentos e Informações → leitura sempre manual; gravação automática
   de registro operacional após publicação

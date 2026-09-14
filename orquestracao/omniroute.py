@@ -125,6 +125,12 @@ class OmniRouteClient:
 
                 # Tenta extrair metadados do provider resolvido
                 self._extract_provider_info(payload, receipt)
+                if output_dir:
+                    receipt_path = output_dir / f"{packet.role}-001.receipt.json"
+                    receipt_path.write_text(
+                        json.dumps(receipt.to_dict(), ensure_ascii=False, indent=2) + "\n",
+                        encoding="utf-8",
+                    )
 
                 return content, receipt
 
@@ -166,12 +172,18 @@ class OmniRouteClient:
         - {"choices": [{"message": {"content": "..."}}]}  (Chat Completions)
         - {"content": "..."}                              (simplificado)
         """
-        # Formato Responses API
+        error = payload.get("error")
+        if error:
+            message = error.get("message") if isinstance(error, dict) else str(error)
+            raise ContractError(f"OmniRoute retornou erro: {message}")
+
+        # Formato Responses API. Alguns provedores usam ``text`` em vez de
+        # ``output_text``; o campo textual é o contrato que importa.
         if "output" in payload and isinstance(payload["output"], list):
             for item in payload["output"]:
-                if isinstance(item, dict) and item.get("type") == "message":
+                if isinstance(item, dict):
                     for part in item.get("content", []):
-                        if isinstance(part, dict) and part.get("type") == "output_text":
+                        if isinstance(part, dict):
                             text = part.get("text", "").strip()
                             if text:
                                 return text
@@ -200,10 +212,9 @@ class OmniRouteClient:
         try:
             if "model" in payload:
                 receipt.resolved_model = str(payload["model"])
-            usage = payload.get("usage", {})
-            if isinstance(usage, dict) and usage:
-                # Armazena como metadata no receipt via resolved_provider
-                receipt.resolved_provider = json.dumps(usage, ensure_ascii=False)
+            provider = payload.get("resolved_provider") or payload.get("provider")
+            if provider:
+                receipt.resolved_provider = str(provider)
         except Exception:
             pass
 

@@ -49,6 +49,11 @@ def test_resolve_combo_planner_b():
     assert combo == "RJ-Planejamento"
 
 
+def test_resolve_combo_writer_b_usa_escrita_pesada():
+    route = load_route("B", ROUTE_PATH)
+    assert resolve_combo("writer", route) == "RJ-Escrita-Pesada"
+
+
 def test_resolve_combo_papel_inexistente():
     route = load_route("C", ROUTE_PATH)
     with pytest.raises(ContractError, match="não configurado"):
@@ -91,8 +96,8 @@ def test_planner_packet_valido():
 
 def test_planner_packet_com_vault():
     state = _state("A")
-    pkt = build_planner_packet(state, vault_context="Ementário read-only.")
-    assert "Ementário read-only" in pkt.user_prompt
+    pkt = build_planner_packet(state, vault_context="Cérebro-Ricar read-only.")
+    assert "Cérebro-Ricar read-only" in pkt.user_prompt
 
 
 # ---------------------------------------------------------------------------

@@ -124,6 +124,19 @@ def test_rota_b_nao_executa_critic(tmp_path):
         engine.close()
 
 
+def test_aprovacao_esqueleto_fica_vinculada_ao_hash(tmp_path):
+    def worker(role, state):
+        return {"content": "Esqueleto aprovado."} if role == "planner" else {"ok": True}
+
+    engine = RDAAEngine(tmp_path / "hash", "B", worker=worker, system_handlers=DUMMY_HANDLERS, route_path=ROUTE_PATH)
+    try:
+        engine.initialize("hash")
+        engine.approve_gate("skeleton_approval")
+        assert engine.state()["approvals"]["skeleton_approval"]["artifact_sha256"]
+    finally:
+        engine.close()
+
+
 # ---------------------------------------------------------------------------
 # Rota C: sem gates, sem critic, sem planner
 # ---------------------------------------------------------------------------

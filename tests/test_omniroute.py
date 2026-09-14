@@ -113,6 +113,7 @@ def test_send_persiste_output(tmp_path):
     assert receipt.output_path
     assert Path(receipt.output_path).is_file()
     assert receipt.output_sha256
+    assert (tmp_path / "artifacts" / "writer-001.receipt.json").is_file()
 
 
 # ---------------------------------------------------------------------------
@@ -169,6 +170,27 @@ def test_extract_content_formato_simplificado():
     payload = {"content": "Texto direto."}
     result = OmniRouteClient._extract_content(payload)
     assert result == "Texto direto."
+
+
+def test_extract_content_responses_aceita_parte_textual_do_provider():
+    payload = {"output": [{"type": "message", "content": [{"type": "text", "text": "Texto."}]}]}
+    assert OmniRouteClient._extract_content(payload) == "Texto."
+
+
+def test_extract_content_expoe_erro_do_omniroute():
+    with pytest.raises(ContractError, match="modelo indisponível"):
+        OmniRouteClient._extract_content({"status": "failed", "error": {"message": "modelo indisponível"}})
+
+
+def test_extract_provider_info_nao_confunde_usage_com_provider():
+    from orquestracao.contracts import Receipt
+    receipt = Receipt(role="writer")
+    OmniRouteClient._extract_provider_info(
+        {"model": "Modelo X", "provider": "provedor-y", "usage": {"input_tokens": 10}},
+        receipt,
+    )
+    assert receipt.resolved_model == "Modelo X"
+    assert receipt.resolved_provider == "provedor-y"
 
 
 def test_extract_content_vazio():

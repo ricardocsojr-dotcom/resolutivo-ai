@@ -29,7 +29,7 @@
       "description": "Peça desenvolvida: planejada, escrita e validada por Combos RDAA",
       "workers": {
         "planner": {"engine": "omniroute", "provider": "omniroute", "model": "RJ-Planejamento"},
-        "writer": {"engine": "omniroute", "provider": "omniroute", "model": "RJ-Escrita-Leve"},
+        "writer": {"engine": "omniroute", "provider": "omniroute", "model": "RJ-Escrita-Pesada"},
         "validator": {"engine": "omniroute", "provider": "omniroute", "model": "RJ-Revisao-Final"}
       },
       "worker_allowed_phases": {

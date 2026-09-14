@@ -37,6 +37,7 @@ from orquestracao.contracts import (
     ROLE_OUTPUT_PHASE,
     load_route,
     sha256_file,
+    sha256_text,
     validate_level,
 )
 
@@ -396,10 +397,13 @@ class RDAAEngine:
 
         # Registrar aprovação
         approvals = dict(current.get("approvals", {}))
+        planner = current.get("outputs", {}).get("planner", {})
+        planner_text = planner.get("content", "") if isinstance(planner, dict) else str(planner)
         approvals[gate] = {
             "approved": True,
             "approved_by": authority,
             "approved_at": _now(),
+            "artifact_sha256": sha256_text(planner_text) if gate == "skeleton_approval" and planner_text else "",
         }
 
         # Atualizar estado e continuar

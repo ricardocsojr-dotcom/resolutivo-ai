@@ -21,6 +21,7 @@ import sys
 from pathlib import Path
 
 from orquestracao.contracts import ContractError, GateError, CircuitBreakerError
+from orquestracao.contracts import HUMAN_GATES
 from orquestracao.engine import RDAAEngine, ROUTE_PATH
 from orquestracao.production_worker import production_worker
 from orquestracao.system_handlers import DEFAULT_SYSTEM_HANDLERS
@@ -61,15 +62,32 @@ def _format_action_result(action: str, result: dict, **kwargs) -> int:
         "action": action if is_success else f"{action}_FAILED",
         "current_phase": result.get("phase", ""),
         "status": status,
-        "history": result.get("history", []),
+        "phases_completed": len(result.get("history", [])),
         **kwargs
     }
+    stages = result.get("route", {}).get("stages", [])
+    phase = result.get("phase", "")
+    if phase in stages and stages.index(phase) + 1 < len(stages):
+        next_phase = stages[stages.index(phase) + 1]
+        gate = HUMAN_GATES.get(next_phase)
+        if gate:
+            payload["required_gate"] = gate
+
+    state_dir = result.get("state_dir")
+    if state_dir:
+        detail_path = Path(str(state_dir)) / "last_cli_result.json"
+        detail_path.write_text(
+            json.dumps(result, ensure_ascii=False, indent=2, default=str) + "\n",
+            encoding="utf-8",
+        )
+        payload["details"] = str(detail_path.resolve())
 
     # Extrai o ultimo erro registrado nas exeucções que falharam, se existir
     if status == "failed":
         executions = result.get("executions", [])
         if executions and executions[-1].get("outcome") == "error":
-            payload["_worker_error"] = executions[-1].get("error", "")
+            error = str(executions[-1].get("error", ""))
+            payload["error"] = error.splitlines()[0][:300]
 
     return _json_out(payload, 0 if is_success else 1)
 
@@ -105,7 +123,7 @@ def cmd_status(args) -> int:
             "level": state.get("nivel_peca", ""),
             "current_phase": state.get("phase", ""),
             "status": state.get("status", ""),
-            "history": state.get("history", []),
+            "phases_completed": len(state.get("history", [])),
             "consecutive_failures": state.get("consecutive_failures", 0),
             "approvals": list(state.get("approvals", {}).keys()),
             "executions_count": len(state.get("executions", [])),

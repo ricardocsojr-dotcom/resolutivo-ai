@@ -87,3 +87,21 @@ Belém/PA, 8 de setembro de 2026.
     )
     assert res_build.returncode == 0, res_build.stderr + res_build.stdout
     assert docx_out.is_file()
+
+
+def test_md2rdaa_nao_inventa_metadados_de_outro_caso(tmp_path):
+    input_md = tmp_path / "minuta.md"
+    output_json = tmp_path / "contexto.json"
+    input_md.write_text("# MANIFESTAÇÃO\n\n1. Texto demonstrativo.", encoding="utf-8")
+
+    res = subprocess.run(
+        [sys.executable, str(MD2RDAA), str(input_md), "--output", str(output_json), "--nivel", "B"],
+        capture_output=True,
+        text=True,
+    )
+    assert res.returncode == 0, res.stderr + res.stdout
+    ctx = json.loads(output_json.read_text(encoding="utf-8"))
+    assert ctx["numero_processo"] == ""
+    assert ctx["partes"] == ""
+    assert ctx["publicacoes_texto"] == ""
+    assert ctx["enderecamento"] == "[ENDEREÇAMENTO A CONFERIR]"

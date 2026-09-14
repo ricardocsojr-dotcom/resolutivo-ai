@@ -36,6 +36,33 @@ def test_find_candidate_artifacts_ausente_levanta_contract_error():
         sh._find_candidate_artifacts({"outputs": {}})
 
 
+def test_find_candidate_artifacts_reconstroi_pacote_validado(tmp_path, monkeypatch):
+    state_dir = tmp_path / "state"
+    packages = state_dir / "packages"
+    packages.mkdir(parents=True)
+    (packages / "validator-001.md").write_text("Texto validado.", encoding="utf-8")
+    rebuilt_docx = tmp_path / "rebuilt.docx"
+    rebuilt_context = tmp_path / "rebuilt.json"
+    rebuilt_docx.touch()
+    rebuilt_context.touch()
+
+    from orquestracao import production_worker as pw
+    monkeypatch.setattr(
+        pw,
+        "_compile_docx",
+        lambda state, role, text: {
+            "docx_path": str(rebuilt_docx),
+            "context_path": str(rebuilt_context),
+        },
+    )
+    state = {
+        "state_dir": str(state_dir),
+        "outputs": {"validator": {"docx_path": "ausente.docx", "context_path": "ausente.json"}},
+    }
+
+    assert sh._find_candidate_artifacts(state) == (rebuilt_docx, rebuilt_context)
+
+
 def test_handle_qa_passed_delega_para_servico_qa(tmp_path, monkeypatch):
     docx = tmp_path / "candidate.docx"
     ctx = tmp_path / "context.json"

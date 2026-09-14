@@ -114,7 +114,7 @@ def build_planner_packet(
         theses or "(nenhuma tese candidata)",
     ]
     if vault_context:
-        user_parts += ["", "## Contexto do Ementário (read-only)", vault_context]
+        user_parts += ["", "## Contexto do Cérebro-Ricar (read-only)", vault_context]
 
     return Packet(
         role="planner",

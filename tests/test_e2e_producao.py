@@ -4,7 +4,7 @@ from pathlib import Path
 import shutil
 
 from orquestracao import cli
-from orquestracao.contracts import ContractError
+from orquestracao.contracts import ContractError, Receipt
 from orquestracao import production_worker as pw
 from orquestracao import system_handlers as sh
 
@@ -25,9 +25,81 @@ def start_args(tmp_path: Path) -> Args:
 def fake_omniroute(monkeypatch) -> None:
     class Client:
         def send(self, packet, *, output_dir=None):
-            return "# Manifestação\n\nTexto da peça.", None
+            receipt = Receipt(role="writer", requested_combo="teste")
+            receipt.finalize()
+            return "# Manifestação\n\nTexto da peça.", receipt
 
     monkeypatch.setattr(pw, "OmniRouteClient", Client)
+
+
+def test_worker_injeta_intake_cerebro_e_nucleo_rdaa(monkeypatch, tmp_path):
+    packages = tmp_path / "packages"
+    packages.mkdir()
+    (packages / "intake.md").write_text("Fatos do teste.", encoding="utf-8")
+    (packages / "cerebro-contexto.json").write_text("Contexto do Cérebro.", encoding="utf-8")
+    captured = {}
+
+    def builder(state, **kwargs):
+        captured[state["role"]] = kwargs
+        return object()
+
+    class Client:
+        def send(self, packet, *, output_dir=None):
+            receipt = Receipt(role="writer", requested_combo="teste")
+            receipt.finalize()
+            return "resultado", receipt
+
+    monkeypatch.setattr(pw, "OmniRouteClient", Client)
+    monkeypatch.setattr(pw, "_is_doc_producer_role", lambda *args: False)
+    state = {
+        "state_dir": str(tmp_path),
+        "matter_id": "teste",
+        "nivel_peca": "B",
+        "route": {"workers": {role: {"engine": "omniroute"} for role in ("planner", "writer", "validator")}},
+    }
+    for role in ("planner", "writer", "validator"):
+        state["role"] = role
+        monkeypatch.setitem(pw._PACKET_BUILDERS, role, builder)
+        pw.production_worker(role, state)
+
+    assert captured["planner"] == {
+        "facts": "Fatos do teste.",
+        "vault_context": "Contexto do Cérebro.",
+    }
+    assert captured["writer"]["facts"] == "Fatos do teste."
+    assert captured["writer"]["sources"] == "Contexto do Cérebro."
+    assert "Fatos do teste." in captured["validator"]["sources"]
+    assert "Contexto do Cérebro." in captured["validator"]["sources"]
+    assert "Dois-pontos | Proibido" in captured["writer"]["style_guide"]
+    assert "Dois-pontos | Proibido" in captured["validator"]["checklist"]
+
+
+def test_candidato_final_fica_fora_do_state_dir(monkeypatch, tmp_path):
+    state_dir = tmp_path / ".rdaa-run" / "materia"
+    state_dir.mkdir(parents=True)
+    monkeypatch.setattr(pw, "MD2RDAA_SCRIPT", Path(__file__))
+    monkeypatch.setattr(pw, "CONSTRUIR_SCRIPT", Path(__file__))
+
+    class Md2:
+        @staticmethod
+        def compilar_markdown_para_contexto(*args, **kwargs):
+            return {}
+
+    class Construir:
+        @staticmethod
+        def construir_peca(contexto, output):
+            Path(output).write_bytes(b"docx")
+
+    modules = iter((Md2, Construir))
+    monkeypatch.setattr(pw, "_load_module", lambda *args: next(modules))
+    result = pw._compile_docx(
+        {"state_dir": str(state_dir), "matter_id": "materia", "nivel_peca": "B"},
+        "validator",
+        "texto",
+    )
+
+    assert state_dir.resolve() not in Path(result["docx_path"]).parents
+    assert "rdaa-candidatos" in Path(result["docx_path"]).parts
 
 
 def test_e2e_producao_fluxo_feliz(monkeypatch, tmp_path):
@@ -95,7 +167,7 @@ def test_qa_fail_impede_publicacao_e_vault(monkeypatch, tmp_path):
 
     assert result["exit_code"] == 1
     assert result["payload"]["status"] == "failed"
-    assert "QA reprovado" in result["payload"]["_worker_error"]
+    assert "QA reprovado" in result["payload"]["error"]
     assert not publication_called
     assert not vault_called
 
@@ -123,5 +195,23 @@ def test_publicacao_falha_impede_vault(monkeypatch, tmp_path):
 
     assert result["exit_code"] == 1
     assert result["payload"]["status"] == "failed"
-    assert "falha de publicação" in result["payload"]["_worker_error"]
+    assert "falha de publicação" in result["payload"]["error"]
     assert not vault_called
+
+
+def test_cli_resume_curto_e_detalhes_em_arquivo(monkeypatch, tmp_path):
+    monkeypatch.setattr(cli, "_json_out", json_result)
+    result = cli._format_action_result(
+        "STARTED",
+        {
+            "phase": "skeleton_ready",
+            "status": "executing",
+            "history": ["intake_ready", "skeleton_ready"],
+            "route": {"stages": ["skeleton_ready", "awaiting_skeleton_approval"]},
+            "state_dir": str(tmp_path),
+            "outputs": {"planner": {"content": "conteúdo extenso"}},
+        },
+    )
+    assert "history" not in result["payload"]
+    assert result["payload"]["required_gate"] == "skeleton_approval"
+    assert Path(result["payload"]["details"]).is_file()
