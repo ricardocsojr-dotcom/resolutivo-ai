@@ -4,10 +4,16 @@
     "C": {
       "description": "Peça simples/juntada: escrita pelo Combo leve, direto para QA e DOCX",
       "workers": {
-        "writer": {"engine": "chat", "provider": "hermes", "model": "chat_session"}
+        "writer": {
+          "engine": "chat",
+          "provider": "hermes",
+          "model": "chat_session"
+        }
       },
       "worker_allowed_phases": {
-        "writer": ["drafting"]
+        "writer": [
+          "drafting"
+        ]
       },
       "stages": [
         "intake_ready",
@@ -21,21 +27,49 @@
       ],
       "required_human_gates": [],
       "vault": {
-        "lookup": {"enabled": false},
-        "sync": {"required_after_publish": ["cerebro-ricar"], "optional_after_publish": []}
+        "lookup": {
+          "enabled": false
+        },
+        "sync": {
+          "required_after_publish": [
+            "cerebro-ricar"
+          ],
+          "optional_after_publish": []
+        }
       }
     },
     "B": {
       "description": "Peça desenvolvida: planejada, escrita e validada por Combos RDAA",
       "workers": {
-        "planner": {"engine": "omniroute", "provider": "omniroute", "model": "RJ-Planejamento"},
-        "writer": {"engine": "omniroute", "provider": "omniroute", "model": "RJ-Escrita-Pesada"},
-        "validator": {"engine": "omniroute", "provider": "omniroute", "model": "RJ-Revisao-Final"}
+        "planner": {
+          "engine": "omniroute",
+          "provider": "omniroute",
+          "model": "RJ-Planejamento",
+          "budget": "fast"
+        },
+        "writer": {
+          "engine": "omniroute",
+          "provider": "omniroute",
+          "model": "RJ-Escrita-Pesada"
+        },
+        "validator": {
+          "engine": "omniroute",
+          "provider": "omniroute",
+          "model": "RJ-Revisao-Final"
+        }
       },
       "worker_allowed_phases": {
-        "planner": ["intake_ready", "sources_ready", "skeleton_ready"],
-        "writer": ["drafting"],
-        "validator": ["validating"]
+        "planner": [
+          "intake_ready",
+          "sources_ready",
+          "skeleton_ready"
+        ],
+        "writer": [
+          "drafting"
+        ],
+        "validator": [
+          "validating"
+        ]
       },
       "stages": [
         "intake_ready",
@@ -53,25 +87,64 @@
         "published",
         "vault_registered"
       ],
-      "required_human_gates": ["skeleton_approval"],
+      "required_human_gates": [
+        "skeleton_approval"
+      ],
       "vault": {
-        "lookup": {"enabled": true, "vault": "cerebro-ricar", "mode": "read_only", "context_status": "informada"},
-        "sync": {"required_after_publish": ["cerebro-ricar"], "optional_after_publish": []}
+        "lookup": {
+          "enabled": true,
+          "vault": "cerebro-ricar",
+          "mode": "read_only",
+          "context_status": "informada"
+        },
+        "sync": {
+          "required_after_publish": [
+            "cerebro-ricar"
+          ],
+          "optional_after_publish": []
+        }
       }
     },
     "A": {
       "description": "Peça premium: planejada, redigida, criticada e validada por Combos RDAA",
       "workers": {
-        "planner": {"engine": "omniroute", "provider": "omniroute", "model": "RJ-Planejamento"},
-        "writer": {"engine": "omniroute", "provider": "omniroute", "model": "RJ-Escrita-Pesada"},
-        "critic": {"engine": "omniroute", "provider": "omniroute", "model": "RJ-Leitura"},
-        "validator": {"engine": "omniroute", "provider": "omniroute", "model": "RJ-Revisao-Final"}
+        "planner": {
+          "engine": "omniroute",
+          "provider": "omniroute",
+          "model": "RJ-Planejamento",
+          "budget": "exhaustive"
+        },
+        "writer": {
+          "engine": "omniroute",
+          "provider": "omniroute",
+          "model": "RJ-Escrita-Pesada"
+        },
+        "critic": {
+          "engine": "omniroute",
+          "provider": "omniroute",
+          "model": "RJ-Leitura"
+        },
+        "validator": {
+          "engine": "omniroute",
+          "provider": "omniroute",
+          "model": "RJ-Revisao-Final"
+        }
       },
       "worker_allowed_phases": {
-        "planner": ["intake_ready", "sources_ready", "skeleton_ready"],
-        "writer": ["drafting"],
-        "critic": ["criticizing"],
-        "validator": ["validating"]
+        "planner": [
+          "intake_ready",
+          "sources_ready",
+          "skeleton_ready"
+        ],
+        "writer": [
+          "drafting"
+        ],
+        "critic": [
+          "criticizing"
+        ],
+        "validator": [
+          "validating"
+        ]
       },
       "stages": [
         "intake_ready",
@@ -92,11 +165,26 @@
         "published",
         "vault_registered"
       ],
-      "required_human_gates": ["skeleton_approval", "release_approval"],
-      "conditional_human_gates": ["strategy_exception"],
+      "required_human_gates": [
+        "skeleton_approval",
+        "release_approval"
+      ],
+      "conditional_human_gates": [
+        "strategy_exception"
+      ],
       "vault": {
-        "lookup": {"enabled": true, "vault": "cerebro-ricar", "mode": "read_only", "context_status": "informada"},
-        "sync": {"required_after_publish": ["cerebro-ricar"], "optional_after_publish": []}
+        "lookup": {
+          "enabled": true,
+          "vault": "cerebro-ricar",
+          "mode": "read_only",
+          "context_status": "informada"
+        },
+        "sync": {
+          "required_after_publish": [
+            "cerebro-ricar"
+          ],
+          "optional_after_publish": []
+        }
       }
     }
   },
