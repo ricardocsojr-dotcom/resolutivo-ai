@@ -1681,7 +1681,7 @@ def construir_peca(context: dict, output_path: str) -> str:
 
     # Publicações (boilerplate opcional)
     if context.get('publicacoes', True):
-        bloco_paragrafo_recuo(doc, context.get('publicacoes_texto', PUBLICACOES_PADRAO))
+        bloco_paragrafo_recuo(doc, context.get('publicacoes_texto') or PUBLICACOES_PADRAO)
         _blank(doc)
 
     # Fecho

@@ -105,3 +105,62 @@ def test_md2rdaa_nao_inventa_metadados_de_outro_caso(tmp_path):
     assert ctx["partes"] == ""
     assert ctx["publicacoes_texto"] == ""
     assert ctx["enderecamento"] == "[ENDEREÇAMENTO A CONFERIR]"
+
+
+def test_md2rdaa_preserva_paragrafos_numerados_e_separa_alineas_de_pedidos(tmp_path):
+    input_md = tmp_path / "minuta_pedidos.md"
+    output_json = tmp_path / "contexto_pedidos.json"
+    texto = """EXCELENTÍSSIMO(A) SENHOR(A) DOUTOR(A) JUIZ(A) DE DIREITO DA 1ª VARA CÍVEL
+
+Processo: 1000000-00.2026.8.13.0000
+Autora: EMPRESA TESTE LTDA.
+Réu: PARTE CONTRÁRIA
+
+EMPRESA TESTE LTDA., já qualificada nos autos, vem requerer a juntada de documentos, pelas razões a seguir expostas.
+
+# I. PRELIMINAR
+
+1. O primeiro parágrafo do corpo traz fundamentação fática com requerer no corpo.
+2. O segundo parágrafo traz fundamentação jurídica com citação legal.
+
+# II. PEDIDOS
+
+3. Diante do exposto, a Autora requer:
+a) o deferimento do pedido principal;
+b) a juntada dos documentos anexos.
+
+Requer que as publicações referentes a este feito sejam realizadas exclusivamente em nome do advogado WANDERLEY ROMANO DONADEL, OAB/MG 78.870, sob pena de nulidade.
+
+Nestes termos, aguarda deferimento.
+
+Uberlândia/MG, 14 de setembro de 2026.
+"""
+    input_md.write_text(texto, encoding="utf-8")
+
+    res = subprocess.run(
+        [sys.executable, str(MD2RDAA), str(input_md), "--output", str(output_json), "--nivel", "C"],
+        capture_output=True,
+        text=True,
+    )
+    assert res.returncode == 0, res.stderr + res.stdout
+    ctx = json.loads(output_json.read_text(encoding="utf-8"))
+
+    blocos = ctx["blocos"]
+    numerados = [b for b in blocos if b.get("tipo") == "numerado"]
+    alineas = [b for b in blocos if b.get("tipo") == "alinea"]
+
+    # Parágrafos 1 e 2 do corpo devem ser numerados, NÃO alíneas
+    assert len(numerados) >= 3
+    assert "primeiro parágrafo do corpo" in numerados[0]["texto"]
+    assert "segundo parágrafo" in numerados[1]["texto"]
+    assert numerados[2]["texto"].endswith("requer:")
+
+    # Alíneas devem conter somente os itens a) e b)
+    assert len(alineas) == 2
+    assert "o deferimento" in alineas[0]["texto"]
+    assert "a juntada" in alineas[1]["texto"]
+
+    # Publicações devem ser capturadas no metadado e não nos blocos do corpo
+    assert "WANDERLEY ROMANO DONADEL" in ctx["publicacoes_texto"]
+    assert "sob pena de nulidade" in ctx["publicacoes_texto"]
+
