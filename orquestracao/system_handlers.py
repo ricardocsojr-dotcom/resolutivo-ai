@@ -7,6 +7,15 @@ completo e devolvem um dict de saida (ou levantam excecao, tratada pelo
 mesmo disjuntor que workers de IA).
 
 Contrato de dados entre fases (via ``state["outputs"]``):
+- O handler de ``intake_ready`` (primeiro estagio de A/B/C) le todo
+  arquivo em ``<state_dir>/anexos/`` (PDF ou imagem; convencao: o
+  Codex copia o(s) anexo(s) brutos para essa pasta antes de
+  ``rdaa start``) e extrai deterministicamente para
+  ``packages/intake.md`` via ``services/extracao.py`` -- PDF nativo
+  vira texto direto, PDF escaneado/imagem passa por OCR local
+  (Tesseract), uma unica passagem por pagina. Sem anexos, grava um
+  intake.md vazio explicito (nao e erro). Falha de TODOS os anexos
+  bloqueia a fase (fail-safe): o writer nunca comeca sem fatos.
 - Quem produz o candidato (writer em C; validator em B/A) deve gravar em
   ``outputs[<role>]["docx_path"]`` o caminho do DOCX candidato gerado por
   ``skills/formatar-peca/scripts/construir_peca.py``.
@@ -29,9 +38,40 @@ import shutil
 from typing import Any
 
 from orquestracao.contracts import ContractError, RDAAState
+from services.extracao import ExtractionError, gerar_intake_md
 from services.memoria import registrar_cerebro
 from services.publicacao import publicar_docx
 from services.qa import run_qa_gate
+
+
+ANEXOS_EXTENSOES = {".pdf", ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp"}
+
+
+def handle_intake_ready(state: RDAAState) -> dict[str, Any]:
+    """Extrai anexos brutos (<state_dir>/anexos/) para packages/intake.md.
+
+    Determinístico: PDF nativo vira texto direto, PDF escaneado ou
+    imagem passa por OCR local (Tesseract) -- nunca por interpretação
+    de LLM fatiada em regiões. Sem anexos, grava um intake.md vazio e
+    explícito (caso válido, não é erro).
+    """
+    state_dir = Path(str(state.get("state_dir", "")))
+    if not state_dir:
+        raise ContractError("state_dir ausente no estado do motor")
+
+    matter_id = state.get("matter_id", "")
+    anexos_dir = state_dir / "anexos"
+    anexos = sorted(
+        p for p in anexos_dir.glob("*") if p.suffix.lower() in ANEXOS_EXTENSOES
+    ) if anexos_dir.is_dir() else []
+
+    output_path = state_dir / "packages" / "intake.md"
+    try:
+        result = gerar_intake_md(matter_id, anexos, output_path=output_path)
+    except ExtractionError as exc:
+        raise ContractError(f"extração de anexos falhou: {exc}") from exc
+
+    return result
 
 
 def _find_candidate_artifacts(state: RDAAState) -> tuple[Path, Path]:
@@ -126,6 +166,7 @@ def handle_vault_registered(state: RDAAState) -> dict[str, Any]:
 
 
 DEFAULT_SYSTEM_HANDLERS: dict[str, Any] = {
+    "intake_ready": handle_intake_ready,
     "qa_passed": handle_qa_passed,
     "published": handle_published,
     "vault_registered": handle_vault_registered,
