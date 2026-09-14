@@ -19,6 +19,13 @@ def json_result(payload, exit_code):
 
 
 def start_args(tmp_path: Path) -> Args:
+    # Nível C usa engine="chat": o Codex grava o texto redigido em
+    # packages/writer-input.md ANTES de `cli start` (ver production_worker.py).
+    packages = tmp_path / "packages"
+    packages.mkdir(parents=True, exist_ok=True)
+    writer_input = packages / "writer-input.md"
+    if not writer_input.is_file():
+        writer_input.write_text("# Manifestação\n\nTexto da peça.", encoding="utf-8")
     return Args(state_dir=str(tmp_path), level="C", matter_id="MAT-01", route=None)
 
 

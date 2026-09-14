@@ -26,6 +26,18 @@ código: `orquestracao/engine.py` (motor LangGraph), acessado via
 
 **Mecânica obrigatória, sempre:**
 
+- **Se houver anexo bruto (PDF escaneado, imagem de AR, print, foto de
+  documento):** NUNCA leia/interprete o anexo manualmente com
+  `vision_analyze` fatiado em regiões — isso é lento (minutos) e não é o
+  papel do agente. Copie o(s) arquivo(s) para `<state_dir>/anexos/` ANTES
+  de chamar `cli start`. O motor extrai deterministicamente para
+  `packages/intake.md` na fase `intake_ready` (PDF nativo → texto direto;
+  PDF escaneado/imagem → OCR local via Tesseract, uma única passagem —
+  ver `services/extracao.py`). Depois de `intake_ready` concluído, leia
+  `packages/intake.md` normalmente como fonte de fatos — nunca a imagem
+  bruta. Se a fase falhar, é porque TODOS os anexos foram ilegíveis
+  (fail-safe) — reporte a Ricardo, não tente contornar lendo a imagem à mão.
+
 - **Para Nível C (Peças Simples/Juntadas):**
   Como a peça é simples e dispensa esqueleto e validação prévia, você deve **primeiro** redigir a peça inteira (seguindo as premissas deste chat) e salvá-la em `<state_dir>/packages/writer-input.md`. Somente DEPOIS de criar esse arquivo, chame `python -m orquestracao.cli start <state_dir> --matter-id X --level C`. Se o arquivo já estiver lá, o motor formatará a peça, aplicará o QA e a publicará instantaneamente, em um único comando, sem interrupções.
 

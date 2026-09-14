@@ -4,7 +4,7 @@
     "C": {
       "description": "Peça simples/juntada: escrita pelo Combo leve, direto para QA e DOCX",
       "workers": {
-        "writer": {"engine": "omniroute", "provider": "omniroute", "model": "RJ-Escrita-Leve"}
+        "writer": {"engine": "chat", "provider": "hermes", "model": "chat_session"}
       },
       "worker_allowed_phases": {
         "writer": ["drafting"]
