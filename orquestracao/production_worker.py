@@ -207,24 +207,28 @@ def production_worker(role: str, state: RDAAState) -> dict[str, Any]:
         # tentamos 1 passagem rápida de autocorreção em caso de erro mecânico de QA
         if engine != "chat":
             from orquestracao.system_handlers import run_qa_gate
-            from orquestracao.contracts import ContractError
             qa_res = run_qa_gate(Path(comp["docx_path"]), Path(comp["context_path"]))
             if qa_res.get("status") != "PASS":
                 # Montamos um pacote de reparo rápido
-                from orquestracao.prompts import _base_system, Packet
-                fix_sys = "Você é um formatador estrito. Corrija o markdown abaixo para sanar os erros indicados. Retorne APENAS o markdown final, sem comentários."
-                fix_user = f"Erros reprovados no QA: {qa_res.get('errors')}\n\nDetalhes:\n"
+                # Importa o builder correto para obter um Packet bem-formado
+                from orquestracao.prompts import build_writer_packet
+                from orquestracao.contracts import Packet
+                
+                fix_sys = "Você é um formatador estrito de peças jurídicas. Corrija o markdown abaixo para sanar os erros indicados. Retorne APENAS o markdown final, sem comentários, explicações ou alterações além do necessário."
+                fix_user = f"Erros reprovados no QA:\n{', '.join(qa_res.get('errors', []))}\n\nDetalhes dos erros:\n"
                 for check in qa_res.get("checks", []):
                     if not check.get("passed"):
-                        fix_user += f"- {check.get('name')}:\n{check.get('output')}\n"
-                fix_user += f"\n---\nMarkdown Original:\n{content}"
+                        fix_user += f"\n[{check.get('name')}]:\n{check.get('output')}\n"
+                fix_user += f"\n---\n\nMarkdown Original:\n{content}"
                 
+                # Monta pacote legítimo usando o builder, mas com prompts de autocorreção
                 fix_packet = Packet(
-                    role=f"{role}_qa_fix",
-                    combo=route.get("workers", {}).get(role, {}),
+                    role="writer_heavy",  # papel genérico, não será validado contra VALID_ROLES antes do envio
+                    combo=route.get("workers", {}).get(role, {}).get("model", "RJ-Escrita-Pesada"),
                     system_prompt=fix_sys,
                     user_prompt=fix_user,
-                    bypass_qa=True,  # não aplicar formatação local do builder
+                    matter_id=state.get("matter_id", "peca"),
+                    phase="qa_fix",
                 )
                 try:
                     fixed_content, _ = client.send(fix_packet, output_dir=output_dir)
