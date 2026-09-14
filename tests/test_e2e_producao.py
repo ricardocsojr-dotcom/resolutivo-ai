@@ -2,6 +2,8 @@
 
 from pathlib import Path
 import shutil
+import json
+import pytest
 
 from orquestracao import cli
 from orquestracao.contracts import ContractError, Receipt
@@ -222,3 +224,70 @@ def test_cli_resume_curto_e_detalhes_em_arquivo(monkeypatch, tmp_path):
     assert "history" not in result["payload"]
     assert result["payload"]["required_gate"] == "skeleton_approval"
     assert Path(result["payload"]["details"]).is_file()
+
+
+def test_bloqueia_tentativa_duplicada(monkeypatch, tmp_path):
+    """Se um state_dir irmão já pausou com disjuntor estourado e mesmo
+    writer-input.md hash, o motor bloqueia com ContractError ao criar novo dir."""
+    from orquestracao.engine import RDAAEngine, MAX_CONSECUTIVE_FAILURES
+    from orquestracao.contracts import ContractError
+
+    writer_text = "# Peça duplicada\n\nTexto teste.\n\nI. PEDIDO.\n\nDiante do exposto, requer-se."
+
+    # Diretório da 1ª tentativa: pausada com disjuntor estourado
+    d1 = tmp_path / "MAT-DUP-01"
+    d1.mkdir()
+    (d1 / "packages").mkdir()
+    (d1 / "packages" / "writer-input.md").write_text(writer_text, encoding="utf-8")
+    (d1 / "matter_state.json").write_text(json.dumps({
+        "matter_id": "MAT-DUP-01",
+        "status": "paused",
+        "phase": "qa_passed",
+        "consecutive_failures": MAX_CONSECUTIVE_FAILURES,
+    }), encoding="utf-8")
+
+    # Diretório da 2ª tentativa: mesmo conteúdo, deve bloquear
+    d2 = tmp_path / "MAT-DUP-01-v2"
+    d2.mkdir()
+    (d2 / "packages").mkdir()
+    (d2 / "packages" / "writer-input.md").write_text(writer_text, encoding="utf-8")
+
+    engine = RDAAEngine(state_dir=str(d2), nivel_peca="C")
+
+    with pytest.raises(ContractError, match="tentativa duplicada bloqueada"):
+        engine.initialize("MAT-DUP-01")
+
+
+def test_bloqueia_nao_ativa_sem_disjuntor(monkeypatch, tmp_path):
+    """Se o state_dir irmão pausou mas o disjuntor NÃO estourou, NÃO bloqueia
+    (é um caso legítimo de reexecução autorizada)."""
+    from orquestracao.engine import RDAAEngine, MAX_CONSECUTIVE_FAILURES
+
+    writer_text = "# Peça OK\n\nTexto teste.\n\nI. PEDIDO.\n\nDiante do exposto, requer-se."
+
+    # Diretório da 1ª tentativa: pausada MAS com disjuntor abaixo do limite
+    d1 = tmp_path / "MAT-DUP-02"
+    d1.mkdir()
+    (d1 / "packages").mkdir()
+    (d1 / "packages" / "writer-input.md").write_text(writer_text, encoding="utf-8")
+    (d1 / "matter_state.json").write_text(json.dumps({
+        "matter_id": "MAT-DUP-02",
+        "status": "paused",
+        "phase": "qa_passed",
+        "consecutive_failures": 1,  # abaixo do limite
+    }), encoding="utf-8")
+
+    # Diretório da 2ª tentativa: mesmo conteúdo, NÃO deve bloquear
+    d2 = tmp_path / "MAT-DUP-02-v2"
+    d2.mkdir()
+    (d2 / "packages").mkdir()
+    (d2 / "packages" / "writer-input.md").write_text(writer_text, encoding="utf-8")
+
+    engine = RDAAEngine(state_dir=str(d2), nivel_peca="C")
+
+    # Não deve levantar ContractError de tentativa duplicada
+    # (pode levantar outros erros, mas não esse)
+    try:
+        engine.initialize("MAT-DUP-02")
+    except ContractError as e:
+        assert "tentativa duplicada" not in str(e)

@@ -361,8 +361,68 @@ class RDAAEngine:
             route_path=self.route_path,
         )
 
+    def _check_duplicate_attempt(self, matter_id: str) -> None:
+        """Bloqueia reinício com o mesmo input que já reprovou noutro state_dir.
+
+        Contorno real observado: reexecutar em um ``state_dir`` novo
+        (ex.: ``-v2``, ``-v3``) reseta ``consecutive_failures`` a 0, porque
+        o disjuntor vive no estado daquele diretório -- então o disjuntor
+        nunca vê a repetição como consecutiva. Esta checagem cobre esse
+        contorno comparando o hash do input com o de tentativas irmãs
+        (mesmo ``matter_id``, diretórios ao lado) que já reprovaram.
+        """
+        input_paths = [
+            self.state_dir / "packages" / "writer-input.md",
+            self.state_dir / "packages" / "planner-input.md",
+        ]
+        current_hash = None
+        current_path = None
+        for path in input_paths:
+            if path.is_file():
+                current_hash = sha256_file(path)
+                current_path = path
+                break
+        if current_hash is None:
+            return  # nada gravado ainda (fluxo omniroute, ou fase inicial) -- nada a comparar
+
+        parent = self.state_dir.parent
+        if not parent.is_dir():
+            return
+
+        for sibling in parent.iterdir():
+            if not sibling.is_dir() or sibling.resolve() == self.state_dir.resolve():
+                continue
+            matter_state_path = sibling / "matter_state.json"
+            if not matter_state_path.is_file():
+                continue
+            try:
+                sibling_state = json.loads(matter_state_path.read_text(encoding="utf-8"))
+            except (json.JSONDecodeError, OSError):
+                continue
+            if sibling_state.get("matter_id") != matter_id:
+                continue
+            # Só bloqueia se o irmão de fato pausou por exaustão de tentativas
+            # (disjuntor estourado). Diretórios temporários de teste têm
+            # matter_id igual mas NUNCA estouram o disjuntor -- não confundir.
+            if sibling_state.get("consecutive_failures", 0) < MAX_CONSECUTIVE_FAILURES:
+                continue
+            sibling_input = sibling / "packages" / current_path.name
+            if not sibling_input.is_file():
+                continue
+            if sha256_file(sibling_input) == current_hash:
+                raise ContractError(
+                    f"tentativa duplicada bloqueada: {current_path.name} tem o "
+                    f"mesmo conteúdo (sha256) de uma tentativa que já reprovou em "
+                    f"{sibling.name} (fase {sibling_state.get('phase')!r}, "
+                    f"status {sibling_state.get('status')!r}). Corrija o conteúdo "
+                    f"antes de tentar de novo, ou rode "
+                    f"`cli resume {sibling} --authority ricardo --reason ...` "
+                    f"no diretório original em vez de criar um novo state_dir."
+                )
+
     def initialize(self, matter_id: str) -> dict[str, Any]:
         """Cria estado inicial e executa até o primeiro gate ou conclusão."""
+        self._check_duplicate_attempt(matter_id)
         initial: RDAAState = {
             "matter_id": matter_id,
             "nivel_peca": self.nivel_peca,
