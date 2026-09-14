@@ -23,7 +23,7 @@ Recebe um export em Excel do CPJ-3C (planilha "Resolutivo" ou equivalente — um
    ```bash
    ```
    O script lê os dados, aplica todas as classificações (ver `references/regras-diagnostico.md`) e gera o workbook completo (Resumo Executivo, Plano de Ação e abas de detalhe). Ele referencia colunas pelo **nome**, não pela posição — se o export do CPJ-3C mudar de layout e o script falhar reclamando de coluna ausente, ajuste as constantes `COL_*` no topo do script.
-3. **Recalcular fórmulas.** O workbook gerado tem fórmulas vivas na aba "Base (dados + auxiliares)" (o achado de origem arquivada recalcula sozinho se o usuário colar uma nova exportação ali). Use o script (_disparo automatizado via motor_) da skill **xlsx** para recalcular e confirmar `total_errors: 0` antes de entregar:
+3. **Recalcular fórmulas.** O workbook gerado tem fórmulas vivas na aba "Base (dados + auxiliares)" (o achado de origem arquivada recalcula sozinho se o usuário colar uma nova exportação ali). Use o script a automação provida pelo motor LangGraph da skill **xlsx** para recalcular e confirmar `total_errors: 0` antes de entregar:
    ```bash
    ```
    Nunca entregue o arquivo sem rodar essa verificação.

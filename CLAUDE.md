@@ -55,7 +55,7 @@ O MCP `NotebookLM` é uma capacidade auxiliar para repositório de conhecimento 
 
 O vault operacional **Procedimentos e Informações** não é consultado automaticamente — sua leitura como fonte continua exigindo pedido explícito. O Ementário do Resolutivo é a única exceção: `redigir-peca` o consulta automaticamente nas peças B/A, como fonte candidata e sem aprovação automática de tese. A classificação C/B/A não depende do conteúdo de nenhum vault.
 
-**Gravação automática (desde 2026-08-23):** ao final de toda peça publicada com sucesso (`publicar_docx.py` retornando `[OK]`), `redigir-peca` grava automaticamente um resumo da matéria no vault, sem pedir — ver passo 10 de `redigir-peca/SKILL.md`. Vault: `C:\Users\ricar\OneDrive\Documentos\Cerébros\Pessoal\Procedimentos e Informações\`, seguindo as convenções do `CLAUDE.md` daquele subvault. Sessões que tocam uma matéria mas não publicam nada têm uma rede de segurança separada via hook de `SessionEnd`.
+**Gravação automática (desde 2026-08-23):** ao final de toda peça publicada com sucesso (`publicar_docx.py` retornando `[OK]`), `redigir-peca` grava automaticamente um resumo da matéria no vault, sem pedir — ver passo 10 de `redigir-peca/SKILL.md`. Vault: `C:\Users\ricar\cerebro-ricar\`, seguindo as convenções do `CLAUDE.md` daquele subvault. Sessões que tocam uma matéria mas não publicam nada têm uma rede de segurança separada via hook de `SessionEnd`.
 
 ## Revisão de peças
 

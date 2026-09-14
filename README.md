@@ -28,7 +28,7 @@ resolutivo-ai/
 ├── AGENTS.md              # Contrato comum carregado por Codex e Antigravity
 ├── skills/                # Cada pasta é uma skill (SKILL.md + scripts/ + references/)
 ├── referencias/indices/   # Tabelas de índice usadas pela skill calculo-judicial
-├── roteamento-ia.md       # Como o trabalho se divide entre Claude Code, Codex e Gemini
+├── referencias/decisoes-roteamento-motores-2026-08-30.md       # Como o trabalho se divide entre Claude Code, Codex e Gemini
 ├── requirements.txt       # Dependências Python dos scripts das skills (docx, xlsx, pdf, etc.)
 └── tests/                 # Suíte pytest dos scripts determinísticos das skills
 ```
@@ -36,7 +36,7 @@ resolutivo-ai/
 Não há servidor MCP remoto hospedado por este repositório — o que existe é
 só o plugin e seus scripts locais. Claude Code e Codex usam o pacote inteiro;
 Antigravity lê `AGENTS.md` e recebe, por chamada direta, apenas o recorte da
-etapa descrito em `roteamento-ia.md`. Não há agentes-wrapper entre as CLIs.
+etapa descrito em `referencias/decisoes-roteamento-motores-2026-08-30.md`. Não há agentes-wrapper entre as CLIs.
 
 ## Rodando os testes
 

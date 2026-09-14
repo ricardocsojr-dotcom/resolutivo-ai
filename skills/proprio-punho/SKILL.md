@@ -21,7 +21,7 @@ O nome diz a promessa: a minuta sai como se tivesse sido escrita **de próprio p
 
 > Checagem de estado, nesta ordem: (1) `perfil-do-autor.md` com placeholders `{...}` → rode a **Etapa 0 — Personalização** antes de qualquer coisa; (2) `guia-de-estilo.md` com placeholders → ofereça o **Modo 1 — Calibração** antes de redigir.
 
-## Etapa 0 — Personalização (início da primeira interação e da criação do clone)
+## Personalização (início da primeira interação e da criação do clone)
 
 Objetivo: a skill nunca trabalha para um autor genérico. Antes da primeira calibração ou da primeira minuta, monte o perfil de quem está usando.
 

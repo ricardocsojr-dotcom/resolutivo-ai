@@ -21,7 +21,7 @@ Constrói a peça processual `.docx` parágrafo a parágrafo com **numeração n
 
 **Não utilize `docxtpl` com campo único para o corpo da peça.** O gerador nativo `scripts/construir_peca.py` é o fluxo primário e obrigatório, garantindo numeração nativa do Word (renumerável após edição), geometria exata por bloco e validação pós-geração.
 
-### 1. Montar o JSON de contexto por blocos
+### Montar o JSON de contexto por blocos
 
 Copie o texto da peça redigida na conversa **literalmente** para uma lista de `blocos` tipados. Ver `references/schema_blocos.md` para o contrato completo.
 
@@ -56,7 +56,7 @@ Copie o texto da peça redigida na conversa **literalmente** para uma lista de `
 
 Os campos `texto` dos blocos `titulo`, `titulo2` e `titulo3`, assim como `titulo_razoes`, não podem conter dois pontos, travessão ou meio-travessão. O gerador bloqueia o contexto antes de criar o DOCX e o verificador estrutural repete a conferência no arquivo produzido. A regra vale somente para títulos. Não transforma hífens internos de palavras ou sinais de outras estruturas em título.
 
-### 2. Salvar contexto e gerar o candidato temporário
+### Salvar contexto e gerar o candidato temporário
 
 Salve o payload JSON e execute `scripts/construir_peca.py`:
 
@@ -83,7 +83,7 @@ python3 <skill_path>/scripts/construir_peca.py \
 
 ---
 
-### 3. Publicação protegida e verificação obrigatória
+### Publicação protegida e verificação obrigatória
 
 O DOCX deve ser gerado primeiro como **candidato**, obrigatoriamente em caminho temporário ou de staging. Nunca use o caminho final como `--output` de `construir_peca.py`. A entrega final passa pelo publicador protegido, que executa o gate de formatação e estilometria antes de substituir qualquer arquivo existente:
 

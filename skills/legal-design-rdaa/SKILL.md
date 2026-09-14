@@ -23,7 +23,7 @@ técnico e do tom institucional que define o Romano Donadel.
 
 ---
 
-## 0. Princípios de execução (leia antes de tudo)
+## Princípios de execução (leia antes de tudo)
 
 Estas cinco regras definem como você opera — generalize-as para qualquer pedido:
 
@@ -58,12 +58,12 @@ Em processo eletrônico, use ID/evento/minuto — nunca "fls."
 
 ---
 
-## 1. A Base: Manual de Redação RDAA 2021
+## A Base: Manual de Redação RDAA 2021
 
 Toda produção do RDAA parte desta fundação. Antes de qualquer elemento visual, o texto precisa
 estar correto segundo estes princípios:
 
-### 1.1 Clareza
+### 1 Clareza
 - Estrutura **Sujeito + Verbo + Complemento** (ordem direta). Inversões criam ambiguidade —
   algo inaceitável no meio jurídico, onde a polissemia prejudica a parte.
 - Uma ideia por parágrafo. O tópico frasal introduz; o desenvolvimento fundamenta.
@@ -71,7 +71,7 @@ estar correto segundo estes princípios:
   deve ser "requerente" do início ao fim — nunca "ele", "a parte" ou "o mesmo" quando houver
   risco de ambiguidade.
 
-### 1.2 Concisão
+### 2 Concisão
 - Escreva apenas o necessário. Concisão não é corte arbitrário — é seleção inteligente do que
   realmente importa para o convencimento.
 - Evite advérbios em -mente que rebuscam sem precisar: "meritoriamente" → "no mérito";
@@ -79,31 +79,31 @@ estar correto segundo estes princípios:
 - Citações de jurisprudência e doutrina: limite ao essencial. Precedentes que não se aplicam
   com precisão ao caso prejudicam mais do que ajudam.
 
-### 1.3 Coerência
+### 3 Coerência
 - Consistência de tempo verbal: um único tempo para narrar um mesmo evento.
 - Conectores lógicos explícitos (causa/consequência, condição, contraposição) para que o
   raciocínio jurídico nunca dependa de inferência do leitor.
 - Evite "seu/sua" quando há mais de um referente possível. Explicite sempre.
 
-### 1.4 Elegância
+### 4 Elegância
 - O texto jurídico pode e deve ser leve. Uma ironia pontual, uma metáfora precisa — quando
   pertinentes — tornam o argumento mais memorável para o julgador.
 - Alternar o peso dos conceitos abstratos com a leveza de uma palavra cordial é marca da
   advocacia de qualidade.
 
-### 1.5 Estrutura canônica das peças
+### 5 Estrutura canônica das peças
 1. **Narração** — fatos em ordem cronológica, com clareza sobre quem fez o quê.
 2. **Argumentação** — norma jurídica + interpretação conforme o caso.
 3. **Pedido** — objetivo, listado, fundamentado no que precedeu.
 
 ---
 
-## 2. Camada de Legal Design: quando e como aplicar
+## Camada de Legal Design: quando e como aplicar
 
 O Legal Design entra **depois** que o texto está correto. Elementos visuais sobre texto confuso
 são maquiagem — e o RDAA rejeita maquiagem documental.
 
-### 2.05 Univocidade semântica de dados (regra crítica — mesma que romano-donadel-slide-style §3.5)
+### 05 Univocidade semântica de dados (regra crítica — mesma que romano-donadel-slide-style §3.5)
 
 O leitor de uma peça — juiz, desembargador, cliente — está fora da zona de controle do caso e lê uma vez. **Se ele precisar ler o texto de apoio pequeno para entender a relação entre dois números num quadro-resumo ou tabela, a peça já falhou** nesse ponto, mesmo com o texto tecnicamente correto.
 
@@ -111,17 +111,17 @@ Nunca apresentar dois valores no mesmo destaque visual (mesmo tamanho, mesma ên
 
 Antes de montar qualquer quadro com mais de um número, declarar a relação lógica entre eles (parte-todo, evolução temporal, oposição real, ajuste/correção de erro) e escolher a estrutura visual correspondente — decomposição proporcional para parte-todo, sequência com sinais para evolução, comparação lado a lado somente quando os valores realmente se opõem. Teste antes de aprovar: cobrir o texto de apoio e verificar se a relação ainda fica clara só pela disposição visual.
 
-### 2.06 Hierarquia da conclusão (mesma regra de romano-donadel-slide-style §3.6)
+### 06 Hierarquia da conclusão (mesma regra de romano-donadel-slide-style §3.6)
 
 A conclusão executiva de um quadro-resumo ou síntese precisa ser o elemento de maior peso visual do bloco, não apenas uma frase em negrito dentro de um parágrafo de corpo. Negrito sozinho, no mesmo tamanho de fonte do texto ao redor, é processado como legenda — não como conclusão. Extrair a conclusão como cláusula curta (5–12 palavras), em escala maior que o corpo, isolada com espaço próprio; ressalvas e fundação legal vêm abaixo, em corpo normal, claramente subordinadas. Teste: olhar o quadro por dois segundos — se o olho não pousa primeiro na conclusão, refazer a hierarquia.
 
-### 2.1 O que nunca fazer (Linha Vermelha Estética)
+### 1 O que nunca fazer (Linha Vermelha Estética)
 - Gradientes decorativos, sombras excessivas, imagens genéricas de banco (balanças, martelos).
 - Negrito em excesso — perde o efeito quando tudo está em destaque.
 - Tabelas ornamentais sem função informacional real.
 - Infográficos complexos onde uma frase direta bastaria.
 
-### 2.2 Arquitetura da Informação Jurídica
+### 2 Arquitetura da Informação Jurídica
 
 **Hierarquia visual obrigatória:**
 - Títulos autoexplicativos: o leitor deve compreender a tese central lendo apenas os títulos.
@@ -148,15 +148,15 @@ A conclusão executiva de um quadro-resumo ou síntese precisa ser o elemento de
 - Qual markup é permitido (negrito sim, sublinhado nunca) também é definido
   naquele arquivo, seção 5 ("Formatação institucional").
 
-### 2.3 Data storytelling operacional
+### 3 Data storytelling operacional
 
 Quando uma visualização for útil nos tipos A ou B, consulte
 `references/data-storytelling-rdaa.md`. A referência organiza pergunta, dados,
 estrutura, provenance e revisão sem criar conteúdo jurídico. Ela é subordinada à
-identidade visual RDAA, ao (_disparo automatizado via motor_) e ao fluxo de candidato
+identidade visual RDAA, ao a automação provida pelo motor LangGraph e ao fluxo de candidato
 temporário. O tipo C não aciona data storytelling como premissa.
 
-### 2.4 Elementos Visuais por Destinatário
+### 4 Elementos Visuais por Destinatário
 
 #### Para o Judiciário (Petições, Recursos, Memoriais)
 
@@ -195,9 +195,9 @@ temporário. O tipo C não aciona data storytelling como premissa.
 
 ---
 
-## 3. Plain Language: o processo de simplificação
+## Plain Language: o processo de simplificação
 
-### Passo 1 — Diagnóstico: identificar no trecho
+### Diagnóstico: identificar no trecho
 - Voz passiva que oculta o agente ("foi deliberado que" → "a empresa decidiu que")
 - Termos arcaicos sem função técnica insubstituível:
   - "hodiernamente" → "hoje"
@@ -211,7 +211,7 @@ temporário. O tipo C não aciona data storytelling como premissa.
 - Nominalizações excessivas ("proceder à realização de" → "realizar")
 - Duplas negativas ("não é impossível" → diga o que é possível diretamente)
 
-### Passo 2 — Reescrita
+### Reescrita
 - Mantenha termos técnicos insubstituíveis (prescrição, decadência, culpa in elegendo, etc.).
 - Reescreva em ordem direta (S+V+C). Separe ideias compostas em frases menores.
 - Amarre a argumentação ao caso concreto: "não há elementos nos autos" é genérico demais —
@@ -219,7 +219,7 @@ temporário. O tipo C não aciona data storytelling como premissa.
 - Quando a reescrita exigir pressuposto processual que você não tem (fase do processo, tipo de
   tutela, existência de contraditório prévio), use linguagem condicional e sinalize ao advogado.
 
-### Passo 3 — Verificação de Integridade
+### Verificação de Integridade
 - O sentido jurídico foi preservado integralmente?
 - O tom institucional RDAA está mantido (formal, sem gírias)?
 - Há alguma afirmação que depende de fato que você não confirmou? Se sim, use condicional
@@ -232,7 +232,7 @@ temporário. O tipo C não aciona data storytelling como premissa.
 
 ---
 
-## 4. Construção de teses recursais em 3 camadas
+## Construção de teses recursais em 3 camadas
 
 Quando Ricardo pedir suporte a recurso (apelação, agravo, embargos de declaração) que
 impugna valoração de prova ou omissão da sentença, oriente sempre pela estrutura de 3 camadas
@@ -250,7 +250,7 @@ trabalhar o conjunto — reduzir a causa a uma única prova enfraquece o argumen
 
 ---
 
-## 5. Design Thinking aplicado à produção RDAA
+## Design Thinking aplicado à produção RDAA
 
 Quando Ricardo pede para "pensar" como apresentar um caso complexo:
 
@@ -275,7 +275,7 @@ Quando Ricardo pede para "pensar" como apresentar um caso complexo:
 
 ---
 
-## 6. Outputs desta skill
+## Outputs desta skill
 
 Dependendo do pedido, entregue:
 
@@ -291,7 +291,7 @@ ofereça alternativa viável no Word.
 
 ---
 
-## 7. Tom e postura
+## Tom e postura
 
 - Você é um par técnico, não consultor externo. Fale com Ricardo como colega sênior.
 - Quando uma simplificação pode comprometer a precisão jurídica, sinalize — e explique por quê.

@@ -32,7 +32,7 @@ Não vale a pena para arquivos curtos (poucas páginas) — nesse caso, leia dir
 
 Cada chamada de bash roda até por volta de 45s antes de expirar, e processos colocados em background (`nohup ... &`) **não sobrevivem** entre chamadas — o ambiente pode ser reciclado assim que a chamada retorna. Isso significa que qualquer conversão longa (markitdown num PDF de centenas de páginas, ou OCR) precisa ser feita de um jeito que caiba dentro desse tempo, ou dividida em lotes que rodam em chamadas separadas.
 
-### Passo 1 — PDF: tente extração direta com `pypdf` primeiro (rápido, cobre a maioria dos casos)
+### PDF: tente extração direta com `pypdf` primeiro (rápido, cobre a maioria dos casos)
 
 A maioria dos PDFs de tribunais/processos é nativa (texto embutido), não escaneada. Para esses, extraia direto com `pypdf` — é muito mais rápido que o CLI do markitdown e evita o problema de timeout (864 páginas em ~10s no teste real):
 
@@ -41,7 +41,7 @@ Se `pypdf` não estiver instalado, não instale automaticamente. Informe a limit
 
 Olhe a "média de caracteres/página": se estiver muito baixa (poucas dezenas de caracteres ou menos), o PDF é escaneado (imagem, sem texto embutido) — vá para o Passo 2.
 
-### Passo 2 — PDF escaneado: OCR com OCRmyPDF/Tesseract (mais lento, avise antes de rodar)
+### PDF escaneado: OCR com OCRmyPDF/Tesseract (mais lento, avise antes de rodar)
 
 **Antes de rodar o OCR, avise o Ricardo que o documento parece escaneado e pergunte se ele quer que você rode o OCR** — é bem mais lento que a extração direta (na ordem de 1-2s por página, contra frações de segundo no Passo 1) e mais pesado em processamento. Só prossiga com a confirmação dele.
 
@@ -76,4 +76,3 @@ Para esses formatos (normalmente bem menores, sem o problema de timeout), o Mark
 - OCR não é perfeito: pode errar palavras em imagens de baixa qualidade/resolução. Trate como uma boa aproximação do conteúdo, não como transcrição garantidamente exata — se algum trecho for crítico (valor, data, número de processo), vale conferir contra o original.
 - Tabelas complexas e formatação visual podem perder fidelidade na extração via `pypdf`/OCR (é texto corrido) — para documentos onde a estrutura de tabela importa, o MarkItDown preserva melhor, mas é mais lento em PDFs grandes.
 - Formatos suportados pelo MarkItDown: PDF, Word, Excel, PowerPoint, imagens (metadados), áudio (metadados/transcrição), HTML, CSV/JSON/XML, ZIP, EPub, URLs do YouTube.
-

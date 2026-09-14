@@ -1,6 +1,6 @@
 # Contrato comum do workspace RDAA
 
-Antes de trabalhar, leia `CLAUDE.md`, `roteamento-ia.md` e a `SKILL.md` aplicável. Para redigir ou revisar peça, leia também `skills/contencioso-rdaa/references/redacao-rdaa.md`.
+Antes de trabalhar, leia `CLAUDE.md`, `referencias/decisoes-roteamento-motores-2026-08-30.md` e a `SKILL.md` aplicável. Para redigir ou revisar peça, leia também `skills/contencioso-rdaa/references/redacao-rdaa.md`.
 
 ## Papéis e segregação
 

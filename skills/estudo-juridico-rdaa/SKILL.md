@@ -51,7 +51,7 @@ lei + visual num único aprofundamento.
 
 ## Fluxo
 
-### 1. Delimitar o tema e o escopo
+### Delimitar o tema e o escopo
 
 Antes de pesquisar, parafraseie o recorte em 1-2 frases e confirme com
 Ricardo se não estiver óbvio pelo pedido — evita gastar esforço na direção
@@ -67,7 +67,7 @@ errada. Identifique:
   porque esta skill inteira já é sobre aprofundamento).
 - **Pergunta central do estudo** — o que precisa ficar respondido ao final.
 
-### 2. Levantamento teórico
+### Levantamento teórico
 
 Construa o arcabouço conceitual do tema (institutos, requisitos, correntes
 doutrinárias conhecidas). **Honestidade de fonte**: não há hoje uma fonte de
@@ -81,7 +81,7 @@ referência bibliográfica precisa. Marque esse bloco no estudo como leitura
 teórica, distinto dos blocos de jurisprudência e lei (que são citação
 literal conferida).
 
-### 3. Levantamento jurisprudencial
+### Levantamento jurisprudencial
 
 Acione `buscar-jurisprudencia` (que por sua vez usa `jusbrasil-jurisprudencia`
 como fonte primária). Diferente do uso pontual dessa skill, aqui o objetivo é
@@ -94,12 +94,12 @@ mapear o **panorama**, não só achar uma ementa pra citar:
 - Toda ementa é citação literal com origem, nunca paráfrase — mesma regra de
   sempre.
 
-### 4. Levantamento legal
+### Levantamento legal
 
 Acione `lei-e-sumula` para os dispositivos e súmulas que fundamentam o tema.
 Confira vigência antes de citar (mesma regra da própria skill).
 
-### 5. Mapeamento visual
+### Mapeamento visual
 
 Antes de montar a página, **carregue as skills `artifact-design` e
 `artifact-diagramming`** — são pré-requisito do próprio funcionamento do
@@ -121,7 +121,7 @@ também — mas sem a restrição de impressão em preto e branco, que é
 específica de peça protocolada. O estudo é pra tela, pode usar cor com
 função.
 
-### 6. Texto de acompanhamento
+### Texto de acompanhamento
 
 Escreva seguindo o Núcleo Único de Escrita do RDAA
 (`contencioso-rdaa/references/redacao-rdaa.md` — leitura obrigatória):
@@ -130,29 +130,29 @@ parágrafo, sem firulas nem expressões arcaicas. A estrutura não é a de uma
 peça (sem "dos fatos/do direito/dos pedidos") — organize por sub-tema do
 estudo, cada seção respondendo uma pergunta específica.
 
-### 7. Publicar como Artifact
+### Publicar como Artifact
 
 Publique a página (favicon, título específico do tema — não genérico).
 Diagramas em Mermaid/SVG conforme `artifact-diagramming`. Entregue o link.
 
-### 8. Registrar no estado compartilhado (se houver `matter_id`)
+### Registrar no estado compartilhado (se houver `matter_id`)
 
 Se o estudo estiver ligado a uma matéria, registre jurisprudência e lei
-usadas com (_disparo automatizado via motor_):
+usadas com a automação provida pelo motor LangGraph:
 
 ```
-python3 (_disparo automatizado via motor_) espaço de estado do processo register \
+python3 a automação provida pelo motor LangGraph espaço de estado do processo register \
   --source-type jurisprudencia --content-json <arquivo.json>
 ```
 
 Mesma regra de sempre: só `verificada_externamente` quando a fonte foi
 conferida nesta execução (passos 3 e 4 já conferem).
 
-### 9. Gravação automática no Cérebro-Ricar
+### Gravação automática no Cérebro-Ricar
 
 Ao final de todo estudo publicado, grave automaticamente no Cérebro-Ricar
 (``) — sem pedir, do mesmo jeito que `redigir-peca`
-faz (script (_disparo automatizado via motor_)). Leia `CLAUDE.md` do Cérebro antes de
+faz (script a automação provida pelo motor LangGraph). Leia `CLAUDE.md` do Cérebro-Ricar antes de
 escrever.
 
 Crie/atualize os seguintes arquivos em `wiki/`:
@@ -177,7 +177,7 @@ Crie/atualize os seguintes arquivos em `wiki/`:
 **Script de automação:**
 
 Relate na entrega que o registro foi feito (uma linha basta). Se o estudo
-não produziu tese ou fonte nova (ex.: confirmou o que já tá no Cérebro,
+não produziu tese ou fonte nova (ex.: confirmou o que já tá no Cérebro-Ricar,
 sem achado novo), não crie registro redundante — mencione que não houve
 complemento por esse motivo.
 

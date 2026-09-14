@@ -21,7 +21,7 @@ description: >
 Camada de dados local, sem banco de dados, Docker, WSL ou serviço em segundo
 plano. Cada cliente e cada matéria (contencioso ou consultivo) é uma pasta;
 cada arquivo Markdown dentro dela é a única fonte de verdade. O script
-(_disparo automatizado via motor_) só mantém essas pastas e arquivos consistentes —
+a automação provida pelo motor LangGraph só mantém essas pastas e arquivos consistentes —
 quem decide fato, tese e estratégia continua sendo Ricardo (ou Claude,
 quando ele autorizar).
 
@@ -80,7 +80,7 @@ definitivo — Google Drive não entra como destino desta estrutura.
    (`jusbrasil-jurisprudencia`). Esta skill não pesquisa nada — só guarda o
    que já foi decidido registrar como fonte.
 6. **ID de matéria = `matter_id`.** `--id` é normalizado com a mesma regra de
-   (_disparo automatizado via motor_) (`_safe_matter_id`: só
+   a automação provida pelo motor LangGraph (`_safe_matter_id`: só
    `[A-Za-z0-9_.-]`, resto vira `-`) — normalmente o número de processo. É o
    mesmo identificador usado em `espaço de estado do processo` pelo pipeline de
    redação, propositalmente, para que os dois lados apontem pra mesma
@@ -92,7 +92,7 @@ definitivo — Google Drive não entra como destino desta estrutura.
    nada gerava ou validava esse identificador até esta skill existir.
 8. **Fato, tese, decisão e risco de uma peça em produção não vivem aqui.**
    Isso é `espaço de estado do processo.json`, mantido por
-   (_disparo automatizado via motor_) e usado só por quem carrega as skills do plugin (Claude
+   a automação provida pelo motor LangGraph e usado só por quem carrega as skills do plugin (Claude
    Code e Codex, que instalam o plugin por completo). `CONTEXTO.md` desta
    skill é só narrativa entre peças — não duplica esse estado.
 
@@ -151,7 +151,7 @@ continuidade ampla, não como transporte obrigatório do fluxo comum.
 
 ## Planilha de curadoria pra importação em massa
 
-(_disparo automatizado via motor_) --relatorio RELATORIO.md --saida planilha.csv`
+a automação provida pelo motor LangGraph --relatorio RELATORIO.md --saida planilha.csv`
 lê um relatório de mapeamento de acervo (formato com blocos
 `### Workspace: \`nome\`` ou `##### Matéria: \`caminho\`` e campos
 `**Grau de Confiança**`, `**Classificação Sugerida**`/`**Classificação

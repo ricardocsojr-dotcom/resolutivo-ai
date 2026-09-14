@@ -43,7 +43,7 @@ Ela contém todo o acervo de Súmulas do STJ (1 a 676), Súmulas do STF (1 a 736
 
 ## Fluxo
 
-### 1. Identificar o que buscar
+### Identificar o que buscar
 
 - Artigo de lei: qual código/lei (CPC, CC, CDC, CLT, CF, lei especial) +
   número do artigo.
@@ -51,14 +51,14 @@ Ela contém todo o acervo de Súmulas do STJ (1 a 676), Súmulas do STF (1 a 736
   o tema pra buscar por assunto na página do tribunal.
 - Lei estadual/municipal: qual estado/município + assunto ou número da lei.
 
-### 2. Buscar na fonte correta (tabela acima)
+### Buscar na fonte correta (tabela acima)
 
 Use `WebFetch` na URL correspondente. Para lei federal, prefira o Normas.leg.br
 quando precisar saber se o dispositivo foi alterado/revogado — ele mostra a
 linha do tempo de redações. Use o Portal da Legislação quando só precisar do
 texto vigente.
 
-### 3. Verificar vigência
+### Verificar vigência
 
 Antes de citar, confirme no próprio texto da fonte se o dispositivo está:
 - **Vigente na redação atual** — cite normalmente, indicando a lei que deu
@@ -67,7 +67,7 @@ Antes de citar, confirme no próprio texto da fonte se o dispositivo está:
   revogada como se estivesse em vigor sem o aviso.
 - **Com vacatio legis em curso** — avise a data de início de vigência.
 
-### 4. Citar literalmente
+### Citar literalmente
 
 Nunca parafraseie o texto legal ou de súmula — mesma regra do
 `jusbrasil-jurisprudencia`. Formato de entrega:
@@ -90,7 +90,7 @@ Súmula [número] do [STF/STJ]
 Fonte: [URL]
 ```
 
-### 5. Se não encontrar
+### Se não encontrar
 
 Nunca complete de memória. Informe que não achou na fonte oficial e pergunte
 se o Ricardo tem outra referência, ou tente reformular a busca (ex.: número
@@ -99,7 +99,7 @@ de lei estadual variando por ano de compilação).
 ## Registro no estado compartilhado
 
 Depois de conferir o texto na fonte oficial e a situação de vigência, registre o
-resultado no estado local da matéria com (_disparo automatizado via motor_), usando `register_research`
+resultado no estado local da matéria com a automação provida pelo motor LangGraph, usando `register_research`
 e o tipo `lei`, `sumula` ou `tema_repetitivo`. Preserve o artigo ou número,
 a redação literal, a URL oficial e a situação informada pela pesquisa.
 

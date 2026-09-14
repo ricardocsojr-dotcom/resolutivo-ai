@@ -172,12 +172,12 @@ e vale a rodada 2.
 
 Estruture a resposta em três blocos:
 
-### 1. Peça reescrita
+### Peça reescrita
 
 O texto completo, pronto para uso, com o conteúdo jurídico e factual
 preservado e a forma adequada ao padrão de Flávia.
 
-### 2. Registro de convergência
+### Registro de convergência
 
 Quantas rodadas rodaram e por quê parou nesse número. Se parou antes de 3
 por convergência, diga isso e liste — em poucas linhas — os principais
@@ -185,7 +185,7 @@ ajustes de Nível 1 que motivaram a(s) rodada(s) anterior(es). Se chegou
 até a rodada 3 sem convergência total, diga isso também e aponte o que
 ainda ficaria diferente numa rodada adicional, sem inventar que convergiu.
 
-### 3. Ressalvas de fidelidade
+### Ressalvas de fidelidade
 
 Se, em algum ponto, o texto original continha uma afirmação que o padrão
 estilístico tornaria naturalmente mais categórica, mas os fatos/documentos

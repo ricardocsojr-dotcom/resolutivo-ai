@@ -14,7 +14,7 @@ description: >
 ## Contrato de integração com o RDAA
 
 Esta skill é uma camada opcional de estilo para uma peça **já redigida**
-(por `contencioso-rdaa`, dentro do fluxo de `redigir-peca`, passo 7.75). Ela
+(por `contencioso-rdaa`, dentro do fluxo de redação de `redigir-peca`). Ela
 não é um novo tipo de peça, não substitui `redigir-peca`, `contencioso-rdaa`,
 `critico-rdaa`, `revisor-rdaa` ou `formatar-peca`, e não redige do zero.
 

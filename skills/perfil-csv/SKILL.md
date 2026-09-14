@@ -26,7 +26,7 @@ As regras de conversão (data BR→ISO, valor BR→decimal com ponto, normaliza�
 mecânicas, mas fáceis de errar silenciosamente em tabelas longas — um valor com milhar mal
 convertido ("1.804,00" virando "1.804" em vez de "1804.00") passa despercebido numa lista de
 30 linhas. Por isso, em vez de escrever cada linha do CSV manualmente, extraia os dados brutos
-da tabela e deixe (_disparo automatizado via motor_) fazer a conversão determinística. O script grita
+da tabela e deixe a automação provida pelo motor LangGraph fazer a conversão determinística. O script grita
 (stderr + saída não-zero) se algo não bater, em vez de "adivinhar" um formato.
 
 ## Fluxo de trabalho

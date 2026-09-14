@@ -48,23 +48,23 @@ Ao receber qualquer input, identificar primeiro:
 
 ## Fluxo para demanda isolada
 
-### 1. Leitura operacional
+### Leitura operacional
 Explicar o que o prazo ou andamento significa em linguagem clara, sem juridiquês.
 
-### 2. Providência necessária
+### Providência necessária
 Indicar o que precisa ser feito e por quem:
 - Backoffice / Controladoria (tarefas delegáveis)
 - Advogado responsável (peças e decisões técnicas)
 - Cliente (documentos, assinatura, informação)
 - Financeiro (guias)
 
-### 3. Risco ou urgência
+### Risco ou urgência
 Apontar: prazo fatal, risco de multa, preclusão, audiência, guia pendente, obrigação de fazer.
 
-### 4. Pontos a conferir
+### Pontos a conferir
 Listar dados faltantes com `[PONTO A CONFERIR]`. Nunca inventar prazo, valor, decisão ou responsável.
 
-### 5. Mensagem pronta
+### Mensagem pronta
 Redigir e-mail ou WhatsApp copiável conforme o caso.
 Para subsídios, seguir o modelo em `references/comunicacao-modelo.md`.
 
@@ -74,12 +74,12 @@ Para subsídios, seguir o modelo em `references/comunicacao-modelo.md`.
 
 Antes de classificar, ler `references/categorias-prazos.md` para identificar a categoria de cada prazo.
 
-### 1. Urgências reais
+### Urgências reais
 Listar apenas o que precisa ser tratado hoje, com justificativa objetiva.
 
 Urgente = risco real de: perda de prazo · multa · preclusão · audiência · guia · obrigação de fazer · insatisfação relevante do cliente · bloqueio de trabalho de outra pessoa.
 
-### 2. Delegável à controladoria/backoffice
+### Delegável à controladoria/backoffice
 Listar o que não exige advogado, com providência objetiva para cada item:
 - Cadastrar processo / lançar prazo
 - Solicitar ou acompanhar guia
@@ -89,17 +89,17 @@ Listar o que não exige advogado, com providência objetiva para cada item:
 - Cobrar documento já solicitado
 - Monitorar Possível Aguarda / Interno
 
-### 3. Postergável
+### Postergável
 Listar o que pode sair do foco sem prejuízo:
 - Prazo Interno sem vencimento imediato
 - Aguarda sem urgência identificada
 - Follow-up sem data definida
 - Leitura não urgente
 
-### 4. Três grandes entregas do dia
+### Três grandes entregas do dia
 Indicar no máximo três prioridades principais executáveis no dia, com avanço concreto em prazo, cliente, peça ou entrega estratégica.
 
-### 5. Mensagens prontas
+### Mensagens prontas
 Redigir e-mails, WhatsApps ou comandos internos copiáveis para as providências que exigirem comunicação.
 
 ---

@@ -11,7 +11,7 @@ Criar, revisar ou padronizar apresentações RD em HTML, PPTX e PDF. O padrão �
 
 Antes de criar, ler `references/identidade-visual-extraida.md` e `references/direcao-visual-e-paridade.md`. Para briefing reutilizável, usar `templates/prompt-slide-rdaa.md`.
 
-## 1. Precedência e identidade inegociável
+## Precedência e identidade inegociável
 
 Orientação explícita atual de Ricardo > esta skill > padrões extraídos históricos > inspiração externa. Skills de diagrama fornecem geometria e conexões, nunca sua paleta escura, fonte monoespaçada ou layout de dashboard por padrão. Regras de petição (justificação, Tahoma, scroll vertical) não se aplicam aos slides.
 
@@ -28,7 +28,7 @@ Verde e vermelho são exceções semânticas: somente para status comprovado, ri
 
 Logo oficial `assets/logo_romano_donadel.png`: proporção, transparência e cores intactas; canto superior direito nos slides de conteúdo, com área de respiro. Não redesenhar a marca. Consultar e copiar `templates/romano-donadel-base.pptx` para o projeto como referência nativa; seus layouts não obrigam repetir a mesma composição.
 
-## 2. Tipografia Lato real, não apenas declarada
+## Tipografia Lato real, não apenas declarada
 
 Lato Regular para textos, Bold para títulos/rótulos e Heavy/Black pontual para ênfase. Não usar todos os textos em bold. Não fazer fallback silencioso para Arial ou fonte do sistema.
 
@@ -38,7 +38,7 @@ Preferir arquivos locais licenciados/fornecidos, empacotados com licença quando
 
 Escala de referência para PPTX 13⅓ × 7½ polegadas: títulos 28–36 pt, texto principal/rótulos 18–24 pt, notas de fonte 10–12 pt. São faixas de partida, não motivo para estourar o quadro. No canvas HTML 1920×1080, mapear proporcionalmente a mesma composição física; não reaproveitar os números em pt como px. Texto substantivo em 9–12 pt é antipadrão. Se não couber, sintetizar, redesenhar ou dividir o slide; não encolher a fonte.
 
-## 3. Narrativa, densidade e composição
+## Narrativa, densidade e composição
 
 Uma mensagem principal por slide. Título curto expressa a relação, pergunta ou conclusão sustentada; não precisa anunciar vitória. Em slides expositivos, meta inicial de 25–45 palavras visíveis, excluindo fonte e rodapé; ultrapassar exige justificativa. O limite antigo de oito palavras por bullet não é absoluto: preservar precisão técnica e condições relevantes. Menos texto não significa texto pequeno.
 
@@ -52,7 +52,7 @@ Detalhes funcionais: conectores com sentido, rótulos de ligação, linhas-guia,
 
 Variar arquiteturas entre páginas. Não repetir grades de cartões em slides consecutivos sem motivo narrativo. Na exploração de estilo, mostrar três composições realmente distintas do mesmo conteúdo (não três paletas), com as cores RD fixas. Não gerar três decks completos para escolher estilo.
 
-## 3.5 Univocidade Semântica de Dados Visuais (regra crítica, nunca dispensável)
+## 5 Univocidade Semântica de Dados Visuais (regra crítica, nunca dispensável)
 
 O receptor não é um sócio nem quem redigiu o slide. É o cliente, o juiz, o desembargador — alguém fora da zona de controle do caso. Ele bate o olho uma vez. **Se ele precisar ler a legenda pequena abaixo para entender a relação entre dois números, o slide já falhou**, mesmo que o texto de apoio esteja correto. Não existe correcão via texto pequeno para uma estrutura visual ambígua.
 
@@ -73,7 +73,7 @@ O receptor não é um sócio nem quem redigiu o slide. É o cliente, o juiz, o d
 
 Esta regra vale identicamente para Legal Design de peças processuais (`legal-design-rdaa`): a mesma composição "dois números iguais lado a lado" comete o mesmo erro num quadro-resumo de petição.
 
-## 3.6 Hierarquia da ideia central (a conclusão precisa pesar visualmente, não só semanticamente)
+## 6 Hierarquia da ideia central (a conclusão precisa pesar visualmente, não só semanticamente)
 
 Cada slide expositivo carrega uma única ideia central (§3). Essa ideia precisa ser o elemento de MAIOR peso visual do slide depois do título — nunca menos. **Negrito dentro de um parágrafo de corpo, dentro de uma faixa/legenda colorida, NÃO é destaque suficiente**, mesmo que a frase esteja tecnicamente em bold. O leitor lê escala antes de ler peso de fonte; uma oração em negrito do mesmo tamanho do texto ao redor ainda se mistura ao corpo e é processada como legenda/rodapé, não como conclusão.
 
@@ -88,7 +88,7 @@ Cada slide expositivo carrega uma única ideia central (§3). Essa ideia precisa
 
 **Teste de validação:** olhar o slide por dois segundos e identificar qual frase o olho pousa primeiro. Se não for a ideia central, refazer a hierarquia — aumentar a conclusão ou reduzir o que compete com ela, nunca só adicionar negrito.
 
-## 4. Uma fonte visual para HTML e PPTX
+## Uma fonte visual para HTML e PPTX
 
 Não escrever dois decks independentes e chamar de conversão. Criar especificação compartilhada (por exemplo `deck-spec.json`) com IDs estáveis, texto exato, posições normalizadas ou canvas fixo, dimensões, ordem de sobreposição, tipografia, cores, conectores e ativos.
 
@@ -100,13 +100,13 @@ Projetar com o conjunto de recursos comum aos dois renderizadores. Substituir ef
 
 HTML: canvas lógico fixo 1920×1080, escalado uniformemente para caber na largura E altura disponíveis, reservando espaço aos controles. `aspect-ratio` com `max-height` não basta. `overflow:hidden` é proteção de canvas, não correção de conteúdo cortado. Manter teclado, contagem de slides e exportação sem controles.
 
-## 5. Integridade do conteúdo jurídico
+## Integridade do conteúdo jurídico
 
 Nenhum ganho visual autoriza inventar fatos, números, status ou certeza. Proibidos KPIs como “100% blindado”, “zero risco” ou “controle total” sem base verificável. Não apresentar pedido de ajuste como decisão concedida, arquivo gerado como peça protocolada, expectativa de pauta como julgamento marcado, nem prova a obter como prova existente.
 
 Identificar quem se beneficia de cada decisão. Afastar multa imposta à adversária não é automaticamente vitória do nosso cliente. Citações literais e IDs permanecem exatos; sínteses de teses não podem parecer transcrição de precedente. Não alterar estratégia jurídica durante redesign. Inconsistências encontradas devem ser sinalizadas e resolvidas antes de reutilizar o slide.
 
-## 6. Procedimento e verificação
+## Procedimento e verificação
 
 1. Preservar versão anterior e fontes; não sobrescrever anexos do usuário. Ler briefing, marca, referências e conteúdo. Registrar limites de acesso/visão.
 2. Criar storyboard e escolher arquétipos por mensagem. Conferir fontes e status das afirmações antes de desenhar.
