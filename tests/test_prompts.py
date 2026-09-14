@@ -45,9 +45,8 @@ def test_resolve_combo_writer_a():
 
 def test_resolve_combo_planner_b():
     route = load_route("B", ROUTE_PATH)
-    # Em B, planner usa chat_session
     combo = resolve_combo("planner", route)
-    assert combo == "chat_session"
+    assert combo == "RJ-Planejamento"
 
 
 def test_resolve_combo_papel_inexistente():
@@ -58,10 +57,22 @@ def test_resolve_combo_papel_inexistente():
 
 def test_resolve_engine_a():
     route = load_route("A", ROUTE_PATH)
-    assert resolve_engine("planner", route) == "claude"
-    assert resolve_engine("writer", route) == "codex"
-    assert resolve_engine("critic", route) == "antigravity"
-    assert resolve_engine("validator", route) == "chat"
+    assert resolve_engine("planner", route) == "omniroute"
+    assert resolve_engine("writer", route) == "omniroute"
+    assert resolve_engine("critic", route) == "omniroute"
+    assert resolve_engine("validator", route) == "omniroute"
+
+
+def test_combos_em_reserva_nao_sao_rotas():
+    payload = json.loads(ROUTE_PATH.read_text(encoding="utf-8"))
+    standby = set(payload["standby_combos"])
+    routed = {
+        worker["model"]
+        for level in payload["levels"].values()
+        for worker in level["workers"].values()
+    } | {task["model"] for task in payload["standalone_tasks"].values()}
+    assert standby == {"static-best-free", "static-best-coding"}
+    assert standby.isdisjoint(routed)
 
 
 # ---------------------------------------------------------------------------

@@ -5,6 +5,7 @@ import shutil
 
 from orquestracao import cli
 from orquestracao.contracts import ContractError
+from orquestracao import production_worker as pw
 from orquestracao import system_handlers as sh
 
 
@@ -21,14 +22,12 @@ def start_args(tmp_path: Path) -> Args:
     return Args(state_dir=str(tmp_path), level="C", matter_id="MAT-01", route=None)
 
 
-def resume_args(tmp_path: Path) -> Args:
-    return Args(state_dir=str(tmp_path), authority="ricardo", reason="artefato manual salvo")
+def fake_omniroute(monkeypatch) -> None:
+    class Client:
+        def send(self, packet, *, output_dir=None):
+            return "# Manifestação\n\nTexto da peça.", None
 
-
-def prepare_writer_input(tmp_path: Path) -> None:
-    packages = tmp_path / "packages"
-    packages.mkdir(exist_ok=True)
-    (packages / "writer-input.md").write_text("# Manifestação\n\nTexto da peça.", encoding="utf-8")
+    monkeypatch.setattr(pw, "OmniRouteClient", Client)
 
 
 def test_e2e_producao_fluxo_feliz(monkeypatch, tmp_path):
@@ -55,17 +54,12 @@ def test_e2e_producao_fluxo_feliz(monkeypatch, tmp_path):
         return {"success": True, "receipt": str(state_dir / "CEREBRO-RECIBO.json")}
 
     monkeypatch.setattr(cli, "_json_out", json_result)
+    fake_omniroute(monkeypatch)
     monkeypatch.setattr(sh, "run_qa_gate", fake_qa)
     monkeypatch.setattr(sh, "publicar_docx", fake_publish)
     monkeypatch.setattr(sh, "registrar_cerebro", fake_vault)
 
-    blocked = cli.cmd_start(start_args(tmp_path))
-    assert blocked["exit_code"] == 1
-    assert blocked["payload"]["status"] == "failed"
-    assert "writer-input.md" in blocked["payload"]["_worker_error"]
-
-    prepare_writer_input(tmp_path)
-    completed = cli.cmd_resume(resume_args(tmp_path))
+    completed = cli.cmd_start(start_args(tmp_path))
 
     assert completed["exit_code"] == 0
     assert completed["payload"]["status"] == "vault_registered"
@@ -92,13 +86,12 @@ def test_qa_fail_impede_publicacao_e_vault(monkeypatch, tmp_path):
         vault_called = True
 
     monkeypatch.setattr(cli, "_json_out", json_result)
+    fake_omniroute(monkeypatch)
     monkeypatch.setattr(sh, "run_qa_gate", fail_qa)
     monkeypatch.setattr(sh, "publicar_docx", publish)
     monkeypatch.setattr(sh, "registrar_cerebro", vault)
 
-    cli.cmd_start(start_args(tmp_path))
-    prepare_writer_input(tmp_path)
-    result = cli.cmd_resume(resume_args(tmp_path))
+    result = cli.cmd_start(start_args(tmp_path))
 
     assert result["exit_code"] == 1
     assert result["payload"]["status"] == "failed"
@@ -121,13 +114,12 @@ def test_publicacao_falha_impede_vault(monkeypatch, tmp_path):
         vault_called = True
 
     monkeypatch.setattr(cli, "_json_out", json_result)
+    fake_omniroute(monkeypatch)
     monkeypatch.setattr(sh, "run_qa_gate", pass_qa)
     monkeypatch.setattr(sh, "publicar_docx", fail_publish)
     monkeypatch.setattr(sh, "registrar_cerebro", vault)
 
-    cli.cmd_start(start_args(tmp_path))
-    prepare_writer_input(tmp_path)
-    result = cli.cmd_resume(resume_args(tmp_path))
+    result = cli.cmd_start(start_args(tmp_path))
 
     assert result["exit_code"] == 1
     assert result["payload"]["status"] == "failed"

@@ -319,26 +319,15 @@ def test_nenhuma_cli_de_ia_chamada(tmp_path, monkeypatch):
 # CLI básica
 # ---------------------------------------------------------------------------
 
-def test_cli_start_e_status(tmp_path):
-    """Testa a CLI start e status."""
+def test_cli_status(tmp_path):
+    """Testa o comando status sem disparar um worker externo."""
     state_dir = str(tmp_path / "cli-test")
-    result = subprocess.run(
-        ["py", "-3.14", "-m", "orquestracao.cli",
-         "start", state_dir,
-         "--matter-id", "cli-001",
-         "--level", "C"],
-        capture_output=True, text=True, encoding="utf-8", errors="replace",
-        cwd=str(Path(__file__).resolve().parents[1]),
-    )
-    # Para nível C o fluxo começa pelo Codex, o que resulta em 'paused' / 'failed' pois
-    # o arquivo manual não está presente, então o exit code correto é != 0
-    assert result.returncode == 1, result.stderr
-    output = json.loads(result.stdout)
-    assert output["action"] == "STARTED_FAILED"
-    assert output["matter_id"] == "cli-001"
-    assert output["status"] == "failed"
+    engine = RDAAEngine(state_dir, "C", worker=fake_worker, system_handlers=DUMMY_HANDLERS, route_path=ROUTE_PATH)
+    try:
+        engine.initialize("cli-001")
+    finally:
+        engine.close()
 
-    # Status
     result = subprocess.run(
         ["py", "-3.14", "-m", "orquestracao.cli",
          "status", state_dir],
@@ -348,4 +337,4 @@ def test_cli_start_e_status(tmp_path):
     assert result.returncode == 0
     status = json.loads(result.stdout)
     assert status["matter_id"] == "cli-001"
-    assert status["status"] == "failed"
+    assert status["status"] == "vault_registered"

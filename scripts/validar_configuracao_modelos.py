@@ -6,7 +6,6 @@ mas a fonte da identificação será somente o reteamento.json.
 """
 import sys
 import json
-import argparse
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).resolve().parents[1]
@@ -28,7 +27,7 @@ def validar(roteamento_path: str):
     for level, data in route.get("levels", {}).items():
         workers = data.get("workers", {})
         for wk, details in workers.items():
-            roles_mapped.add(details.get("role", "unknown"))
+            roles_mapped.add(wk)
             
     print(f"Papéis encontrados nos grafos RDAA: {list(roles_mapped)}")
     print("Validação RDAA (Semântica Declarativa) concluída.")
