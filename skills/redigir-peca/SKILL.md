@@ -26,17 +26,14 @@ código: `orquestracao/engine.py` (motor LangGraph), acessado via
 
 **Mecânica obrigatória, sempre:**
 
-1. Chame `python -m orquestracao.cli start <state_dir> --matter-id X --level B`
-   (ou `status` se a matéria já foi iniciada).
-2. Leia o campo `"current_phase"`/`"status"` do JSON retornado e execute
-   **literalmente** apenas o que a fase corrente exige — nada a mais, nada
-   a menos.
-3. Ao concluir uma etapa que exige aprovação humana, chame
-   `python -m orquestracao.cli approve <state_dir> --gate <gate> --authority ricardo`.
-4. Repita, consultando `status` a cada passo. Nunca pule uma chamada ao CLI
-   para "economizar tempo" — se uma etapa é mecanicamente dispensável (ex.:
-   nível C não consulta vault), é o motor que decide isso via
-   `orquestracao/roteamento.json`, não o assistente.
+- **Para Nível C (Peças Simples/Juntadas):**
+  Como a peça é simples e dispensa esqueleto e validação prévia, você deve **primeiro** redigir a peça inteira (seguindo as premissas deste chat) e salvá-la em `<state_dir>/packages/writer-input.md`. Somente DEPOIS de criar esse arquivo, chame `python -m orquestracao.cli start <state_dir> --matter-id X --level C`. Se o arquivo já estiver lá, o motor formatará a peça, aplicará o QA e a publicará instantaneamente, em um único comando, sem interrupções.
+
+- **Para Níveis B e A (Complexos):**
+  1. Chame `python -m orquestracao.cli start <state_dir> --matter-id X --level B` (ou A).
+  2. Leia o campo `"current_phase"`/`"status"` do JSON retornado e execute **literalmente** apenas o que a fase corrente exige — nada a mais, nada a menos.
+  3. Ao concluir uma etapa que exige aprovação humana, chame `python -m orquestracao.cli approve <state_dir> --gate <gate> --authority ricardo`.
+  4. Repita, consultando `status` a cada passo. Nunca pule uma chamada ao CLI para "economizar tempo" — o próprio motor pula automaticamente fases dispensáveis com base no `roteamento.json`.
 
 Se o motor recusar um avanço (erro `GateError`, `CircuitBreakerError` ou
 status `paused`), isso é sinal de bug de sequência ou de disjuntor ativado —
