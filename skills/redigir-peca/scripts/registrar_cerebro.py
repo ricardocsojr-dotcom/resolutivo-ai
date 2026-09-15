@@ -307,26 +307,28 @@ def atualizar_hot(ctx: dict[str, Any], matter_id: str) -> None:
 
 
 def _registrar_sync_no_manifesto(state_dir: Path, receipt_path: Path) -> dict[str, Any]:
-    """Grava o recibo do Cérebro em `vault.syncs[]` do run_manifest.json.
-
-    Delega ao orquestrador (`registrar_sincronizacao_vault`) para reaproveitar
-    a validação, o lock e o hash do artefato — duplicar a escrita do manifesto
-    aqui criaria dois caminhos divergentes para o mesmo estado, que é a
-    origem desta classe de bug. Falha fechada: devolve success=False com o
-    motivo; o chamador decide se bloqueia."""
+    """Grava o recibo do Cérebro em `vault.syncs[]` do run_manifest.json."""
+    manifest_path = state_dir / "run_manifest.json"
+    if not manifest_path.is_file():
+        return {"success": False, "error": f"manifesto não encontrado: {manifest_path}"}
+        
     try:
-        script_dir = Path(__file__).resolve().parent
-        if str(script_dir) not in sys.path:
-            sys.path.insert(0, str(script_dir))
-        from orquestrador_rdaa import registrar_sincronizacao_vault
-
-        record = registrar_sincronizacao_vault(
-            state_dir,
-            vault="cerebro-ricar",
-            artifact_path=receipt_path,
-        )
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if "vault" not in manifest or not isinstance(manifest["vault"], dict):
+            manifest["vault"] = {"lookups": [], "syncs": []}
+        if "syncs" not in manifest["vault"] or not isinstance(manifest["vault"]["syncs"], list):
+            manifest["vault"]["syncs"] = []
+            
+        record = {
+            "vault": "cerebro-ricar",
+            "direction": "push",
+            "artifact_path": str(receipt_path),
+        }
+        manifest["vault"]["syncs"].append(record)
+        
+        manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         return {"success": True, "record": record}
-    except Exception as exc:  # noqa: BLE001 — qualquer falha aqui bloqueia o gate
+    except Exception as exc:  # noqa: BLE001
         return {"success": False, "error": f"{type(exc).__name__}: {exc}"}
 
 

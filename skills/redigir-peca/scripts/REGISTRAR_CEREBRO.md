@@ -12,25 +12,7 @@
 
 ### Quando chamar
 
-**Fluxo no Hermes:**
-1. Peça redija, critica, valida
-2. `publicar_docx.py` finaliza → `[OK]`
-3. **Imediatamente depois:**
-   ```bash
-   py -3.14 skills/redigir-peca/scripts/registrar_cerebro.py \
-     .rdaa-run/<matter_id>/ \
-     --matter-id <matter_id> \
-     --level <C|B|A>
-   ```
-
-### Exemplo
-
-```bash
-py -3.14 skills/redigir-peca/scripts/registrar_cerebro.py \
-  .rdaa-run/silvio-afonso-esclarecimento-saneador/ \
-  --matter-id silvio-afonso-esclarecimento-saneador \
-  --level B
-```
+**Fluxo não exposto como script.** A etapa de registro no cérebro ocorre de forma autônoma como fase tratada por um _system handler_ dentro da máquina de estados (via `orquestracao.cli`). Nenhuma invocação manual avulsa é suportada para evitar deriva de histórico.
 
 **Resposta:**
 ```json

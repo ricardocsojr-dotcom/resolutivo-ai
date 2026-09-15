@@ -1,7 +1,7 @@
 # Tempo de produção por nível — B/C não passam de crítica e validação plena
 
 **Fonte de verdade única:** `orquestracao/roteamento.json`. Não existe script
-paralelo de "fluxo rápido" — o orquestrador oficial (`orquestrador_rdaa.py`)
+paralelo de "fluxo rápido" — o orquestrador oficial (`orquestracao.cli`)
 lê a política e decide sozinho quais estágios cada nível percorre.
 
 ## Estágios por nível (após correção de 2026-09-02)
@@ -39,18 +39,9 @@ concorrente — quem decide é a política.
 ## Comando (igual para todos os níveis — a rota decide o resto)
 
 ```bash
-# Redação (sempre roda, qualquer nível)
-py -3.14 skills/redigir-peca/scripts/executar_motor.py codex \
-  --prompt .rdaa-run/<matter>/PROMPT-REDACAO.md \
-  --output .rdaa-run/<matter>/RASCUNHO-CODEX.md \
-  --state-dir .rdaa-run/<matter> --role writer
-
-py -3.14 skills/redigir-peca/scripts/orquestrador_rdaa.py advance .rdaa-run/<matter> draft_ready
-
-# A partir daqui, a rota decide sozinha:
-# - Nível A: avance para "criticizing" (crítica obrigatória) antes de "validating"
-# - Nível B: avance direto para "validating" ("criticizing" não existe na rota)
-# - Nível C: avance direto para "candidate_ready" ("validating" não existe na rota)
+# Executa de verdade o motor V4
+py -3.14 -m orquestracao.cli start .rdaa-run/<matter> --matter-id <matter> --level <C|B|A>
+py -3.14 -m orquestracao.cli audit .rdaa-run/<matter>
 ```
 
 Tentar registrar uma execução de crítico/validador fora do estágio certo

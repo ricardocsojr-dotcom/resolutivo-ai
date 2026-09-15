@@ -1,6 +1,6 @@
 # Contrato executável de roteamento RDAA
 
-A implementação canônica é `orquestracao/roteamento.json` e `skills/redigir-peca/scripts/orquestrador_rdaa.py`.
+A implementação canônica é `orquestracao/roteamento.json` e o pacote `orquestracao/`.
 
 ## Entradas permitidas
 
