@@ -139,7 +139,7 @@ entradas antigas manualmente, só o script ou Ricardo adicionam ao final.
 
 ## Divisão entre Claude Code, Codex e Gemini
 
-Claude Code **e** Codex instalam o plugin `resolutivo-ai` por completo —
+Claude Code **e** Codex instalam o plugin `juridico-ai` por completo —
 os dois carregam as skills e leem/escrevem `espaço de estado do processo`
 normalmente. Não há tratamento especial pro Codex aqui: nível A/B e o
 roteamento entre os dois já são resolvidos pelos contratos existentes

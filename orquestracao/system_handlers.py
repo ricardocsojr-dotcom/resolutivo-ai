@@ -24,8 +24,7 @@ Contrato de dados entre fases (via ``state["outputs"]``):
   real (``publicar_docx.py``), determinando o destino final a partir de
   ``state["outputs"]["publish_target"]`` quando fornecido, ou de uma
   convencao <state_dir>/../<matter_id>.docx caso contrario.
-- O handler de ``vault_registered`` registra no Cerebro-Ricar (que por
-  sua vez sincroniza o OpenViking internamente).
+- O handler de ``vault_registered`` registra no Cerebro-Ricar.
 
 Nenhum handler decide a proxima fase -- apenas produz saida ou levanta
 excecao.  A transicao continua sendo responsabilidade exclusiva do grafo.
@@ -149,7 +148,7 @@ def handle_published(state: RDAAState) -> dict[str, Any]:
 
 
 def handle_vault_registered(state: RDAAState) -> dict[str, Any]:
-    """Registra a materia publicada no Cerebro-Ricar (+ OpenViking)."""
+    """Registra a materia publicada no Cerebro-Ricar."""
     state_dir = Path(str(state.get("state_dir", "")))
     if not state_dir:
         raise ContractError("state_dir ausente no estado do motor")

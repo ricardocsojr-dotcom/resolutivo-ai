@@ -1,8 +1,8 @@
-# Resolutivo.AI — Plugin Jurídico RDAA
+# Juridico.AI — Plugin Jurídico RDAA
 
 Workspace de IA e plugin jurídico para o contencioso cível e consumerista do
 **Romano Donadel Advogados Associados (RDAA)**.
-O pacote público usa o identificador `resolutivo-ai`.
+O pacote público usa o identificador `juridico-ai`.
 
 Reúne, como skills, todo o fluxo de trabalho do setor Resolutivo: redação e
 revisão de peças, cálculo judicial determinístico, análise de risco e
@@ -15,15 +15,15 @@ leitura obrigatória antes de mexer em qualquer skill.
 
 ```
 /plugin marketplace add ricardocsojr-dotcom/resolutivo-ai
-/plugin install resolutivo-ai
+/plugin install juridico-ai
 ```
 
-Porta de entrada para uma peça: `/resolutivo-ai:redigir-peca`.
+Porta de entrada para uma peça: `/juridico-ai:redigir-peca`.
 
 ## Estrutura
 
 ```
-resolutivo-ai/
+juridico-ai/
 ├── CLAUDE.md              # Regras do escritório, o que é automático e o que não é
 ├── AGENTS.md              # Contrato comum carregado por Codex e Antigravity
 ├── skills/                # Cada pasta é uma skill (SKILL.md + scripts/ + references/)

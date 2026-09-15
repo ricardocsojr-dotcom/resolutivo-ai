@@ -125,6 +125,7 @@ def build_planner_packet(
         phase=state.get("phase", ""),
         output_contract="skeleton_v1",
         timeout_seconds=_timeout(route, "planner"),
+        effort=_effort(route, "planner"),
     )
 
 
@@ -181,6 +182,7 @@ def build_writer_packet(
         phase=state.get("phase", ""),
         output_contract="draft_v1",
         timeout_seconds=_timeout(route, writer_role),
+        effort=_effort(route, writer_role),
     )
 
 
@@ -228,6 +230,7 @@ def build_critic_packet(
         phase=state.get("phase", ""),
         output_contract="critique_v1",
         timeout_seconds=_timeout(route, "critic"),
+        effort=_effort(route, "critic"),
     )
 
 
@@ -274,6 +277,7 @@ def build_validator_packet(
         phase=state.get("phase", ""),
         output_contract="candidate_v1",
         timeout_seconds=_timeout(route, "validator"),
+        effort=_effort(route, "validator"),
     )
 
 
@@ -286,3 +290,10 @@ def _timeout(route: dict[str, Any], role: str, default: int = 600) -> int:
     workers = route.get("workers", {})
     worker = workers.get(role, {})
     return int(worker.get("timeout_seconds", default))
+
+
+def _effort(route: dict[str, Any], role: str, default: str = "medium") -> str:
+    """Resolve esforço de raciocínio do worker, com fallback para default."""
+    workers = route.get("workers", {})
+    worker = workers.get(role, {})
+    return str(worker.get("effort", default))

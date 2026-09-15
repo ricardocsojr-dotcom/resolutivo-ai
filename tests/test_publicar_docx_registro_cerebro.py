@@ -15,7 +15,7 @@ def test_hook_pos_publicacao_chama_registro_com_nivel_explicito(tmp_path):
 
     def fake_registrar(state_dir, matter_id, level):
         calls.append((state_dir, matter_id, level))
-        return {"success": True, "openviking_sync": {"success": True}}
+        return {"success": True}
 
     result = MODULE._registrar_cerebro_pos_publicacao(
         tmp_path,

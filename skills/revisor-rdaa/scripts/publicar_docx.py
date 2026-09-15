@@ -59,7 +59,7 @@ def _registrar_cerebro_pos_publicacao(
     *,
     registrar_fn: Callable[[Path, str, str], dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    """Registra no Cérebro e dispara a sincronização OpenViking após publicação."""
+    """Registra no Cérebro após publicação."""
     level = context.get("nivel_peca")
     if level not in {"C", "B", "A"}:
         return {"success": False, "error": "contexto publicado sem nivel_peca válido (C/B/A)"}
@@ -322,7 +322,7 @@ def main() -> int:
                 print("[ERRO] DOCX publicado, mas registro/sincronização do Cérebro falhou", file=sys.stderr)
                 print(json.dumps(cerebro_result, ensure_ascii=False), file=sys.stderr)
                 return 1
-            print("[OK] Cérebro-Ricar e OpenViking sincronizados")
+            print("[OK] Cérebro-Ricar sincronizado")
     print(f"[OK] DOCX publicado após QA: {args.output}")
     print(f"[INFO] backup anterior: {backup or 'não havia arquivo anterior'}")
     return 0

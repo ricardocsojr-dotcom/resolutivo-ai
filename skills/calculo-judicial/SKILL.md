@@ -83,20 +83,20 @@ não converte vírgula decimal silenciosamente e não altera o arquivo bruto.
 5. Se faltar o mês mais recente na tabela local, bloquear ou avisar antes de
    calcular. Não adivinhar, interpolar ou preencher ausência com zero.
 
-## Cobertura atual das tabelas locais (atualizado em 2026-08-27)
+## Cobertura atual das tabelas locais (atualizado em 2026-09-14)
 
 | Arquivo | Período | Frequência |
 |---|---|---|
-| `tjmg-nao-expurgada.csv` | 1990-01 a 2026-08 | mensal |
-| `tjsp.csv` | 1990-01 a 2026-08 | mensal |
-| `tjrj.csv` | 1990-01 a 2026-08 | mensal |
-| `taxa-legal.csv` | 1995-03 a 2026-08 | diária |
-| `inpc.csv` | 1990-01 a 2026-07 | mensal |
-| `ipca.csv` | 1990-01 a 2026-07 | mensal |
-| `igp-m.csv` | 1990-01 a 2026-07 | mensal |
-| `selic.csv` | 1995-02 a 2026-07 | mensal |
-| `cdi.csv` | 1990-01 a 2026-07 | mensal |
-| `poupanca-nova.csv` | 2012-05 a 2026-08 (aniversários até 26/08) | por data de aniversário (diária) |
+| `tjmg-nao-expurgada.csv` | 1990-01 a 2026-09 | mensal |
+| `tjsp.csv` | 1990-01 a 2026-09 | mensal |
+| `tjrj.csv` | 1990-01 a 2026-12 | mensal |
+| `taxa-legal.csv` | 1995-03 a 2026-09 | diária |
+| `inpc.csv` | 1990-01 a 2026-08 | mensal |
+| `ipca.csv` | 1990-01 a 2026-08 | mensal |
+| `igp-m.csv` | 1990-01 a 2026-08 | mensal |
+| `selic.csv` | 1995-02 a 2026-09 | mensal |
+| `cdi.csv` | 1990-01 a 2026-09 | mensal |
+| `poupanca-nova.csv` | 2012-05 a 2026-09 (aniversários até 11/09) | por data de aniversário (diária) |
 
 `poupanca-nova.csv` usa a data de início de cada período de aniversário
 (regra da poupança: rende a cada mês a partir da data do depósito, não no

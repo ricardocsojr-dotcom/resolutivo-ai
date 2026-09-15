@@ -21,7 +21,7 @@
       "tipo_serie": "fator_acumulado",
       "unidade": "fator",
       "status": "aprovado",
-      "sha256": "4b58decd537fbee93a9855eec927ac363a8d557b1e21e3d14fcf7dfade85f98d",
+      "sha256": "c648e8b2dd40be9a92ceb45386778f5a040e591fc8fb2c5a974f355638a95385",
       "convencoes": [
         "meses_calendario_inclusivos"
       ],
@@ -31,7 +31,7 @@
         "codigo_serie": "Fator de Atualização Monetária TJMG (não expurgada)",
         "data_coleta": "2026-08",
         "arquivo_bruto": "tjmg-nao-expurgada.csv",
-        "sha256_arquivo_bruto": "4b58decd537fbee93a9855eec927ac363a8d557b1e21e3d14fcf7dfade85f98d",
+        "sha256_arquivo_bruto": "c648e8b2dd40be9a92ceb45386778f5a040e591fc8fb2c5a974f355638a95385",
         "observacao": "XLS oficial mensal do TJMG convertido para CSV local; XLS bruto preservado fora do pacote do plugin (ver fontes-oficiais-indices.md). Data de coleta com precisão de mês, dia exato não registrado."
       },
       "homologacao": {
@@ -50,7 +50,7 @@
       "tipo_serie": "fator_acumulado",
       "unidade": "fator",
       "status": "aprovado",
-      "sha256": "d4019833cfd56e956c8f65f634a45ebf32414c9f7c0836153dea4111bb282241",
+      "sha256": "238043d4c356713580287ea17d88d22012f444f30c739833db4fec875dbd3f17",
       "convencoes": [
         "meses_calendario_inclusivos"
       ],
@@ -60,7 +60,7 @@
         "codigo_serie": "TJRJ - Tabela Tribunal Just RJ",
         "data_coleta": "2026-08-27",
         "arquivo_bruto": "tjrj.csv",
-        "sha256_arquivo_bruto": "d4019833cfd56e956c8f65f634a45ebf32414c9f7c0836153dea4111bb282241",
+        "sha256_arquivo_bruto": "238043d4c356713580287ea17d88d22012f444f30c739833db4fec875dbd3f17",
         "observacao": "Ricardo colou a serie historica completa do DrCalc (out/1964 a ago/2026) direto no chat. Conferido programaticamente 24 pontos de 1995 a 2026 contra o CSV local: 0 divergencias. O valor identico repetido por meses/anos seguidos (ex.: 26.93004230 o ano inteiro de 2025) e o comportamento real do TJRJ, que atualiza essa tabela anualmente (em janeiro), nao mensalmente - confirmado pela propria serie do DrCalc, que mostra o mesmo padrao."
       },
       "homologacao": {
@@ -80,7 +80,7 @@
       "tipo_serie": "taxa_diaria_simples_pro_rata",
       "unidade": "decimal_diario_pro_rata",
       "status": "aprovado",
-      "sha256": "c68efe66a9d3d8f9efe26aad817c9c0e811fe8f54e8923a9e9df80bc96a24218",
+      "sha256": "07fe6acc4511044e7e534547c8e9cf11378278c435098c2b751b3cc268210249",
       "convencoes": [
         "dias_corridos_semiaberto"
       ],
@@ -109,7 +109,7 @@
       "tipo_serie": "taxa_mensal_percentual",
       "unidade": "decimal_mensal",
       "status": "aprovado",
-      "sha256": "b4be68bce313ba1c300bd2ca17bf576cbc1c92ac24e3f3c5c389fbb66b5249e2",
+      "sha256": "03d92317aa63dfc370929a33394611e4bb6bf966cc32b8ad51a975d9f526fa85",
       "convencoes": [
         "meses_calendario_inclusivos"
       ],
@@ -119,7 +119,7 @@
         "codigo_serie": "SGS 188",
         "data_coleta": "2026-08-27",
         "arquivo_bruto": "inpc.csv",
-        "sha256_arquivo_bruto": "b4be68bce313ba1c300bd2ca17bf576cbc1c92ac24e3f3c5c389fbb66b5249e2",
+        "sha256_arquivo_bruto": "03d92317aa63dfc370929a33394611e4bb6bf966cc32b8ad51a975d9f526fa85",
         "observacao": "Conferido contra a API SGS do BCB (serie 188). Mes de 2026-06-01 escolhido por ter valor positivo (o promotor exige resultado_esperado nao-negativo); jul/2026 desse indice teve deflacao e foi conferido a parte, fora do caso dourado formal."
       },
       "homologacao": {
@@ -138,7 +138,7 @@
       "tipo_serie": "taxa_mensal_percentual",
       "unidade": "decimal_mensal",
       "status": "aprovado",
-      "sha256": "1acd913f6aa060c68d9ab7a4f75e1603aecd3fcb285682287bfb5fdad8525f7c",
+      "sha256": "036f027001df89a2b40f5a22d114fc1b53ee8c9fe1a8fc5d4d6fb28d5b49d974",
       "convencoes": [
         "meses_calendario_inclusivos"
       ],
@@ -148,7 +148,7 @@
         "codigo_serie": "SGS 433",
         "data_coleta": "2026-08-27",
         "arquivo_bruto": "ipca.csv",
-        "sha256_arquivo_bruto": "1acd913f6aa060c68d9ab7a4f75e1603aecd3fcb285682287bfb5fdad8525f7c",
+        "sha256_arquivo_bruto": "036f027001df89a2b40f5a22d114fc1b53ee8c9fe1a8fc5d4d6fb28d5b49d974",
         "observacao": "Conferido contra a API SGS do BCB (série 433) pra 5 meses (mar-jul/2026), batendo dentro do arredondamento de 2 casas que o BCB publica no resumo mensal. Arquivo local mantido por ter mais casas decimais que o resumo do BCB (não substituído)."
       },
       "homologacao": {
@@ -167,7 +167,7 @@
       "tipo_serie": "taxa_mensal_percentual",
       "unidade": "decimal_mensal",
       "status": "aprovado",
-      "sha256": "14f1382be0cbe2321472371c5e26ed69edf45fb09d9400ffdf75b9efcdcd8cdb",
+      "sha256": "6ef43514b7cf3de2406b43e5623e5088e6237d58b25a70cee6ef5ff893f5ba88",
       "convencoes": [
         "meses_calendario_inclusivos"
       ],
@@ -177,7 +177,7 @@
         "codigo_serie": "SGS 189",
         "data_coleta": "2026-08-27",
         "arquivo_bruto": "igp-m.csv",
-        "sha256_arquivo_bruto": "14f1382be0cbe2321472371c5e26ed69edf45fb09d9400ffdf75b9efcdcd8cdb",
+        "sha256_arquivo_bruto": "6ef43514b7cf3de2406b43e5623e5088e6237d58b25a70cee6ef5ff893f5ba88",
         "observacao": "Conferido contra a API SGS do BCB (serie 189). Mes de 2026-05-01 escolhido por ter valor positivo (o promotor exige resultado_esperado nao-negativo); jul/2026 desse indice teve deflacao e foi conferido a parte, fora do caso dourado formal."
       },
       "homologacao": {
@@ -196,7 +196,7 @@
       "tipo_serie": "taxa_mensal_percentual",
       "unidade": "decimal_mensal",
       "status": "aprovado",
-      "sha256": "597c89b82611f43eaa1a73674ef6e87c4367882497f2f597869f83ee233cad89",
+      "sha256": "1c6feb687269188eaf59a64160483d401127221ec16f8a894d98f2b8de8f50e6",
       "convencoes": [
         "meses_calendario_inclusivos"
       ],
@@ -206,7 +206,7 @@
         "codigo_serie": "SGS 4390",
         "data_coleta": "2026-08-27",
         "arquivo_bruto": "selic.csv",
-        "sha256_arquivo_bruto": "597c89b82611f43eaa1a73674ef6e87c4367882497f2f597869f83ee233cad89",
+        "sha256_arquivo_bruto": "1c6feb687269188eaf59a64160483d401127221ec16f8a894d98f2b8de8f50e6",
         "observacao": "Conferido contra a API SGS do BCB (série 4390) pra 5 meses (mar-jul/2026), batendo dentro do arredondamento de 2 casas que o BCB publica no resumo mensal. Arquivo local mantido por ter mais casas decimais que o resumo do BCB (não substituído)."
       },
       "homologacao": {
@@ -225,7 +225,7 @@
       "tipo_serie": "taxa_mensal_percentual",
       "unidade": "decimal_mensal",
       "status": "aprovado",
-      "sha256": "caf19b9a4019bddd30353748a82ca06568de01fd7534cd9922d4dcf50fdd53c9",
+      "sha256": "5e1f1916b91150c54e0763fc426b04e505cce511c823e895b0e81b77c5fffd7f",
       "convencoes": [
         "meses_calendario_inclusivos"
       ],
@@ -235,7 +235,7 @@
         "codigo_serie": "SGS 4391",
         "data_coleta": "2026-08-27",
         "arquivo_bruto": "cdi.csv",
-        "sha256_arquivo_bruto": "caf19b9a4019bddd30353748a82ca06568de01fd7534cd9922d4dcf50fdd53c9",
+        "sha256_arquivo_bruto": "5e1f1916b91150c54e0763fc426b04e505cce511c823e895b0e81b77c5fffd7f",
         "observacao": "Conferido contra a API SGS do BCB (série 4391) pra 5 meses (mar-jul/2026), batendo dentro do arredondamento de 2 casas que o BCB publica no resumo mensal. Arquivo local mantido por ter mais casas decimais que o resumo do BCB (não substituído)."
       },
       "homologacao": {
@@ -254,7 +254,7 @@
       "tipo_serie": "taxa_aniversario_percentual",
       "unidade": "decimal_por_aniversario",
       "status": "aprovado",
-      "sha256": "1c48abbc55c68fe5ee2af10a1d9ef6a89d5dc7212525b21573ab364192df5816",
+      "sha256": "733eb32bfe60a32ca7b65af7e58851063b4b8d14ff0d6d2fbfa06bcb32a22474",
       "convencoes": [
         "aniversario_deposito"
       ],
@@ -283,7 +283,7 @@
       "tipo_serie": "fator_acumulado",
       "unidade": "fator",
       "status": "aprovado",
-      "sha256": "14c8f7dcbe2fc5a77ba6a2bad640092e750f0145dd424bde8fdab9f48d5c1cad",
+      "sha256": "036281793c9026a05bab62093f1b3ec385f459dfe2858ffb533632d6ff25c08c",
       "convencoes": [
         "meses_calendario_inclusivos"
       ],

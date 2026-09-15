@@ -6,7 +6,7 @@ import json
 import pytest
 
 from orquestracao import cli
-from orquestracao.contracts import ContractError, Receipt
+from orquestracao.contracts import ContractError, Packet
 from orquestracao import production_worker as pw
 from orquestracao import system_handlers as sh
 
@@ -31,20 +31,19 @@ def start_args(tmp_path: Path) -> Args:
     return Args(state_dir=str(tmp_path), level="C", matter_id="MAT-01", route=None)
 
 
-def fake_omniroute(monkeypatch) -> None:
+def fake_direct_worker(monkeypatch) -> None:
     class Client:
-        def send(self, packet, *, output_dir=None):
-            receipt = Receipt(role="writer", requested_combo="teste")
-            receipt.finalize()
-            return "# Manifestação\n\nTexto da peça.", receipt
+        def send(self, engine, packet):
+            return "# Manifestação\n\nTexto da peça.", {"engine": engine}
 
-    monkeypatch.setattr(pw, "OmniRouteClient", Client)
+    monkeypatch.setattr(pw, "DirectWorkerClient", Client)
 
 
 def test_worker_injeta_intake_cerebro_e_nucleo_rdaa(monkeypatch, tmp_path):
     packages = tmp_path / "packages"
     packages.mkdir()
     (packages / "intake.md").write_text("Fatos do teste.", encoding="utf-8")
+    (packages / "planner-input.md").write_text("Recorte para planejamento.", encoding="utf-8")
     (packages / "cerebro-contexto.json").write_text("Contexto do Cérebro.", encoding="utf-8")
     captured = {}
 
@@ -53,18 +52,20 @@ def test_worker_injeta_intake_cerebro_e_nucleo_rdaa(monkeypatch, tmp_path):
         return object()
 
     class Client:
-        def send(self, packet, *, output_dir=None):
-            receipt = Receipt(role="writer", requested_combo="teste")
-            receipt.finalize()
-            return "resultado", receipt
+        def send(self, engine, packet):
+            return "resultado", {"engine": engine}
 
-    monkeypatch.setattr(pw, "OmniRouteClient", Client)
+    monkeypatch.setattr(pw, "DirectWorkerClient", Client)
     monkeypatch.setattr(pw, "_is_doc_producer_role", lambda *args: False)
     state = {
         "state_dir": str(tmp_path),
         "matter_id": "teste",
         "nivel_peca": "B",
-        "route": {"workers": {role: {"engine": "omniroute"} for role in ("planner", "writer", "validator")}},
+        "route": {"workers": {
+            "planner": {"engine": "claude"},
+            "writer": {"engine": "codex"},
+            "validator": {"engine": "claude"},
+        }},
     }
     for role in ("planner", "writer", "validator"):
         state["role"] = role
@@ -72,7 +73,7 @@ def test_worker_injeta_intake_cerebro_e_nucleo_rdaa(monkeypatch, tmp_path):
         pw.production_worker(role, state)
 
     assert captured["planner"] == {
-        "facts": "Fatos do teste.",
+        "facts": "Recorte para planejamento.",
         "vault_context": "Contexto do Cérebro.",
     }
     assert captured["writer"]["facts"] == "Fatos do teste."
@@ -81,6 +82,63 @@ def test_worker_injeta_intake_cerebro_e_nucleo_rdaa(monkeypatch, tmp_path):
     assert "Contexto do Cérebro." in captured["validator"]["sources"]
     assert "Dois-pontos | Proibido" in captured["writer"]["style_guide"]
     assert "Dois-pontos | Proibido" in captured["validator"]["checklist"]
+
+
+def test_worker_claude_usa_adapter_direto_nunca_omniroute(monkeypatch, tmp_path):
+    packages = tmp_path / "packages"
+    packages.mkdir()
+    (packages / "intake.md").write_text("Fatos mínimos.", encoding="utf-8")
+    (packages / "planner-input.md").write_text("Recorte mínimo.", encoding="utf-8")
+    captured = {}
+
+    class DirectClient:
+        def send(self, engine, packet):
+            captured["engine"] = engine
+            captured["model"] = packet.combo
+            return "# Esqueleto\n\n1. Fatos", {"engine": engine}
+
+    def builder(state, **kwargs):
+        return Packet(
+            role="planner",
+            combo="claude-sonnet-5",
+            system_prompt="Planeje.",
+            user_prompt=kwargs["facts"],
+            matter_id="teste",
+            phase="sources_ready",
+        )
+
+    monkeypatch.setattr(pw, "DirectWorkerClient", DirectClient, raising=False)
+    monkeypatch.setitem(pw._PACKET_BUILDERS, "planner", builder)
+    monkeypatch.setattr(pw, "_is_doc_producer_role", lambda *args: False)
+
+    result = pw.production_worker("planner", {
+        "state_dir": str(tmp_path),
+        "matter_id": "teste",
+        "nivel_peca": "B",
+        "route": {"workers": {"planner": {
+            "engine": "claude", "model": "claude-sonnet-5",
+        }}},
+    })
+
+    assert result["content"].startswith("# Esqueleto")
+    assert captured == {"engine": "claude", "model": "claude-sonnet-5"}
+    assert not hasattr(pw, "OmniRouteClient")
+
+
+def test_planner_recusa_intake_bruto_sem_pacote_minimo(monkeypatch, tmp_path):
+    packages = tmp_path / "packages"
+    packages.mkdir()
+    (packages / "intake.md").write_text("fonte bruta\n" * 20_000, encoding="utf-8")
+
+    with pytest.raises(ContractError, match="planner-input.md"):
+        pw.production_worker("planner", {
+            "state_dir": str(tmp_path),
+            "matter_id": "teste",
+            "nivel_peca": "B",
+            "route": {"workers": {"planner": {
+                "engine": "claude", "model": "claude-sonnet-5",
+            }}},
+        })
 
 
 def test_candidato_final_fica_fora_do_state_dir(monkeypatch, tmp_path):
@@ -135,7 +193,7 @@ def test_e2e_producao_fluxo_feliz(monkeypatch, tmp_path):
         return {"success": True, "receipt": str(state_dir / "CEREBRO-RECIBO.json")}
 
     monkeypatch.setattr(cli, "_json_out", json_result)
-    fake_omniroute(monkeypatch)
+    fake_direct_worker(monkeypatch)
     monkeypatch.setattr(sh, "run_qa_gate", fake_qa)
     monkeypatch.setattr(sh, "publicar_docx", fake_publish)
     monkeypatch.setattr(sh, "registrar_cerebro", fake_vault)
@@ -167,7 +225,7 @@ def test_qa_fail_impede_publicacao_e_vault(monkeypatch, tmp_path):
         vault_called = True
 
     monkeypatch.setattr(cli, "_json_out", json_result)
-    fake_omniroute(monkeypatch)
+    fake_direct_worker(monkeypatch)
     monkeypatch.setattr(sh, "run_qa_gate", fail_qa)
     monkeypatch.setattr(sh, "publicar_docx", publish)
     monkeypatch.setattr(sh, "registrar_cerebro", vault)
@@ -195,7 +253,7 @@ def test_publicacao_falha_impede_vault(monkeypatch, tmp_path):
         vault_called = True
 
     monkeypatch.setattr(cli, "_json_out", json_result)
-    fake_omniroute(monkeypatch)
+    fake_direct_worker(monkeypatch)
     monkeypatch.setattr(sh, "run_qa_gate", pass_qa)
     monkeypatch.setattr(sh, "publicar_docx", fail_publish)
     monkeypatch.setattr(sh, "registrar_cerebro", vault)
@@ -234,7 +292,6 @@ def test_bloqueia_tentativa_duplicada(monkeypatch, tmp_path):
 
     writer_text = "# Peça duplicada\n\nTexto teste.\n\nI. PEDIDO.\n\nDiante do exposto, requer-se."
 
-    # Diretório da 1ª tentativa: pausada com disjuntor estourado
     d1 = tmp_path / "MAT-DUP-01"
     d1.mkdir()
     (d1 / "packages").mkdir()
@@ -246,7 +303,6 @@ def test_bloqueia_tentativa_duplicada(monkeypatch, tmp_path):
         "consecutive_failures": MAX_CONSECUTIVE_FAILURES,
     }), encoding="utf-8")
 
-    # Diretório da 2ª tentativa: mesmo conteúdo, deve bloquear
     d2 = tmp_path / "MAT-DUP-01-v2"
     d2.mkdir()
     (d2 / "packages").mkdir()
@@ -265,7 +321,6 @@ def test_bloqueia_nao_ativa_sem_disjuntor(monkeypatch, tmp_path):
 
     writer_text = "# Peça OK\n\nTexto teste.\n\nI. PEDIDO.\n\nDiante do exposto, requer-se."
 
-    # Diretório da 1ª tentativa: pausada MAS com disjuntor abaixo do limite
     d1 = tmp_path / "MAT-DUP-02"
     d1.mkdir()
     (d1 / "packages").mkdir()
@@ -274,10 +329,9 @@ def test_bloqueia_nao_ativa_sem_disjuntor(monkeypatch, tmp_path):
         "matter_id": "MAT-DUP-02",
         "status": "paused",
         "phase": "qa_passed",
-        "consecutive_failures": 1,  # abaixo do limite
+        "consecutive_failures": 1,
     }), encoding="utf-8")
 
-    # Diretório da 2ª tentativa: mesmo conteúdo, NÃO deve bloquear
     d2 = tmp_path / "MAT-DUP-02-v2"
     d2.mkdir()
     (d2 / "packages").mkdir()
@@ -285,9 +339,7 @@ def test_bloqueia_nao_ativa_sem_disjuntor(monkeypatch, tmp_path):
 
     engine = RDAAEngine(state_dir=str(d2), nivel_peca="C")
 
-    # Não deve levantar ContractError de tentativa duplicada
-    # (pode levantar outros erros, mas não esse)
     try:
         engine.initialize("MAT-DUP-02")
-    except ContractError as e:
-        assert "tentativa duplicada" not in str(e)
+    except ContractError as exc:
+        assert "tentativa duplicada" not in str(exc)

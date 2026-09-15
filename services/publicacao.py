@@ -11,7 +11,7 @@ e o pipeline real e testado de publicacao protegida:
     5. Substitui por copia atomica com verificacao de hash pos-copia
        (reverte automaticamente se o hash divergir).
     6. Promove o estado candidato (candidate/) para o state_dir final.
-    7. Registra no Cerebro-Ricar + OpenViking (a menos que --skip-cerebro).
+    7. Registra no Cerebro-Ricar (a menos que --skip-cerebro).
 
 Este modulo NAO reimplementa nada dessa logica -- reimplementar aqui
 duplicaria uma superficie de seguranca critica (validacao semantica, lei

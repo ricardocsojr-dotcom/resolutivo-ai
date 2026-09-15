@@ -43,15 +43,15 @@ def test_resolve_combo_writer_a():
     assert isinstance(combo, str)
 
 
-def test_resolve_combo_planner_b():
+def test_resolve_model_planner_b():
     route = load_route("B", ROUTE_PATH)
     combo = resolve_combo("planner", route)
-    assert combo == "RJ-Planejamento"
+    assert combo == "claude-sonnet-5"
 
 
-def test_resolve_combo_writer_b_usa_escrita_pesada():
+def test_resolve_model_writer_b_usa_codex():
     route = load_route("B", ROUTE_PATH)
-    assert resolve_combo("writer", route) == "RJ-Escrita-Pesada"
+    assert resolve_combo("writer", route) == "gpt-5.6-terra"
 
 
 def test_resolve_combo_papel_inexistente():
@@ -62,22 +62,40 @@ def test_resolve_combo_papel_inexistente():
 
 def test_resolve_engine_a():
     route = load_route("A", ROUTE_PATH)
-    assert resolve_engine("planner", route) == "omniroute"
-    assert resolve_engine("writer", route) == "omniroute"
-    assert resolve_engine("critic", route) == "omniroute"
-    assert resolve_engine("validator", route) == "omniroute"
+    assert resolve_engine("planner", route) == "claude"
+    assert resolve_engine("writer", route) == "codex"
+    assert resolve_engine("critic", route) == "antigravity"
+    assert resolve_engine("validator", route) == "claude"
 
 
-def test_combos_em_reserva_nao_sao_rotas():
+def test_planner_packet_repassa_effort_da_rota():
+    state = _state("A")
+    pkt = build_planner_packet(state, facts="Fatos.")
+    assert pkt.effort == "high"
+
+
+def test_writer_packet_repassa_effort_da_rota():
+    state = _state("B", phase="drafting")
+    pkt = build_writer_packet(state)
+    assert pkt.effort == "medium"
+
+
+def test_writer_packet_nivel_a_usa_gpt6_astra_effort_low():
+    state = _state("A", phase="drafting")
+    pkt = build_writer_packet(state)
+    assert pkt.effort == "low"
+    assert pkt.combo == "gpt-6-astra"
+
+
+def test_rotas_ativas_nao_usam_combos_ou_omniroute():
     payload = json.loads(ROUTE_PATH.read_text(encoding="utf-8"))
-    standby = set(payload["standby_combos"])
-    routed = {
-        worker["model"]
+    active_workers = [
+        worker
         for level in payload["levels"].values()
         for worker in level["workers"].values()
-    } | {task["model"] for task in payload["standalone_tasks"].values()}
-    assert standby == {"static-best-free", "static-best-coding"}
-    assert standby.isdisjoint(routed)
+    ] + list(payload["standalone_tasks"].values())
+    assert all(worker["engine"] != "omniroute" for worker in active_workers)
+    assert all(not worker["model"].startswith("RJ-") for worker in active_workers)
 
 
 # ---------------------------------------------------------------------------

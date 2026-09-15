@@ -36,7 +36,7 @@ def _json_out(data: dict, exit_code: int = 0) -> int:
 def _make_engine(state_dir, level: str, *, route_path: Path | None = None) -> RDAAEngine:
     """Constrói o motor conectado ao fluxo produtivo real.
 
-    Injeta o worker de produção (HTTP OmniRoute para Combos externos,
+    Injeta o worker de produção (CLI direta isolada para papéis externos,
     artefato manual do Codex para papéis ``engine: chat``) e os
     handlers de sistema padrão (QA, publicação, registro no vault) —
     é o único ponto da CLI que instancia ``RDAAEngine`` para uso

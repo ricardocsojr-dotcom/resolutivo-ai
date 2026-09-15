@@ -52,7 +52,7 @@ SystemHandler = Callable[[RDAAState], dict[str, Any] | None]
 """Callback de handler de sistema (não-IA): (state) → saída ou None.
 
 Usado para fases determinísticas que não envolvem chamada a um Combo —
-QA, publicação, registro no Cérebro/OpenViking.  Segue exatamente o
+QA, publicação, registro no Cérebro-Ricar.  Segue exatamente o
 mesmo tratamento de falha e disjuntor que os workers de IA."""
 
 ROOT = Path(__file__).resolve().parents[1]

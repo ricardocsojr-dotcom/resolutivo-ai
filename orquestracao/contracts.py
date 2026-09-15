@@ -86,16 +86,17 @@ class CircuitBreakerError(RuntimeError):
 
 @dataclass(frozen=True, slots=True)
 class Packet:
-    """Pacote imutável enviado ao OmniRoute para um papel."""
+    """Pacote imutável entregue a um worker para um papel."""
 
     role: str
-    combo: str                    # nome do Combo em roteamento.json
+    combo: str                    # identificador do modelo em roteamento.json (legado de nome)
     system_prompt: str            # regras e contrato da etapa
     user_prompt: str              # pacote mínimo da matéria
     matter_id: str
     phase: str
     output_contract: str = ""     # nome do contrato de saída esperado
     timeout_seconds: int = 600
+    effort: str = "medium"        # low | medium | high — esforço de raciocínio do worker
 
     def __post_init__(self) -> None:
         if self.role not in VALID_ROLES:

@@ -2,7 +2,7 @@
   "schema_version": "2",
   "levels": {
     "C": {
-      "description": "Peça simples/juntada: escrita pelo Combo leve, direto para QA e DOCX",
+      "description": "Peça simples/juntada: escrita no chat, direto para QA e DOCX",
       "workers": {
         "writer": {
           "engine": "chat",
@@ -39,23 +39,26 @@
       }
     },
     "B": {
-      "description": "Peça desenvolvida: planejada, escrita e validada por Combos RDAA",
+      "description": "Peça desenvolvida: planejada, escrita e validada por CLIs diretas isoladas",
       "workers": {
         "planner": {
-          "engine": "omniroute",
-          "provider": "omniroute",
-          "model": "RJ-Planejamento",
-          "budget": "fast"
+          "engine": "claude",
+          "provider": "anthropic",
+          "model": "claude-sonnet-5",
+          "budget": "fast",
+          "effort": "low"
         },
         "writer": {
-          "engine": "omniroute",
-          "provider": "omniroute",
-          "model": "RJ-Escrita-Pesada"
+          "engine": "codex",
+          "provider": "openai",
+          "model": "gpt-5.6-terra",
+          "effort": "medium"
         },
         "validator": {
-          "engine": "omniroute",
-          "provider": "omniroute",
-          "model": "RJ-Revisao-Final"
+          "engine": "claude",
+          "provider": "anthropic",
+          "model": "claude-sonnet-5",
+          "effort": "medium"
         }
       },
       "worker_allowed_phases": {
@@ -106,28 +109,32 @@
       }
     },
     "A": {
-      "description": "Peça premium: planejada, redigida, criticada e validada por Combos RDAA",
+      "description": "Peça premium: planejada, redigida, criticada e validada por CLIs diretas isoladas",
       "workers": {
         "planner": {
-          "engine": "omniroute",
-          "provider": "omniroute",
-          "model": "RJ-Planejamento",
-          "budget": "exhaustive"
+          "engine": "claude",
+          "provider": "anthropic",
+          "model": "claude-sonnet-5",
+          "budget": "exhaustive",
+          "effort": "high"
         },
         "writer": {
-          "engine": "omniroute",
-          "provider": "omniroute",
-          "model": "RJ-Escrita-Pesada"
+          "engine": "codex",
+          "provider": "openai",
+          "model": "gpt-6-astra",
+          "effort": "low"
         },
         "critic": {
-          "engine": "omniroute",
-          "provider": "omniroute",
-          "model": "RJ-Leitura"
+          "engine": "antigravity",
+          "provider": "google",
+          "model": "gemini-3.7-flash",
+          "effort": "high"
         },
         "validator": {
-          "engine": "omniroute",
-          "provider": "omniroute",
-          "model": "RJ-Revisao-Final"
+          "engine": "claude",
+          "provider": "anthropic",
+          "model": "claude-sonnet-5",
+          "effort": "high"
         }
       },
       "worker_allowed_phases": {
@@ -190,35 +197,31 @@
   },
   "standalone_tasks": {
     "council": {
-      "engine": "omniroute",
-      "provider": "omniroute",
-      "model": "RJ-Planejamento"
+      "engine": "claude",
+      "provider": "anthropic",
+      "model": "claude-sonnet-5"
     },
     "adversarial_review": {
-      "engine": "omniroute",
-      "provider": "omniroute",
-      "model": "RJ-Leitura"
+      "engine": "antigravity",
+      "provider": "google",
+      "model": "gemini-3.7-flash"
     },
     "doc_extraction_primary": {
-      "engine": "omniroute",
-      "provider": "omniroute",
-      "model": "RJ-Leitura"
+      "engine": "antigravity",
+      "provider": "google",
+      "model": "gemini-3.7-flash"
     },
     "doc_extraction_secondary": {
-      "engine": "omniroute",
-      "provider": "omniroute",
-      "model": "RJ-Leitura"
+      "engine": "antigravity",
+      "provider": "google",
+      "model": "gemini-3.7-flash"
     },
     "general_corrections": {
-      "engine": "omniroute",
-      "provider": "omniroute",
-      "model": "RJ-Revisao-Final"
+      "engine": "claude",
+      "provider": "anthropic",
+      "model": "claude-sonnet-5"
     }
   },
-  "standby_combos": [
-    "static-best-free",
-    "static-best-coding"
-  ],
   "vaults": {
     "cerebro-ricar": {
       "mode": "read_only_and_registration_receipt_required",

@@ -4,9 +4,9 @@ Conecta papéis lógicos (planner, writer, critic, validator) à fonte real
 de conteúdo de cada um, conforme o `engine` declarado em
 ``orquestracao/roteamento.json`` para o papel:
 
-- ``engine != "chat"`` (claude, codex, antigravity, ...): o motor envia o
-  pacote mínimo ao Combo via HTTP OmniRoute (``orquestracao/omniroute.py``)
-  e usa a resposta como conteúdo do papel.
+- ``engine`` direto (claude, codex, antigravity): o motor envia o pacote
+  mínimo diretamente à CLI isolada, sem OmniRoute, Combos, MCP, memória ou
+  contexto do projeto.
 - ``engine == "chat"``: o próprio Codex/chat que conduz a sessão é quem
   produz o conteúdo -- a V4 (§1) proíbe chamar ``codex exec``, ``claude``,
   ``agy`` ou Hermes como CLIs a partir do motor.  Nesse caso o worker lê
@@ -36,7 +36,7 @@ from pathlib import Path
 from typing import Any
 
 from orquestracao.contracts import ContractError, RDAAState, ROLE_OUTPUT_PHASE, sha256_text
-from orquestracao.omniroute import OmniRouteClient
+from orquestracao.direct_workers import DirectWorkerClient, SUPPORTED_ENGINES
 from orquestracao.prompts import (
     build_critic_packet,
     build_planner_packet,
@@ -146,8 +146,8 @@ def _compile_docx(state: RDAAState, role: str, markdown_text: str) -> dict[str, 
 def production_worker(role: str, state: RDAAState) -> dict[str, Any]:
     """Worker de produção real, para injeção em ``RDAAEngine(worker=...)``.
 
-    HTTP OmniRoute para papéis com Combo externo; artefato manual do
-    Codex para papéis com ``engine: "chat"``.  Compila o candidato DOCX
+    CLI direta isolada para papéis externos; artefato manual do Codex para
+    papéis com ``engine: "chat"``. Compila o candidato DOCX
     quando ``role`` é o papel que produz o texto final da peça.
     """
     route = state.get("route", {})
@@ -165,13 +165,13 @@ def production_worker(role: str, state: RDAAState) -> dict[str, Any]:
                 f"retomar esta fase."
             )
         content = artifact.read_text(encoding="utf-8")
-    else:
+    elif engine in SUPPORTED_ENGINES:
         builder = _PACKET_BUILDERS.get(role)
         if builder is None:
             raise ContractError(f"papel {role!r} sem builder de pacote conhecido")
         kwargs: dict[str, str] = {}
         if role == "planner":
-            kwargs["facts"] = _read_optional(state_dir / "packages" / "intake.md")
+            kwargs["facts"] = _read_planner_input(state_dir)
             kwargs["vault_context"] = _read_optional(
                 state_dir / "packages" / "cerebro-contexto.json"
             )
@@ -186,20 +186,16 @@ def production_worker(role: str, state: RDAAState) -> dict[str, Any]:
                 _read_optional(state_dir / "packages" / "cerebro-contexto.json"),
             )))
         packet = builder(state, **kwargs)
-        client = OmniRouteClient()
-        output_dir = state_dir / "packages" if state_dir else None
-        content, receipt = client.send(packet, output_dir=output_dir)
+        content, execution = DirectWorkerClient().send(engine, packet)
+    else:
+        raise ContractError(
+            f"engine {engine!r} não autorizado no fluxo RDAA; "
+            "use claude, codex, antigravity ou chat"
+        )
 
     result: dict[str, Any] = {"content": content}
     if engine != "chat":
-        result["execution"] = {
-            "requested_combo": receipt.requested_combo,
-            "resolved_model": receipt.resolved_model,
-            "resolved_provider": receipt.resolved_provider,
-            "http_status": receipt.http_status,
-            "duration_ms": receipt.duration_ms,
-        }
-        result["receipt_path"] = str(output_dir / f"{role}-001.receipt.json")
+        result["execution"] = execution
     if _is_doc_producer_role(role, route):
         comp = _compile_docx(state, role, content)
         
@@ -223,15 +219,16 @@ def production_worker(role: str, state: RDAAState) -> dict[str, Any]:
                 
                 # Monta pacote legítimo usando o builder, mas com prompts de autocorreção
                 fix_packet = Packet(
-                    role="writer_heavy",  # papel genérico, não será validado contra VALID_ROLES antes do envio
-                    combo=route.get("workers", {}).get(role, {}).get("model", "RJ-Escrita-Pesada"),
+                    role="writer_heavy",
+                    combo=route["workers"][role]["model"],
                     system_prompt=fix_sys,
                     user_prompt=fix_user,
                     matter_id=state.get("matter_id", "peca"),
                     phase="qa_fix",
+                    effort=route["workers"][role].get("effort", "medium"),
                 )
                 try:
-                    fixed_content, _ = client.send(fix_packet, output_dir=output_dir)
+                    fixed_content, _ = DirectWorkerClient().send(engine, fix_packet)
                     # Recompilar com o resultado do auto-fix
                     comp = _compile_docx(state, role, fixed_content)
                     content = fixed_content
@@ -247,3 +244,23 @@ def production_worker(role: str, state: RDAAState) -> dict[str, Any]:
 
 def _read_optional(path: Path) -> str:
     return path.read_text(encoding="utf-8") if path.is_file() else ""
+
+
+def _read_planner_input(state_dir: Path) -> str:
+    """Exige o pacote mínimo rastreável antes de gastar o planner.
+
+    ``intake.md`` permanece como fonte integral auditável. O planner recebe
+    exclusivamente o recorte humano/determinístico salvo em
+    ``packages/planner-input.md`` para impedir que um PDF bruto seja enviado
+    ao modelo por acidente.
+    """
+    path = state_dir / "packages" / "planner-input.md"
+    if not path.is_file():
+        raise ContractError(
+            "planner-input.md obrigatório antes do planner; "
+            "não envie packages/intake.md bruto ao modelo"
+        )
+    content = path.read_text(encoding="utf-8")
+    if not content.strip():
+        raise ContractError("planner-input.md está vazio")
+    return content

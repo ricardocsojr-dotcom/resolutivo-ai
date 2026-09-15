@@ -22,30 +22,6 @@ CEREBRO = Path(CEREBRO_PATH)
 WIKI_OPERACIONAL = CEREBRO / "wiki" / "operacional"
 
 
-def _sincronizar_openviking(
-    source_dir: Path,
-    *,
-    cerebro_root: Path,
-    receipt_path: Path,
-    processing_mode: str = "vectors_only",
-    watch_interval: int = 60,
-    timeout: int = 300,
-) -> dict[str, Any]:
-    """Sincroniza a coleção operacional sem acoplar o importador ao módulo."""
-    try:
-        from sincronizar_openviking import sync_path
-
-        return sync_path(
-            source_dir,
-            cerebro_root=cerebro_root,
-            receipt_path=receipt_path,
-            processing_mode=processing_mode,
-            timeout=timeout,
-        )
-    except Exception as exc:
-        return {"success": False, "error": f"falha ao carregar sincronizador OpenViking: {exc}"}
-
-
 def _now() -> str:
     """ISO 8601 com Z."""
     return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
@@ -439,36 +415,6 @@ def registrar(state_dir: Path | str, matter_id: str, level: str) -> dict[str, An
     }
     receipt_path.write_text(json.dumps(receipt, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-    openviking_result = _sincronizar_openviking(
-        WIKI_OPERACIONAL,
-        cerebro_root=CEREBRO,
-        receipt_path=state_dir / "OPENVIKING-RECIBO.json",
-        processing_mode="vectors_only",
-        watch_interval=0,
-        timeout=300,
-    )
-    if not openviking_result.get("success"):
-        return {
-            "success": False,
-            "cerebro_registered": True,
-            "openviking_sync": openviking_result,
-            "error": "Cérebro-Ricar registrado, mas a sincronização OpenViking ficou pendente",
-            "matter_id": matter_id,
-            "file": str(file_path),
-            "receipt": str(receipt_path),
-        }
-
-    entities_dir = CEREBRO / "wiki" / "entities"
-    if entities_dir.exists():
-        _sincronizar_openviking(
-            entities_dir,
-            cerebro_root=CEREBRO,
-            receipt_path=state_dir / "OPENVIKING-RECIBO-ENTITIES.json",
-            processing_mode="vectors_only",
-            watch_interval=0,
-            timeout=300,
-        )
-
     # Grava o recibo NO MANIFESTO, não só em disco.
     #
     # Correção 2026-09-11 (bug real): até aqui o script escrevia
@@ -484,9 +430,8 @@ def registrar(state_dir: Path | str, matter_id: str, level: str) -> dict[str, An
         return {
             "success": False,
             "cerebro_registered": True,
-            "openviking_sync": openviking_result,
             "manifest_sync": sync_record,
-            "error": "Cérebro e OpenViking sincronizados, mas o recibo não entrou em vault.syncs[] do manifesto",
+            "error": "Cérebro-Ricar registrado, mas o recibo não entrou em vault.syncs[] do manifesto",
             "matter_id": matter_id,
             "file": str(file_path),
             "receipt": str(receipt_path),
@@ -497,7 +442,6 @@ def registrar(state_dir: Path | str, matter_id: str, level: str) -> dict[str, An
         "matter_id": matter_id,
         "file": str(file_path),
         "receipt": str(receipt_path),
-        "openviking_sync": openviking_result,
         "manifest_sync": sync_record,
         "level": level,
         "title": _extrair_titulo_peca(ctx),
