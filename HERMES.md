@@ -9,15 +9,15 @@ Hermes é o gerente da operação: abre e acompanha matérias, carrega skills, a
 3. `matter_state.json` e `provenance.jsonl` preservam fatos, fontes e decisões explícitas.
 4. `AGENTS.md`, `CLAUDE.md` e a `SKILL.md` aplicável definem as regras jurídicas e operacionais.
 
-Antes de uma operação jurídica, leia `AGENTS.md`, `CLAUDE.md`, `roteamento-ia.md` e a skill aplicável. Não trate esta instrução como substituta desses contratos.
+Antes de uma operação jurídica, leia `AGENTS.md`, `CLAUDE.md`, `referencias/decisoes-roteamento-motores-2026-08-30.md` e a skill aplicável. Não trate esta instrução como substituta desses contratos.
 
 ## Regras de operação
 
 - Use `orquestrador_rdaa.py` para inicializar, avançar e validar o estado; não avance fase apenas porque a conversa parece concluída.
-- Monte pacotes mínimos. Trabalhadores recebem somente o contexto previsto em `contratos-agentes.md`.
+- Monte pacotes mínimos. Trabalhadores recebem somente o contexto previsto em `AGENTS.md`.
 - Antes de chamar uma CLI, valide papel, motor e fase pelo manifesto. Um lock por matéria serializa cada mutação de estado. Chame Claude, Codex e Agy diretamente; não use `delegate_task` como mensageiro entre eles.
 - Registre toda chamada no manifesto com `executar_motor.py --state-dir ... --role ...`.
-- Em B/A, depois de `intake_ready`, gere o pacote read-only do Ementário com `integracao_obsidian.py`, registre-o e só então avance para `vault_context_ready`. O contexto entra como `informada`, nunca como validação de tese.
+- Em B/A, depois de `intake_ready`, gere o pacote read-only do Cérebro-Ricar com `integracao_obsidian.py`, registre-o e só então avance para `vault_context_ready`. O contexto entra como `informada`, nunca como validação de tese.
 - `vault_registered` exige recibo com hash do registro no Cérebro-Ricar. O recibo é gerado por `registrar_cerebro.py` após publicação real; solicitação pendente não equivale a sincronização.
 - Não faça fallback silencioso. Falha, quota, timeout ou conflito de rota bloqueia a matéria.
 - Gates humanos usam `clarify` no Hermes. Sem aprovação explícita, nunca passe por um gate aberto nem de `awaiting_skeleton_approval`.

@@ -20,7 +20,7 @@ como estimativa de trabalho, com limitações visíveis, e não como previsão c
 probabilidade estatística ou decisão jurídica.
 
 A classificação de risco de cada pedido é uma entrada estruturada que deve estar
-justificada por prova ou fato identificado. O script `liquidar_pedidos.py` apenas
+justificada por prova ou fato identificado. O script a automação provida pelo motor LangGraph apenas
 normaliza a entrada, calcula meses, soma valores e aplica o percentual fornecido.
 Ele não escolhe `provavel`, `possivel` ou `remoto`, não lê texto livre e não
 avalia pertinência jurídica.
@@ -72,7 +72,7 @@ visto pelo escritório.
 
 ## Fluxo obrigatório
 
-### Etapa 1 — Leitura e qualificação dos pedidos
+### Leitura e qualificação dos pedidos
 
 Leia a petição inicial (e a contestação, se houver). Para cada pedido, explícito ou
 implícito, registre: tipo (dano material, dano moral, lucros cessantes, repetição de
@@ -86,7 +86,7 @@ classifique como "possível" ou "provável" sem apontar o documento/fato especí
 sustenta a classificação — é a mesma exigência de rastreabilidade que o resto do padrão
 RDAA já cobra.
 
-### Etapa 1.5 — Histórico interno do escritório, somente se autorizado
+### 5 — Histórico interno do escritório, somente se autorizado
 
 A consulta ao vault não é automática. Só use o histórico interno se Ricardo
 autorizar a fonte na execução e se o contexto fornecer o caminho válido. Quando
@@ -98,7 +98,7 @@ continue apenas com as entradas e fontes explicitamente aprovadas. Não crie
 registro no vault ao final e não trate um caso como candidato a gravação futura
 sem solicitação separada.
 
-### Etapa 2 — Jusbrasil, somente se autorizado
+### Jusbrasil, somente se autorizado
 
 Esta etapa só pode ser executada quando Ricardo autorizar explicitamente o
 Jusbrasil na execução e houver sessão disponível. A busca não é presumida pela
@@ -158,20 +158,19 @@ e uma de 2025 não são comparáveis em R$ nominal — rode cada valor de refer�
 de colocá-los lado a lado ou de usá-los como âncora do valor a provisionar. Sem isso, o
 intervalo de referência fica artificialmente distorcido a favor do precedente mais antigo.
 
-### Etapa 3 — Liquidação determinística
+### Liquidação determinística
 
 Pedidos com período e valor definidos (repetição de indébito, lucros cessantes) NUNCA
 devem ser somados em prosa. Preencha um JSON estruturado e rode:
 
 ```
-python scripts/liquidar_pedidos.py pedidos.json
 ```
 
 Veja o cabeçalho do script para o formato exato do JSON. O script devolve o valor
 liquidado por pedido e a provisão ponderada (valor × percentual de risco definido na
 Etapa 1) — sem arredondamento livre do modelo.
 
-### Etapa 4 — Provisão financeira (atualização monetária)
+### Provisão financeira (atualização monetária)
 
 Para atualizar qualquer valor no tempo (correção monetária, juros), use a skill
 `calculo-judicial` — não estime SELIC, IPCA ou qualquer índice de cabeça, mesmo que pareça
@@ -185,32 +184,32 @@ Se já houver sentença (situação de borda — normalmente isso já seria caso
 `analise-provisao-rdaa`), acrescente honorários de sucumbência e a multa do art. 523 do
 CPC conforme as regras em `references/metodologia-previsao-condenacao.md`.
 
-### Etapa 5 — Relatório final
+### Relatório final
 
 Use este formato:
 
 ```
-## 1. Resumo do caso
+## Resumo do caso
 Comarca/Vara | Réu | Valor da causa | Fase atual
 
-## 2. Tabela de pedidos
+## Tabela de pedidos
 Pedido | Período | Valor liquidado | Risco (%) | Fundamento da classificação
 
-## 3. Histórico interno do escritório (vault)
+## Histórico interno do escritório (vault)
 [casos do mesmo réu/tipo de pedido já registrados em wiki/processos/, ou "réu/pedido
 ainda não visto no vault — este caso é candidato a registro futuro"]
 
-## 4. Histórico do réu e jurisprudência de referência (Jusbrasil)
+## Histórico do réu e jurisprudência de referência (Jusbrasil)
 Histórico do réu: amostra de N processos localizados | desfecho observado | taxa empírica
 de procedência [ou: "réu não localizado nas buscas — sem taxa"]
 Jurisprudência de valor: [ementas citadas, com valor e link — ver formato de
 buscar-jurisprudencia]
 
-## 5. Provisão financeira sugerida
+## Provisão financeira sugerida
 Valor liquidado total | Atualização monetária (índice e período usados) | Provisão
 ponderada | TOTAL
 
-## 6. Limitações desta análise
+## Limitações desta análise
 [o que não pôde ser confirmado, amostra pequena, ausência de histórico interno, etc.]
 ```
 

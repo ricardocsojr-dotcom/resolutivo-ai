@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Registra anotações, decisões, metas e reflexões pessoais no Cérebro-Ricar e sincroniza no OpenViking.
+"""Registra anotações, decisões, metas e reflexões pessoais no Cérebro-Ricar.
 
 Uso:
     py -3.14 scripts/registrar_pessoal.py --title "Meta Q4 2026" --category metas --content "Texto da meta..."
@@ -78,28 +78,12 @@ def registrar_nota_pessoal(
     except Exception as exc:
         print(f"[AVISO] Falha ao atualizar index.json: {exc}", file=sys.stderr)
 
-    # Sincroniza OpenViking
-    openviking_result = {}
-    try:
-        from sincronizar_openviking import sync_path
-        receipt_path = pessoal_dir / ".sync-receipt.json"
-        openviking_result = sync_path(
-            pessoal_dir,
-            cerebro_root=cerebro_root,
-            receipt_path=receipt_path,
-            processing_mode="vectors_only",
-            timeout=300,
-        )
-    except Exception as exc:
-        openviking_result = {"success": False, "error": str(exc)}
-
     return {
         "success": True,
         "file": str(file_path),
         "slug": slug,
         "title": title,
         "category": category,
-        "openviking_sync": openviking_result,
         "timestamp": now_str,
     }
 

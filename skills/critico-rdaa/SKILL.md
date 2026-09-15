@@ -99,19 +99,19 @@ declare isso explicitamente em vez de forçar um achado artificial.
 Conteúdo, na ordem definida em `metodologia-estrategica.md` §8 (Comando
 REVISAR):
 
-### 1. Diagnóstico crítico
+### Diagnóstico crítico
 Riscos e lacunas identificados, com localização (bloco/parágrafo) e a
 contratese específica que expõe cada um.
 
-### 2. Teses não exploradas
+### Teses não exploradas
 Linhas de argumentação que os fatos permitiam e a peça não usou.
 
-### 3. Vulnerabilidades adversas identificáveis
+### Vulnerabilidades adversas identificáveis
 O que a parte contrária atacaria primeiro — cada item marcado como
 **vulnerabilidade real** (a peça fica exposta) ou **já neutralizada** (a
 peça antecipou e respondeu) — nunca deixe implícito, declare qual dos dois.
 
-### 4. Oportunidades estratégicas
+### Oportunidades estratégicas
 Argumentos, provas ou modelos mentais de `metodologia-estrategica.md` §3
 (inversão, segunda ordem, custo de oportunidade) que fortaleceriam a peça
 sem exigir fatos novos.
@@ -124,9 +124,9 @@ pra saber se uma prova documental existe nos autos), marque
 
 Desde 2026-09-01, Hermes gerencia este método por rota persistida e chama
 Antigravity diretamente, sem `Agent` nem checkpoint manual. O orquestrador
-monta o pacote `critico` com `skills/revisor-rdaa/scripts/contexto_rdaa.py`,
-grava em `.rdaa-run/<matter_id>/PROMPT-CRITICO.md` e executa
-`executar_motor.py antigravity` com `--state-dir` e `--role critic`.
+monta o pacote `critico` com a automação provida pelo motor LangGraph,
+grava em `espaço de estado do processo.md` e executa
+a automação provida pelo motor LangGraph antigravity` com `--state-dir` e `--role critic`.
 
 A rota B/A exige crítica independente; C recebe crítica quando risco escalá-la
 ou houver pedido explícito. Falha, quota ou timeout pausa a matéria. O crítico

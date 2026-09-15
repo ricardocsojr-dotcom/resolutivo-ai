@@ -15,11 +15,11 @@ SPEC.loader.exec_module(MODULE)
 
 
 def _vault(tmp_path: Path) -> Path:
-    vault = tmp_path / "ementario"
+    vault = tmp_path / "cerebro"
     (vault / "wiki" / "domains").mkdir(parents=True)
     (vault / "wiki" / "concepts").mkdir()
     (vault / "wiki" / "sources").mkdir()
-    (vault / "CLAUDE.md").write_text("# Ementário\n", encoding="utf-8")
+    (vault / "CLAUDE.md").write_text("# Cérebro-Ricar\n", encoding="utf-8")
     (vault / "wiki" / "domains" / "dano-moral.md").write_text(
         "# Dano moral\n\n[[tese-exemplo]]\n", encoding="utf-8"
     )
@@ -34,12 +34,12 @@ def _vault(tmp_path: Path) -> Path:
     return vault
 
 
-def test_consulta_ementario_cria_pacote_somente_leitura_com_proveniencia(tmp_path):
+def test_consulta_cerebro_cria_pacote_somente_leitura_com_proveniencia(tmp_path):
     vault = _vault(tmp_path)
-    output = tmp_path / "EMENTARIO-CONTEXTO.json"
+    output = tmp_path / "CEREBRO-CONTEXTO.json"
     before = {path.relative_to(vault): path.read_bytes() for path in vault.rglob("*") if path.is_file()}
 
-    package = MODULE.consultar_ementario(vault, "dano-moral", output)
+    package = MODULE.consultar_cerebro(vault, "dano-moral", output)
 
     saved = json.loads(output.read_text(encoding="utf-8"))
     after = {path.relative_to(vault): path.read_bytes() for path in vault.rglob("*") if path.is_file()}
@@ -61,20 +61,20 @@ def test_consulta_ementario_cria_pacote_somente_leitura_com_proveniencia(tmp_pat
     assert "[REDACTED]" in source_content
 
 
-def test_consulta_ementario_rejeita_identificador_de_dominio_inseguro(tmp_path):
+def test_consulta_cerebro_rejeita_identificador_de_dominio_inseguro(tmp_path):
     with pytest.raises(ValueError, match="domínio"):
-        MODULE.consultar_ementario(_vault(tmp_path), "../segredo", tmp_path / "resultado.json")
+        MODULE.consultar_cerebro(_vault(tmp_path), "../segredo", tmp_path / "resultado.json")
 
 
 def test_cli_de_consulta_nao_expoe_conteudo_do_vault(tmp_path, monkeypatch, capsys):
     vault = _vault(tmp_path)
-    output = tmp_path / "EMENTARIO-CONTEXTO.json"
+    output = tmp_path / "CEREBRO-CONTEXTO.json"
     monkeypatch.setattr(
         sys,
         "argv",
         [
             "integracao_obsidian.py",
-            "consultar-ementario",
+            "consultar-cerebro",
             "--vault-root",
             str(vault),
             "--domain",
@@ -101,7 +101,7 @@ def test_caminho_resolvido_fora_do_cerebro_e_rejeitado(tmp_path):
         MODULE._require_within_root(vault, external)
 
 
-def test_consulta_ementario_rejeita_link_simbolico_para_arquivo_externo(tmp_path):
+def test_consulta_cerebro_rejeita_link_simbolico_para_arquivo_externo(tmp_path):
     vault = _vault(tmp_path)
     external = tmp_path / "segredo.txt"
     external.write_text("conteúdo externo", encoding="utf-8")
@@ -113,4 +113,4 @@ def test_consulta_ementario_rejeita_link_simbolico_para_arquivo_externo(tmp_path
         pytest.skip(f"symlink indisponível neste ambiente: {exc}")
 
     with pytest.raises(ValueError, match="fora do Cérebro"):
-        MODULE.consultar_ementario(vault, "dano-moral", tmp_path / "resultado.json")
+        MODULE.consultar_cerebro(vault, "dano-moral", tmp_path / "resultado.json")

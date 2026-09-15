@@ -10,15 +10,7 @@ assert SPEC and SPEC.loader
 SPEC.loader.exec_module(MODULE)
 
 
-def test_fonte_verificada_dispara_sincronizacao_openviking(tmp_path, monkeypatch):
-    calls = []
-
-    def fake_sync(*args, **kwargs):
-        calls.append((args, kwargs))
-        return {"success": True, "root_uri": "viking://resources"}
-
-    monkeypatch.setattr(MODULE, "_sincronizar_openviking", fake_sync)
-
+def test_fonte_verificada_registra_no_cerebro(tmp_path):
     result = MODULE.registrar_fonte_verificada(
         ementa_literal="Ementa literal verificada.",
         tribunal="STJ",
@@ -32,7 +24,6 @@ def test_fonte_verificada_dispara_sincronizacao_openviking(tmp_path, monkeypatch
     )
 
     assert result["success"] is True
-    assert result["openviking_sync"]["success"] is True
-    assert calls
-    assert calls[0][0][0].name == "sources"
-    assert calls[0][1]["processing_mode"] == "vectors_only"
+    assert result["cerebro_registered"] is True
+    assert "openviking_sync" not in result
+    assert Path(result["path"]).is_file()

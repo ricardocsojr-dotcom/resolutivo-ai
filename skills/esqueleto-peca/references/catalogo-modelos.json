@@ -8,7 +8,7 @@
     ],
     "tipo_c_sem_redacao_por_blocos": true,
     "vault_automatico": false,
-    "vault_automatico_nota": "Falso só pro escopo deste playbook (seleção de modelo). O Ementário do Resolutivo é consultado automaticamente pelo redigir-peca em B/A, fora deste playbook — ver redigir-peca/SKILL.md passo 9.",
+    "vault_automatico_nota": "Falso só pro escopo deste playbook (seleção de modelo). O Cérebro-Ricar é consultado automaticamente pelo redigir-peca em B/A, fora deste playbook — ver redigir-peca/SKILL.md passo 9.",
     "conteudo_do_modelo_nao_e_fato_do_caso": true,
     "pendencia_para_dado_ausente": "[PONTO A CONFERIR]",
     "fontes_externas_devem_ser_registradas_no_esqueleto": true,

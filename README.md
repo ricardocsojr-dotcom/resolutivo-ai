@@ -1,8 +1,8 @@
-# Resolutivo.AI — Plugin Jurídico RDAA
+# Juridico.AI — Plugin Jurídico RDAA
 
 Workspace de IA e plugin jurídico para o contencioso cível e consumerista do
 **Romano Donadel Advogados Associados (RDAA)**.
-O pacote público usa o identificador `resolutivo-ai`.
+O pacote público usa o identificador `juridico-ai`.
 
 Reúne, como skills, todo o fluxo de trabalho do setor Resolutivo: redação e
 revisão de peças, cálculo judicial determinístico, análise de risco e
@@ -15,20 +15,20 @@ leitura obrigatória antes de mexer em qualquer skill.
 
 ```
 /plugin marketplace add ricardocsojr-dotcom/resolutivo-ai
-/plugin install resolutivo-ai
+/plugin install juridico-ai
 ```
 
-Porta de entrada para uma peça: `/resolutivo-ai:redigir-peca`.
+Porta de entrada para uma peça: `/juridico-ai:redigir-peca`.
 
 ## Estrutura
 
 ```
-resolutivo-ai/
+juridico-ai/
 ├── CLAUDE.md              # Regras do escritório, o que é automático e o que não é
 ├── AGENTS.md              # Contrato comum carregado por Codex e Antigravity
 ├── skills/                # Cada pasta é uma skill (SKILL.md + scripts/ + references/)
 ├── referencias/indices/   # Tabelas de índice usadas pela skill calculo-judicial
-├── roteamento-ia.md       # Como o trabalho se divide entre Claude Code, Codex e Gemini
+├── referencias/decisoes-roteamento-motores-2026-08-30.md       # Como o trabalho se divide entre Claude Code, Codex e Gemini
 ├── requirements.txt       # Dependências Python dos scripts das skills (docx, xlsx, pdf, etc.)
 └── tests/                 # Suíte pytest dos scripts determinísticos das skills
 ```
@@ -36,7 +36,7 @@ resolutivo-ai/
 Não há servidor MCP remoto hospedado por este repositório — o que existe é
 só o plugin e seus scripts locais. Claude Code e Codex usam o pacote inteiro;
 Antigravity lê `AGENTS.md` e recebe, por chamada direta, apenas o recorte da
-etapa descrito em `roteamento-ia.md`. Não há agentes-wrapper entre as CLIs.
+etapa descrito em `referencias/decisoes-roteamento-motores-2026-08-30.md`. Não há agentes-wrapper entre as CLIs.
 
 ## Rodando os testes
 

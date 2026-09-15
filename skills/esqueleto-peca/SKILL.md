@@ -54,7 +54,7 @@ internos para montar parágrafos e assinatura.
 
 Esta skill (montagem do esqueleto em si) não consulta vault nenhum — ela só
 recebe o material já organizado por `redigir-peca`, que nos tipos B/A já
-inclui o que veio da consulta automática ao Ementário do Resolutivo (passo
+inclui o que veio da consulta automática ao Cérebro-Ricar (passo
 9 de `redigir-peca/SKILL.md`). O playbook de modelos organiza somente
 estruturas aprovadas e não aplica automaticamente tese, fato, fonte,
 pedido ou pertinência jurídica — vindo do vault ou de qualquer outra
@@ -77,7 +77,7 @@ Gatilhos da v1 (ajustáveis — não são regra jurídica, são limiar operacion
    não declarado — se o valor não está calculado ainda, isso já é um `[FALTA]`
    normal, não este gatilho.
 2. **Tese central sem nenhuma fonte/ementa que a sustente**, no tipo A, depois
-   da pesquisa de jurisprudência automática (passo 4 de `redigir-peca`) não
+   da pesquisa de jurisprudência automática (na fase previa de `redigir-peca`) não
    ter encontrado nada aproveitável. Redigir uma tese "nova" sem qualquer
    precedente interno ou jurisprudência selecionada é decisão de Ricardo, não
    do fluxo.
@@ -85,12 +85,12 @@ Gatilhos da v1 (ajustáveis — não são regra jurídica, são limiar operacion
    causa ou qualificação de parte — lacunas em blocos formais menores (ex.:
    opção por audiência) não travam, só ficam marcadas no esqueleto normal.
 4. **Crítico (`critico-rdaa`) aponta vulnerabilidade que a rodada automática
-   de correção do passo 7.5 não resolveu por completo.** Hoje isso só vira
+   de correção apontada pela IA ou pelo usuário não resolveu por completo.** Hoje isso só vira
    nota na entrega; quando a vulnerabilidade remanescente for de tese central
    (não de forma), trava aqui em vez de publicar com pendência não resolvida.
 
 Não é gatilho: prazo da peça (nunca questionar tempestividade, ver
-`CLAUDE.md`), nível da peça (A/B/C não é risco), e conteúdo do Ementário
+`CLAUDE.md`), nível da peça (A/B/C não é risco), e conteúdo do Cérebro-Ricar
 do Resolutivo (mesmo sendo consultado automaticamente em B/A, o que ele
 traz é `status: informada` — não vira sinal automático deste gate nem tese
 aprovada sozinho).

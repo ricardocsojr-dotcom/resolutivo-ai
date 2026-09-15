@@ -1,6 +1,6 @@
 # Contrato comum do workspace RDAA
 
-Antes de trabalhar, leia `CLAUDE.md`, `roteamento-ia.md` e a `SKILL.md` aplicável. Para redigir ou revisar peça, leia também `skills/contencioso-rdaa/references/redacao-rdaa.md`.
+Antes de trabalhar, leia `CLAUDE.md`, `referencias/decisoes-roteamento-motores-2026-08-30.md` e a `SKILL.md` aplicável. Para redigir ou revisar peça, leia também `skills/contencioso-rdaa/references/redacao-rdaa.md`.
 
 ## Papéis e segregação
 
@@ -28,6 +28,6 @@ Antes de trabalhar, leia `CLAUDE.md`, `roteamento-ia.md` e a `SKILL.md` aplicáv
 
 ## Vaults
 
-- O Ementário do Resolutivo é leitura automática somente em peças B/A, nos termos de `skills/redigir-peca/SKILL.md`.
+- O Cérebro-Ricar é leitura automática somente em peças B/A, nos termos de `skills/redigir-peca/SKILL.md`.
 - O vault operacional "Procedimentos e Informações" só é consultado a pedido.
 - Não escreva diretamente no vault WSL. Use apenas o fluxo de ingestão previsto pela skill de redação.

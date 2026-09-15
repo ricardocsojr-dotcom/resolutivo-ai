@@ -118,7 +118,7 @@ Narrativa livre da situação atual da matéria, entre peças. Fato, tese,
 decisão e risco de uma peça em produção vivem em
 `.rdaa-run/{materia_id}/matter_state.json` (Claude Code/Codex) — este
 arquivo não duplica isso. Jurisprudência e tese consolidada vivem no
-vault (ementário do Resolutivo), consultado automaticamente antes de
+vault (Cérebro-Ricar do Resolutivo), consultado automaticamente antes de
 redigir peça B/A — este arquivo também não duplica isso.
 
 ## Situação atual

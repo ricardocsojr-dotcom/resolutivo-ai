@@ -30,17 +30,17 @@ Os perfis iniciais ficam em `references/normalization_profiles.json` e são
 apenas mapas técnicos. Perfil não significa aprovação da fonte ou da fórmula.
 Os mapeamentos observados do TJMG e do TJSP ficam em
 `references/fontes-oficiais-indices.md` e continuam com status candidato. O
-atalho `scripts/preparar_fonte_candidata.py` recebe um perfil e um arquivo local
+atalho a automação provida pelo motor LangGraph recebe um perfil e um arquivo local
 para repetir a preparação sem reescrever parâmetros no contexto do agente. Ele
 não baixa a fonte, não promove o índice e não altera o manifesto.
 
 Não há consulta automática ao vivo obrigatória. O Ricardo ou a equipe entrega
 o arquivo bruto, planilha, CSV ou PDF, e a skill estrutura uma cópia local sem
-alterar o original. O script `scripts/registrar_indice_candidato.py` valida o
+alterar o original. O script a automação provida pelo motor LangGraph valida o
 CSV, calcula o SHA-256 e grava a proveniência, mas não modifica o manifesto nem
 promove o índice para aprovado. Para fontes em XLS, XLSM ou PDF, usar
-`scripts/normalizar_indice_candidato.py`. Após o caso dourado aprovado, usar
-`scripts/promover_indice_aprovado.py` para escrever uma cópia do manifesto.
+a automação provida pelo motor LangGraph. Após o caso dourado aprovado, usar
+a automação provida pelo motor LangGraph para escrever uma cópia do manifesto.
 O manifesto de origem nunca é sobrescrito automaticamente. Esse promotor exige
 proveniência, hashes, fórmula de referência, resultado esperado, resultado
 observado, tolerância, responsável e data de aprovação. O candidato permanece
@@ -73,7 +73,7 @@ não converte vírgula decimal silenciosamente e não altera o arquivo bruto.
 2. **Entrada de nova fonte** — receber o arquivo bruto baixado manualmente,
    registrar órgão, URL, competência, código da série e data de coleta, e
    preservar o original fora do CSV normalizado.
-3. **Candidato local** — executar `registrar_indice_candidato.py` para
+3. **Candidato local** — executar a automação provida pelo motor LangGraph para
    validar cabeçalho, datas, ordem, duplicidades, valores e SHA-256. A saída
    será um JSON candidato. O script não consulta a internet, não altera o
    manifesto e não substitui o arquivo aprovado.
@@ -83,20 +83,20 @@ não converte vírgula decimal silenciosamente e não altera o arquivo bruto.
 5. Se faltar o mês mais recente na tabela local, bloquear ou avisar antes de
    calcular. Não adivinhar, interpolar ou preencher ausência com zero.
 
-## Cobertura atual das tabelas locais (atualizado em 2026-08-27)
+## Cobertura atual das tabelas locais (atualizado em 2026-09-14)
 
 | Arquivo | Período | Frequência |
 |---|---|---|
-| `tjmg-nao-expurgada.csv` | 1990-01 a 2026-08 | mensal |
-| `tjsp.csv` | 1990-01 a 2026-08 | mensal |
-| `tjrj.csv` | 1990-01 a 2026-08 | mensal |
-| `taxa-legal.csv` | 1995-03 a 2026-08 | diária |
-| `inpc.csv` | 1990-01 a 2026-07 | mensal |
-| `ipca.csv` | 1990-01 a 2026-07 | mensal |
-| `igp-m.csv` | 1990-01 a 2026-07 | mensal |
-| `selic.csv` | 1995-02 a 2026-07 | mensal |
-| `cdi.csv` | 1990-01 a 2026-07 | mensal |
-| `poupanca-nova.csv` | 2012-05 a 2026-08 (aniversários até 26/08) | por data de aniversário (diária) |
+| `tjmg-nao-expurgada.csv` | 1990-01 a 2026-09 | mensal |
+| `tjsp.csv` | 1990-01 a 2026-09 | mensal |
+| `tjrj.csv` | 1990-01 a 2026-12 | mensal |
+| `taxa-legal.csv` | 1995-03 a 2026-09 | diária |
+| `inpc.csv` | 1990-01 a 2026-08 | mensal |
+| `ipca.csv` | 1990-01 a 2026-08 | mensal |
+| `igp-m.csv` | 1990-01 a 2026-08 | mensal |
+| `selic.csv` | 1995-02 a 2026-09 | mensal |
+| `cdi.csv` | 1990-01 a 2026-09 | mensal |
+| `poupanca-nova.csv` | 2012-05 a 2026-09 (aniversários até 11/09) | por data de aniversário (diária) |
 
 `poupanca-nova.csv` usa a data de início de cada período de aniversário
 (regra da poupança: rende a cada mês a partir da data do depósito, não no
@@ -117,7 +117,7 @@ BCB conta os dias corridos.
 
 ## Fluxo de cálculo
 
-### 1. Coletar os parâmetros — sempre perguntados, nunca inferidos
+### Coletar os parâmetros — sempre perguntados, nunca inferidos
 
 - Valor principal
 - Data de início da correção monetária
@@ -126,12 +126,12 @@ BCB conta os dias corridos.
 - Data final do cálculo (padrão: hoje)
 - Índice — se não informado, usa TJMG não expurgada
 
-### 2. Ler a tabela local do índice escolhido
+### Ler a tabela local do índice escolhido
 
 Ler `referencias/indices/[indice].csv`. Se a tabela não tiver o mês mais
 recente necessário, avisar antes de calcular — não interpolar nem estimar.
 
-### 3. Calcular mês a mês
+### Calcular mês a mês
 
 Aplicar o índice de cada mês sobre o saldo, do início ao fim do período.
 Juros aplicados separadamente conforme a taxa informada, a partir da data de
@@ -144,7 +144,7 @@ caso dourado aprovados. O contrato estrutural fica em
 `references/juros-segmentados-schema.json`.
 
 
-### 4. Entregar
+### Entregar
 
 - Planilha/tabela mês a mês (data, índice do mês, saldo corrigido)
 - Valor final atualizado
@@ -168,21 +168,20 @@ As linhas vazias começam sem status e o resumo considera uma memória sem
 lançamentos como `candidato`, nunca como `aprovado`. O total de cada linha só
 é preenchido quando o status da linha é explicitamente `aprovado`.
 
-O script `scripts/renderizar_memoria_template.py` recebe um JSON com metadados,
+O script a automação provida pelo motor LangGraph recebe um JSON com metadados,
 lançamentos, resultados já calculados, fonte do índice, casos dourados e regras
 declaradas. Ele copia o template, transporta os valores explícitos e salva uma
 nova planilha. Não baixa dados, não recalcula a aritmética, não escolhe índice,
 não aprova candidato e não altera o arquivo-base.
 
 **Template simples** (`references/template-calculo-simples-rdaa.xlsx` +
-`scripts/renderizar_memoria_simples.py`, criado em 2026-08-27): pra casos
+a automação provida pelo motor LangGraph, criado em 2026-08-27): pra casos
 com um índice só e sem juros segmentados/múltiplos lançamentos complexos.
 Uma aba `Cálculo` (uma linha por parcela, coluna `Tipo` = Principal,
 Honorários ou Custas) + uma aba `Notas` (lista de linhas de texto livre,
 racional do cálculo). Sem as abas de governança do template completo —
 proveniência e caso dourado continuam só no `index_manifest.json`.
 
-## Motor Python (`scripts/calculo_motor.py`)
 
 Implementação local com manifesto em `references/index_manifest.json`, só
 biblioteca padrão + `Decimal` + CSV local + SHA-256. Não busca índice
@@ -193,7 +192,7 @@ externo, não interpola mês/dia ausente, não decide termo inicial.
 dourado aprovado e calculam de verdade —
 `tjmg-nao-expurgada`, `tjsp-tabela-pratica`, `selic`, `cdi`, `ipca`,
 `inpc`, `igp-m` (conferidos contra a API do Banco Central,
-`scripts/atualizar_indice_bcb.py`), `tjrj` (conferido contra a série
+a automação provida pelo motor LangGraph), `tjrj` (conferido contra a série
 histórica completa do DrCalc, colada por Ricardo — a tabela do TJRJ é
 atualizada anualmente, não mês a mês, por isso repete o mesmo valor
 durante o ano; `avisar_cobertura: true` avisa até que mês está
@@ -223,16 +222,16 @@ cálculo local somente quando solicitado.
 
 **Índices com fonte automática no BCB** — `selic`, `cdi`, `ipca`, `inpc`,
 `igp-m` e `poupanca-nova` têm série no SGS do Banco Central
-(`scripts/atualizar_indice_bcb.py --indice NOME --csv referencias/indices/NOME.csv
+(a automação provida pelo motor LangGraph --indice NOME --csv referencias/indices/NOME.csv
 --data-inicial AAAA-MM-DD`, sem chave de API). Poupança usa a série 195, uma
 linha por dia de aniversário — a mesma lógica de data+valor do script já
 funciona sem alteração, confirmado em 2026-08-27.
 
 **Índice sem fonte automática** (ex.: TJRJ, Taxa Legal) — atualização manual
-via `scripts/atualizar_indice_manual.py --indice NOME --csv
+via a automação provida pelo motor LangGraph --indice NOME --csv
 referencias/indices/NOME.csv --arquivo-novo NOVO.csv`: só adiciona data
 nova, recusa sobrescrever valor existente que divirja (mesma regra do
-`atualizar_indice_bcb.py`). Taxa Legal não tem série SGS numérica — só a
+a automação provida pelo motor LangGraph). Taxa Legal não tem série SGS numérica — só a
 Calculadora do Cidadão do BCB, que não expõe API; conferir manualmente
 contra ela quando atualizar. Manifesto pode marcar `"avisar_cobertura":
 true` num índice — toda vez que ele for usado, o resultado inclui em
@@ -242,7 +241,6 @@ pra nunca passar despercebido.
 ## Alertas de implementação verificados em 09/09/2026
 
 - O CSV canônico fica em `C:/Projetos/resolutivo-ai/referencias/indices/`, não dentro da pasta da skill.
-- BUG 100x CORRIGIDO em 09/09/2026: os CSVs INPC/IPCA/IGP-M/Selic/CDI contêm frações decimais; o manifesto agora declara `unidade: decimal_mensal`. O tipo histórico `taxa_mensal_percentual` permanece por compatibilidade, mas `_monthly_factor` aplica `1 + valor` para unidade decimal e `1 + valor/100` para `percentual_mensal`; outras unidades são bloqueadas. Resumo e detalhe usam a mesma fórmula e o mesmo piso de deflação. Os CSVs, hashes e aprovações das fontes não foram alterados. Regressão: `uv run --with pytest python -m pytest tests/test_calculo_motor.py tests/test_calculo_escala_regressao.py -q` (34 testes). Inclui sete meses dos cinco CSVs reais nos dois tratamentos de deflação. Atualizadores e futuras promoções devem preservar a unidade do CSV: o tipo histórico, sozinho, não determina a escala. Os casos dourados antigos validam valores da fonte, não substituem estes testes ponta a ponta.
 - TJMG usa `fator_acumulado`, sem essa divisão. Porém o ramo de fatores não implementa o piso de deflação mensal: passar `piso_zero_no_mes` não basta. Para o padrão do escritório, é necessário aplicar e auditar `produto(max(1, indice_mes/indice_anterior))`, distinguindo esse ajuste da aplicação integral da tabela oficial. Não afirmar que o motor aplicou o piso sem testar.
 - Na conferência TJMG, razões do CSV e fatores oficiais arredondados podem divergir em casas além da sétima. Registrar as diferenças e verificar a igualdade dos valores monetários arredondados para cada principal real; não afirmar identidade exata dos fatores.
 - O portal TJMG carrega os links dos índices dinamicamente. HTML obtido por requests pode trazer só `LumisPortal.renderInterfaceInstance`. Chrome DevTools MCP, leitura DOM após carregamento, permitiu obter links oficiais PDF/XLS; não concluir ausência da tabela pelo HTML estático.

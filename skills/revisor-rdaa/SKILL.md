@@ -75,15 +75,15 @@ Não reescreva a peça integralmente, salvo pedido expresso. Quando houver reesc
 
 ## Fluxo de trabalho
 
-### Passo 1 — Identificar o modo
+### Identificar o modo
 
 Se o material for texto/Word/PDF editável: modo JURÍDICO.
 Se for PDF final: modo VISUAL.
 Se for ambos: executar JURÍDICO primeiro, VISUAL depois.
 
-### Passo 1b — Rodar o script determinístico (modo JURÍDICO, sempre antes da leitura)
+### b — Rodar o script determinístico (modo JURÍDICO, sempre antes da leitura)
 
-Antes de ler o texto, rode `scripts/verificar_estilo.py` no arquivo (.docx ou
+Antes de ler o texto, rode a automação provida pelo motor LangGraph no arquivo (.docx ou
 .txt exportado). O script conta travessão recorrente, ponto-e-vírgula em cadeia,
 tricolon de negação, aberturas defensivas recorrentes, dois-pontos e apartes
 explicativos entre parênteses ou travessões pareados. Uma LLM lendo
@@ -94,19 +94,19 @@ A leitura qualitativa dos checklists continua necessária para eco de conclusão
 cadência homogênea e demais aspectos que dependem de julgamento.
 
 ```
-python3 scripts/verificar_estilo.py caminho/para/peca.docx
+python3 a automação provida pelo motor LangGraph caminho/para/peca.docx
 ```
 
 Se o script sair com código 1, os achados dele são vício confirmado e não
 sugestão a considerar. Corrigir o texto antes de prosseguir e registrar o
 resultado na Parte 1 e na Parte 2 do relatório.
 
-### Passo 1c — Revisão semântica objetiva quando houver estado da matéria
+### c — Revisão semântica objetiva quando houver estado da matéria
 
-Se existir `.rdaa-run/<matter_id>/matter_state.json`, execute também:
+Se existir `espaço de estado do processo.json`, execute também:
 
 ```
-python3 scripts/semantica_rdaa.py .rdaa-run/<matter_id> review
+python3 a automação provida pelo motor LangGraph espaço de estado do processo review
 ```
 
 Esse script compara somente IDs, referências, identidade processual, duplicidade
@@ -123,31 +123,24 @@ registre que a rastreabilidade semântica não estava disponível.
 A manutenção do estado local não é uma etapa automática de redação ou publicação.
 Quando Ricardo solicitar diagnóstico, use:
 
-```bash
-python3 scripts/manutencao_rdaa.py inspect .rdaa-run
-```
 
 A limpeza sempre começa em simulação. A execução efetiva exige `--apply` e move
 matérias antigas para uma quarentena local, sem exclusão direta:
 
-```bash
-python3 scripts/manutencao_rdaa.py clean .rdaa-run \\
-  --older-than-days 90 --apply --quarantine .rdaa-quarantine
-```
 
 O comando não toca em `.rdaa-backups` sem uma seleção explícita. Para conferir
 um backup sem alterar o destino, use `restore-test`. Para restaurar de fato, use
 `restore` com `--backup-dir` quando já houver arquivo final; assim, a versão atual
 também é preservada antes da troca.
 
-### Passo 2 — Ler o checklist correspondente
+### Ler o checklist correspondente
 
 Para JURÍDICO: leia `references/checklist-1-juridico.md` **e** `references/checklist-3-estilometria.md` — nessa ordem, os dois, sempre.
 Para VISUAL: leia `references/checklist-2-visual.md`
 
 Execute os checklists integralmente. Não pule seções.
 
-### Passo 3 — Autochecagem silenciosa antes de responder
+### Autochecagem silenciosa antes de responder
 
 Confirme internamente:
 - [ ] Fui crítico e útil — não complacente?
@@ -166,7 +159,7 @@ Confirme internamente:
 - [ ] Marquei pontos a conferir com `[PONTO A CONFERIR]`?
 - [ ] Entreguei exatamente as quatro partes obrigatórias?
 
-### Passo 4 — Entregar a saída nas quatro partes obrigatórias
+### Entregar a saída nas quatro partes obrigatórias
 
 ---
 
@@ -253,7 +246,7 @@ Não reproduza essas listas aqui — leia o núcleo antes de revisar.
 ## Estado compartilhado entre agentes
 
 Antes da revisão, o orquestrador monta o pacote `revisor` com
-`skills/revisor-rdaa/scripts/contexto_rdaa.py`, usando o mesmo diretório isolado
+a automação provida pelo motor LangGraph, usando o mesmo diretório isolado
 da matéria. O pacote fornece fatos necessários para conferência, fontes e
 citações utilizadas, regras aplicáveis, pendências e, quando pertinente, o
 relatório explícito do `critico-rdaa`.

@@ -30,14 +30,14 @@ conectar a extensão do Claude no Chrome antes de usar esta skill.
 
 ## Fluxo de execução
 
-### Passo 1 — Coletar os parâmetros da busca
+### Coletar os parâmetros da busca
 
 Se o usuário não informou o tema, pergunte:
 1. **Tema ou termo de busca** (ex: "negativação indevida", "dano moral atraso de voo")
 2. **Tribunal** (opcional — STJ, STF, TJSP, TJMG, TRF, etc. Se não informado, busca em todos)
 3. **Quantidade de ementas** (padrão: 3)
 
-### Passo 2 — Navegar até o Jusbrasil
+### Navegar até o Jusbrasil
 
 Use `mcp__Claude_in_Chrome__navigate` para acessar:
 ```
@@ -48,7 +48,7 @@ Aguarde a página carregar. Se o Jusbrasil redirecionar para login, pare e
 informe o usuário: *"Você precisa estar logado no Jusbrasil no Chrome. Faça o
 login e me avise para continuar."*
 
-### Passo 3 — Executar a busca
+### Executar a busca
 
 Use `mcp__Claude_in_Chrome__find` para localizar o campo de busca principal.
 Em seguida, clique no campo com `mcp__Claude_in_Chrome__computer` e digite o
@@ -58,7 +58,7 @@ Se o usuário especificou um tribunal, aplique o filtro correspondente após os
 resultados carregarem (use `mcp__Claude_in_Chrome__find` para localizar o
 filtro de tribunal).
 
-### Passo 4a — Ranquear os resultados antes de abrir qualquer um
+### a — Ranquear os resultados antes de abrir qualquer um
 
 Use `mcp__Claude_in_Chrome__get_page_text` para ler a **página de resultados
 inteira** (não abra nenhum acórdão ainda). Cada resultado já vem com tribunal,
@@ -86,7 +86,7 @@ de tribunal). Se a primeira página não tiver bons candidatos suficientes,
 pode navegar pra próxima página de resultados antes de decidir — ainda sem
 abrir nenhum acórdão individual.
 
-### Passo 4b — Extrair as ementas dos escolhidos
+### b — Extrair as ementas dos escolhidos
 
 Só agora, para cada resultado selecionado no passo 4a:
 
@@ -113,7 +113,7 @@ citá-lo sem ressalva. Não vá ao inteiro teor "por precaução" ou "para garan
 sem esse gatilho concreto — isso é navegação extra sem ganho, e é a diferença
 entre uma busca de minutos e uma busca que multiplica o tempo por acórdão.
 
-### Passo 5 — Apresentar os resultados
+### Apresentar os resultados
 
 Formate cada ementa desta forma:
 

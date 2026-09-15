@@ -46,6 +46,10 @@ from verificar_semantica_docx import verify_docx_semantics  # noqa: E402
 from verificar_visual_law import verify_visual_law  # noqa: E402
 from validar_esqueleto import validate_skeleton  # noqa: E402
 from classificacao_peca import validate_piece_contract  # noqa: E402
+from estado_contrato import validar_state_dir, EstadoDirError
+
+
+
 
 
 def _registrar_cerebro_pos_publicacao(
@@ -55,7 +59,7 @@ def _registrar_cerebro_pos_publicacao(
     *,
     registrar_fn: Callable[[Path, str, str], dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    """Registra no Cérebro e dispara a sincronização OpenViking após publicação."""
+    """Registra no Cérebro após publicação."""
     level = context.get("nivel_peca")
     if level not in {"C", "B", "A"}:
         return {"success": False, "error": "contexto publicado sem nivel_peca válido (C/B/A)"}
@@ -113,12 +117,18 @@ def main() -> int:
             print(f"[ERRO] contexto JSON inválido: {exc}", file=sys.stderr)
             return 2
 
-    matter_id = matter_id_from_context(context, args.output) if context else args.output.stem
-    state_dir = args.state_dir or (
-        args.output.parent / ".rdaa-run" / matter_id
-        if context is not None
-        else args.output.parent / ".rdaa-run"
-    )
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from estado_contrato import MatterId
+
+    matter_id = matter_id_from_context(context, args.output) if context else MatterId.normalize(args.output.stem)
+    state_dir = args.state_dir or (args.output.parent / ".rdaa-run" / matter_id)
+
+    try:
+        validar_state_dir(state_dir, matter_id=matter_id)
+    except EstadoDirError as exc:
+        print(f"[ERRO] {exc}", file=sys.stderr)
+        return 2
     candidate_state_dir = None
     evaluation_state_dir = state_dir
     if context is not None:
@@ -312,7 +322,7 @@ def main() -> int:
                 print("[ERRO] DOCX publicado, mas registro/sincronização do Cérebro falhou", file=sys.stderr)
                 print(json.dumps(cerebro_result, ensure_ascii=False), file=sys.stderr)
                 return 1
-            print("[OK] Cérebro-Ricar e OpenViking sincronizados")
+            print("[OK] Cérebro-Ricar sincronizado")
     print(f"[OK] DOCX publicado após QA: {args.output}")
     print(f"[INFO] backup anterior: {backup or 'não havia arquivo anterior'}")
     return 0

@@ -121,6 +121,7 @@ def compilar_markdown_para_contexto(
     # Detecta se há bloco de abertura inicial
     abertura_encontrada = False
     idx_linha = 0
+    em_secao_pedidos = False
     
     while idx_linha < len(corpo_lines):
         raw = corpo_lines[idx_linha].strip()
@@ -148,7 +149,7 @@ def compilar_markdown_para_contexto(
             clean_open = re.sub(r'</?[bui]>', '', raw)
             m_open = re.match(r'^(.*?),\s*(já\s+qualificad[ao].*?)(?:,\s*com\s+fundamento\s+no\s+(.*?))?,\s*(?:vem|apresentar|formular|interpor|propor|opor)\s*(.*?)(?:,\s*pelas\s+razões|\.\s*$)', clean_open, re.IGNORECASE)
             
-            nome_parte = "TRIVALE ADMINISTRAÇÃO LTDA."
+            nome_parte = "[NOME DA PARTE]"
             nome_peca = "MANIFESTAÇÃO"
             resto = ", já qualificada nos autos, por seus advogados que esta subscrevem, vem, respeitosamente, à presença de Vossa Excelência, "
             resto_depois = ", pelas razões a seguir expostas."
@@ -196,14 +197,28 @@ def compilar_markdown_para_contexto(
         # Título de Pedidos
         if "PEDIDOS" in raw.upper() and (raw.startswith("#") or raw.startswith("**")):
             blocos.append({"tipo": "titulo", "texto": "PEDIDOS", "sequencia": "corpo"})
+            em_secao_pedidos = True
             idx_linha += 1
             continue
 
-        # Alíneas de pedidos (a., a), i., i), 1., 1))
-        m_alinea = re.match(r'^(?:[a-z]|\d+|[ivxlcdm]+)[.)]\s*(.*)$', raw, re.IGNORECASE)
-        if m_alinea and ("requer" in markdown_text.lower() or idx_linha > len(corpo_lines) - 20):
-            texto_alinea = m_alinea.group(1).strip()
-            # Remove travessões proibidos
+        # Fecho e Data/Local finais (já gerenciados pelo construtor do documento)
+        if re.search(r'^(?:nestes\s+termos|pede\s+deferimento|aguarda\s+deferimento)', raw, re.IGNORECASE):
+            idx_linha += 1
+            continue
+        if re.match(r'^(?:uberl[âa]ndia|local|data|\d+\s+de\s+[a-z]+)', raw, re.IGNORECASE):
+            idx_linha += 1
+            continue
+
+        # Parágrafo de publicações exclusivas (captura para o metadado do contexto)
+        if "publicações" in raw.lower() or "publicacoes" in raw.lower() or "sob pena de nulidade" in raw.lower():
+            publicacoes_texto = raw.replace("—", ", ")
+            idx_linha += 1
+            continue
+
+        # Alíneas de pedidos (letras a., a), i., i), ou se já estiver na seção de pedidos)
+        m_alinea_letra = re.match(r'^(?:[a-z]|[ivxlcdm]+)[.)]\s*(.*)$', raw, re.IGNORECASE)
+        if m_alinea_letra and (em_secao_pedidos or "requer:" in markdown_text.lower() or idx_linha > len(corpo_lines) - 20):
+            texto_alinea = m_alinea_letra.group(1).strip()
             texto_alinea = texto_alinea.replace("—", ", ")
             blocos.append({
                 "tipo": "alinea",
@@ -214,18 +229,25 @@ def compilar_markdown_para_contexto(
             idx_linha += 1
             continue
 
-        # Parágrafo Numerado do Corpo
+        # Parágrafo Numerado do Corpo (1. Texto...)
         m_num = re.match(r'^\d+\.\s*(.*)$', raw)
-        texto_paragrafo = m_num.group(1).strip() if m_num else raw
-        
-        # Substitui travessões automáticos por vírgula
-        texto_paragrafo = texto_paragrafo.replace("—", ", ")
-        
-        # Se for introdução de pedidos com dois-pontos
+        if m_num:
+            texto_paragrafo = m_num.group(1).strip()
+            texto_paragrafo = texto_paragrafo.replace("—", ", ")
+            if texto_paragrafo.endswith("requer:") or texto_paragrafo.endswith("requerem:"):
+                em_secao_pedidos = True
+            blocos.append({
+                "tipo": "numerado",
+                "texto": texto_paragrafo,
+                "sequencia": "corpo"
+            })
+            idx_linha += 1
+            continue
+
+        # Parágrafo não numerado do corpo (fallback)
+        texto_paragrafo = raw.replace("—", ", ")
         if texto_paragrafo.endswith("requer:") or texto_paragrafo.endswith("requerem:"):
-            # É permitido dois pontos antes de alíneas
-            pass
-            
+            em_secao_pedidos = True
         blocos.append({
             "tipo": "numerado",
             "texto": texto_paragrafo,
@@ -242,17 +264,12 @@ def compilar_markdown_para_contexto(
         "modo_redacao": "blocos",
         "redacao_por_blocos": True,
         "exigir_esqueleto": nivel_peca in {"A", "B"},
-        "enderecamento": enderecamento or "EXCELENTÍSSIMO(A) SENHOR(A) DOUTOR(A) JUIZ(A) DE DIREITO DA 14ª VARA CÍVEL E EMPRESARIAL DA COMARCA DE BELÉM/PA",
-        "numero_processo": numero_processo or "0879903-83.2025.8.14.0301",
-        "partes": partes or "Autora: TRIVALE ADMINISTRAÇÃO LTDA.\nRé: EQUATORIAL PARÁ DISTRIBUIDORA DE ENERGIA S.A.",
+        "enderecamento": enderecamento or "[ENDEREÇAMENTO A CONFERIR]",
+        "numero_processo": numero_processo,
+        "partes": partes,
         "blocos": blocos,
-        "publicacoes_texto": publicacoes_texto or (
-            "Requer que as publicações referentes a este feito sejam realizadas exclusivamente "
-            "em nome do advogado Wanderley Romano Donadel, OAB/MG 78.870, pelo endereço eletrônico "
-            "wanderley@romanodonadel.com.br, e que as correspondências postais sejam encaminhadas à "
-            "Avenida dos Vinhedos, n.º 200, Conjunto 4, Gávea Office, Morada da Colina, Uberlândia/MG, "
-            "CEP 38.411-159, sob pena de nulidade."
-        ),
+        "publicacoes_texto": publicacoes_texto,
+        "publicacoes": True,
         "data_local": data_local_uberlandia(),
         "fecho": "Nestes termos, aguarda deferimento."
     }
