@@ -123,12 +123,10 @@ função.
 
 ### Texto de acompanhamento
 
-Escreva seguindo o Núcleo Único de Escrita do RDAA
-(`contencioso-rdaa/references/redacao-rdaa.md` — leitura obrigatória):
-linguagem direta, ordem direta, tese fundida na primeira frase de cada
-parágrafo, sem firulas nem expressões arcaicas. A estrutura não é a de uma
-peça (sem "dos fatos/do direito/dos pedidos") — organize por sub-tema do
-estudo, cada seção respondendo uma pergunta específica.
+Escreva com clareza, precisão, coerência e concisão, usando o núcleo RDAA como
+referência linguística, não como molde de petição. Um estudo pode abrir um
+parágrafo com definição, problema, pergunta, dado, corrente interpretativa ou
+precedente. Organize por subtema; cada seção responde uma pergunta específica.
 
 ### Publicar como Artifact
 

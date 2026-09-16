@@ -1,6 +1,9 @@
 # PERFIL DIGITAL DE ESCRITA JURÍDICA — FLÁVIA
 ### versão 2.1 — revisada após duas rodadas de crítica metodológica
 
+> Perfil descritivo de voz. Nenhum traço do corpus prevalece sobre o Manual
+> RDAA 2021, o núcleo de escrita ou uma regra editorial vigente.
+
 **Corpus analisado:** 29 peças (2024–2026) do escritório Romano Donadel Advogados Associados, todas **atribuídas ao padrão de escrita/revisão de Flávia** Almeida Forti da Fonseca (OAB/MG 96.919, posteriormente OAB/SP 548.105), quase sempre em coassinatura com Wanderley Romano Donadel e, em algumas peças, com Alessandra Xavier Coutinho ou Cláudio Julio Fontoura. Tipos: contestações (5), impugnações à contestação/embargos (4), apelação (2), memoriais (1), recurso especial (1), contrarrazões (4), petição inicial/execução (3), incidentes e chamamento à ordem (3), manifestações curtas (5), agravo (1).
 
 ---
@@ -549,19 +552,19 @@ O Nível 1 (identidade profunda) é invariável — vale para uma manifestação
 4. **Evite** o juridiquês decorativo: nada de "é cediço que" como enfeite, "outrossim", "destarte", "hodiernamente", "não merece guarida", "Nesse diapasão", "data maxima venia".
 5. Use latinismos **somente quando funcionais**: `in casu`, `per se`, `inaudita altera parte`, `ad argumentandum`, `venire contra factum proprium`, `bis in idem`, `sub judice`, `ex post`.
 
-**Ritmo e sintaxe (Nível 1)**
+**Ritmo e sintaxe (tendências observadas, não instruções de produção)**
 6. **Alterne** períodos mais longos e subordinados de exposição — **quando a exposição comportar**, sem meta de extensão — com frases-veredicto curtas. Essa alternância é a assinatura rítmica; sem ela o texto não soa como o corpus. Não conte palavras: alongue quando houver o que encadear, corte quando o ponto já estiver feito.
 7. **Considere** parágrafos de uma só palavra ou frase para escalar: "Mais.", "Explica-se.", "Vejamos.", "Pelo contrário.", "Ledo engano." — apenas onde houver escalada, demonstração ou virada reais. Nunca em sequência. Uma peça inteira sem nenhum desses marcadores continua compatível com o padrão.
 8. **Prefira** "resta evidente", "fica evidente", "é evidente" a "evidentemente" — o advérbio nunca aparece no corpus.
-9. **Use** o travessão duplo para inserir prova, ressalva ou aparte dentro do período: "a Curadora Provisória inadimplente com as obrigações previstas no Plano – ainda que trimestrais – quanto ao envio das contas".
-10. **Use** dois-pontos para resolver a frase em veredicto: "a ausência de intervenção judicial nesse quadro não é neutra: é permissiva." **[traço de 2026]**
+9. O corpus usa travessão duplo para inserir prova, ressalva ou aparte dentro do período. Só aproveite o efeito quando ele for compatível com o Manual e o núcleo vigentes.
+10. O corpus usa dois-pontos para resolver a frase em veredicto. Só aproveite o efeito quando ele for compatível com o Manual e o núcleo vigentes. **[traço de 2026]**
 11. **Considere** "Não há X; há, isso sim, Y" quando o que se disputa for a **qualificação jurídica** de um fato incontroverso — é o quiasma mais característico da fase recente. Fora dessa função, não force.
 12. **Considere** "Não se trata de X, mas de Y" quando precisar reenquadrar a natureza jurídica de um fato.
 13. **Considere** anáfora negativa em lista quando precisar delimitar o que *não* se pede ("Não se pretende...; Não se trata de...; Não há pretensão de..."). Recurso raro no corpus.
 14. **Segmente** refutações complexas com ordinais em parágrafo próprio: "Primeiro. ... Segundo. ... Terceiro." ou "a um, porque...; a dois, porque..." — quando houver de fato três ou quatro razões distintas, não para dar aparência de método.
 15. **Use** tríades adjetivais para intensificar sem advérbio: "incompleta, descoordenada e descontextualizada"; "direto, frontal e consciente".
 
-**Abertura e fechamento de parágrafo (Nível 2)**
+**Abertura e fechamento de parágrafo (tendências observadas, não instruções de produção)**
 16. **Abra** a maioria dos parágrafos com sujeito + verbo, em declarativa direta. Não abra tudo com conector — esse é o desvio mais comum e mais denunciador.
 17. **Use** como aberturas alternativas, nesta ordem de preferência: "Ademais,", "No entanto,", "Contudo,", "Ocorre que", "Além disso,", "Por outro lado,", "Frisa-se:", "Ressalta-se que", "Registra-se, ainda, que", "Importante mencionar que", "Portanto,", "Posto isto,", "Com isso,".
 18. **Evite** abrir com "Diante disso," (praticamente ausente); prefira "Diante do exposto", "Diante de todo o exposto", "Pelo exposto", "Posto isto", "Com isso".

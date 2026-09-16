@@ -80,8 +80,8 @@ def test_worker_injeta_intake_cerebro_e_nucleo_rdaa(monkeypatch, tmp_path):
     assert captured["writer"]["sources"] == "Contexto do Cérebro."
     assert "Fatos do teste." in captured["validator"]["sources"]
     assert "Contexto do Cérebro." in captured["validator"]["sources"]
-    assert "Dois-pontos | Proibido" in captured["writer"]["style_guide"]
-    assert "Dois-pontos | Proibido" in captured["validator"]["checklist"]
+    assert "Tópico frasal claro" in captured["writer"]["style_guide"]
+    assert "Pontuação | Aplicar" in captured["validator"]["checklist"]
 
 
 def test_worker_claude_usa_adapter_direto_nunca_omniroute(monkeypatch, tmp_path):

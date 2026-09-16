@@ -51,6 +51,10 @@ def test_resolve_model_planner_b():
 
 def test_resolve_model_writer_b_usa_codex():
     route = load_route("B", ROUTE_PATH)
+    assert resolve_combo("writer", route) == "gpt-5.6-sol"
+
+def test_resolve_model_writer_c_usa_codex():
+    route = load_route("C", ROUTE_PATH)
     assert resolve_combo("writer", route) == "gpt-5.6-terra"
 
 
@@ -80,11 +84,11 @@ def test_writer_packet_repassa_effort_da_rota():
     assert pkt.effort == "medium"
 
 
-def test_writer_packet_nivel_a_usa_gpt6_astra_effort_low():
+def test_writer_packet_nivel_a_usa_effort_high():
     state = _state("A", phase="drafting")
     pkt = build_writer_packet(state)
-    assert pkt.effort == "low"
-    assert pkt.combo == "gpt-6-astra"
+    assert pkt.effort == "high"
+    assert pkt.combo == "gpt-5.6-sol"
 
 
 def test_rotas_ativas_nao_usam_combos_ou_omniroute():

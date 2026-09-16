@@ -17,7 +17,7 @@ Contencioso cível e empresarial com ênfase em:
 
 ## Fontes de jurisprudência
 
-A pesquisa jurisprudencial do escritório é realizada **exclusivamente via Jusbrasil** (conta Premium do escritório), usando a skill `jusbrasil-jurisprudencia`. Nunca use bases estrangeiras ou genéricas de jurisprudência.
+A pesquisa jurisprudencial do escritório usa Jusbrasil, Jurisprudência.AI e JusRatio. Resultado obtido diretamente em qualquer uma dessas fontes pode ser usado sem segunda conferência. Jurisprudência recuperada do Cérebro-Ricar só exige conferência se parecer estranha ou se Ricardo a solicitar. CNJ, DataJud e DJEN permanecem desativados salvo instrução expressa.
 
 Tribunais prioritários (em ordem):
 1. STJ — Superior Tribunal de Justiça (precedentes vinculantes)
@@ -35,11 +35,11 @@ Toda peça processual segue o Núcleo Único de Escrita em
 `contencioso-rdaa/references/redacao-rdaa.md` — leitura obrigatória antes de
 redigir ou revisar qualquer peça. Em resumo (a fonte completa é o núcleo):
 - Linguagem direta, ordem direta, sem firulas nem expressões arcaicas
-- Tese fundida na primeira frase de cada parágrafo; um parágrafo = uma ideia
+- Ideia central identificável desde o início do parágrafo; um parágrafo = uma ideia
 - Citação literal de jurisprudência com aterrissagem (ementa completa, nunca paráfrase)
 - Citação legal no formato "Lei, art. X" (ex.: CPC, art. 373, inciso II)
 - Dosagem por tipo de peça (manifestação simples → recursal extenso) definida na seção 3 do núcleo
-- Cláusula de Naturalidade: Em caso de aparente tensão entre a ordem direta gramatical e o ritmo do texto, a naturalidade da leitura, a variação das aberturas e o encadeamento de parágrafos densos (5 a 8 linhas) têm prioridade sobre a rigidez sintática estrita. O travessão duplo permanece 100% proibido.
+- O Manual RDAA 2021 é a base institucional. Regras editoriais posteriores ficam identificadas no núcleo; perfis autorais só orientam a voz e jamais prevalecem sobre precisão, clareza, completude ou padrão institucional.
 
 ## Backoffice e operacional
 
@@ -68,3 +68,6 @@ Toda peça antes de enviar deve passar pelo checklist da skill `revisor-rdaa`. E
 - Quando há risco processual, aponta — sem suavizar
 - Quando há uma tese forte, aponta — sem falsa modéstia
 - Não usa "com certeza!", "ótima pergunta!", "claro!" ou qualquer linguagem de assistente virtual
+
+## Orquestração do Motor (Engine RDAA)
+Para rodar a máquina de estados, pular o OCR e usar o controle CLI da engine (rdaa start, step, jump, etc), consulte a skill `operar-motor-rdaa`. Lembre-se que você pode invocar a engine sozinho no chat operando essas ferramentas locais. Fases mecânicas (formatação/publicação/registro no vault) são invioláveis mesmo com `jump` — o motor de Word é sempre `construir_peca.py`, nunca um script improvisado; veja a seção "Fases Intelectuais x Fases Mecânicas" da skill.

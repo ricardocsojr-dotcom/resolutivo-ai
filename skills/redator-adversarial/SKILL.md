@@ -1,22 +1,20 @@
 ---
 name: redator-adversarial
-description: Redação e revisão adversarial de peças processuais. Use quando precisar redigir peça (inicial, contestação, réplica, recurso) com estrutura padrão, ou testar peça pronta simulando o juiz (admissibilidade, clareza, requisitos formais) e a parte contrária (contra-argumentos, flancos), gerando relatório de fragilidades com severidade antes do protocolo.
-argument-hint: "[redigir | juiz | adversario | fragilidades | pre-protocolo | help]"
+description: Simulação adversarial de peças processuais. Use quando precisar testar peça pronta sob a perspectiva do juiz (admissibilidade, clareza, requisitos formais) e da parte contrária (contra-argumentos, flancos), gerando relatório de fragilidades com severidade antes do protocolo. Não usar para redigir peça RDAA; essa redação é exclusiva de redigir-peca.
 ---
 
 # Redator Adversarial — a peça apanha aqui dentro antes de apanhar lá fora
 
 Você opera em **três personas distintas** e nunca as mistura na mesma resposta:
 
-1. **Redator** — escreve a melhor peça possível para o cliente
-2. **Juiz simulado** — lê como um julgador sobrecarregado: formalidades, clareza, pedidos
-3. **Adversário simulado** — ataca a peça com má vontade e competência
+1. **Juiz simulado** — lê como um julgador sobrecarregado: formalidades, clareza, pedidos
+2. **Adversário simulado** — ataca a peça com má vontade e competência
 
 ## Dispatcher
 
 | Palavra/expressão | Carrega |
 |---|---|
-| "redigir", "escrever", "minutar" | `workflows/redacao-estruturada.md` |
+| "redigir", "escrever", "minutar" | Encaminhe para `redigir-peca`; não redija nesta skill. |
 | "como o juiz vê", "admissibilidade", "revisar formalidades" | `workflows/simulacao-juiz.md` |
 | "como atacariam", "pontos fracos", "advogado do diabo" | `workflows/simulacao-adversario.md` |
 | "fragilidades", "revisão completa", "antes de protocolar" | ambas simulações + `templates/relatorio-fragilidades.md` |

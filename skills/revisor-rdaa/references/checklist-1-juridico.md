@@ -25,8 +25,8 @@ Execute item por item. Registre o resultado de cada bloco no relatório final.
 ## II. Clareza e coerência
 
 - [ ] Cada parágrafo possui apenas uma ideia central?
-- [ ] O tópico frasal está claro na primeira frase de cada parágrafo?
-- [ ] Há períodos excessivamente longos (mais de três linhas)?
+- [ ] A ideia central é identificável desde o início do parágrafo, sem fórmula conclusiva fixa?
+- [ ] Há períodos cuja extensão ou quantidade de orações prejudique a compreensão?
 - [ ] Há ambiguidades?
 - [ ] Há frases que exigem releitura?
 - [ ] A ordem direta foi respeitada (sujeito + verbo + complemento)?
@@ -53,11 +53,7 @@ Execute item por item. Registre o resultado de cada bloco no relatório final.
 
 ### Abertura repetitiva
 
-- [ ] Há três ou mais parágrafos consecutivos iniciados pelo mesmo artigo?
-- [ ] Pelo mesmo substantivo?
-- [ ] Pelo mesmo sujeito ("A Autora...", "A Autora...", "A Autora...")?
-- [ ] Pelo mesmo verbo ("Alega...", "Alega...", "Alega...")?
-- [ ] Pela mesma estrutura sintática?
+- [ ] Há três ou mais parágrafos próximos com arquitetura de abertura perceptivelmente mecânica, sem necessidade argumentativa?
 
 Variações válidas para substituição:
 - "No caso concreto..."
@@ -109,9 +105,7 @@ Uma abertura negativa isolada não é erro automático. A revisão deve avaliar 
 - [ ] Parágrafo com mais de 10-12 linhas reunindo mais de um argumento/fato/fundamento? (redacao-rdaa.md — extensão do parágrafo)
 - [ ] Número repetido por extenso entre parênteses ("5 (cinco) dias")? Regra: 1-9 por extenso, 10+ numeral, nunca os dois juntos (redacao-rdaa.md / Manual §2.8)
 - [ ] Verbo de comando ("exige", "impõe", "veda"...) atribuindo à parte/advogado o poder de ordenar o julgador? (admitido quando o sujeito é a lei/precedente/contrato — redacao-rdaa.md)
-- [ ] Existe dois-pontos fora de abertura de pedidos, alíneas e citações? (permitido apenas nessas hipóteses)
-- [ ] Existe aposto explicativo prolixo entre parênteses? (parênteses são admitidos apenas para ID, lei, valor ou data)
-- [ ] Existe travessão na peça final? Proibido sem exceção (redacao-rdaa.md).
+- [ ] A pontuação, os apartes e os sinais de destaque servem à clareza e preservam a relação sintática?
 
 ---
 
@@ -139,7 +133,7 @@ Encadeamento obrigatório: **Fato → Prova/Documento → Fundamento → Consequ
 - [ ] Os pedidos decorrem logicamente da fundamentação?
 - [ ] Há pedidos genéricos sem ancoragem na narrativa?
 - [ ] Há pedidos incompatíveis com os fatos narrados?
-- [ ] Os pedidos vêm precedidos de uma frase introdutória sem dois-pontos antes das alíneas? (redacao-rdaa.md — pedidos em cascata)
+- [ ] Os pedidos vêm precedidos de frase introdutória clara antes das alíneas? (redacao-rdaa.md — pedidos em cascata)
 - [ ] Há pedidos redundantes entre si (um já abrange o outro)? (redacao-rdaa.md)
 - [ ] Havendo mais de um pedido possível, estão hierarquizados em cascata (principal → preliminar → sucessivo → sucumbência por último)? (redacao-rdaa.md)
 

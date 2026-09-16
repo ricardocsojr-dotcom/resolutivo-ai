@@ -2,13 +2,19 @@
 
 Fonte de extração: petição inicial de ação de dano moral, Romano Donadel Advogados Associados, junho de 2026.
 
+> Perfil de voz para dano moral. Use-o apenas quando compatível com o Manual
+> RDAA 2021 e com `contencioso-rdaa/references/redacao-rdaa.md`; nunca o trate
+> como exceção de pontuação, destaque, formatação, fonte ou completude jurídica.
+
 ---
 
 ## 1. Estrutura argumentativa fundamental
 
-### A tese precede os fatos
+### A tese pode anteceder ou acompanhar os fatos
 
-Ricardo nunca narra e depois conclui. Ele anuncia a conclusão moral primeiro, depois a demonstra com os fatos. O leitor sabe desde o início o que os episódios significam — e os lê com esse filtro.
+O corpus tende a antecipar a leitura moral do episódio antes ou durante sua
+apresentação, sobretudo em blocos argumentativos de dano moral. Escolha a
+entrada que melhor preserve a cronologia, a clareza e a força do argumento.
 
 **Padrão:**
 > "A ilicitude está justamente na conversão de imputações graves e não demonstradas em fundamento para uma sanção familiar privada."
@@ -133,7 +139,7 @@ Quando há tratamento diferente para pessoas em situação equivalente, Ricardo 
 |---|---|
 | **Negrito** | Tese jurídica, conclusão de ilicitude, nomeação da conduta |
 | *Itálico* | Narrativa de baixa intensidade dramática, citação indireta de conduta |
-| Sublinhado | Conclusão de ilicitude em passagem central, fórmula-chave |
+| Sublinhado | Não usar; o núcleo e o Manual admitem negrito como destaque |
 | Caixa alta parcial | Não usada — Ricardo evita |
 | Parágrafos numerados | Sempre, em petições formais |
 | Títulos de seção em negrito + caixa alta | Para os grandes blocos (I, II, III...) |

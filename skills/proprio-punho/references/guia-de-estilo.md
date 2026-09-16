@@ -1,6 +1,8 @@
 # Guia de estilo — {NOME DO AUTOR}
 
-> **Fonte da verdade na redação.** Toda minuta deve cumprir estas regras. Regras são verificáveis e cada uma tem um exemplo real extraído das peças do autor.
+> **Orientação de voz, subordinada ao núcleo RDAA.** Registre tendências
+> verificáveis, cada uma com exemplo real extraído das peças do autor. Nenhuma
+> tendência prevalece sobre precisão, clareza, completude ou padrão institucional.
 >
 > ⚠️ Este guia ainda está com placeholders `{...}`? Então rode o **Modo Calibração** (ver `SKILL.md` e `analise-de-corpus.md`) antes de redigir qualquer peça. (E se `perfil-do-autor.md` também estiver vazio, comece pela Etapa 0 — Personalização.)
 

@@ -240,7 +240,7 @@ def build_rdaa_graph(
     # Gates humanos como interrupt_before
     interrupt_phases = [
         p for p in stages
-        if HUMAN_GATES.get(p) in spec.get("required_human_gates", [])
+        if HUMAN_GATES.get(p) in spec.get("required_human_gates", []) or p in roles_by_phase
     ]
 
     return graph.compile(
@@ -317,6 +317,15 @@ def _project_manifest(
 # ---------------------------------------------------------------------------
 # Facade persistente
 # ---------------------------------------------------------------------------
+
+def _fases_mecanicas_puladas(
+    stages: list[str], current_idx: int, target_idx: int, system_handlers: dict[str, Any]
+) -> list[str]:
+    """Fases com system_handler determinístico que um jump para frente pularia sem rodar."""
+    if target_idx <= current_idx:
+        return []
+    return [p for p in stages[current_idx + 1 : target_idx] if p in system_handlers]
+
 
 class RDAAEngine:
     """Facade que gerencia uma matéria com SQLite de checkpoints.
@@ -433,6 +442,7 @@ class RDAAEngine:
             "approvals": {},
             "failures": {},
             "consecutive_failures": 0,
+            "options": {},
             "hashes": {},
             "state_dir": str(self.state_dir),
             "route": self._spec,
@@ -471,6 +481,57 @@ class RDAAEngine:
         graph.update_state(self._config, {"approvals": approvals})
         result = graph.invoke(None, config=self._config)
         return result
+
+    def step(self, *, authority: str = "ricardo") -> dict[str, Any]:
+        """Avança a execução quando pausada antes de um Worker."""
+        if authority.strip().casefold() != "ricardo":
+            raise GateError("somente authority: ricardo pode comandar step")
+        current = self.state()
+        if not current:
+            raise ContractError("nenhum estado encontrado")
+        graph = self._build_graph()
+        return graph.invoke(None, config=self._config)
+
+    def jump(self, target_phase: str, *, reason: str = "", authority: str = "ricardo") -> dict[str, Any]:
+        """Pula etapas intermediárias saltando imediatamente para a target_phase fornecida.
+
+        Nunca pula por cima de uma fase mecânica (system_handlers determinístico,
+        ex. qa_passed/published/vault_registered): essas só podem ser alcançadas
+        rodando o grafo de verdade, para o motor oficial (construir_peca.py etc.)
+        realmente executar em vez de ser contornado.
+        """
+        if authority.strip().casefold() != "ricardo":
+            raise GateError("somente authority: ricardo pode comandar jump")
+        if not reason.strip():
+            raise ContractError("justificativa obrigatória para jump")
+
+        current = self.state()
+        if not current:
+            raise ContractError("nenhum estado encontrado")
+
+        stages = current.get("route", {}).get("stages", [])
+        if not stages:
+            raise ContractError("estado sem rota/stages definidos")
+        if target_phase not in stages:
+            raise ValueError(f"Fase {target_phase} inválida")
+
+        current_phase = current.get("phase", "")
+        current_idx = stages.index(current_phase) if current_phase in stages else -1
+        target_idx = stages.index(target_phase)
+        pulados_mecanicos = _fases_mecanicas_puladas(stages, current_idx, target_idx, self.system_handlers)
+        if pulados_mecanicos:
+            raise GateError(
+                f"jump de {current_phase!r} para {target_phase!r} pularia a(s) fase(s) "
+                f"mecânica(s) {pulados_mecanicos} sem executá-las. Rode `step` até "
+                f"alcançar cada uma (elas rodam o motor oficial de verdade) em vez de saltar por cima."
+            )
+
+        # Se target for a primeira fase (idx=0), as_node = START, senão a fase anterior.
+        as_node = START if target_idx == 0 else stages[target_idx - 1]
+
+        graph = self._build_graph()
+        graph.update_state(self._config, {"phase": target_phase, "status": "executing", "failures": {}, "consecutive_failures": 0}, as_node=as_node)
+        return graph.invoke(None, config=self._config)
 
     def state(self) -> dict[str, Any]:
         """Retorna o estado corrente da matéria."""

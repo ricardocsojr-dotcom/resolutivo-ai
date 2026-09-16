@@ -37,8 +37,13 @@ dist/
 *.egg-info/
 *.egg
 
-# RDAA execution — never commit (matter state lives in vault/OneDrive)
+# RDAA execution — never commit (matter state lives em Desktop/Produção Jurídica)
 .rdaa-run/
+
+# Bundles de build do plugin e outputs soltos do Claude Code
+*.plugin
+Claude outputs/
+.agents/
 
 # Temporary files
 *.tmp

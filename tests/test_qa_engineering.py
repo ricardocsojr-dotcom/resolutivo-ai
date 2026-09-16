@@ -167,7 +167,8 @@ def test_style_enforcement(folder: Path) -> None:
         document.add_paragraph(text)
         document.save(path)
         result = run([sys.executable, str(STYLE_CHECKER), str(path)])
-        assert result.returncode == 1, result.stdout + result.stderr
+        assert result.returncode == 0, result.stdout + result.stderr
+        assert "[ALERTA]" in result.stdout, result.stdout + result.stderr
         assert expected in result.stdout, result.stdout + result.stderr
 
     allowed = folder / "list-marker.docx"
@@ -215,7 +216,7 @@ def test_style_enforcement(folder: Path) -> None:
     table.cell(0, 0).text = "A tese está demonstrada: a prova documental confirma o fato."
     document.save(table_colon)
     result = run([sys.executable, str(STYLE_CHECKER), str(table_colon)])
-    assert result.returncode == 1, result.stdout + result.stderr
+    assert result.returncode == 0, result.stdout + result.stderr
     assert "dois-pontos" in result.stdout, result.stdout + result.stderr
 
     table_allowed = folder / "table-allowed.docx"
@@ -244,9 +245,11 @@ def test_style_enforcement(folder: Path) -> None:
     document = Document()
     document.add_paragraph("Esse contexto demonstra que o réu agiu de má-fé durante toda a negociação.")
     document.add_paragraph("Essa circunstância demonstra que o pagamento nunca foi considerado pela perícia.")
+    document.add_paragraph("Esse cenário demonstra que a perícia ignorou o comprovante de quitação.")
     document.save(repeated_opening)
     result = run([sys.executable, str(STYLE_CHECKER), str(repeated_opening)])
-    assert result.returncode == 1, result.stdout + result.stderr
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "[ALERTA]" in result.stdout, result.stdout + result.stderr
     assert "aberturas estruturalmente equivalentes" in result.stdout, result.stdout + result.stderr
 
     varied_opening = folder / "varied-opening.docx"
@@ -275,7 +278,8 @@ def test_defensive_openings(folder: Path) -> None:
     document.add_paragraph("Não se pretende rediscutir o mérito. O pedido decorre do vício registrado.")
     document.save(repeated)
     result = run([sys.executable, str(STYLE_CHECKER), str(repeated)])
-    assert result.returncode == 1, result.stdout + result.stderr
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "[ALERTA]" in result.stdout, result.stdout + result.stderr
     assert "Abertura defensiva recorrente" in result.stdout
 
 
@@ -297,8 +301,8 @@ def test_cadencia_escopo_estilo_e_tabela(folder: Path) -> None:
     document.add_paragraph("O contrato firmado nunca chegou a ser cumprido pela ré.")
     document.save(prosa_normal)
     result = run([sys.executable, str(STYLE_CHECKER), str(prosa_normal)])
-    assert result.returncode == 1, result.stdout + result.stderr
-    assert "mesma palavra do paragrafo anterior" in result.stdout, result.stdout
+    assert result.returncode == 0, result.stdout + result.stderr
+    assert "mesma palavra do paragrafo anterior" not in result.stdout, result.stdout
 
     # 2. Item de lista com marcador NO TEXTO (peça importada/colada, sem
     #    estilo 'RDAA Alínea') repete abertura por natureza e é isento.

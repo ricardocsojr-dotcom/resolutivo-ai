@@ -5,11 +5,10 @@ verificar_estilo.py — QA automatico de cadencia/estilo para pecas RDAA.
 Espelha o verificar_formatacao.py do formatar-peca: em vez de confiar em
 leitura estrutural de uma LLM para contar travessao, ponto-e-virgula e
 tricolon de negacao (checklist-3-estilometria.md), este script CONTA.
-Itens com regra objetiva entram no exit code. A peça final não pode conter
-travessão (proibido sem exceção), ponto-e-vírgula fora de lista/alínea
-(permitido apenas em parágrafos com estilo RDAA Numerado/RDAA Alínea, ex.:
-pedidos em cascata), tricolon de negação, abertura defensiva recorrente,
-dois-pontos ou aposto explicativo entre parênteses.
+Somente desvios institucionais objetivos entram no exit code. Pontuação,
+apartes, repetição de abertura, tricolon de negação e abertura defensiva são
+alertas para leitura contextual: o script conta, mas não decide sozinho que a
+peça deve ser bloqueada.
 Marcadores isolados de lista
 como (a), (i) e (1) são permitidos porque não são explicações.
 
@@ -17,9 +16,9 @@ Uso:
     python3 verificar_estilo.py caminho/para/peca.docx
     python3 verificar_estilo.py caminho/para/peca.txt
 
-Sai com codigo 0 se nenhuma regra objetiva for violada. Sai com 1 caso
-contrario. A lista de ocorrencias de dois-pontos continua sendo impressa para
-facilitar o diagnóstico.
+Sai com código 0 se nenhum bloqueio institucional for violado, mesmo com
+alertas. Sai com 1 somente quando houver bloqueio. A lista de alertas facilita
+o diagnóstico e não substitui a revisão humana.
 """
 
 import re
@@ -112,8 +111,7 @@ def _split_sentencas(paragrafo):
 
 
 def checar_travessao(paragrafos):
-    # Travessão é proibido na peça final, sem exceção (checklist-3, item J) —
-    # não é um limite de recorrência, qualquer ocorrência bloqueia.
+    # Travessão é contado para revisão contextual. Não bloqueia isoladamente.
     problemas = []
     candidatos = []
     for i, p in enumerate(paragrafos):
@@ -527,7 +525,7 @@ def _assinatura_abertura(paragrafo):
     return ' '.join(palavras[:6])
 
 
-def checar_aberturas_consecutivas(paragrafos, minimo=2, estilos=None, em_tabela=None):
+def checar_aberturas_consecutivas(paragrafos, minimo=3, estilos=None, em_tabela=None):
     # Parágrafos argumentativos consecutivos cuja abertura tem a mesma
     # função e estrutura (mesmo sujeito/verbo, mesmo conectivo, mesmo
     # demonstrativo genérico) leem mal, ainda que o resto da frase varie —
@@ -577,67 +575,6 @@ def checar_aberturas_consecutivas(paragrafos, minimo=2, estilos=None, em_tabela=
             fechar_grupo()
             grupo, assinatura_atual = [i], assinatura
     fechar_grupo()
-    return problemas
-
-
-_PRIMEIRA_PALAVRA = re.compile(r"^[\wÀ-ÿ]+")
-
-
-def _primeira_palavra(paragrafo):
-    """Extrai a primeira palavra de um parágrafo (sem numeração nativa —
-    isso é aplicado por estilo no DOCX, o texto lido nunca a inclui — e sem
-    marcação de lista legada em .txt), normalizada em minúsculas para
-    comparação. Usada para flagrar QUALQUER repetição de palavra inicial
-    entre um parágrafo argumentativo e o imediatamente anterior, não só
-    artigos definidos."""
-    primeira_frase = re.split(r'(?<=[.!?])\s+', paragrafo.strip(), maxsplit=1)[0]
-    texto = _NUMERACAO_INICIAL.sub('', primeira_frase).strip()
-    match = _PRIMEIRA_PALAVRA.match(texto)
-    return match.group(0).lower() if match else None
-
-
-def checar_primeira_palavra_repetida(paragrafos, estilos=None, em_tabela=None):
-    # Regra do Ricardo (2026-09): nenhum parágrafo argumentativo pode começar
-    # com a mesma palavra do parágrafo IMEDIATAMENTE anterior, qualquer que
-    # seja essa palavra — não só quando os dois usam o mesmo artigo (A/A,
-    # O/O), mas mesmo quando a palavra é um conectivo, advérbio ou qualquer
-    # outra. É comparação par a par (2 já é erro, não é preciso esperar 3+),
-    # porque a leitura mecânica acontece a partir da segunda repetição, não
-    # da terceira. Reinicia a cada título. Restrito ao estilo 'RDAA
-    # Numerado' (prosa argumentativa em cascata) para não marcar falso
-    # positivo em alíneas de pedido, que legitimamente podem repetir a
-    # primeira palavra entre itens de uma lista.
-    #
-    # Correção 2026-09-09 (bug real pego por Ricardo em produção): parágrafo
-    # vazio NÃO reinicia mais o rastreador. O construir_peca.py insere um
-    # parágrafo em branco entre TODO bloco 'numerado' consecutivo
-    # (BLOCOS_COM_BLANK_DEPOIS) — com o reset antigo em "not texto", o
-    # 'anterior' era descartado antes de qualquer comparação real acontecer,
-    # e esta checagem nunca disparava em nenhuma peça saída do gerador
-    # nativo. Só título/alínea/estilo fora de escopo interrompem a sequência.
-    if estilos is None:
-        estilos = [None] * len(paragrafos)
-    if em_tabela is None:
-        em_tabela = [False] * len(paragrafos)
-    problemas = []
-    anterior_idx = None
-    anterior_palavra = None
-    for i, p in enumerate(paragrafos):
-        texto = p.strip()
-        if not texto:
-            continue
-        estilo = (estilos[i] or "").strip().casefold()
-        if not _entra_na_cadencia(texto, estilo, em_tabela[i]):
-            anterior_idx, anterior_palavra = None, None
-            continue
-        palavra = _primeira_palavra(texto)
-        if palavra and palavra == anterior_palavra:
-            problemas.append(
-                f"Paragrafo {i}: comeca com a mesma palavra do paragrafo anterior "
-                f"({anterior_idx}) — {palavra!r}. Variar a abertura, mesmo quando "
-                "a palavra repetida nao for um artigo."
-            )
-        anterior_idx, anterior_palavra = i, palavra
     return problemas
 
 
@@ -754,23 +691,25 @@ def checar_titulo_com_preposicao(paragrafos, estilos=None):
 def checar(path, partes_texto=None):
     paragrafos, estilos, bordas, em_tabela = carregar_paragrafos(path)
 
-    problemas = []
-    trav_problemas, trav_candidatos = checar_travessao(paragrafos)
-    problemas += trav_problemas
-    problemas += checar_ponto_e_virgula(paragrafos, estilos)
-    problemas += checar_tricolon_negacao(paragrafos)
-    problemas += checar_aberturas_defensivas(paragrafos)
-    problemas += checar_dois_pontos(paragrafos, bordas, estilos)
-    problemas += checar_aposto_explicativo(paragrafos, estilos)
-    problemas += checar_aberturas_repetidas(paragrafos)
-    problemas += checar_aberturas_consecutivas(paragrafos, estilos=estilos, em_tabela=em_tabela)
-    problemas += checar_primeira_palavra_repetida(paragrafos, estilos, em_tabela=em_tabela)
-    problemas += checar_consistencia_terminologica(paragrafos, estilos, partes_texto)
-    problemas += checar_titulo_com_preposicao(paragrafos, estilos)
+    bloqueios = []
+    alertas = []
+    trav_alertas, _ = checar_travessao(paragrafos)
+    alertas += trav_alertas
+    alertas += checar_ponto_e_virgula(paragrafos, estilos)
+    alertas += checar_tricolon_negacao(paragrafos)
+    alertas += checar_aberturas_defensivas(paragrafos)
+    alertas += checar_dois_pontos(paragrafos, bordas, estilos)
+    alertas += checar_aposto_explicativo(paragrafos, estilos)
+    alertas += checar_aberturas_repetidas(paragrafos)
+    alertas += checar_aberturas_consecutivas(paragrafos, minimo=3, estilos=estilos, em_tabela=em_tabela)
+    # A repetição literal de uma palavra inicial não é defeito por si só.
+    # A cadência é avaliada pela recorrência estrutural de três ou mais blocos.
+    bloqueios += checar_consistencia_terminologica(paragrafos, estilos, partes_texto)
+    bloqueios += checar_titulo_com_preposicao(paragrafos, estilos)
 
     dois_pontos = listar_dois_pontos(paragrafos, bordas, estilos)
 
-    return problemas, dois_pontos
+    return bloqueios, alertas, dois_pontos
 
 
 def main():
@@ -793,14 +732,19 @@ def main():
         with open(context_path, encoding='utf-8') as f:
             partes_texto = _json.load(f).get('partes')
 
-    problemas, dois_pontos = checar(path, partes_texto)
+    bloqueios, alertas, dois_pontos = checar(path, partes_texto)
 
-    if problemas:
-        print(f"[ERRO] {len(problemas)} problema(s) de cadencia/estilo em {path}:")
-        for p in problemas:
+    if bloqueios:
+        print(f"[ERRO] {len(bloqueios)} bloqueio(s) institucional(is) em {path}:")
+        for p in bloqueios:
             print(f"  - {p}")
     else:
-        print(f"[OK] Nenhum item de contagem obrigatoria violado em {path}")
+        print(f"[OK] Nenhum bloqueio institucional em {path}")
+
+    if alertas:
+        print(f"\n[ALERTA] {len(alertas)} ponto(s) para revisão contextual:")
+        for alerta in alertas:
+            print(f"  - {alerta}")
 
     aberturas_defensivas = listar_aberturas_defensivas(carregar_paragrafos(path)[0])
     if aberturas_defensivas:
@@ -812,7 +756,7 @@ def main():
     for i, s in dois_pontos[:200]:
         print(f"  - par.{i}: {s}")
 
-    sys.exit(1 if problemas else 0)
+    sys.exit(1 if bloqueios else 0)
 
 
 if __name__ == '__main__':

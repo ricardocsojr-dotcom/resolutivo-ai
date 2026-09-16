@@ -1,9 +1,6 @@
 # Redação RDAA — Núcleo Único de Escrita
 
-> Fonte única da "língua RDAA". Toda skill que produz ou revisa peça (contencioso-rdaa,
-> dano-moral-rct, redigir-peca, esqueleto-peca, revisor-rdaa) lê o NÚCLEO UNIVERSAL abaixo
-> como primeiro passo, antes de qualquer camada específica de gênero (ex.: estilo-rct.md
-> para dano moral). O núcleo não muda por tipo de peça — o que muda é a dosagem (seção 3).
+> O Manual RDAA 2021 é a base institucional deste núcleo. Este arquivo operacionaliza o Manual e registra regras editoriais posteriores quando existirem. Em conflito, prevalecem: precisão factual e jurídica → Manual/RDAA → regra editorial identificada → perfil autoral → preferência de gênero. Perfil autoral descreve voz; nunca cria exceção à regra institucional. O revisor fiscaliza este núcleo e não cria regra nova.
 
 ## 1. Regra-mãe
 
@@ -15,27 +12,24 @@ antigas ("Frankenstein jurídico").
 | Regra | Como aplicar |
 |---|---|
 | Abertura fixa | Endereçamento solene ("EXCELENTÍSSIMO(A) SENHOR(A) DOUTOR(A) JUIZ(A) DE DIREITO DA [N]ª VARA..."), seguido de quadro com borda (Processo/Partes) e parágrafo de qualificação: "[PARTE EM CAIXA ALTA], já qualificada nos autos, por seus advogados que esta subscrevem, vem, respeitosamente, à presença de Vossa Excelência, com fundamento no [dispositivo], [verbo da peça] [NOME DA PEÇA em caixa alta e negrito], pelas razões a seguir expostas." O fundamento legal entra nesse primeiro período — nunca depois. |
-| Tese fundida na abertura do parágrafo | A conclusão abre o parágrafo, mas fundida na primeira frase do desenvolvimento — nunca como frase categórica isolada em linha própria (vício de cadência robótica, ver checklist-3 item G do revisor). |
+| Tópico frasal claro | Cada parágrafo desenvolve uma ideia central identificável. Na argumentação, ela aparece preferencialmente no início, em um ou dois períodos, como tese, fato relevante, premissa jurídica, problema, relação causal ou consequência. Não é obrigatório que uma conclusão jurídica seja a primeira oração. |
 | Citação legal | Sempre "Lei, art. X" — ex.: `CPC, art. 373, inciso II`. Nunca "art. 373 do CPC" nem "inciso II do art. 373 do CPC". Na primeira menção a uma lei, número e data por extenso; nas seguintes, forma curta (Lei nº 4.860/65). |
-| Jurisprudência com aterrissagem | Frase introdutória que já anuncia a tese → ementa literal entre aspas/bloco → parágrafo seguinte reconectando ao caso concreto. A referência completa (tribunal, número, relator, órgão, data) vai **entre parênteses ao final da própria ementa, no mesmo bloco e no mesmo corpo de fonte da citação** — nunca em parágrafo separado, nem com parágrafo vazio entre ementa e fonte. Nunca ementa solta. Nunca inventada: toda jurisprudência deve ser verificada no site oficial do tribunal antes de citar. |
+| Jurisprudência com aterrissagem | Frase introdutória que anuncia a tese → ementa literal entre aspas/bloco → parágrafo seguinte reconectando ao caso concreto. A referência completa (tribunal, número, relator, órgão, data) vai **entre parênteses ao final da própria ementa, no mesmo bloco e no mesmo corpo de fonte da citação**. Nunca ementa solta ou inventada. Resultado obtido diretamente em Jusbrasil, Jurisprudência.AI ou JusRatio dispensa segunda conferência. Fonte do Cérebro-Ricar só é conferida se parecer estranha ou se Ricardo pedir. |
 | Qualificação das partes | O quadro inicial (Processo/partes) usa a qualificação processual pertinente ao tipo de peça (Autora/Ré, Agravante/Agravado, Recorrente/Recorrido, Exequente/Executado etc.), com dois-pontos entre rótulo e parte — ex.: `Autora: Trivale Instituição de Pagamento Ltda.`. Nunca fixar Autora/Ré como rótulo universal. O corpo, inclusive os pedidos, reutiliza exatamente a qualificação definida no quadro — não substituir pela razão social, salvo necessidade real de individualização (mais de um réu, por exemplo). |
 | Amarração probatória | Todo parágrafo fático segue: Fato relevante → Prova/ID/Data/Valor → Fundamento aplicável → Consequência jurídica. Em processo eletrônico, referência por ID/evento — nunca "fls.". |
-| Ordem direta com fluidez | A ordem direta vigora no núcleo oracional (evitar sujeito distante do verbo e orações intercaladas prolixas). É PERMITIDO e RECOMENDADO abrir parágrafos com conectivos, circunstâncias fáticas ou temporais curtas (ex.: "Em 13 de junho de 2025...", "Diante da improcedência...", "Ao afastar o CDC..."). A regra de Variação de Abertura prevalece sobre a posição inicial absoluta do sujeito. Proibido iniciar parágrafos sucessivos com o mesmo sujeito abstrato ("A sentença...", "O juiz...", "A decisão..."). |
+| Ordem direta com fluidez | Preferir sujeito + verbo + complemento para tornar inequívoca a relação entre os termos. Admite-se deslocamento breve quando servir ao encadeamento e não obscurecer a oração. Conectivos e circunstâncias factuais ou temporais curtas podem abrir o parágrafo. |
 | Abertura afirmativa | Iniciar argumentos apresentando diretamente o objeto, a tese, o vício, o fato ou a consequência. Evitar começar por negação, ressalva ou justificativa defensiva, especialmente fórmulas como “não se pretende”, “não se busca”, “não se trata”, “não se ignora” e “não se desconhece”. Reescrever positivamente quando isso preservar o sentido. Manter a negativa quando ela for indispensável para delimitar o objeto, responder a uma afirmação concreta, afastar interpretação específica ou formar contraste jurídico necessário. A ocorrência isolada não é erro automático. |
-| Frases curtas encadeadas | Frases curtas (até 3 linhas) não significam parágrafos de uma frase só. Um parágrafo argumentativo maduro reúne de 2 a 4 frases curtas encadeadas por conectivos lógicos. |
-| Extensão e densidade do parágrafo | Parágrafo argumentativo não é tópico de slide nem post de rede social. Em seções de mérito e fundamentação recursal, o parágrafo adota o modelo clássico de Othon Garcia: Premissa + Fato/Prova (ID) + Vício/Consequência, operando entre 5 e 8 linhas. Parágrafos isolados de 1 ou 2 linhas são proibidos na argumentação (admitidos apenas em tempestividade ou transição isolada). |
-| Um parágrafo = uma ideia | Tópico frasal na primeira frase; o resto exemplifica ou fundamenta. |
-| Variação de abertura | Proibido iniciar parágrafos sucessivos com a mesma palavra/estrutura. Vale mesmo quando o sujeito literal muda a cada parágrafo (ex.: "A COTRIAL...", "A penhora...", "A jurisprudência...", "A Executada...") — o vício está no padrão sintático repetido (artigo definido + substantivo), não na palavra específica. `revisor-rdaa/scripts/verificar_estilo.py` tem checagem automática para isso (`checar_abertura_mesmo_padrao_sintatico`, adicionada em 2026-09 após um caso real passar despercebido), mas evite já na redação abrir 3+ parágrafos argumentativos seguidos com "A/O/As/Os + substantivo". |
+| Extensão e densidade do parágrafo | O tamanho decorre da complexidade da ideia. Evitar tanto a fragmentação artificial quanto blocos excessivamente longos. A narrativa pode usar um ou dois períodos curtos; a argumentação deve ligar a ideia central aos fatos, à prova, à norma e à consequência quando pertinentes. Não impor contagem fixa de frases ou linhas. |
+| Um parágrafo = uma ideia | O desenvolvimento exemplifica, esclarece, fundamenta ou descreve a ideia central, sem acumular informações secundárias que desviem o raciocínio. |
+| Variação de abertura | Evitar recorrência perceptivelmente mecânica, sobretudo quando três ou mais parágrafos próximos repetirem a mesma arquitetura sem necessidade argumentativa. Não forçar sinônimos, inversões ou conectivos apenas para variar. |
 | Títulos específicos | Vedado título/subtítulo iniciado por contração de preposição + artigo ("Da", "Do", "Dos", "Das") — ex.: "Dos Fatos", "Do Direito", "Da Responsabilidade Civil", "Das Provas", "Da Tutela de Urgência". A vedação é exclusiva de títulos/subtítulos; a mesma expressão no corpo do texto continua permitida com função gramatical normal ("síntese dos fatos", "análise do direito aplicável", "ausência de comprovação dos requisitos"). Título deve ser afirmativo, indicando diretamente o conteúdo ou a tese: "Síntese dos fatos relevantes" em vez de "Dos fatos"; "Inexistência de responsabilidade civil" em vez de "Da responsabilidade civil"; "Ausência de comprovação do inadimplemento contratual" em vez de "Do inadimplemento contratual"; "Requisitos para concessão da tutela de urgência" em vez de "Da tutela de urgência". `revisor-rdaa/scripts/verificar_estilo.py` tem checagem automática para isso. |
 | Números | 1 a 9 por extenso, 10 ou mais em numeral. Não repetir o número por extenso em contagens de dias/prazos. Valores em dinheiro admitem cifra acompanhada de extenso entre parênteses (ex.: R$ 10.000,00 (dez mil reais)). Artigo em ordinal até 9º, cardinal do 10 em diante. |
 | Datas | **Dia e ano sempre em numeral, mês sempre por extenso em caixa baixa** — ex.: "13 de setembro de 1998", "5 de dezembro de 2001" (Manual §2.1.1 e §2.6). Nunca soletrar o dia ou o ano ("treze de setembro", "dois mil e vinte e seis" são proibidos no corpo). Sem zero à esquerda em dia de um único algarismo: "2 de janeiro" (nunca "02 de janeiro"). Exceção: o primeiro dia do mês é sempre ordinal — "1º de fevereiro" (nunca "1 de fevereiro" nem "um de fevereiro"). Quando a data for escrita inteiramente em números, usar sempre dez dígitos no formato dd/mm/aaaa (ex.: 14/09/2017). Fechamento da peça segue o mesmo padrão: "Uberlândia/MG, 9 de setembro de 2026." |
 | Verbo de comando | "Exige", "impõe", "veda", "determina", "obriga" e afins só podem ter como sujeito a lei, o precedente ou o contrato. Nunca atribuir à parte ou ao advogado o poder de ordenar o julgador. |
 | Tempestividade | Nunca questionar se a peça está no prazo — o pedido de redação já é a premissa. Para montar a seção de tempestividade, perguntar apenas data de publicação e se houve suspensão de prazo no período. Sem consulta processual (CNJ/DJEN está desativado). |
-| Dois-pontos | Proibido em prosa corrida. PERMITIDO estritamente para introduzir: (a) rol de pedidos e alíneas; (b) citações literais de julgados e transcrições em bloco; (c) o quadro inicial Processo/partes. |
-| Travessão | Proibido na peça final, sem exceção — qualquer ocorrência (isolada ou pareada) bloqueia a entrega. Reescrever com vírgula, ponto ou conectivo natural. (Mantido integralmente). |
-| Ponto-e-vírgula | Permitido apenas em listas/alíneas (ex.: pedidos em cascata, onde separa itens). Proibido em prosa corrida — reescrever com ponto ou conectivo. |
-| Títulos | Proibidos dois pontos e travessões em `titulo`, `titulo2`, `titulo3` e `titulo_razoes`. Reescrever o título com formulação direta. |
-| Parênteses técnicos | Proibido para apostos explicativos prolixos. PERMITIDO estritamente para dados objetivos de individualização: IDs de autos (ID 160549795), artigos de lei (CPC, art. 85, § 2º), valores monetários por extenso e datas. |
+| Pontuação | Aplicar vírgula, ponto e vírgula, dois-pontos, travessão e parênteses conforme sua função gramatical e efeito de clareza. Não usar nenhum sinal como enfeite ou para ocultar período mal construído. Dois-pontos exigem oração anterior sintaticamente completa; ponto e vírgula une ideias próximas; travessão e parênteses inserem informação com separação proporcional. |
+| Títulos | **Regra editorial RDAA 2026:** proibidos dois pontos e travessões em `titulo`, `titulo2`, `titulo3` e `titulo_razoes`. Reescrever o título com formulação direta. |
+| Parênteses técnicos | Usar para individualização objetiva ou inserção que ajude a compreensão, como IDs de autos (ID 160549795), artigos de lei (CPC, art. 85, § 2º), valores por extenso e datas. Evitar apartes explicativos longos quando a integração à frase for mais clara. |
 | Pedidos em cascata | Mais de um pedido possível exige hierarquia entre principal, preliminar, sucessivo, sucumbência e honorários. Usar frase introdutória terminada em dois-pontos antes das alíneas (ex.: "Diante do exposto, a Autora requer:"). Não repetir pedidos que já estejam abrangidos por outro. |
 | Fechamento fixo | Cláusula de publicação exclusiva (nome, OAB, e-mail) + endereço completo + "sob pena de nulidade" + "Nestes termos, aguarda deferimento." + sempre "Uberlândia/MG, dia de mês de ano." (sede do escritório). |
 | Vocabulário proibido | Ver tabela seção 4. Sem exceção de gênero. |
@@ -80,63 +74,42 @@ nunca contradiz o núcleo.
 
 | Elemento | Padrão |
 |---|---|
-| Fonte | Tahoma 10,5pt (petições) · 11pt (pareceres) |
+| Fonte | **Regra editorial RDAA 2026:** Tahoma 10,5pt (petições) · 11pt (pareceres). O Manual RDAA 2021 previa Tahoma 11. |
 | Espaçamento | 1,5 entrelinhas (simples só em citação, endereçamento e títulos) |
 | Alinhamento | Justificado |
 | Recuo | 2 cm na primeira linha |
-| Parágrafos numerados (sem estilo tópico) | A numeração contínua (1, 2, 3...) é obrigatória para localização e citação textual em todas as peças. É terminantemente PROIBIDO transformar a numeração em micro-tópicos telegráficos ou bullet points. Cada número deve corresponder a um parágrafo argumentativo completo, denso e articulado (5 a 8 linhas). |
+| Parágrafos numerados (sem estilo tópico) | A numeração contínua (1, 2, 3...) é obrigatória para localização e citação textual em todas as peças. É terminantemente PROIBIDO transformar a numeração em micro-tópicos telegráficos ou bullet points. Cada número deve corresponder a um parágrafo argumentativo completo e articulado, com extensão proporcional à ideia. |
 | Títulos principais | Algarismos romanos + caixa alta + negrito; subtítulos em arábicos + negrito |
-| Destaques | Negrito (tese, conclusão, nome da peça, oração de ênfase — ver regra de dosagem abaixo). O nome da parte na abertura é a única exceção: negrito **+ sublinhado** (praxe forense de identificação — decisão de 2026-08). Fora dessa linha, sublinhado é proibido em qualquer posição (Manual §2.9). *Itálico* só para estrangeirismos e citação indireta de conduta. |
+| Destaques | Negrito para elementos relevantes. O Manual RDAA 2021 não admite itálico, sublinhado, caixa alta ou sombra como recurso de destaque no corpo. *Itálico* fica restrito a estrangeirismos indispensáveis. |
 | QR Code | Proibido para prova essencial — toda prova visual encartada diretamente nos autos. |
 
-### Ênfase estratégica em negrito — regra de dosagem (2026-08-30)
+### Ênfase estratégica em negrito
 
-Além do negrito de tese/conclusão/nome da peça, é permitida **uma oração curta**
-em negrito por tópico — não um termo isolado, não a frase inteira — pra marcar
-o ponto que o leitor não pode passar batido. É recurso de Legal Design, não
-decoração: a função é fazer a peça ser escaneável sem perder o sentido se lida
-só pelos trechos em negrito.
-
-- **O que negritar**: uma oração (poucas palavras, sujeito+verbo+complemento
-  mínimo), nunca o parágrafo inteiro nem só uma palavra solta. Normalmente
-  coincide com a tese fundida na abertura do parágrafo (regra do núcleo, §2) ou
-  com o fato mais grave/a inconsistência mais clara do adversário.
-- **Limite**: no máximo uma oração em negrito por tópico/bloco argumentativo, e
-  nunca em dois parágrafos consecutivos — passar disso dilui o efeito e vira o
-  vício que a Linha Vermelha Estética do `legal-design-rdaa` já proíbe
-  ("negrito em excesso"). Na dúvida, não negritar.
-- **Onde decidir**: a etapa de esqueleto (`esqueleto-peca`) já indica, bloco a
-  bloco, onde vale a pena essa ênfase — ver seção "Legal Design planejado" do
-  esqueleto. A redação aplica o que foi indicado ali; não é escolha livre no
-  meio da redação.
-- Exemplo: "O banco **negativou o nome do autor antes de qualquer notificação
-  prévia**, em violação direta ao CDC, art. 43, § 2º." — a oração em negrito
-  carrega o fato decisivo; o resto do período só amarra o fundamento.
-- **Negrito estratégico em peças curtas**: Em peças recursais curtas e técnicas (Embargos de Declaração, Agravo Interno e manifestações simples), fica PROIBIDO o uso de orações inteiras em negrito no meio dos parágrafos. O negrito fica restrito ao nome da peça, aos títulos e à identificação das partes. A sobriedade tradicional prevalece.
+Use negrito apenas quando ele melhorar a leitura: tese, conclusão, nome da peça
+ou fato decisivo. A função de destaque é planejada no esqueleto por bloco, sem
+pré-redigir a oração. Não há cota de negritos; em peças curtas e técnicas, a
+sobriedade é preferível.
 
 ## 6. Checklist de conformidade (usar em redação E em revisão — mesmo critério nos dois momentos)
 
 - [ ] Abertura segue a fórmula fixa, com o dispositivo legal já no primeiro período e o nome da peça em caixa alta + negrito?
-- [ ] Cada seção abre com a conclusão fundida na primeira frase, não como linha isolada?
+- [ ] A ideia central de cada parágrafo é identificável desde o início, sem fórmula conclusiva fixa?
 - [ ] Os argumentos começam afirmando diretamente o objeto, a tese, o vício, o fato ou a consequência, sem fórmula defensiva de contenção? Se houver negativa, ela tem função argumentativa indispensável?
 - [ ] Toda citação legal está no formato "Lei, art. X"?
 - [ ] Toda jurisprudência tem frase de entrada + ementa + referência + aterrissagem? A referência está entre parênteses ao final da própria ementa, sem parágrafo separado?
 - [ ] O quadro Processo/partes usa a qualificação certa pro tipo de peça (não fixou Autora/Ré por padrão)? O corpo e os pedidos reutilizam essa mesma qualificação, sem trocar pela razão social sem necessidade?
 - [ ] Todo fato relevante está amarrado a prova/ID/data/valor?
 - [ ] Todo parágrafo argumentativo está numerado, contínuo do início ao fim, sem reiniciar por tópico?
-- [ ] Existe frase com mais de três linhas? Dividir.
-- [ ] Existe parágrafo acima de 10-12 linhas? Dividir.
-- [ ] Dois parágrafos seguidos começam igual? Variar.
+- [ ] Algum período ou parágrafo prejudica a compreensão por extensão ou excesso de ideias? Reestruturar quando necessário.
+- [ ] Há repetição mecânica de abertura em três ou mais parágrafos próximos, sem função argumentativa? Avaliar a cadência sem forçar variação artificial.
 - [ ] Algum título genérico ("Dos Fatos") ou iniciado por Da/Do/De? Renomear pela tese.
 - [ ] Número seguiu a regra 1-9 extenso / 10+ numeral, sem duplicar?
 - [ ] Verbo de comando tem como sujeito a lei, o precedente ou o contrato, não a parte?
-- [ ] Não há dois-pontos fora de abertura de pedidos, alíneas, citações ou quadro de partes?
+- [ ] A pontuação empregada preserva a relação sintática e melhora a compreensão?
 - [ ] Nenhum título contém dois pontos ou travessão?
-- [ ] Não há aposto explicativo prolixo isolado por parênteses (parênteses admitidos apenas para ID, lei, valor ou data)?
-- [ ] Não há nenhum travessão na peça final (proibido 100%, sem exceção)?
+- [ ] Apostos, parênteses e travessões têm função informativa real e não escondem oração truncada ou prolixa?
 - [ ] Há mais de um pedido possível sem cascata? Hierarquizar com frase introdutória antes das alíneas. Algum pedido redundante?
 - [ ] Fechamento tem cláusula de publicação + endereço + "aguarda deferimento" + "Cidade/UF, dia de mês de ano."?
-- [ ] Alguma expressão proibida da tabela 4 escapou? Algum sublinhado fora do nome da parte na abertura?
-- [ ] O nome da parte na abertura está em negrito **+ sublinhado**?
+- [ ] Alguma expressão proibida da tabela 4 escapou? Há sublinhado ou outro destaque não admitido?
 - [ ] Algum sinal de cadência robótica (tricolon, eco, travessão recorrente, parágrafos uniformes)?
-- [ ] A oração em negrito de ênfase (quando houver) é uma oração curta, não um termo isolado nem o parágrafo inteiro? Aparece no máximo uma vez por tópico e nunca em parágrafos consecutivos?
+- [ ] Os negritos existentes facilitam a leitura sem poluir a página?

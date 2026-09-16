@@ -278,8 +278,7 @@ esqueleto pressupõe. O que este checklist acrescenta é só o estrutural:
 ## Legal Design planejado (tipos B/A — decidir aqui, não durante a redação)
 
 Antes de fechar o esqueleto, passe uma vez pelos blocos e decida, por bloco:
-vale uma oração em negrito de ênfase (regra e limite em
-`redacao-rdaa.md`, seção "Ênfase estratégica em negrito") e/ou algum elemento
+vale um ponto, fato ou conclusão candidato a negrito e/ou algum elemento
 visual (linha do tempo, tabela comparativa, quadro-resumo — tabela completa em
 `legal-design-rdaa/SKILL.md` §2.4)? Isso é proporcional ao princípio 1 do
 `legal-design-rdaa` — a maioria dos blocos não precisa de nada além do texto
@@ -320,7 +319,7 @@ Teses propostas:
 - [tese 1 — resumo de uma linha]
 
 Legal Design planejado (B/A):
-- [bloco] — [oração de ênfase prevista, resumida em uma linha, e/ou elemento
+- [bloco] — [ponto/fato/conclusão candidato a ênfase, e/ou elemento
   visual sugerido] — ou "nenhum elemento além do núcleo universal"
 
 --

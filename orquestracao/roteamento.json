@@ -2,12 +2,13 @@
   "schema_version": "2",
   "levels": {
     "C": {
-      "description": "Peça simples/juntada: escrita no chat, direto para QA e DOCX",
+      "description": "Peça simples/juntada: escrita pelo modelo rápido via CLI direta",
       "workers": {
         "writer": {
-          "engine": "chat",
-          "provider": "hermes",
-          "model": "chat_session"
+          "engine": "codex",
+          "provider": "openai",
+          "model": "gpt-5.6-terra",
+          "effort": "medium"
         }
       },
       "worker_allowed_phases": {
@@ -51,7 +52,7 @@
         "writer": {
           "engine": "codex",
           "provider": "openai",
-          "model": "gpt-5.6-terra",
+          "model": "gpt-5.6-sol",
           "effort": "medium"
         },
         "validator": {
@@ -121,8 +122,8 @@
         "writer": {
           "engine": "codex",
           "provider": "openai",
-          "model": "gpt-6-astra",
-          "effort": "low"
+          "model": "gpt-5.6-sol",
+          "effort": "high"
         },
         "critic": {
           "engine": "antigravity",

@@ -153,6 +153,8 @@ Nunca inventar:
 - nome de relator
 - precedente
 
-Quando necessário incluir jurisprudência: `[Atenção: inserir jurisprudência real verificada no site do tribunal]`
+Quando necessário incluir jurisprudência: `[Atenção: inserir jurisprudência real com origem identificada]`
 
-Verificação obrigatória em três camadas: IA sugere → advogado busca no site oficial → cruzamento com os autos.
+Resultado obtido diretamente em Jusbrasil, Jurisprudência.AI ou JusRatio pode
+ser usado sem segunda conferência. Fonte do Cérebro-Ricar só exige conferência
+se parecer estranha ou se Ricardo pedir.

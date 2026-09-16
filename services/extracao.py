@@ -87,7 +87,7 @@ class DocumentResult:
         return "misto"
 
 
-def _extrair_pdf(caminho: Path) -> DocumentResult:
+def _extrair_pdf(caminho: Path, use_ocr: bool = True) -> DocumentResult:
     if fitz is None:
         raise ExtractionError(
             "PyMuPDF (fitz) não está instalado -- extração de PDF indisponível"
@@ -108,6 +108,10 @@ def _extrair_pdf(caminho: Path) -> DocumentResult:
                 continue
 
             # Sem texto nativo suficiente -> renderiza e faz OCR
+            if not use_ocr:
+                doc.paginas.append(PageResult(i, "[documento requer OCR, mas foi suprimido via opção]", "ocr_off"))
+                continue
+
             texto_ocr = _ocr_pagina_pdf(page)
             doc.paginas.append(PageResult(i, texto_ocr, "ocr"))
     finally:
@@ -130,8 +134,11 @@ def _ocr_pagina_pdf(page: Any) -> str:
         return f"[erro OCR: {exc}]"
 
 
-def _extrair_imagem(caminho: Path) -> DocumentResult:
+def _extrair_imagem(caminho: Path, use_ocr: bool = True) -> DocumentResult:
     doc = DocumentResult(nome_arquivo=caminho.name)
+    if not use_ocr:
+        doc.erro = "OCR suprimido (--no-ocr)"
+        return doc
     if pytesseract is None or Image is None:
         doc.erro = "pytesseract/Pillow não instalados -- OCR de imagem indisponível"
         return doc
@@ -150,13 +157,13 @@ EXTENSOES_PDF = {".pdf"}
 EXTENSOES_IMAGEM = {".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp"}
 
 
-def extrair_anexo(caminho: Path) -> DocumentResult:
+def extrair_anexo(caminho: Path, use_ocr: bool = True) -> DocumentResult:
     """Extrai um único anexo (PDF ou imagem) para texto por página."""
     ext = caminho.suffix.lower()
     if ext in EXTENSOES_PDF:
-        return _extrair_pdf(caminho)
+        return _extrair_pdf(caminho, use_ocr=use_ocr)
     if ext in EXTENSOES_IMAGEM:
-        return _extrair_imagem(caminho)
+        return _extrair_imagem(caminho, use_ocr=use_ocr)
     doc = DocumentResult(nome_arquivo=caminho.name)
     doc.erro = f"extensão não suportada: {ext}"
     return doc
@@ -185,6 +192,7 @@ def gerar_intake_md(
     anexos: list[Path],
     *,
     output_path: Path,
+    use_ocr: bool = True,
 ) -> dict[str, Any]:
     """Extrai todos os anexos e grava packages/intake.md.
 
@@ -203,7 +211,7 @@ def gerar_intake_md(
         )
         return {"status": "SKIPPED", "documentos": [], "output_path": str(output_path)}
 
-    documentos = [extrair_anexo(Path(a)) for a in anexos]
+    documentos = [extrair_anexo(Path(a), use_ocr=use_ocr) for a in anexos]
     sucesso = [d for d in documentos if not d.erro]
 
     if not sucesso:

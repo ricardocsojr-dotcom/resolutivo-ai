@@ -87,7 +87,7 @@ Conteúdo dos títulos:
 ## VII. Destaques
 
 - [ ] Há excesso de negrito (mais do que necessário para tese e conclusões)?
-- [ ] Há sublinhado? → Proibido. Eliminar.
+- [ ] Há sublinhado usado como destaque? → Eliminar. Hyperlinks técnicos não constituem destaque.
 - [ ] Há caixa alta indevida para ênfase (fora de títulos)?
 - [ ] Há itálico indevido (fora de estrangeirismos e termos técnicos)?
 - [ ] Os destaques existentes realmente ajudam a leitura ou apenas poluem?

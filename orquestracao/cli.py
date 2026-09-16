@@ -100,6 +100,10 @@ def cmd_start(args) -> int:
     )
     try:
         result = engine.initialize(args.matter_id)
+
+        if args.no_ocr:
+            engine._build_graph().update_state(engine._config, {"options": {"use_ocr": False}})
+
         return _format_action_result(
             "STARTED", result,
             matter_id=args.matter_id,
@@ -180,6 +184,44 @@ def cmd_resume(args) -> int:
     finally:
         engine.close()
 
+def cmd_step(args) -> int:
+    """Avança a execução (pós-pausa)."""
+    engine_probe = RDAAEngine(args.state_dir, "C")
+    state = engine_probe.state()
+    level = state.get("nivel_peca", "C")
+    engine_probe.close()
+
+    engine = _make_engine(args.state_dir, level)
+    try:
+        result = engine.step(authority=args.authority)
+        return _format_action_result(
+            "STEPPED", result,
+            authority=args.authority
+        )
+    except Exception as exc:
+        return _json_out({"error": str(exc), "action": "STEP_FAILED"}, 1)
+    finally:
+        engine.close()
+
+def cmd_jump(args) -> int:
+    """Pula para uma fase específica."""
+    engine_probe = RDAAEngine(args.state_dir, "C")
+    state = engine_probe.state()
+    level = state.get("nivel_peca", "C")
+    engine_probe.close()
+
+    engine = _make_engine(args.state_dir, level)
+    try:
+        result = engine.jump(args.phase, authority=args.authority, reason=args.reason)
+        return _format_action_result(
+            "JUMPED", result,
+            target_phase=args.phase,
+            reason=args.reason
+        )
+    except Exception as exc:
+        return _json_out({"error": str(exc), "action": "JUMP_FAILED"}, 1)
+    finally:
+        engine.close()
 
 def cmd_abort(args) -> int:
     """Aborta a matéria."""
@@ -245,6 +287,7 @@ def main() -> int:
     p_start.add_argument("--matter-id", required=True)
     p_start.add_argument("--level", required=True, choices=["A", "B", "C"])
     p_start.add_argument("--route", default=None)
+    p_start.add_argument("--no-ocr", action="store_true", help="Ignora a extração massiva via OCR de imagens/PDFs")
     p_start.set_defaults(func=cmd_start)
 
     # status
@@ -265,6 +308,20 @@ def main() -> int:
     p_resume.add_argument("--authority", default="ricardo")
     p_resume.add_argument("--reason", required=True)
     p_resume.set_defaults(func=cmd_resume)
+
+    # step
+    p_step = sub.add_parser("step", help="Avança a execução pausada num worker")
+    p_step.add_argument("state_dir")
+    p_step.add_argument("--authority", default="ricardo")
+    p_step.set_defaults(func=cmd_step)
+
+    # jump
+    p_jump = sub.add_parser("jump", help="Pula direto para uma fase específica")
+    p_jump.add_argument("state_dir")
+    p_jump.add_argument("--phase", required=True)
+    p_jump.add_argument("--reason", required=True)
+    p_jump.add_argument("--authority", default="ricardo")
+    p_jump.set_defaults(func=cmd_jump)
 
     # abort
     p_abort = sub.add_parser("abort", help="Aborta a matéria")

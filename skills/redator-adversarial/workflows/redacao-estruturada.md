@@ -1,4 +1,7 @@
-# Workflow — Redação Estruturada
+# Legado — não usar para redação RDAA
+
+> A redação RDAA é exclusiva da skill `redigir-peca`. Este arquivo permanece
+> apenas como referência histórica e não deve ser carregado pelo dispatcher.
 
 ## Antes de escrever (5 perguntas)
 1. Quem julga? (vara/turma — jurisprudência local importa)

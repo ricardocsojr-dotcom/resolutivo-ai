@@ -67,7 +67,7 @@ Não é proibido usar uma vez na peça inteira. Sinalizar a partir da segunda oc
 
 A lista de expressões proibidas do checklist-1 (cumpre salientar, imperioso notar, vale lembrar etc.) é finita e pode ser contornada por sinônimo. Procure a **mesma função retórica** — abrir frase com autoridade epistêmica genérica antes do conteúdo — mesmo com palavra diferente: "convém registrar", "impende destacar", "não é demais lembrar", "digno de nota", "vale consignar". Tratar como equivalente às expressões já banidas.
 
-## H. Frase-tese isolada seguida de parágrafo explicativo
+## H. Frase curta isolada seguida de desenvolvimento
 
 Procure sequências em que uma frase curta, categórica e autônoma abre o raciocínio, sendo seguida por um parágrafo extenso que apenas explica ou demonstra a afirmação antecipada.
 
@@ -78,13 +78,15 @@ Padrões comuns:
 - "A conclusão é equivocada."
 - "A penhora é manifestamente prematura."
 
-O vício não está no tamanho reduzido da frase, mas no fato de ela funcionar como uma conclusão antecipada, sem apresentar fundamento, fato ou consequência concreta.
+O ponto de atenção não está no tamanho reduzido da frase, mas em ela funcionar
+como conclusão antecipada sem acrescentar fundamento, fato ou consequência
+concreta. Frase curta autônoma pode cumprir função legítima de transição,
+veredicto ou ênfase.
 
 **Teste prático:** una mentalmente a frase curta ao início do parágrafo seguinte. Se o texto ficar mais natural, fluido e menos repetitivo, sinalizar.
 
-**Tratamento preferencial:**
-1. incorporar a tese à primeira frase do desenvolvimento; ou
-2. substituir a afirmação genérica por uma abertura factual ou causal.
+**Tratamento possível:** incorporar a ideia ao desenvolvimento ou trocar a
+abertura por fato ou causa, somente se a leitura melhorar.
 
 Exemplo a sinalizar:
 > A medida é prematura.
@@ -113,30 +115,13 @@ Esse contraste costuma produzir uma cadência artificial de "tese + expansão", 
 
 Não sinalizar frases curtas que tenham função legítima de transição, conclusão de capítulo ou destaque excepcional.
 
-## J. Travessão — proibido, sem exceção
+## J. Pontuação e apartes
 
-Travessão é proibido na peça final. Não é uma questão de recorrência ou de uso
-como marca automática de ênfase — qualquer ocorrência, isolada ou pareada,
-bloqueia a entrega. O verificador automático (`checar_travessao` em
-`verificar_estilo.py`) reflete essa regra: uma única ocorrência já é suficiente.
-
-Padrões que antes eram tolerados em uso isolado e agora também são bloqueados:
-- inserir explicações intermediárias;
-- destacar consequências;
-- anunciar conclusões;
-- substituir sinais de intercalação por frases próprias e diretas;
-- introduzir comentários enfáticos do redator.
-
-Exemplos de padrão (todos proibidos, mesmo em ocorrência única):
-- "A decisão — embora reconheça a pendência dos embargos — autorizou a penhora."
-- "O resultado é inequívoco — houve violação ao contraditório."
-- "A Executada apresentou os documentos — todos produzidos unilateralmente — como se fossem prova suficiente."
-
-**Tratamento obrigatório:**
-- nova frase quando a informação tiver autonomia;
-- integração direta ao período quando não houver autonomia;
-- supressão quando o trecho for apenas enfático;
-- nunca usar parênteses, dois-pontos ou travessões para explicar ou apartar informação.
+Travessão, dois-pontos, ponto e vírgula e parênteses são recursos legítimos
+quando empregados conforme sua função gramatical. Sinalize apenas uso que
+prejudique a relação sintática, interrompa a leitura ou funcione como enfeite.
+O verificador automático os lista para facilitar a leitura, mas não bloqueia a
+entrega por sua ocorrência isolada.
 
 ## K. Marcadores metadiscursivos de organização
 

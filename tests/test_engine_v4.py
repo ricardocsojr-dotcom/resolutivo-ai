@@ -52,18 +52,34 @@ DUMMY_HANDLERS = {
 # E2E por nível
 # ---------------------------------------------------------------------------
 
+
+def _drive_to_end(engine, target_phase="vault_registered"):
+    from orquestracao.contracts import GateError
+    for _ in range(30):
+        st = engine.state()
+        if st.get("status") in ("failed", "aborted"):
+            break
+        if st.get("phase") == target_phase:
+            break
+        try:
+            engine.step()
+        except GateError as e:
+            msg = str(e)
+            if "aprovação humana exigida para" in msg:
+                gate = msg.split("para")[-1].strip()
+                engine.approve_gate(gate)
+            else:
+                break
+    return engine.state()
+
 @pytest.mark.parametrize("level", ["A", "B", "C"])
 def test_rotas_e2e_sem_pular_fases(tmp_path, level):
     """O motor visita todas as fases da rota na ordem correta."""
     state_dir = tmp_path / f"matter-{level}"
     engine = RDAAEngine(state_dir, level, worker=fake_worker, system_handlers=DUMMY_HANDLERS, route_path=ROUTE_PATH)
     try:
-        result = engine.initialize(f"matter-{level}")
-
-        if level in {"A", "B"}:
-            result = engine.approve_gate("skeleton_approval")
-        if level == "A":
-            result = engine.approve_gate("release_approval")
+        engine.initialize(f"matter-{level}")
+        result = _drive_to_end(engine, target_phase="vault_registered")
 
         assert result["phase"] == "vault_registered"
         assert result["history"] == route_stages(level)
@@ -91,8 +107,7 @@ def test_rota_a_executa_critic_obrigatoriamente(tmp_path):
     engine = RDAAEngine(tmp_path / "a", "A", worker=tracking_worker, system_handlers=DUMMY_HANDLERS, route_path=ROUTE_PATH)
     try:
         engine.initialize("premium")
-        engine.approve_gate("skeleton_approval")
-        engine.approve_gate("release_approval")
+        _drive_to_end(engine)
         assert calls == ["planner", "writer", "critic", "validator"]
         history = engine.state()["history"]
         assert "criticizing" in history
@@ -115,7 +130,7 @@ def test_rota_b_nao_executa_critic(tmp_path):
     engine = RDAAEngine(tmp_path / "b", "B", worker=tracking_worker, system_handlers=DUMMY_HANDLERS, route_path=ROUTE_PATH)
     try:
         engine.initialize("developed")
-        engine.approve_gate("skeleton_approval")
+        _drive_to_end(engine)
         assert "critic" not in calls
         assert "planner" in calls
         assert "writer" in calls
@@ -131,7 +146,7 @@ def test_aprovacao_esqueleto_fica_vinculada_ao_hash(tmp_path):
     engine = RDAAEngine(tmp_path / "hash", "B", worker=worker, system_handlers=DUMMY_HANDLERS, route_path=ROUTE_PATH)
     try:
         engine.initialize("hash")
-        engine.approve_gate("skeleton_approval")
+        _drive_to_end(engine, target_phase="skeleton_approved")
         assert engine.state()["approvals"]["skeleton_approval"]["artifact_sha256"]
     finally:
         engine.close()
@@ -150,8 +165,8 @@ def test_rota_c_sem_gates(tmp_path):
 
     engine = RDAAEngine(tmp_path / "c", "C", worker=tracking_worker, system_handlers=DUMMY_HANDLERS, route_path=ROUTE_PATH)
     try:
-        result = engine.initialize("simple")
-        # Nível C não tem gates humanos, executa direto
+        engine.initialize("simple")
+        result = _drive_to_end(engine)
         assert result["phase"] == "vault_registered"
         assert result["status"] == "vault_registered"
         assert calls == ["writer"]

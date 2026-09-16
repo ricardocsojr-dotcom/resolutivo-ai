@@ -5,7 +5,7 @@ construir_peca.py — Gerador nativo RDAA (python-docx puro, sem docxtpl)
 Substitui o fluxo antigo de "template master + docxtpl" para o corpo da peça.
 Motivo: docxtpl injeta cada campo como uma única string (via {{ campo }}), o
 que torna impossível aplicar formatação por trecho dentro de um mesmo
-parágrafo (ex.: nome da parte em negrito+sublinhado só na abertura, título
+parágrafo (ex.: nome da parte em negrito só na abertura, título
 em negrito com tabulação exata, alínea com recuo deslocado). Este script
 constrói o documento inteiro programaticamente, parágrafo a parágrafo, com
 a formatação correta aplicada em cada tipo de bloco.
@@ -813,12 +813,8 @@ def _add_full_border(paragraph, sz=4, color='000000', space_tb=1, space_lr=4):
 # ── Blocos do corpo (item 1 a 6 do plano) ─────────────────────────────────────
 
 def bloco_abertura(doc, nome_parte, resto, nome_peca=None, resto_depois=''):
-    """Item 1 — nome da parte em negrito + sublinhado SÓ neste parágrafo (a
-    qualificação inicial) — única exceção à vedação geral de sublinhado do
-    Manual RDAA §2.9 (decisão de 2026-08: praxe forense de identificar a
-    parte na abertura exige negrito+sublinhado; o resto do documento
-    continua proibido de usar sublinhado). Recuo de primeira linha em 2 cm
-    (não é numerado).
+    """Item 1 — nome da parte em negrito na qualificação inicial, conforme
+    Manual RDAA §2.9. Recuo de primeira linha em 2 cm (não é numerado).
 
     `nome_peca` é opcional: quando presente (ex.: "CONTRARRAZÕES AOS EMBARGOS
     DE DECLARAÇÃO"), sai em CAIXA ALTA + negrito logo após "apresentar" /
@@ -832,7 +828,7 @@ def bloco_abertura(doc, nome_parte, resto, nome_peca=None, resto_depois=''):
     quem escreve o contexto."""
     p = doc.add_paragraph()
     r1 = p.add_run(nome_parte)
-    _fmt_run(r1, bold=True, underline=True)
+    _fmt_run(r1, bold=True)
     r2 = p.add_run(resto)
     _fmt_run(r2)
     if nome_peca:

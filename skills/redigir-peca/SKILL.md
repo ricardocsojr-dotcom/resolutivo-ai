@@ -139,10 +139,11 @@ movimentação, prazo ou publicação. Redija com os fatos fornecidos. Se a peç
 depender de um dado que só o andamento externo forneceria e Ricardo não o
 trouxe, registre `[PONTO A CONFERIR]`/pendência e não invente o dado.
 
-**Jurisprudência.** Depois de cada pesquisa efetivamente conferida, registre
-as fontes preservando o tipo, origem, localização, trecho literal e, quando
-disponível, os dados de conferência. Não atribua `verificada_externamente` a
-conteúdo que não foi de fato conferido contra a fonte original.
+**Jurisprudência.** Registre tipo, origem, localização, trecho literal e os
+dados disponíveis. Resultado obtido diretamente em Jusbrasil,
+Jurisprudência.AI ou JusRatio recebe `verificada_externamente`, sem segunda
+conferência. Fonte do Cérebro-Ricar fica como `informada` e só exige
+conferência se parecer estranha ou se Ricardo pedir.
 
 **Esqueleto (tipos A/B).** Estrutura obrigatória via skill `esqueleto-peca`,
 incluindo requisitos formais do CPC, fontes selecionadas quando houver
@@ -164,8 +165,8 @@ aprovação registrada.
 Inclua sempre `contencioso-rdaa/references/redacao-rdaa.md` como regra
 obrigatória de estilo. Se a matéria for dano moral, inclua também
 `dano-moral-rct/references/estilo-rct.md`; se Ricardo pedir explicitamente o
-padrão da Flávia, inclua `estilo-flavia-rdaa/references/perfil-flavia.md` —
-as duas na mesma execução do redator, não como etapa separada depois.
+  padrão da Flávia, inclua `estilo-flavia-rdaa/references/perfil-flavia.md` —
+  as duas são orientação de voz subordinada ao núcleo, nunca exceção a ele.
 
 - Nos tipos A e B, execute a redação por blocos conforme o esqueleto
   aprovado.
@@ -176,29 +177,10 @@ as duas na mesma execução do redator, não como etapa separada depois.
 - Citações literais das ementas buscadas (nunca paráfrase).
 - Toda citação ou fundamento jurisprudencial deve apontar para `source_id`
   selecionado no esqueleto ou para uma fonte posterior revisada.
-- Sem linguagem arcaica. Parágrafos curtos.
-- Comece argumentos afirmando diretamente o objeto, a tese, o vício, o fato
-  ou a consequência. Evite aberturas por negação, ressalva ou justificativa
-  defensiva, como "não se pretende", "não se busca", "não se trata", "não se
-  ignora" e "não se desconhece". Reescreva positivamente quando o sentido for
-  preservado. Mantenha a negativa quando ela for indispensável para delimitar
-  o objeto, responder a uma afirmação concreta, afastar interpretação
-  específica ou formar contraste jurídico necessário.
-
-**Nível C — regras específicas de estilo:**
-
-- Evite parágrafos curtos em série, frase-tese isolada e uniformidade que
-  revele IA; preferir 3–7 linhas quando a ideia comportar, com variação real
-  de abertura e extensão.
-- A abertura de cada parágrafo argumentativo deve conter uma tese concreta
-  fundida ao seu desenvolvimento. Nunca use frases-tese isoladas em linha
-  própria.
-- Varie a sintaxe inicial entre parágrafos e não inicie dois parágrafos
-  seguidos com a mesma palavra/estrutura.
-- Não use dois-pontos, travessões, parênteses explicativos nem ponto e
-  vírgula em prosa.
-- Citações legais somente no padrão "Lei, art. X". Não inclua
-  jurisprudência.
+- Aplicar integralmente o núcleo de escrita vigente, sem acrescentar métricas
+  de tamanho, aberturas obrigatórias ou proibições de pontuação.
+- No nível C, manter apenas a sobriedade compatível com a peça simples; não
+  incluir jurisprudência salvo necessidade estrita.
 
 **Correção de cliente:** quando o usuário indicar "cliente é a Trivale", a
 peça deve ser endereçada a TRIVALE INSTITUIÇÃO DE PAGAMENTO LTDA como
@@ -247,18 +229,12 @@ mudança de tese, pedido ou estratégia, pausa e apresenta o ponto a Ricardo
 — não decide sozinho.
 
 Roda o checklist de qualidade da skill `revisor-rdaa` antes de entregar.
-"Rodar o checklist" não termina em produzir um relatório: todo achado
-confirmado deve ser corrigido no texto antes de seguir para a entrega. Isso
-inclui travessão, ponto-e-vírgula fora de lista/alínea, tricolon de negação,
-abertura defensiva recorrente, qualquer dois-pontos e qualquer aposto
-explicativo entre parênteses ou travessões pareados — os três primeiros
-bloqueiam numa única ocorrência (`redacao-rdaa.md` §2), só a abertura
-defensiva é avaliada por recorrência. A abertura negativa isolada deve ser
-avaliada pela função argumentativa e não bloqueada por palavra-chave. Não
-pare para perguntar quando a correção for apenas de forma. Só fica para
-relatar ao Ricardo o que for ambíguo o suficiente para exigir julgamento
-dele, como um `[PONTO A CONFERIR]`. Um relatório que aponta vício e não é
-seguido de correção equivale a não ter revisado.
+"Rodar o checklist" não termina em produzir um relatório: corrija os vícios
+objetivos e bloqueantes antes da entrega. Alerta de cadência, repetição,
+abertura defensiva ou pontuação pede leitura contextual; não vira bloqueio
+automático. Não pare para perguntar quando a correção for apenas de forma.
+Relate a Ricardo apenas o que exigir julgamento dele, como um
+`[PONTO A CONFERIR]`.
 
 **Nível C** roda o mesmo checklist de estilo e o QA gate estrutural antes da
 publicação — isso não é validação de mérito jurídico, é controle mecânico
@@ -287,7 +263,7 @@ convenções.
 2. A partir dali, lê as teses ligadas em `wiki/concepts/` e as fontes em
    `wiki/sources/` (ementa/trecho sempre literal, com origem).
 3. Registra o que encontrar com `origem: cerebro-ricar` e `status:
-   informada` — nunca `verificada_externamente` só por ter vindo do vault.
+   informada`. Só confere a fonte se ela parecer estranha ou se Ricardo pedir.
    Vira tese aprovada, fonte selecionada ou parte do esqueleto somente por
    decisão explícita no esqueleto (papel Planner).
 4. Se não encontrar nada relevante para a área, segue normalmente — vault
@@ -343,9 +319,8 @@ registrada no Cérebro-Ricar (ex.: "Registrada em Cérebro-Ricar como
 Este fluxo combina:
 - Classificação de nível (`nivel_peca` C/B/A) → decide profundidade, blocos,
   esqueleto e a rota de agentes
-- `jusbrasil-jurisprudencia` → pesquisa de jurisprudência automática no tipo
-  A (premissa do nível, sem pedido separado), nunca no tipo B/C salvo pedido
-  expresso
+- `jusbrasil-jurisprudencia` → pesquisa disponível no tipo A; resultado direto
+  de Jusbrasil, Jurisprudência.AI ou JusRatio dispensa segunda conferência
 - Consulta processual (andamento, publicação, movimentação) → não existe no
   plugin; não tente
 - MCP `NotebookLM` → uso secundário e somente quando Ricardo pedir
@@ -369,8 +344,6 @@ Este fluxo combina:
   gravação automática de tese/fonte usada após publicação
 - Procedimentos e Informações → leitura sempre manual; gravação automática
   de registro operacional após publicação
-- `gestao-materias` → repositório de documentos-fonte (`DOC-XXX`/
-  `source_id`) por matéria, fora deste fluxo
 
 ## Mecânica de controle (referência técnica)
 

@@ -65,8 +65,8 @@ integralmente o conteúdo jurídico e factual:
   peça já individualiza atos, ou ficou genérico?
 - **Cacoetes robóticos**: "cumpre salientar", "oportuno destacar", "por
   derradeiro" e afins — remover sempre que aparecerem.
-- **Números por extenso** em contexto jurídico formal ("vinte mil reais",
-  não "R$ 20.000").
+- Aplicar a regra geral do núcleo para números e valores; não criar convenção
+  própria de números por extenso.
 - **Marcadores soltos**: listas sem desenvolvimento em prosa — reescrever
   como texto corrido quando a estrutura não exigir lista.
 

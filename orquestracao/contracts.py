@@ -37,6 +37,7 @@ class RDAAState(TypedDict, total=False):
     failures: dict[str, int]                 # contagem de falhas por fase
     consecutive_failures: int                # falhas consecutivas (disjuntor)
     hashes: dict[str, str]                   # sha256 de artefatos-chave
+    options: dict[str, Any]                  # flags de execução da matéria
     state_dir: str                           # diretório canônico da matéria
     route: dict[str, Any]                    # rota calculada (snapshot de roteamento.json)
     executions: list[dict[str, Any]]         # registros de execuções de workers

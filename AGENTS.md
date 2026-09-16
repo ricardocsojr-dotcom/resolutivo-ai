@@ -17,7 +17,7 @@ Antes de trabalhar, leia `CLAUDE.md`, `referencias/decisoes-roteamento-motores-2
 - O estado canônico fica em `.rdaa-run/<matter_id>/`; não misture matérias.
 - Não invente fatos, páginas, precedentes, datas, valores ou decisões. Marque lacunas como pendência e preserve a origem e o estado de verificação.
 - Achado do crítico é alerta, não decisão automática. Mudança de tese, pedido ou estratégia depende de Ricardo.
-- Jusbrasil é a única fonte de pesquisa jurisprudencial externa autorizada. CNJ, DataJud, DJEN e NotebookLM ficam desligados salvo instrução expressa.
+- As fontes externas autorizadas para jurisprudência são Jusbrasil, Jurisprudência.AI e JusRatio. Resultado obtido diretamente em qualquer uma delas pode ser usado sem segunda conferência. Jurisprudência recuperada do Cérebro-Ricar só exige conferência se parecer estranha ou se Ricardo a solicitar. CNJ, DataJud, DJEN e NotebookLM ficam desligados salvo instrução expressa.
 
 ## Gates e entrega
 

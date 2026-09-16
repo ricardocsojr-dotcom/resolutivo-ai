@@ -98,7 +98,7 @@ python3 <skill_path>/../revisor-rdaa/scripts/publicar_docx.py \
 O publicador só substitui `peca_final.docx` se o gate retornar `PASS`. Se falhar, o arquivo final anterior permanece intacto; o candidato fica disponível para diagnóstico. Antes de substituir um arquivo existente, o publicador cria backup local e realiza a troca de forma atômica.
 
 O gate verifica no XML do `.docx`:
-1. **Destaques**: sublinhado proibido fora da exceção institucional da abertura.
+1. **Destaques**: sublinhado proibido como ênfase; hyperlinks técnicos seguem a formatação própria.
 2. **Títulos**: numeração nativa (`w:numPr`), borda inferior e espaçamento 0/0.
 3. **Parágrafos Numerados**: alinhamento com `tabStop` em 2cm (1134 twips) e retorno de 2ª linha à margem 0.
 4. **Alíneas e Documentos**: numeração nativa e recuos de 3cm (1701 twips) / 4cm (2268 twips).

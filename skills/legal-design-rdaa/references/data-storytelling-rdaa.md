@@ -33,4 +33,7 @@ Os tipos A e B podem receber elementos visuais tipados por meio do playbook. O t
 
 ## Limites de redação
 
-Títulos sem dois pontos e sem travessão. Texto sem dois pontos. Sem aposto explicativo entre parênteses ou travessões pareados. A visualização deve ser compreensível sem depender de um título proibido ou de uma legenda que infira fatos.
+Títulos seguem a regra editorial RDAA 2026, sem dois-pontos ou travessão. No
+texto, use pontuação e apartes apenas quando cumprirem função gramatical e
+preservarem a clareza. A visualização deve ser compreensível sem depender de
+uma legenda que infira fatos.

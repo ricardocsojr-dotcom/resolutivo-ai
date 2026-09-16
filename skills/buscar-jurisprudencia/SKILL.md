@@ -12,24 +12,24 @@ description: >
 
 # Busca de Jurisprudência — RDAA
 
-Fluxo: consulta ao índice temático do Cérebro-Ricar primeiro, Jusbrasil (fonte
-primária) só para o que faltar.
+Fluxo: consulta ao índice temático do Cérebro-Ricar primeiro; para nova busca,
+esta skill usa Jusbrasil. Resultado entregue diretamente por Jurisprudência.AI
+ou JusRatio também é fonte externa autorizada, embora esta skill não os opere.
 
 ## Índice temático Cérebro-Ricar (sempre primeiro)
 
-Antes de qualquer busca externa, consulte o índice de fontes já verificadas:
+Antes de qualquer busca externa, consulte o índice de fontes já registradas:
 
 ```text
 
 ```
 
 É busca por tema (FTS5/BM25), não por domínio — não depende de acertar qual
-`wiki/domains/*.md` a tese pertence, e cobre teses ainda não catalogadas em
-nenhum domínio. Se retornar ementa aderente à tese atual, reaproveite-a
-(mesmo `source_id`, ementa já literal e verificada) em vez de buscar de novo
-no Jusbrasil — evita repetir a etapa mais lenta do processo (conferência de
-literalidade). Se o índice não existir ou estiver desatualizado, reconstrua
-com `reindex` antes de assumir que não há resultado:
+`wiki/domains/*.md` a tese pertence. Se retornar ementa aderente à tese atual,
+reaproveite-a em vez de buscar de novo. Só peça conferência se a fonte do
+Cérebro-Ricar parecer estranha ou se Ricardo a solicitar. Se o índice não
+existir ou estiver desatualizado, reconstrua com `reindex` antes de assumir que
+não há resultado:
 
 ```text
 
@@ -37,16 +37,7 @@ com `reindex` antes de assumir que não há resultado:
 
 Avalie a aderência real do resultado à tese atual antes de reaproveitar —
 ementa parecida por palavra-chave não é o mesmo que ementa aderente ao fato
-concreto. **Além disso, respeite o objeto `revisao` retornado pelo índice:**
-
-- `vigente` + `automatic_reuse: true`: pode ser reaproveitada, desde que
-  aderente ao caso;
-- `revisao_vencida`, `sem_prazo` ou `data_invalida`: é apenas candidata;
-  confirme se ainda representa o entendimento atual antes de citá-la;
-- toda fonte nova recebe revisão em **365 dias**. O precedente não "expira";
-  após esse prazo, vence apenas a autorização para reutilização automática.
-
-Na dúvida, trate como candidata e confirme como faria com um resultado novo do Jusbrasil.
+concreto. O objeto `revisao` é metadado útil, não condição automática de uso.
 
 ## Jusbrasil (fonte primária, para o que não foi encontrado)
 
@@ -95,19 +86,19 @@ qualquer alteração pode comprometer a citação formal.
 
 ## Registro no estado compartilhado
 
-Depois de conferir cada resultado na fonte indicada, registre a ementa literal
-no estado local da matéria usando registro compatível.
+Depois de obter resultado diretamente de fonte externa autorizada, registre a
+ementa literal no estado local da matéria usando registro compatível.
 O registro deve conservar tribunal, número do processo, relator, data, URL,
 texto literal, origem, uso e os dados de conferência quando disponíveis. Use o
 tipo `jurisprudencia` e o status automático da função `register_research`, que é
-`verificada_externamente` somente porque esta etapa já declarou a conferência
-externa.
+`verificada_externamente` porque a fonte externa autorizada foi acessada
+diretamente nesta etapa.
 
-Não registre como verificada uma ementa apenas copiada do histórico, do vault
-ou de texto livre. Nesses casos, mantenha o registro como `informada` ou
-`pendente` pelo fluxo de contexto. O ledger é auxiliar à resposta e não muda a
-regra de nunca inventar ou parafrasear citação. Antes da redação, selecione os
-`source_id` no esqueleto e vincule cada fonte ao bloco e ao uso pretendido.
+Ementa do Cérebro-Ricar é registrada como `informada`; só exija conferência se
+ela parecer estranha ou se Ricardo pedir. Texto livre sem origem segue como
+`pendente`. O ledger é auxiliar à resposta e não muda a regra de nunca inventar
+ou parafrasear citação. Antes da redação, selecione os `source_id` no esqueleto
+e vincule cada fonte ao bloco e ao uso pretendido.
 
 ## Registro imediato no Cérebro-Ricar (não espera publicação)
 

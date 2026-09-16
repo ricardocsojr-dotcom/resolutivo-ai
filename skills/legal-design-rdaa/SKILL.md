@@ -64,8 +64,9 @@ Toda produção do RDAA parte desta fundação. Antes de qualquer elemento visua
 estar correto segundo estes princípios:
 
 ### 1 Clareza
-- Estrutura **Sujeito + Verbo + Complemento** (ordem direta). Inversões criam ambiguidade —
-  algo inaceitável no meio jurídico, onde a polissemia prejudica a parte.
+- Preferir estrutura **Sujeito + Verbo + Complemento** quando ela tornar
+  inequívoca a relação entre os termos. Usar inversão somente com função clara
+  e sem risco de ambiguidade.
 - Uma ideia por parágrafo. O tópico frasal introduz; o desenvolvimento fundamenta.
 - Precisão vocabular: prefira repetir o termo correto a usar sinônimo impreciso. "Requerente"
   deve ser "requerente" do início ao fim — nunca "ele", "a parte" ou "o mesmo" quando houver

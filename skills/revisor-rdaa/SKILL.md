@@ -84,22 +84,18 @@ Se for ambos: executar JURÍDICO primeiro, VISUAL depois.
 ### b — Rodar o script determinístico (modo JURÍDICO, sempre antes da leitura)
 
 Antes de ler o texto, rode a automação provida pelo motor LangGraph no arquivo (.docx ou
-.txt exportado). O script conta travessão recorrente, ponto-e-vírgula em cadeia,
-tricolon de negação, aberturas defensivas recorrentes, dois-pontos e apartes
-explicativos entre parênteses ou travessões pareados. Uma LLM lendo
-estruturalmente um documento extenso
-erra a contagem. O script não
-erra. Trate qualquer saída com código 1 como vício confirmado e bloqueante.
-A leitura qualitativa dos checklists continua necessária para eco de conclusão,
-cadência homogênea e demais aspectos que dependem de julgamento.
+.txt exportado). O script conta padrões de pontuação, apartes, aberturas e
+cadência. Ele separa bloqueio institucional objetivo de alerta estilístico;
+uma LLM não deve estimar essas contagens. Código 1 indica bloqueio confirmado.
+Alertas exigem leitura contextual e não bloqueiam a entrega por si sós.
 
 ```
 python3 a automação provida pelo motor LangGraph caminho/para/peca.docx
 ```
 
-Se o script sair com código 1, os achados dele são vício confirmado e não
-sugestão a considerar. Corrigir o texto antes de prosseguir e registrar o
-resultado na Parte 1 e na Parte 2 do relatório.
+Se o script sair com código 1, corrija o bloqueio antes de prosseguir e
+registre o resultado na Parte 1 e na Parte 2 do relatório. Avalie cada alerta
+sem aplicar fórmula automática de reescrita.
 
 ### c — Revisão semântica objetiva quando houver estado da matéria
 
@@ -224,9 +220,10 @@ Marcar com: **`[PONTO A CONFERIR]`** — nunca inventar ou assumir.
 
 ### Jurisprudência não verificada
 
-Quando a jurisprudência citada na peça parecer incorreta ou duvidosa:
+Quando a jurisprudência do Cérebro-Ricar parecer estranha ou Ricardo pedir
+conferência:
 
-**`[Atenção: verificar jurisprudência — número, relator e inteiro teor no site do tribunal]`**
+**`[Atenção: conferir jurisprudência — número, relator e inteiro teor]`**
 
 Nunca inventar ementa, número de processo, relator ou precedente.
 
@@ -234,7 +231,7 @@ Nunca inventar ementa, número de processo, relator ou precedente.
 
 ## Regras de redação que esta skill aplica
 
-Fonte única: `contencioso-rdaa/references/redacao-rdaa.md` — o mesmo núcleo
+Fonte operacional: `contencioso-rdaa/references/redacao-rdaa.md` — o mesmo núcleo
 que as skills de redação leem antes de escrever. A revisão usa o mesmo
 critério dos dois lados: expressões proibidas (seção 4 do núcleo),
 destaques (só negrito; sublinhado proibido), citação legal ("Lei, art. X"),
@@ -253,11 +250,11 @@ relatório explícito do `critico-rdaa`.
 
 O pacote não autoriza o revisor a alterar tese, estratégia ou mérito. A
 revisão semântica objetiva também não escolhe tese, risco ou pedido; apenas
-compara registros declarados. Fontes
-sem status `verificada_externamente` devem continuar marcadas para conferência,
-e não podem ser tratadas como confirmadas apenas porque aparecem no DOCX. Se o
-revisor encontrar uma nova fonte durante a revisão, registre-a somente quando
-a origem e a conferência forem explicitamente informadas.
+compara registros declarados. Fonte obtida diretamente em Jusbrasil,
+Jurisprudência.AI ou JusRatio pode constar como `verificada_externamente`.
+Fonte do Cérebro-Ricar só é marcada para conferência se parecer estranha ou se
+Ricardo pedir. Se o revisor encontrar nova fonte, registre-a somente quando a
+origem estiver explicitamente informada.
 
 A revisão pode acrescentar pendências ou apontamentos vinculados a um ID de
 fonte, tese ou parágrafo, mas não converte automaticamente um alerta em erro

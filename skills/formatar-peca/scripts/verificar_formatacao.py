@@ -188,17 +188,17 @@ def checar(docx_path):
     # Definições de numeração nativa (Fase 1)
     num_defs = _numbering_defs(docx_path)
 
-    # Abertura: parágrafo com nome da parte em negrito+sublinhado, sem
+    # Abertura: parágrafo com nome da parte em negrito, sem
     # borda, recuo de 1ª linha em 2cm — distingue da caixa Processo/partes
     # (tem borda) e do título (tem borda + recuo deslocado, não firstLine).
-    # Decisão de 2026-08: negrito+sublinhado no nome da parte é a UNICA
-    # excecao a vedacao geral de sublinhado (praxe forense de abertura).
+    # O Manual RDAA §2.9 admite negrito como destaque; sublinhado não integra
+    # a abertura institucional.
     aberturas = [p for p in paragrafos if len(_runs_text_bold_underline(p)) >= 2
-                 and _runs_text_bold_underline(p)[0][1] and _runs_text_bold_underline(p)[0][2]
+                 and _runs_text_bold_underline(p)[0][1]
                  and not _has_border(p)
                  and _ind(p).get('firstLine') == '1134']
     if not aberturas:
-        problemas.append("Item 1: nenhum parágrafo de abertura com nome da parte em negrito+sublinhado encontrado.")
+        problemas.append("Item 1: nenhum parágrafo de abertura com nome da parte em negrito encontrado.")
 
     # 1a. O corpo não deve começar com um parágrafo vazio antes do
     # endereçamento. O respiro institucional fica no cabeçalho.
@@ -222,21 +222,17 @@ def checar(docx_path):
             if len(header_paras) < 2 or _element_text(header_paras[1]).strip():
                 problemas.append("Item 1b: cabeçalho sem parágrafo de respiro após a logo.")
 
-    # 1. Manual §2.9 / decisão 2026-08: destaque de elementos do texto é
-    #    negrito, exceto o nome da parte na abertura (negrito+sublinhado,
-    #    ver acima) — sublinhado em qualquer outro lugar continua proibido.
+    # 1. Manual §2.9: destaque de elementos do texto é negrito; sublinhado é
+    #    proibido como ênfase em qualquer parte do corpo.
     runs_sublinhados = 0
     for p in paragrafos:
         runs = _runs_text_bold_underline(p)
-        primeiro = runs[0] if (p in aberturas and runs) else None
         for run_info in runs:
             t, bold, underline = run_info
-            if run_info is primeiro:
-                continue  # nome da parte na abertura: sublinhado esperado
             if underline and t.strip():
                 runs_sublinhados += 1
     if runs_sublinhados:
-        problemas.append(f"Item 1: sublinhado proibido (Manual §2.9) encontrado em {runs_sublinhados} run(s) fora da abertura.")
+        problemas.append(f"Item 1: sublinhado proibido (Manual §2.9) encontrado em {runs_sublinhados} run(s).")
     for p in aberturas:
         runs = _runs_text_bold_underline(p)
         if len(runs) >= 3:

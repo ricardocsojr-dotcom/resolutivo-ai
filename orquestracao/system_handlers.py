@@ -65,8 +65,10 @@ def handle_intake_ready(state: RDAAState) -> dict[str, Any]:
     ) if anexos_dir.is_dir() else []
 
     output_path = state_dir / "packages" / "intake.md"
+    options = state.get("options", {})
+    use_ocr = options.get("use_ocr", True)
     try:
-        result = gerar_intake_md(matter_id, anexos, output_path=output_path)
+        result = gerar_intake_md(matter_id, anexos, output_path=output_path, use_ocr=use_ocr)
     except ExtractionError as exc:
         raise ContractError(f"extração de anexos falhou: {exc}") from exc
 

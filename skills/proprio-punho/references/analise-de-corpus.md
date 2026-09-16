@@ -1,8 +1,6 @@
-# Análise de corpus — engenharia reversa do estilo em 4 camadas
+# Análise de corpus — engenharia reversa do estilo
 
-Método do Modo Calibração. O objetivo NÃO é elogiar o texto nem descrevê-lo em adjetivos: é extrair **regras verificáveis** que permitam a outra pessoa (ou a uma IA) reproduzir o estilo — inclusive a **formatação**, porque uma peça com a cara do autor também tem o layout dele.
-
-> **Formatação exige o arquivo, não o texto.** As Camadas 1–3 saem do texto; a Camada 0 (formatação) só é observável no `.docx`/`.pdf` original — margens, fonte, entrelinha e negrito se perdem quando a peça é colada como texto puro. Peça os modelos em `.docx` e inspecione o arquivo (no Claude Code, via `python-docx`: `Document(...).styles['Normal'].font`, `sections[0].*_margin`, `paragraph_format.alignment/line_spacing`, e `run.bold` dos títulos).
+Método do Modo Calibração. O objetivo NÃO é elogiar o texto nem descrevê-lo em adjetivos: é extrair tendências verificáveis de voz, estrutura argumentativa e frase. No RDAA, não extraia do corpus regras de formatação, destaque, numeração ou outro requisito institucional.
 
 ## Padrão de qualidade de uma regra
 
@@ -12,22 +10,6 @@ Uma regra só entra no guia se passar nos dois testes:
 2. **Exemplificada** — vem acompanhada de um trecho literal extraído do corpus que a demonstra, com indicação de qual peça.
 
 Análise que devolve "estilo formal, objetivo e tecnicamente preciso" é **análise de horóscopo**: serve para qualquer advogado do Brasil e não ensina nada. Descarte e refaça.
-
-## Camada 0 — Formatação e layout (o documento)
-
-Observável só no arquivo original. Extrair como regras concretas:
-
-- **Fonte:** família e tamanho (ex.: Times New Roman 12pt); fonte diferente em títulos?
-- **Página:** margens (esq./dir./sup./inf.), tamanho do papel.
-- **Espaçamento:** entrelinha (1,0 / 1,5 / duplo); espaço antes/depois do parágrafo; recuo de primeira linha.
-- **Alinhamento:** corpo (justificado?), endereçamento, títulos, assinatura.
-- **Endereçamento e "CONTESTAÇÃO":** centralizados? negrito? caixa alta?
-- **Títulos de seção:** caixa alta? negrito? numeração? centralizados ou à esquerda?
-- **Ênfase no corpo:** o que recebe negrito/itálico/sublinhado (dispositivos, teses, nomes).
-- **Pedidos:** alíneas/bullets, recuo, marcador usado.
-- **Bloco de assinatura:** centralizado ou à esquerda; linhas (nome, cargo, matrícula); local e data acima.
-
-Registrar no `guia-de-estilo.md` (seção "0. Formatação") e **reproduzir na redação**: a minuta entregue em `.docx` deve nascer com essas escolhas, não com o padrão do editor.
 
 ## Camada 1 — Estrutura (a arquitetura da peça)
 
@@ -56,13 +38,12 @@ Investigar e responder com regras:
 - **Conectivos favoritos** (com frequência real no corpus) e conectivos que nunca aparecem.
 - Pronomes de tratamento e fórmulas de referência ao juízo, às partes, ao processo.
 - Latinismos: usa? Quais? Com que parcimônia? Itálico ou não?
-- Ênfase tipográfica: o que vai para negrito, itálico, sublinhado, caixa alta — e o que nunca vai.
-- Pontuação característica: usa travessão? dois-pontos? ponto e vírgula? parênteses explicativos?
+- Ênfase e pontuação características, tratadas como observação de voz e nunca como exceção ao núcleo RDAA.
 - Vocabulário-assinatura: palavras/expressões que se repetem entre peças e são escolha do autor (não jargão obrigatório).
 - Primeira pessoa: singular, plural ("requer-se" vs "o réu requer"), voz ativa vs passiva.
 
 ## Prompt-base (adaptar)
 
-> Analise as peças anexas como um perito em estilometria. Produza uma descrição do estilo do autor em quatro camadas — formatação/layout, estrutura, argumentação e frase — composta EXCLUSIVAMENTE de regras verificáveis. Para a formatação, inspecione o próprio arquivo `.docx` (fonte, tamanho, margens, entrelinha, alinhamento, negrito de títulos), não só o texto. Cada regra deve: (a) ser objetivamente checável em um texto/arquivo novo; (b) vir com um exemplo literal extraído das peças, indicando de qual peça saiu. Proibido usar adjetivos genéricos como "formal", "objetivo", "claro" ou "técnico" sem a regra concreta que os materializa. Ao final, liste também o que o autor NUNCA faz (padrões ausentes no corpus que seriam comuns em outros advogados).
+> Analise as peças anexas como um perito em estilometria. Produza uma descrição do estilo do autor em três camadas — estrutura, argumentação e frase — composta de tendências verificáveis. Cada tendência deve: (a) ser objetivamente observável em texto novo; (b) vir com exemplo literal extraído das peças, indicando de qual peça saiu. Não extraia regra de formatação, destaque, pontuação ou requisito institucional que possa contrariar o RDAA. Proibido usar adjetivos genéricos como "formal", "objetivo", "claro" ou "técnico" sem a regra concreta que os materializa. Ao final, liste também o que o autor tende a evitar.
 
 A seção final ("o que o autor nunca faz") alimenta o `anti-estilo.md`.
